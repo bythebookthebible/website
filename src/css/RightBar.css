@@ -1,0 +1,9 @@
+.RightSideBar {
+    background-image: url("../images/rightsidebar_backgroundribbon.png");
+    background-blend-mode: normal;
+    min-height: 600px;
+}
+
+.sideBar {
+    width: 140px;
+}

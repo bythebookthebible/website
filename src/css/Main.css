@@ -1,0 +1,5 @@
+.Main-body {
+    background-image: url("../images/home_yellowbackgroundcenter.png");
+    background-blend-mode: normal;
+    min-height: 600px;
+}
