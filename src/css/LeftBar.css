@@ -1,6 +1,7 @@
 .LeftSideBar {
     background-image: url("../images/leftsidebar_backgroundribbon.png");
     background-blend-mode: normal;
+    min-height: 3256px;
 }
 
 .sidebar-text-block {

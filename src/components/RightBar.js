@@ -9,7 +9,6 @@ export default class RightBar extends Component {
                 <div className="container">
                     <div className="row">
                         <div className="sideBar">
-                            <p>Missing Image!</p>
                             {/*<img src={buy_sermon_on_the_mount} alt={"Matthew 5, 6, and 7"} />*/}
                         </div>
                     </div>
