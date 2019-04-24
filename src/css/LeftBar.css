@@ -7,10 +7,11 @@
 .sidebar-text-block {
     font-family: Geneva;
     font-weight: bold;
-    text-transform: uppercase;
-    text-align: justify;
+    /*text-transform: uppercase;*/
+    text-align: center;
+    line-height: 110%;
     /*text-justify: inter-character;*/
-    font-size: .8vw;
+    font-size: .6vw;
 }
 
 .sideBar-form-text {
