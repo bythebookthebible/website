@@ -15,7 +15,7 @@ export default class Main extends Component {
                 <img src={under_construction} alt={"Site Presently Under Construction"} />
                 <br />
                 <br />
-                <ReactPlayer url="http://vimeo.com/332012395/8418951f9e" preload playing />
+                <ReactPlayer url="http://vimeo.com/332012395/8418951f9e" preload />
             </div>
         );
     }
