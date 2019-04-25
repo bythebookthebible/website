@@ -15,15 +15,11 @@ export default class LeftBar extends Component {
                     </div>
                     <div className="row">
                         <div className="col">
-                            <p className="sidebar-text-block">
-                                <br/>We are currently developing curriculum for Matthew, chapters 5, 6, and 7. If you would like to be notified when this project is finished, put your email below!<br/>
+                            <p/>
+                            <p className="sidebar-text-block">We are currently developing curriculum for Matthew, chapters 5, 6, and 7.
+                                If you would like to be notified when we release the Sermon on the Mount package,
+                                please email me <a href="mailto:rose@bythebookthebible.com">here.</a><br/>
                             </p>
-                            <form>
-                                <input type="text" className="sideBar-form-text" />
-                                <input type="text" className="sideBar-form-text" />
-                                <input type="submit" className="sideBar-form-submit" />
-                            </form>
-                            <br />
                         </div>
                     </div>
                     <div className="row">

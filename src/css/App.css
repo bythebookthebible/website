@@ -10,6 +10,8 @@
 
 .container {
   width: 1010px;
+  /*white-space: nowrap;*/
+  overflow: hidden;
 }
 
 .App-link {

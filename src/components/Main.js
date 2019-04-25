@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactPlayer from 'react-player'
 import '../css/Main.css';
 import logo_animated from "../images/frontanimation_600px.gif";
-import under_construction from "../images/webconstructionsite.png";
+import under_construction from "../images/webconstructionsite_v2.png";
 
 export default class Main extends Component {
     render() {
