@@ -1,0 +1,113 @@
+/* Text formatting */
+p {
+	margin: 10px;
+}
+
+h1, h2, h3, b, em, y, q {
+	text-transform: uppercase;
+	padding: .3ch;
+	font-weight: bolder;
+	font-style: normal;
+	text-shadow: rgba(0, 0, 0, 0.5) 1px 1px 1px;
+}
+
+h2, h3, b, q, em, y {
+	font-size: inherit;
+}
+
+h1, h2, h3, q {
+	display: block;
+	text-align: center;
+}
+
+q {
+	margin: 30px;
+	font-size: 30px;
+	line-height: 30px;
+}
+
+h1::before, h1::after {
+    background-image: url('../images/logo.svg');
+    background-size: 60px 30px;
+    content:"";
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+	margin: 0 20px;
+}
+
+h2 {
+	margin-top: 15px;
+	margin-bottom: 0px;
+	padding: 0px;
+}
+
+h3 {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding: 0px;
+}
+
+h1, h2, b, q {
+	color: var(--blue);
+}
+
+h3, em {
+	color: var(--pink);
+}
+
+y {
+	color: var(--yellow);
+}
+
+/* Body containers */
+.Body {
+	background-image: url("../images/home_yellowbackgroundcenter.png");
+	display: block;
+	min-height: 100%;
+	flex-basis: 100%;
+	padding:50px;
+}
+
+.Body .text-box {
+	padding: 50px;
+}
+
+.video {
+	width: 600px !important;
+	margin:auto;
+}
+
+/* Screen size adjustments */
+@media screen and (max-width: 500px) {
+	q {
+		margin: 5px;
+		font-size: 20px;
+		line-height: 20px;
+	}
+}
+
+@media screen and (max-width: 650px) {
+	.video {
+		width: 100% !important;
+	}
+}
+
+@media screen and (max-width: 1000px) {
+	.container {
+		width: 100vw;
+		flex-direction: column;
+		justify-content: center;
+		align-content: space-between;
+	}
+
+	.Body {
+		width: 100vw;
+		margin: 0vw;
+		padding:20px;
+	}
+
+	.Body .text-box {
+		padding: 15px;
+	}
+}

@@ -1,40 +1,108 @@
-.App {
-  text-align: center;
+/* Nav layout */
+.nav-left-logo {
+	transform: scale(1.2);
+	margin-left: 20px !important;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+.nav-right-logo {
+	transform: scale(1.3) ;
+	margin-right: 20px !important;
 }
 
-.nav {
+.NavBar {
+	display:flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+	overflow: visible;
+	margin: 10px 0;
+	position: static;
 }
 
-.App-nav {
-  margin-top: 20px;
-  margin-left: 0px;
-  white-space: nowrap;
-  overflow: hidden;
-  /*background-color: #282c34;*/
-  /*min-height: 100vh;*/
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  /*color: white;*/
+.NavBar>img {
+	margin: 15px;
+	max-height: 50px;
+	height:auto;
+	flex-basis: 50px;
+	padding: 0;
 }
 
-.App-link {
-  color: #61dafb;
+.navItem {
+	margin: 1vmin;
+	max-width: 100px;
+	max-height: 100px;
+	min-width: 50px;
+	flex-basis: 100px;
+	padding: 0;
+	display: block;
+	position: relative;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.navItem::before {
+	content:"";
+	display:block;
+	padding-top:100%;
+}
+
+.navItem div {
+	width:100%;
+	height:100%;
+	border-radius: 10px;
+	background-repeat: no-repeat;
+	background-position: center;
+	position: absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+}
+
+.navItem a {
+	position: absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+}
+
+.NavBar p {
+	color: black;
+	text-transform: uppercase;
+	font-size: 1.5vmin;
+	font-weight: bold;
+	margin:0;
+	background-color: rgba(255, 255, 255, 1);
+	border-radius: 5px;
+	width: 90%;
+	display: block;
+	position: absolute;
+	left: 5%;
+	bottom: 5%;
+}
+
+/* Nav page change functionality. Requires Home as last in body html */
+.page,
+.anchor:target ~ #Home + .page {
+	display: none;
+}
+
+#Home + .page,
+.anchor:target + .page {
+	display: block;
+}
+
+.anchor {
+	position: absolute;
+	top: 0;
+}
+
+/* Smaller top menu */
+@media screen and (max-width: 500px) {
+	.NavBar {
+		justify-content: left;
+		overflow: auto;
+	}
+
+	.nav-right-logo {
+		display:none;
+	}
 }

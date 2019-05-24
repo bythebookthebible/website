@@ -1,51 +1,26 @@
 import React, { Component } from 'react';
 import '../css/NavBar.css';
-import main_logo from '../images/top_nav/main_logo.png';
-import nav_button_home from '../images/top_nav/menu_buttonhome.png';
-import nav_button_faqs from '../images/top_nav/menu_buttonFAQS.png';
-import nav_button_about from '../images/top_nav/menu_buttonabout.png';
-import nav_button_contact from '../images/top_nav/menu_buttoncontact.png';
-import nav_button_curriculum from '../images/top_nav/menu_buttoncurriculum.png';
-import nav_girls from '../images/top_nav/menu_roseandcatherine.png';
+import main_logo from '../images/mainLogo.svg';
+import nav_girls from '../images/R+C.svg';
+
+import home from '../images/nav/home.svg';
+import ourStory from '../images/nav/ourStory.svg';
+import testimonials from '../images/nav/testimonials.svg';
+import contact from '../images/nav/contact.svg';
+import curriculum from '../images/nav/curriculum.svg';
 
 export default class NavBar extends Component {
     render() {
         return (
-            <div className="App-nav">
-                <ul className="nav">
-                    <li className="nav-item">
-                        <img src={main_logo} alt={"Main Logo"} />
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" href="#">
-                            <img src={nav_button_home} alt={"Home"} />
-                        </a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" href="#">
-                            <img src={nav_button_faqs} alt={"FAQs"} />
-                        </a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" href="#">
-                            <img src={nav_button_about} alt={"About Us"} />
-                        </a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" href="#">
-                            <img src={nav_button_contact} alt={"Contact"} />
-                        </a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" href="#">
-                            <img src={nav_button_curriculum} alt={"Curriculum"} />
-                        </a>
-                    </li>
-                    <li className="nav-item">
-                        <img src={nav_girls} alt={"Rose & Catherine"} />
-                    </li>
-                </ul>
-            </div>
+		<div className="NavBar" >
+			<div className="navItem nav-left-logo"><div style={{backgroundImage: "url(" + main_logo + ")"}}></div></div>
+			<div className="navItem"><a href="#Home"><div className="bounce" style={{backgroundImage: "url(" + home + ")"}}></div></a></div>
+			<div className="navItem"><a href="#OurStory"><div className="bounce" style={{backgroundImage: "url(" + ourStory + ")"}}></div></a></div>
+			<div className="navItem"><a href="#Testimonials"><div className="bounce" style={{backgroundImage: "url(" + testimonials + ")"}}></div></a></div>
+			<div className="navItem"><a href="#Contact"><div className="bounce" style={{backgroundImage: "url(" + contact + ")"}}></div></a></div>
+			<div className="navItem"><a href="#Curriculum"><div className="bounce" style={{backgroundImage: "url(" + curriculum + ")"}}></div></a></div>
+			<div className="navItem nav-right-logo"><div style={{backgroundImage: "url(" + nav_girls + ")"}}></div></div>
+		</div>
         )
     }
 }

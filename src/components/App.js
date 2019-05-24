@@ -1,35 +1,24 @@
 import React, { Component } from 'react';
-import Nav from './NavBar'
 import '../css/App.css';
-import LeftBar from "./LeftBar";
-import Main from "./Main";
-import RightBar from "./RightBar";
+import Nav from './NavBar'
+import Body from "./Body";
+import ProductBar from "./ProductBar";
+import QuoteBar from "./QuoteBar";
 
-class App extends Component {
+export default class App extends Component {
   render() {
     return (
       <div className="App">
-        <div className="container">
-          <div className="row">
-            <div className="col-12">
-              <Nav />
-            </div>
+        <div className="col">
+          <Nav />
+          <div className="construction">This site is currently under construction.</div>
+          <div className="Container">
+            <Body />
+            <ProductBar />
+            <QuoteBar />
           </div>
-            <div className="row">
-              <div className="col-2">
-                <LeftBar />
-              </div>
-              <div className="col-lg-8">
-                <Main />
-              </div>
-              <div className="col-2">
-                <RightBar />
-              </div>
-            </div>
-          </div>
+        </div>
       </div>
     );
   }
 }
-
-export default App;
