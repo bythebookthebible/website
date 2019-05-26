@@ -16,7 +16,10 @@ export default class NavBar extends Component {
 			<div className="navItem nav-left-logo"><div style={{backgroundImage: "url(" + main_logo + ")"}}></div></div>
 			<div className="navItem"><a href="#Home"><div className="bounce" style={{backgroundImage: "url(" + home + ")"}}></div></a></div>
 			<div className="navItem"><a href="#OurStory"><div className="bounce" style={{backgroundImage: "url(" + ourStory + ")"}}></div></a></div>
+	
 			<div className="navItem"><a href="#Testimonials"><div className="bounce" style={{backgroundImage: "url(" + testimonials + ")"}}></div></a></div>
+			{/* <div className="navItem"><a href="#Testimonials"><svg className="bounce"><use xlinkHref={testimonials + "#Layer_1"}/></svg></a></div> */}
+
 			<div className="navItem"><a href="#Contact"><div className="bounce" style={{backgroundImage: "url(" + contact + ")"}}></div></a></div>
 			<div className="navItem"><a href="#Curriculum"><div className="bounce" style={{backgroundImage: "url(" + curriculum + ")"}}></div></a></div>
 			<div className="navItem nav-right-logo"><div style={{backgroundImage: "url(" + nav_girls + ")"}}></div></div>

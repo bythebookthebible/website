@@ -5,18 +5,19 @@
 	--darkYellow: #F1E935;
 }
 
-.App {
-	/* font-family: Geneva, Tahoma, Verdana, sans-serif; */
-	font-family: Actor;
+@font-face {
+	font-family: "Loopiejuice-Regular";
+	src: url("Loopiejuice.ttf");
+}
+
+.App{
+	font-family: "Loopiejuice-Regular";
 	text-align: center;
 	font-weight: bold;
 	line-height: 110%;
 	-webkit-font-smoothing: antialiased;
 }
-svg text {
-	/* font-family: Geneva, Tahoma, Verdana, sans-serif; */
-	font-family: Actor;
-}
+
 .col, .row {
 	padding: 0;
 }

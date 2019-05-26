@@ -19,7 +19,7 @@
 }
 
 .sidebar .text-box {
-	font-size: 9pt;
+	font-size: 12pt;
 	margin: 20px 0;
 	padding:10px;
 	display: block;
@@ -32,8 +32,8 @@
 }
 
 .QuoteBar .text-box{
+	font-family: Loopiejuice-Regular;
 	font-size: 30px;
-	letter-spacing: 0ch;
 	line-height: 32px;
 }
 

@@ -4,11 +4,11 @@ p {
 }
 
 h1, h2, h3, b, em, y, q {
-	text-transform: uppercase;
-	padding: .3ch;
+	font-family: Loopiejuice-Regular;
+	/* padding: .3ch; */
 	font-weight: bolder;
 	font-style: normal;
-	text-shadow: rgba(0, 0, 0, 0.5) 1px 1px 1px;
+	text-shadow: rgba(0, 0, 0, 0.5) 1px 1px 1.5px;
 }
 
 h2, h3, b, q, em, y {
@@ -63,6 +63,7 @@ y {
 /* Body containers */
 .Body {
 	background-image: url("../images/home_yellowbackgroundcenter.png");
+	font-family: 'Fira Sans';
 	display: block;
 	min-height: 100%;
 	flex-basis: 100%;

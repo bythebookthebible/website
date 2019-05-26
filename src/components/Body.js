@@ -3,6 +3,7 @@ import ReactPlayer from 'react-player'
 import Slogans from '../components/Slogans'
 import '../css/Body.css';
 import logo_animated from "../images/frontanimation_600px.gif";
+import logo from '../images/logo.svg';
 
 export default class Body extends Component {
     render() {
