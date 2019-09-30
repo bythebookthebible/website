@@ -96,9 +96,13 @@ export default class Body extends Component {
 					<div className="text-box">
 						<Slogans />
 
-						<em>Five-year-olds</em> in Jesus’ day <em>memorized</em> Leviticus; <b>Americans memorize</b> hundreds of song lyrics; many <y>Muslims memorize</y> the whole Quran; so if we believe in the inspiration of scripture, Let’s memorize it! 
+						<p><em>Five-year-olds</em> in Jesus’ day <em>memorized</em> Leviticus; <b>Americans memorize</b> hundreds of song lyrics; many <y>Muslims memorize</y> the whole Quran; so if we believe in the inspiration of scripture, Let’s memorize it!</p>
 
-						You never had to hit your head against a book trying to memorize the lyrics to Jingle bells because it was catchy - so why not do the same with the Bible? Hey, God invented fun! So that’s what I did - I’m a kid-loving, ballerina, harpist, artist who has started putting the Bible to catchy tunes in order to ground the next generation in a Biblical worldview. I am excited to see how the Holy Spirit will use these words of God as a sword to fight for the hearts and minds of children. My goal is to help plant God’s eternal treasure of His word through memory. Hope you enjoy!
+						<p>You never had to hit your head against a book trying to memorize the lyrics to Jingle bells because it was catchy - so why not do the same with the Bible? Hey, God invented fun!</p>
+
+						<p>So that’s what I did - I’m a kid-loving, ballerina, harpist, artist who has started putting the Bible to catchy tunes in order to ground the next generation in a Biblical worldview. I am excited to see how the Holy Spirit will use these words of God as a sword to fight for the hearts and minds of children.</p>
+
+						<p>My goal is to help plant God’s eternal treasure of His word through memory. Hope you enjoy!</p>
 					</div>
 				</div>
             </div>
