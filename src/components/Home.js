@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactPlayer from 'react-player'
 import Slogans from '../components/Slogans'
-import logo_animated from "../images/frontanimation.mp4";
+import logo_animated from "../images/frontanimation_600px.gif";
 var buyLink = 'https://memorize.bythebookthebible.com'
 
 export default class Home extends Component {
