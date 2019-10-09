@@ -19,19 +19,22 @@ export default class Testimonials extends Component {
                     </div>
 
                     <div>
+                        <ReactPlayer url="https://vimeo.com/365195512/423dc7d469" className="small-video" controls/>
+                        <p className="text-box">This 4 year old is reciting Proverbs 31:10-31. She worked on it for 10 days.</p>
+
+                        <ReactPlayer url="https://vimeo.com/365197261/98a213c820" className="small-video" controls/>
+                        <p className="text-box">These 4, 5, and 7 year olds are reciting Acts 7:1-41. They have been working for about three months.</p>
+
+                        <ReactPlayer url="https://vimeo.com/365088784/1ba722f24c" className="small-video" controls/>
+                        <p className="text-box">These 10 and 15 year olds were volunteering at a by the Book summer camp and accidentally memorized Proverbs 31:10-31. They have been listening to it for 5 days.</p>
+
                         <ReactPlayer url="https://vimeo.com/365194451/cb2bbb8d60" className="small-video" controls />
                         <p className="text-box">This 6 year old is reciting Proverbs 31:10-31. She worked on it for 10 days.</p>
 
                         <ReactPlayer url="https://vimeo.com/365092266/d15d6fd118" className="small-video" controls/>
-                        <p className="text-box">These 10, 11, 15 and 15 year olds were volunteering at a by the Book summer camp and accidentally memorized Proverbs 31:10-31. They have been listening to it for 5 days.</p>
-                        {/* <p className="text-box">These 4, 5, and 7 year olds are reciting Acts 7:1-41. They have been working for about three months.</p> */}
-                        
-                        <ReactPlayer url="https://vimeo.com/365195512/423dc7d469" className="small-video" controls/>
-                        <p className="text-box">This 4 year old is reciting Proverbs 31:10-31. She worked on it for 10 days.</p>
+                        <p className="text-box">These 10, 11, 15 and 15 year olds were volunteering at a by the Book summer camp and accidentally memorized Proverbs 31:10-31. They have been listening to it for 5 days.</p>                        
 
                         {/* <p className="text-box">These 4-6 year olds are reciting Proverbs 31:10-31. They've been working on it for five days.</p> */}
-                        <ReactPlayer url="https://vimeo.com/365088784/1ba722f24c" className="small-video" controls/>
-                        <p className="text-box">These 10 and 15 year olds were volunteering at a by the Book summer camp and accidentally memorized Proverbs 31:10-31. They have been listening to it for 5 days.</p>
                     </div>
                 </div>
             </div>

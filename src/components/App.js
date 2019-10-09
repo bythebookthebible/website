@@ -7,34 +7,40 @@ import Home from '../components/Home'
 import OurStory from '../components/OurStory'
 import Testimonials from '../components/Testimonials'
 
+var pages = {
+    "#": <Home/>,
+    "#OurStory": <OurStory />,
+    "#Testimonials": <Testimonials/>,
+    "#Contact": <p className="text-box">
+                            Thank you for your interest! If you have any questions or feedback, please contact me at: <a href="mailto:rose@bythebookthebible.com">rose@bythebookthebible.com</a>
+                        </p>,
+    "#Curriculum": <Curriculum />
+};
+
 export default class App extends Component {
-  render() {
-    return (
-        <div className="App">
-            <Nav />
-            <div className="construction">This site is currently under construction.</div>
+    constructor(props) {
+        super(props);
+        this.state = {page: window.location.hash in pages ? window.location.hash : "#"};
+        this.handlePageChange = this.handlePageChange.bind(this);
+    }
 
-            <div className="Body">
-                <div className="anchor" id="OurStory">&nbsp;</div>
-                <div className="page"><OurStory /></div>
+    handlePageChange(e) {
+        var p = e.target.parentNode.getAttribute("href"); // e.target is the inner DOM object
+        this.setState({page: p})
+    }
 
-                <div className="anchor" id="Testimonials">&nbsp;</div>
-                <div className="page"><Testimonials /></div>
+    render() {
+        return (
+            <div className="App">
+                <Nav handlePageChange={this.handlePageChange}/>
+                <div className="construction">This site is currently under construction.</div>
 
-                <div className="anchor" id="Contact">&nbsp;</div>
-                <div className="page">
-                    <p className="text-box">
-                        Thank you for your interest! If you have any questions or feedback, please contact me at: <a href="mailto:rose@bythebookthebible.com">rose@bythebookthebible.com</a>
-                    </p>
+                <div className="Body">
+                    <div className="page">
+                        {pages[this.state.page]}
+                    </div>
                 </div>
-
-                <div className="anchor" id="Curriculum">&nbsp;</div>
-                <div className="page"><Curriculum /></div>
-                
-                <div className="anchor" id="Home">&nbsp;</div>
-                <div className="page"><Home /></div>
             </div>
-        </div>
-    );
-  }
+        );
+    }
 }

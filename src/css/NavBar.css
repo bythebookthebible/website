@@ -10,20 +10,12 @@
 }
 
 .NavBar {
-	display:flex;
+	display: flex;
 	flex-flow: row nowrap;
-	justify-content: left;
+	justify-content: center;
 	overflow: visible;
 	margin: 10px 0;
 	position: static;
-}
-
-.NavBar>img {
-	margin: 15px;
-	max-height: 50px;
-	height:auto;
-	flex-basis: 50px;
-	padding: 0;
 }
 
 .navItem {
@@ -43,7 +35,7 @@
 	padding-top:100%;
 }
 
-.navItem div, .navItem svg {
+.navItem div {
 	width:100%;
 	height:100%;
 	background-repeat: no-repeat;
@@ -63,30 +55,10 @@
 	bottom:0;
 }
 
-/* Nav page change functionality. Requires Home as last in body html */
-.page,
-.anchor:target ~ #Home + .page {
-	display: none;
-}
-
-#Home + .page,
-.anchor:target + .page {
-	display: block;
-}
-
-.anchor {
-	position: absolute;
-	top: 0;
-}
-
 /* Smaller top menu */
 @media screen and (max-width: 500px) {
 	.NavBar {
 		justify-content: left;
 		overflow: auto;
-	}
-
-	.nav-right-logo {
-		display:none;
 	}
 }

@@ -15,11 +15,9 @@ var buyLink = 'https://memorize.bythebookthebible.com'
 export default class NavBar extends Component {
     render() {
         return (
-		<div className="NavBar" >
-			{/* <div className="navItem nav-left-logo"><a href="#Home"><div className="bounce" style={{backgroundImage: "url(" + main_logo + ")"}}></div></a></div> */}
-			<div className="navItem nav-left-logo"><a href="#Home"><div style={{backgroundImage: "url(" + main_logo + ")"}}></div></a></div>
-			{/* <div className="navItem nav-left-logo"><div style={{backgroundImage: "url(" + main_logo + ")"}}></div></div> */}
-			<div className="navItem"><a href="#Home"><div className="bounce" style={{backgroundImage: "url(" + home + ")"}}></div></a></div>
+		<div className="NavBar" onClick={this.props.handlePageChange}>
+			<div className="navItem nav-left-logo" ><a href="#"><div style={{backgroundImage: "url(" + main_logo + ")"}}></div></a></div>
+			<div className="navItem"><a href="#"><div className="bounce" style={{backgroundImage: "url(" + home + ")"}}></div></a></div>
 			<div className="navItem"><a href="#OurStory"><div className="bounce" style={{backgroundImage: "url(" + ourStory + ")"}}></div></a></div>
 			<div className="navItem"><a href="#Testimonials"><div className="bounce" style={{backgroundImage: "url(" + testimonials + ")"}}></div></a></div>
 			<div className="navItem"><a href="#Contact"><div className="bounce" style={{backgroundImage: "url(" + contact + ")"}}></div></a></div>

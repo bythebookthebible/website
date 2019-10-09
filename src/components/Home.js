@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import ReactPlayer from 'react-player'
 import Slogans from '../components/Slogans'
-import logo_animated from "../images/frontanimation_600px.gif";
+import logo_animated from "../images/frontanimation.gif";
 var buyLink = 'https://memorize.bythebookthebible.com'
 
 export default class Home extends Component {
     render() {
         return (
              <div className="Home">
-                {/* <ReactPlayer url={logo_animated} className="wide-video" preload playing/> */}
                 <img src={logo_animated} alt={"Animated Front Logo"} className="wide-video" />
 
                 {/* ***************** BUTTON ****************** */}

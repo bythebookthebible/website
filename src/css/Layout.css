@@ -38,7 +38,7 @@
 
 .Body {
     background-image: url("../images/home_yellowbackgroundcenter.png");
-    font-family: 'Fira Sans';
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
     display: block;
     min-height: 100vh;
     flex-basis: 100%;
