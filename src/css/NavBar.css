@@ -12,7 +12,7 @@
 .NavBar {
 	display:flex;
 	flex-flow: row nowrap;
-	justify-content: center;
+	justify-content: left;
 	overflow: visible;
 	margin: 10px 0;
 	position: static;
@@ -61,21 +61,6 @@
 	left:0;
 	right:0;
 	bottom:0;
-}
-
-.NavBar p {
-	color: black;
-	text-transform: uppercase;
-	font-size: 1.5vmin;
-	font-weight: bold;
-	margin:0;
-	background-color: rgba(255, 255, 255, 1);
-	border-radius: 5px;
-	width: 90%;
-	display: block;
-	position: absolute;
-	left: 5%;
-	bottom: 5%;
 }
 
 /* Nav page change functionality. Requires Home as last in body html */

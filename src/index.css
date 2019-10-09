@@ -18,10 +18,6 @@
 	-webkit-font-smoothing: antialiased;
 }
 
-.col, .row {
-	padding: 0;
-}
-
 .bounce,
 .bounce-once {
 	transition: all .2s;

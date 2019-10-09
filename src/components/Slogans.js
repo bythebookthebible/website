@@ -4,7 +4,7 @@ import memorize from '../images/Memorize.svg';
 import live_our_lives from '../images/Live our Lives.svg';
 import energized from '../images/energized.svg';
 
-export default class NavBar extends Component {
+export default class Slogans extends Component {
     render() {
         return (
 			<div className="Slogans row">
