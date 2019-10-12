@@ -7,7 +7,7 @@ import energized from '../images/energized.svg';
 export default class Slogans extends Component {
     render() {
         return (
-			<div className="Slogans row">
+			<div className="Slogans">
 				<div className="blue">
 					<img src={memorize} alt="Memorize By the Book" />
 					<p>

@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import ReactPlayer from 'react-player'
 import Slogans from '../components/Slogans'
-import logo_animated from "../images/frontanimation.gif";
+import logo_animated from "../images/home/frontanimation.gif";
+import header from '../images/home/header.png';
+
 var buyLink = 'https://memorize.bythebookthebible.com'
 
 export default class Home extends Component {
     render() {
         return (
              <div className="Home">
+                <div className="full-img" style={{backgroundImage: "url(" + header + ")"}}><p className="right">"My 4-year old memorized<br/>50 verses in 3 months!"</p></div>
+
+                <a href={buyLink} className="button bounce-once">Accidentally Memorize Matthew 5 Now!</a>
                 <img src={logo_animated} alt={"Animated Front Logo"} className="wide-video" />
-
-                {/* ***************** BUTTON ****************** */}
-                <a href={buyLink}><q className="bounce-once">Accidentally Memorize Matthew 5 Now!</q></a>
-
                 <Slogans />
 
                 <div className="text-box">

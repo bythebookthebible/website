@@ -1,4 +1,7 @@
 .Slogans {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 	justify-content: space-evenly;
 	letter-spacing: -.07ch;
 	padding: 0;
@@ -25,8 +28,8 @@
 	display: none;
 	text-align: center;
 	background-color: white;
-	width:150px;
-	height:150px;
+	width:125px;
+	height:125px;
 }
 .Slogans div:hover p {
 	display: block;
