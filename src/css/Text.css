@@ -12,7 +12,7 @@ p {
     margin: 30px;
 }
 
-h1, h2, h3, b, em, y, q {
+h1, h2, h3, b, em, y {
 	font-family: Loopiejuice-Regular;
 	/* padding: .3ch; */
 	font-weight: bolder;
@@ -77,7 +77,7 @@ h3 {
 	padding: 0px;
 }
 
-h1, h2, b, q {
+h1, h2, b {
 	color: var(--blue);
 }
 

@@ -26,6 +26,10 @@ export default class App extends Component {
 
     handlePageChange(e) {
         var p = e.target.parentNode.getAttribute("href"); // e.target is the inner DOM object
+        if (!(p in pages)) {
+            p = "#";
+            window.location.hash = p;
+        }
         this.setState({page: p})
     }
 
