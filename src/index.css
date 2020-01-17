@@ -16,6 +16,7 @@
 
 .page {
     overflow: auto;
+    -webkit-overflow-scrolling: touch;
     background-image: linear-gradient(180deg, white, rgba(40, 183, 255, 0.3));
 }
 

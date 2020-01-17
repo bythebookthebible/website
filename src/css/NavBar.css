@@ -1,5 +1,5 @@
 /* Nav layout */
-.NavBar {
+/* .NavBar {
 	display: flex;
 	flex-flow: row nowrap;
     justify-content: flex-start;
@@ -16,7 +16,7 @@
     position: relative;
     color: black;
     width: max-content;
-    /* border-right: 1.5px solid grey; */
+    // border-right: 1.5px solid grey;
 }
 
 .navItem:hover {
@@ -27,4 +27,4 @@
 .navRight {
     margin-left: auto;
     margin-right: 10px;
-}
+} */
