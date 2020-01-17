@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactPlayer from 'react-player'
+import {Row, Col} from 'react-bootstrap'
 import Slogans from '../components/Slogans'
 
 import header from '../images/curriculum/boyThinking.png';
@@ -12,12 +13,14 @@ export default class Curriculum extends Component {
         return (
             <div className="Curriculum">
                 <div className="full-img" style={{backgroundImage: "url(" + header + ")"}}><div>Our Strategy:</div></div>
-                <q className="text-box">“Let the word of Christ dwell in you richly, teaching and admonishing one another in all wisdom, singing psalms, hymns and spiritual songs.”</q>
-                <Slogans /><br/>
+                <div>
+                    <q>Let the word of Christ dwell in you richly, teaching and admonishing one another in all wisdom, singing psalms, hymns and spiritual songs.</q>
+                    <Slogans /><br/>
+                </div>
 
                 <div className="full-img" style={{backgroundImage: "url(" + curriculum + ")"}}><div>Our Curriculum:</div></div>
-                <div className="two-cols">
-                    <div className="text-box">
+                <Row>
+                    <Col md={6}>
                         <em className="check">Teacher’s Guide:</em>
                             <ul>
                                 <li>A pdf summarizing an easy 5 step guide to optimize our curriculum’s effectiveness in helping kids accidentally memorize books and chapters of the Bible.</li>
@@ -37,14 +40,14 @@ export default class Curriculum extends Component {
                             <ul>
                                 <li>Coloring pages illustrating the concepts that God is communicating through his word.</li>
                             </ul>
-                    </div>
-                    <div>
-                        <ReactPlayer url="https://vimeo.com/358934723/ce17ef22aa" className="asside small-video" preload />
-                        <ReactPlayer url="https://vimeo.com/359427145/2078c17372" className="asside small-video" preload />
-                        <img src={cartoon_mountain} alt={"Coloring Page"} className="asside" />
-                        <img src={boy_crafting} alt={"Coloring Page"} className="asside" />
-                    </div>
-                </div>
+                    </Col>
+                    <Col md={5}>
+                        <ReactPlayer url="https://vimeo.com/368850113/c451975dc9" className="video" controls />
+                        <ReactPlayer url="https://vimeo.com/359427145/2078c17372" className="video" controls />
+                        <img src={cartoon_mountain} alt={"Coloring Page"}/>
+                        <img src={boy_crafting} alt={"Coloring Page"}/>
+                    </Col>
+                </Row>
             </div>
         );
     }

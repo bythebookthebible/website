@@ -1,64 +1,30 @@
 /* Nav layout */
-.nav-left-logo {
-	transform: scale(1.2);
-	margin-left: 20px !important;
-}
-
-.nav-right-logo {
-	transform: scale(1.3) ;
-	margin-right: 20px !important;
-}
-
 .NavBar {
 	display: flex;
 	flex-flow: row nowrap;
-	justify-content: center;
-	overflow: visible;
-	margin: 10px 0;
-	position: static;
+    justify-content: flex-start;
+    align-items: center;
+	overflow: auto;
+    position: static;
+    border-bottom: .6px black solid;
 }
 
 .navItem {
-	margin: 1vmin;
-	max-width: 100px;
-	max-height: 100px;
-	min-width: 50px;
-	flex-basis: 100px;
-	padding: 0;
+	margin: 0;
+	padding: 10px 20px;
 	display: block;
-	position: relative;
+    position: relative;
+    color: black;
+    width: max-content;
+    /* border-right: 1.5px solid grey; */
 }
 
-.navItem::before {
-	content:"";
-	display:block;
-	padding-top:100%;
+.navItem:hover {
+    color: black;
+    font-weight: 500;
 }
 
-.navItem div {
-	width:100%;
-	height:100%;
-	background-repeat: no-repeat;
-	background-position: center;
-	position: absolute;
-	top:0;
-	left:0;
-	right:0;
-	bottom:0;
-}
-
-.navItem a {
-	position: absolute;
-	top:0;
-	left:0;
-	right:0;
-	bottom:0;
-}
-
-/* Smaller top menu */
-@media screen and (max-width: 500px) {
-	.NavBar {
-		justify-content: left;
-		overflow: auto;
-	}
+.navRight {
+    margin-left: auto;
+    margin-right: 10px;
 }

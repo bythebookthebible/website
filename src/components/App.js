@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import '../css/Text.css';
 import '../css/Layout.css';
 import Nav from './NavBar'
+import Footer from './Footer'
 import Curriculum from '../components/Curriculum'
 import Home from '../components/Home'
 import OurStory from '../components/OurStory'
@@ -11,10 +12,7 @@ var pages = {
     "#": <Home/>,
     "#OurStory": <OurStory />,
     "#Testimonials": <Testimonials/>,
-    "#Contact": <p className="text-box">
-                            Thank you for your interest! If you have any questions or feedback, please contact me at: <a href="mailto:rose@bythebookthebible.com">rose@bythebookthebible.com</a>
-                        </p>,
-    "#Curriculum": <Curriculum />
+    "#Features": <Curriculum />
 };
 
 export default class App extends Component {
@@ -25,7 +23,12 @@ export default class App extends Component {
     }
 
     handlePageChange(e) {
-        var p = e.target.parentNode.getAttribute("href"); // e.target is the inner DOM object
+        if (!e.target.hasAttribute("href")) {
+            var p = e.target.parentNode.getAttribute("href"); // e.target is the inner DOM object
+        } else {
+            var p = e.target.getAttribute("href"); // e.target is the inner DOM object
+        }
+
         if (!(p in pages)) {
             p = "#";
             window.location.hash = p;
@@ -37,13 +40,15 @@ export default class App extends Component {
         return (
             <div className="App">
                 <Nav handlePageChange={this.handlePageChange}/>
-                <div className="construction">This site is currently under construction.</div>
+                {/* <div className="construction">This site is currently under construction.</div> */}
 
                 <div className="Body">
                     <div className="page">
                         {pages[this.state.page]}
                     </div>
                 </div>
+                
+                <Footer />
             </div>
         );
     }

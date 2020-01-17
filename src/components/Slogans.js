@@ -26,10 +26,6 @@ export default class Slogans extends Component {
 						We’re <em>energized</em> not by empty fun or lazy entertainment, but <em>By the Book!</em> What book? The Bible!
 					</p>
 				</div>
-                {/* First of all, it is very important that the kids effectively can actually recall and retain huge portions of scripture in long-term memory. 
-                However, rote memory is completely useless unless they know what the verses mean and how to apply it to their lives. 
-                Thirdly, if kids don’t have a positive internal motivation to memorize, the process will be ineffective and boring.  */}
-
 			</div>
         )
     }
