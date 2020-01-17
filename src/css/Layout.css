@@ -61,7 +61,10 @@
 
 .video {
     width: 100% !important;
-    height: min-intrinsic !important;
+}
+
+.fill-y {
+    height: 100% !important;
 }
 
 @media screen and (max-width: 750px) {

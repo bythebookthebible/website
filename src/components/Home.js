@@ -38,7 +38,7 @@ export default class Home extends Component {
                             <li>Nov 2020 – Philippians</li>
                         </ul>
                     </Col>
-                    <Col xs={12} md={4}><ReactPlayer url="https://vimeo.com/385380297" className="video" controls /></Col>
+                    <Col xs={12} md={4}><ReactPlayer url="https://vimeo.com/385380297" className="video fill-y" controls /></Col>
                     <Col xs={12} md={4}>
                         <h2>Each chapter includes:</h2>
                         <ul>
