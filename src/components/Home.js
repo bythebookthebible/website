@@ -38,7 +38,7 @@ export default class Home extends Component {
                             <li>Nov 2020 – Philippians</li>
                         </ul>
                     </Col>
-                    <Col xs={12} md={4}><ReactPlayer url="https://vimeo.com/365858058/a5efa07acc" className="video" controls /></Col>
+                    <Col xs={12} md={4}><ReactPlayer url="https://vimeo.com/385380297" className="video" controls /></Col>
                     <Col xs={12} md={4}>
                         <h2>Each chapter includes:</h2>
                         <ul>
@@ -62,8 +62,8 @@ export default class Home extends Component {
                             <h2>Fun</h2>                        
                             <q>They [my kids] enjoy singing along to the videos with so much enthusiasm whenever and wherever they are!</q><caption> - JoAe C (mother of ‘memorzie’)</caption>
                         </Col>
-                        <Col xs={12} sm={6} xl={{span: 4, order: 4}}><ReactPlayer url="" className="video" controls /></Col>
-                        <Col xs={12} sm={6} xl={{span: 4, order: 2}}><ReactPlayer url="" className="video" controls /></Col>
+                        <Col xs={12} sm={6} xl={{span: 4, order: 4}}><ReactPlayer url="https://vimeo.com/368945565/f4437500a0" className="video" controls /></Col>
+                        <Col xs={12} sm={6} xl={{span: 4, order: 2}}><ReactPlayer url="https://vimeo.com/365858058/a5efa07acc" className="video" controls /></Col>
                         <Col xs={12} sm={6} xl={{span: 4, order: 5}}>
                             <h2>Fast</h2>
                             <q>we could just listen to the songs a few times and then she started to recite it!</q><caption> - Nancy H. (Parent of ‘memorzie’)</caption>
@@ -72,7 +72,7 @@ export default class Home extends Component {
                             <h2>Effective</h2>
                             <q>I always struggled with even memorizing a few verses of the Bible but your catchy tunes and songs have helped me to memorize whole chapters!</q><caption> - Staci G (parent of ‘memorzie’)</caption>
                         </Col>
-                        <Col xs={12} sm={6} xl={{span: 4, order: 6}}><ReactPlayer url="" className="video" controls /></Col>
+                        <Col xs={12} sm={6} xl={{span: 4, order: 6}}><ReactPlayer url="https://vimeo.com/385476859/3e4c0fc914" className="video" controls /></Col>
                     </Row>
                 </div>
             </div>
