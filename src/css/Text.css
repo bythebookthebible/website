@@ -31,19 +31,23 @@ p {
 	margin: 0 20px;
 } */
 
-h1, h2 {
+.giant, h1, h2 {
     text-align: center;
 }
 
-h1 {
+.giant {
     font-size: 8vw;
-    margin: 8vw;
+    line-height: 100%;
     font-weight: normal;
 }
 
-h2 {
+h1 {
     font-size: 28px;
     margin: 10px auto;
+}
+
+h2 {
+    font-size: 22px;
 }
 
 q {
@@ -68,19 +72,72 @@ caption {
     text-align: center;
 }
 
-ul {
-    padding-left: 60px;
-    text-indent: -50px hanging;
+.form h1,
+.form h2,
+.form p {
+    text-align: left;
+    font-size: 16px;
+    margin: 20px;
 }
 
-ul > li {
+.form h1 {
+    font-size: 28px;
+    font-weight: bolder;
+}
+
+.form h2 {
+    font-size: 20px;
+    font-weight: bolder;
+}
+
+.form p {
+    font-size: 18px;
+    text-indent: 0;
+}
+
+/* Style of camp page */
+.camp-box {
+    background-color: white;
+    border: 25px solid #FFED4F;
+    margin: 20px 0;
+}
+
+.Camp .giant {
+    font-size: 500%;
+}
+
+.Camp h1 {
+    font-weight: bold;
+    font-size: 32px;
+    margin: 60px auto;
+}
+
+.camp-box h1, .camp-box p {
+    text-align: left;
+    margin: 10px 30px;
+    text-indent: 0;
+}
+
+.Camp ul {
+    margin: auto;
+    width: fit-content;
+    text-indent: -50px hanging;
+    margin-left: 60px;
+    font-size: 25px;
+    line-height: 100%;
+    font-weight: bold;
+}
+
+.Camp ul > li {
     text-align: left;
     list-style-type: none;
 }
 
-ul > li::before {
-    content: '–';
+.Camp ul > li::before {
+    content: '♦';
+    font-size: 28px;
     padding-right: 1em;
+    color: var(--pink);
 }
 
 .plain-list > li::before {
@@ -100,6 +157,7 @@ ul > li::before {
 
 .button, .big-button {
     display: inline-block;
+    width: fit-content;
     padding: 0.5rem 1rem;
     margin: 20px auto;
     background-color: #00b4fa;
@@ -122,8 +180,10 @@ ul > li::before {
     color: white;
 }
 
-.nav-link {
-    color: black !important;
+.navbar-light .navbar-brand,
+.navbar-light .navbar-nav .nav-link,
+.navbar-light .navbar-text {
+    color: rgba(0, 0, 0, .8);
 }
 
 .Footer {   
@@ -141,9 +201,9 @@ ul > li::before {
 
 /* Screen size adjustments */
 @media screen and (max-width: 700px) {
-    h1 {
+    .giant {
         font-size: 10vw;
-        margin: 7vw 10px;
+        /* margin: 7vw 10px; */
     }
 
     .big-button {

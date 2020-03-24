@@ -3,6 +3,7 @@
 	--pink: #FF4BBD;
 	--yellow: #FFFF00;
 	--darkYellow: #F1E935;
+	--gold: #F1E935;
 	--darkBlue: #0064A0;
 }
 
@@ -12,12 +13,6 @@
 
 .blue {
     background-color: var(--blue);
-}
-
-.page {
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-    background-image: linear-gradient(180deg, white, rgba(40, 183, 255, 0.3));
 }
 
 @font-face {
