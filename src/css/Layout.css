@@ -17,6 +17,15 @@
 	background-color: rgba(255, 255, 255, 0.75);
 } */
 
+#firebaseui-login {
+    margin: 5vh auto;
+}
+
+input, textarea{
+    margin: 10px;
+    font-size: 16px;
+}
+
 .full-img {
     text-align: left;
     width: 100%;
@@ -25,6 +34,11 @@
     background-size: cover;
     background-position: center;
     clear: both;
+}
+
+.navbar {
+    /* border-bottom: rgba(0, 0, 0, 0.5) solid 1pt; */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
 }
 
 .full-img * {
@@ -43,14 +57,59 @@
     display: block;
     min-height: 100vh;
     flex-basis: 100%;
+    background-image: linear-gradient(180deg, white, rgba(40, 183, 255, 0.3));
     text-align: center;
 }
 
+.page {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.form {
+    max-width: 1010px;
+    margin: auto;
+    background-color: white;
+}
+
+.Camp {
+    max-width: 900px;
+    margin: auto;
+}
+
+.Camp .col {
+    justify-content: center;
+}
+
+.Camp .button {
+    margin: 50px;
+}
+
+.yellowbg {
+    background-color: #ffffe3;
+}
+
+.camp-box {
+    background-color: white;
+    border: 25px solid #FFED4F;
+    margin: 60px 0;
+    min-height: 500px;
+}
+
+.camp-box .col-12 {
+    text-align: center;
+    margin: 50px auto;
+}
+
 .row {
-    margin: 50px 0;
+    margin: 20px 0;
     justify-content: space-evenly;
     text-align: left;
     margin-bottom: auto;
+}
+
+.col {
+    text-align: center;
 }
 
 .flex-centered {

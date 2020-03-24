@@ -4,15 +4,20 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^4.4.1",
+    "firebase": "^7.12.0",
+    "firebaseui": "^4.5.0",
     "images": "latest",
     "jquery": "^3.4.1",
-    "popper.js": "^1.16.0",
-    "react": "^16.11.0",
-    "react-bootstrap": "^1.0.0-beta.16",
-    "react-dom": "^16.11.0",
-    "react-player": "^1.13.0",
+    "popper.js": "^1.16.1",
+    "react": "^16.13.1",
+    "react-bootstrap": "^1.0.0-beta.17",
+    "react-dom": "^16.13.1",
+    "react-player": "^1.15.2",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "2.1.8",
-    "typescript": "^3.6.4"
+    "redux": "^4.0.5",
+    "typescript": "^3.8.3",
+    "video-react": "^0.14.1"
   },
   "scripts": {
     "start": "react-scripts start",
