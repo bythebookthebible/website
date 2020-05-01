@@ -41,6 +41,7 @@ export default class AddStudent extends Component {
                     <Col xs="12" md="6">
                         <h1>Have a child interested in camp?</h1>
                         <p>Thank you for your interest! This brings the camp in your area one step closer to happening! If we get a venue and 20 kids interested in coming, then we will be delighted to put on a camp in your area!</p>
+                        <p>Filling out this form does not commit anyone to anything - it just tells us that you have a potential camper if circumstances do work out.</p>
                         <form onSubmit={function(event) {
                                 event.preventDefault();
                                 var data = {
@@ -51,9 +52,8 @@ export default class AddStudent extends Component {
                                     location: $('#location').val(), 
                                     numStudents: $('#numStudents').val(), 
                                     notes: $('#notes').val()};
-                                console.log(data);
-                                addStudent(data).finally(function() {window.location = '/camp';});
-                                // window.location = '/camp';
+                                addStudent(data).finally(function() {window.location = '/camp/thankyou';});
+                                // window.location = '/camp/thankyou';
                             }}>
                             <Col>
                                 <input id='fname' type='text' placeholder='First Name'/>
@@ -63,7 +63,7 @@ export default class AddStudent extends Component {
                                 <select id='location'>
                                     {
                                         this.state.camps ? 
-                                            this.state.camps.map(function(c) {return <option value={c} key={c==this.defaultCamp ? '_' : c}>{c}</option>}.bind(this)) :
+                                            this.state.camps.map(function(c) {return <option value={c} key={c===this.defaultCamp ? '_' : c}>{c}</option>}.bind(this)) :
                                             <option value={this.defaultCamp} key='_'>{this.defaultCamp}</option>
                                     }
                                 </select>

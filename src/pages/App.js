@@ -16,8 +16,11 @@ import Home from '../pages/Home'
 import Camp from '../pages/Camp'
 import OurStory from '../pages/OurStory'
 import Testimonials from '../pages/Testimonials'
-import Login from '../forms/Login'
+import Memorize from '../pages/Memorize'
+import {Login} from '../forms/Login'
+import {AccountSettings, UserNavButton} from '../pages/User'
 import Manage from '../pages/Manage'
+import Subscribe from '../forms/Subscribe'
 
 var memorizeLink = 'https://memorize.bythebookthebible.com/courses/take/matthew-5-6-7-sermon-on-the-mount'
 var signInLink = 'https://memorize.bythebookthebible.com/users/sign_in'
@@ -35,6 +38,9 @@ export default class App extends Component {
 
         firebase.auth().onAuthStateChanged(function(user) {
             this.setState({user: user});
+            // user.getIdTokenResult(true).then((token) => {
+            //     console.log(token)
+            // })
         }.bind(this));
     }
 
@@ -51,25 +57,13 @@ export default class App extends Component {
                                 <Nav.Link href="/testimonials">Testimonials</Nav.Link>
                                 <Nav.Link href="/ourStory">Our Story</Nav.Link>
                                 <Nav.Link href="/camp">Camp</Nav.Link>
+                                <Nav.Link href="/memorize">Memorize</Nav.Link>
                                 <Nav.Link href={internLink}>Internship</Nav.Link>
-                                <Nav.Link href={buyLink}>Sign Up</Nav.Link>
+                                {/* <Nav.Link href={buyLink}>Sign Up</Nav.Link> */}
                             </Nav>
                             <Nav>
-                                <a href={memorizeLink} className='button'>Login</a>
-
-                                {
-                                    // firebase.auth().currentUser ? 
-                                    //     <div className="button" onClick={() => {
-                                    //         console.log('Im trying :}')
-                                    //         firebase.auth().signOut().then(function(user) {
-                                    //                 console.log('Signed out');
-                                    //             }).catch(function(e) {
-                                    //                 console.log('Signout error: ', e);
-                                    //             });
-                                    //     }}>Logout</div> :
-                                    //     <a className="button" href='/login'>Login</a>
-                                }
-                                
+                                {/* <a href={memorizeLink} className='button'>Thinkific Login</a> */}
+                                <UserNavButton />
                             </Nav>
                         </Navbar.Collapse>
                     </Navbar>
@@ -83,8 +77,11 @@ export default class App extends Component {
                                 <Route path="/testimonials"><Testimonials /></Route>
                                 <Route path="/features"><Curriculum /></Route>
                                 <Route path="/camp"><Camp /></Route>
-                                {/* <Route path="/login"><Login /></Route>
-                                <Route path="/manage"><Manage /></Route> */}
+                                <Route path="/memorize"><Memorize /></Route>
+                                <Route path="/login"><Login /></Route>
+                                <Route path="/manage"><Manage /></Route>
+                                <Route path="/subscribe"><Subscribe /></Route>
+                                <Route path="/account"><AccountSettings /></Route>
                                 <Route path="/"><Home /></Route>
                             </Switch>
                         </div>

@@ -20,7 +20,7 @@
 	src: url("Loopiejuice.ttf");
 }
 
-/* .bounce,
+.bounce,
 .bounce-once {
 	transition: all .2s;
 	transform: scale(1,1);
@@ -32,7 +32,7 @@
 	transform: scale(1.16, 1.16);
 }
 
-/* Animate bounce on load * /
+/* Animate bounce on load */
 .bounce:nth-of-type(1),
 .bounce-once:nth-of-type(1) {
 	animation: 1s linear 0 1 bounce;
@@ -82,4 +82,4 @@
 	100% {
 		transform: scale(1, 1);
 	}
-} */
+}

@@ -1,21 +1,23 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState} from 'react';
 import {
   Switch,
   Route,
 } from 'react-router-dom';
+import {useAuth} from '../hooks.js'
 
 var firebase = require('firebase');
 var firebaseui = require('firebaseui');
 
-export default class Login extends Component {
-    constructor(props) {
-        super(props);
-
+export function Login(props) {
+    useEffect(() => {
         var toUrl = (new URLSearchParams(window.location.search)).get('to')
         toUrl = toUrl ? toUrl : '/memorize';
         console.log(toUrl);
-
-        var uiConfig = {
+    
+        // Initialize the FirebaseUI Widget using Firebase.
+        var ui = new firebaseui.auth.AuthUI(firebase.auth());
+        // The start method will wait until the DOM is loaded.
+        ui.start('#firebaseui-login', {
             signInSuccessUrl: toUrl,
             credentialHelper: firebaseui.auth.CredentialHelper.NONE,
             signInOptions: [
@@ -27,23 +29,73 @@ export default class Login extends Component {
             ],
             tosUrl: '/login/termsOfService',
             privacyPolicyUrl: '/login/privacy'
-        };
-      // Initialize the FirebaseUI Widget using Firebase.
-      var ui = new firebaseui.auth.AuthUI(firebase.auth());
-      // The start method will wait until the DOM is loaded.
-      ui.start('#firebaseui-login', uiConfig);
-    }
+        });
+    }, [])
 
-    render() {
-        return (
-            <div className="form">
-                <Switch>
-                    <Route path="/login/termsOfService"><TermsOfService /></Route>
-                    <Route path="/login/privacy"><PrivacyPolicy /></Route>
-                    <Route path="/"><div id="firebaseui-login" /></Route>
-                </Switch>
-            </div>
-        )
+    
+    return (
+        <div className={"form " + props.className}>
+            <Switch>
+                <Route path="/login/termsOfService"><TermsOfService /></Route>
+                <Route path="/login/privacy"><PrivacyPolicy /></Route>
+                <Route path="/">
+                    <div id='login-bg'>
+                        <div id="firebaseui-login" />
+                    </div>
+                </Route>
+            </Switch>
+        </div>
+    )
+}
+
+export function LoginSignupForm(props) {
+    let user = useAuth({useClaims: false})
+    // form states are login, signup
+    let [state, setState] = useState(props.defaultState || 'login')
+
+    let loginSubmit = props.onLogin ? <button onClick={e => props.onLogin(e)}></button> : null
+    let createSubmit = props.onCreate ? <button onClick={e => props.onCreate(e)}></button> : null
+
+    let legal = <div>
+        By continuing, you are indicating that you accept our 
+        <a href='/login/termsOfService'>Terms of Service</a> and 
+        <a href='/login/privacy'>Privacy Policy</a>.
+    </div>
+
+    if(state == 'login') {
+        return [
+            <input id="email" type='email' placeholder='email' />,<br/>,
+            <input id="password" type='password' placeholder='password' />,<br/>,
+            <a href='' onClick={e => {e.preventDefault(); setState('signup')}}>or signup</a>,<br/>,
+            loginSubmit, legal
+        ]
+    } else if (state == 'signup') {
+        return user ? [
+            <label>{user.displayName}</label>,<br />,
+            <label>{user.email}</label>,<br />,
+        ] : [
+            <input id="name" type='text' placeholder='Full Name' />,<br/>,
+            <input id="email" type='email' placeholder='email' />,<br/>,
+            <input id="password" type='password' placeholder='password' />,<br/>,
+            <a href='' onClick={e => {e.preventDefault(); setState('login')}}>or login</a>,<br/>,
+            createSubmit, legal
+        ]
+    }
+}
+
+export function LoginButton(props) {
+    let user = useAuth()
+
+    if(user) {
+        return <div className="button" onClick={() => {
+                firebase.auth().signOut().then(function(user) {
+                        console.log('Signed out');
+                    }).catch(function(e) {
+                        console.log('Signout error: ', e);
+                    });
+            }}>Logout</div>
+    } else {
+        return <a className="button" href={'/login?to='+window.location.pathname}>Login</a>
     }
 }
 
