@@ -9,23 +9,25 @@ var redeemLink = 'https://memorize.bythebookthebible.com/cart/add_product/562899
 export default class Home extends Component {
     render() {
         return (
-            <div className="Home">
-                <div className='giant'>Memorize a Book<br />of the Bible</div>
-                <Row><Col sm={8}><h1>Our mission is to create a Biblically literate generation by giving families a fun way to memorize books of the Bible.</h1></Col></Row>
+            <div className="Home container-fluid">
+                <div className="container-xl">
+                    <div className='display-1'>Memorize a Book<br />of the Bible</div>
+                    <h2>Our mission is to create a Biblically literate generation by giving families a fun way to memorize books of the Bible.</h2>
 
-                <Row className="flex-centered">
-                    <Col xs={12} md={{span: "auto", order: 2}}><a href={buyLink} className="big-button btn-primary">Get&nbsp;Started</a></Col>
-                    <Col xs={5} md={{span: "auto", order: 1}}><a href={giftLink} className="button btn-primary">Give as a Gift</a></Col>
-                    <Col xs={5} md={{span: "auto", order: 3}}><a href={redeemLink} className="button btn-primary">Redeem my Gift</a></Col>
-                </Row>
+                    <Row className="flex-centered">
+                        <Col xs={12} md={{span: "auto", order: 2}}><a href={buyLink} className="button btn-primary display-4">Get&nbsp;Started</a></Col>
+                        <Col xs={5} md={{span: "auto", order: 1}}><a href={giftLink} className="button btn-primary">Give as a Gift</a></Col>
+                        <Col xs={5} md={{span: "auto", order: 3}}><a href={redeemLink} className="button btn-primary">Redeem my Gift</a></Col>
+                    </Row>
 
-                <Row>
-                    <Col xs={12} sm={12} lg={{span: 6, order: 2}}><ReactPlayer url="https://vimeo.com/385379882/4f267b11ed" width="100%" height="auto" controls /></Col>
-                    <Col xs={10} sm={6} lg={{span: 3, order: 1}}><q>My 4-year-old memorized 53 verse in 3 months!</q><div className="caption"> - Peter G (parent of ‘memorzie’)</div></Col>
-                    <Col xs={10} sm={6} lg={{span: 3, order: 3}}><q>I love it so much it makes me want to laugh cry!</q><div className="caption"> - Maddie B. (4-year-old ‘memorzie’)</div></Col>
-                </Row>
+                    <Row>
+                        <Col xs={12} sm={12} lg={{span: 6, order: 2}}><ReactPlayer url="https://vimeo.com/385379882/4f267b11ed" width="100%" height="auto" controls /></Col>
+                        <Col xs={10} sm={6} lg={{span: 3, order: 1}}><q>My 4-year-old memorized 53 verse in 3 months!</q><div className="caption"> - Peter G (parent of ‘memorzie’)</div></Col>
+                        <Col xs={10} sm={6} lg={{span: 3, order: 3}}><q>I love it so much it makes me want to laugh cry!</q><div className="caption"> - Maddie B. (4-year-old ‘memorzie’)</div></Col>
+                    </Row>
+                </div>
 
-                <Row className=" pink">
+                <Row className="pink">
                     <Col xs={12} md={4}>
                         <h1>Releases</h1>
                         <p className="small">Subscription gives you access to all up-to-date By the Book content.</p>

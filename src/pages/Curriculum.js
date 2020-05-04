@@ -11,14 +11,14 @@ import cartoon_mountain from '../images/curriculum/cartoonMountain.png';
 export default class Curriculum extends Component {
     render() {
         return (
-            <div className="Curriculum">
-                <div className="full-img" style={{backgroundImage: "url(" + header + ")"}}><div>Our Strategy:</div></div>
-                <div>
+            <div className="Curriculum container-fluid">
+                <Row className="full-img" style={{backgroundImage: "url(" + header + ")"}}><div>Our Strategy:</div></Row>
+                <Row>
                     <q>Let the word of Christ dwell in you richly, teaching and admonishing one another in all wisdom, singing psalms, hymns and spiritual songs.</q>
                     <Slogans /><br/>
-                </div>
+                </Row>
 
-                <div className="full-img" style={{backgroundImage: "url(" + curriculum + ")"}}><div>Our Curriculum:</div></div>
+                <Row className="full-img" style={{backgroundImage: "url(" + curriculum + ")"}}><div>Our Curriculum:</div></Row>
                 <Row>
                     <Col md={6}>
                         <em className="check">Teacher’s Guide:</em>
@@ -42,10 +42,10 @@ export default class Curriculum extends Component {
                             </ul>
                     </Col>
                     <Col md={5}>
-                        <ReactPlayer url="https://vimeo.com/368850113/c451975dc9" width="100%" height="auto"  controls />
-                        <ReactPlayer url="https://vimeo.com/359427145/2078c17372" width="100%" height="auto"  controls />
-                        <img src={cartoon_mountain} alt={"Coloring Page"}/>
-                        <img src={boy_crafting} alt={"Coloring Page"}/>
+                        <ReactPlayer url="https://vimeo.com/368850113/c451975dc9" width="100%" height="auto" controls />
+                        <ReactPlayer url="https://vimeo.com/359427145/2078c17372" width="100%" height="auto" controls />
+                        <img src={cartoon_mountain} alt={"Coloring Page"} width="100%" height="auto" />
+                        <img src={boy_crafting} alt={"Coloring Page"} width="100%" height="auto" />
                     </Col>
                 </Row>
             </div>

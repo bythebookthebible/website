@@ -1,0 +1,111 @@
+// ALL themes
+.display-1,
+h1,
+h2 {
+    text-align: center;
+}
+
+q {
+    text-align: center;
+    margin: 1rem auto 0;
+    display: block;
+    max-width: 60%;
+}
+q::before,
+q::after {
+    font-size: 2rem;
+    position: relative;
+    top: .5rem;
+}
+
+.caption {
+    display: block;
+    margin: 0 auto 2rem;
+    text-align: left;
+}
+
+.full-img {
+    height: 35vw;
+    background-size: cover;
+    background-position: center;
+
+    * {
+        width: 100%;
+        height: 100%;
+        padding-top: 15%;
+        padding-left: 3rem;
+        font-size: 2.5rem;
+        background-color: rgba(255, 255, 255, 0.4);
+    }
+}
+
+.button {
+    display: inline-block;
+    width: fit-content;
+    height: fit-content;
+    padding: 0.5rem 1rem;
+    color: white;
+    border-radius: 100px;
+}
+.button:hover,
+.big-button:hover {
+    box-shadow: rgba(0, 0, 0, 0.5) 3px 3px 5px;
+    text-decoration: none;
+    color: white;
+}
+
+
+// FORMS
+input,
+textarea {
+    margin: 10px;
+}
+
+input:invalid:not(:focus), #warnInvalid {
+    /* color:red; */
+    background-color: rgba(255, 0, 0, 0.25);
+    border:2px inset red;
+}
+
+.progress {
+    width: 100px;
+    height: 8px;
+}
+
+.form {
+    background-color: white;
+}
+
+// PLAIN PAGES 
+.check:before {
+    font: normal normal normal 14px/1 FontAwesome;
+    content: "\f00c";
+    font-size: 2rem;
+    color: $blue;
+    padding: 5px;
+    position: relative;
+    top:5px;
+    right: 5px;
+}
+
+
+.plain-theme {
+    background-image: linear-gradient(180deg, white, rgba(40, 183, 255, 0.3));
+}
+
+// PLAYFUL PAGES 
+
+.colorful-theme {
+    background-image: url("../images/home_yellowbackgroundcenter.png");
+}
+
+.check-box {
+    box-sizing: border-box;
+    margin: 10px;
+    padding: 3px;
+    background-color: $blue;
+
+    [checked=true] {
+        box-shadow: 0 0 2px 2px #00e1ffc2;
+    }
+}

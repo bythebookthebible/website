@@ -76,7 +76,7 @@ export default class Manage extends Component {
 
 var ManageMenu = function(props) {
     return (
-        <div className='ManageMenu'>
+        <div className='ManageMenu container-xl'>
             <Col>
                 <Row><img src={topImg} style={{width:'100%', maxWidth:'250px'}} /></Row>
                 <Row><a className='button' href='/manage/manageVideos'>Manage Videos</a></Row>
@@ -102,7 +102,7 @@ class ManageCamps extends Component {
 
     render() {
         return (
-            <div className='ManageCamps form'>
+            <div className='container form'>
                 <div className='construction'>This page is under construction</div>
                 <table>
                     <tr>
@@ -168,7 +168,7 @@ class ManageVideos extends Component {
 
     render() {
         return (
-            <div className='ManageCamps form'>
+            <div className='container form'>
                 <table><tbody>
                     <tr>
                         <th>Scripture</th>

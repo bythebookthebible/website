@@ -67,7 +67,7 @@ class CampListPage extends Component {
 
     render() {
         return (
-            <div className="Camp">
+            <div className="Camp container-xl">
                 <Row className='yellowbg'>
                     <Col md={{order:2}}>
                         <h1>Let’s not let this virus steal our Summer dreams!</h1>

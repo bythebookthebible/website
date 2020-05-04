@@ -43,7 +43,7 @@ export function AccountSettings(props) {
     let [user, claims] = useAuth(true)
     console.log(user,claims)
 
-    return user && <table className='form'><tbody>
+    return user && <table className='container form'><tbody>
 
         <tr><label>--COMING SOON--</label></tr>
 

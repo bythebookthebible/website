@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import '../styles/themes.scss';
-import '../styles/special.scss';
-import '../styles/base.scss';
+import '../styles/index.scss';
 import {Navbar, Nav, NavDropdown} from 'react-bootstrap'
 import {
   BrowserRouter as Router,
@@ -49,7 +47,6 @@ export default class App extends Component {
         return (
             <Router>
                 <div className="App">
-
                     {/* <div className="construction">This site is currently under construction.</div> */}
 
                     <Switch>
@@ -60,12 +57,11 @@ export default class App extends Component {
                         <Page path="/manage" ><Manage /></Page>
                         <Page path="/subscribe" ><Subscribe /></Page>
                         <Page path="/account" ><AccountSettings /></Page>
-                        <Page path="/memorize" theme="colorful-theme" nav={<LightNav />} footer={null} ><Memorize /></Page>
                         <Page path="/termsOfService" ><Login.TermsOfService /></Page>
                         <Page path="/privacy" ><Login.PrivacyPolicy /></Page>
-                        <Page path="/" ><Home /></Page>
+                        <Page path="/home" ><Home /></Page>
+                        <Page path="/" theme="colorful-theme" nav={<LightNav />} footer={null} ><Memorize /></Page>
                     </Switch>
-                    
                 </div>
             </Router>
         );
@@ -97,11 +93,11 @@ function Footer(props) {
 
 function FullNav(props) {
     return <Navbar collapseOnSelect expand="md">
-        <Navbar.Brand href="/"><img src={logo} height="30rem"/><div>By the Book</div></Navbar.Brand>
+        <Navbar.Brand href="/home"><img src={logo} height="30rem"/><div>By the Book</div></Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
         <Navbar.Collapse  id="responsive-navbar-nav">
             <Nav className="mr-auto">
-                <Nav.Link href="/memorize">Memorize</Nav.Link>
+                <Nav.Link href="/">Memorize</Nav.Link>
                 <Nav.Link href="/camp">Camp</Nav.Link>
                 <Nav.Link href="/features">Features</Nav.Link>
                 <Nav.Link href="/testimonials">Testimonials</Nav.Link>
@@ -117,7 +113,7 @@ function FullNav(props) {
 
 function LightNav(props) {
     return <Navbar collapseOnSelect expand="md" >
-        <Navbar.Brand href="/"><img src={logo} height="20rem" /></Navbar.Brand>
+        <Navbar.Brand href="/home"><img src={logo} height="20rem" /></Navbar.Brand>
         <Nav className="ml-auto">
             {/* <a href={memorizeLink} className='button'>Thinkific Login</a> */}
             <UserNavButton />

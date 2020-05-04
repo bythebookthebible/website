@@ -6,7 +6,7 @@ import why_memorize from '../images/ourStory/whyMemorize.png';
 export default class OurStory extends Component {
     render() {
         return (
-            <div className="OurStory">
+            <div className="OurStory container-xl">
                     <div className="full-img" style={{backgroundImage: "url(" + header + ")"}}><p>Our Story:</p></div>
 					<div>
                         <p>From the time I was little, my Mom taught me to memorize large portions of scripture. When I was seven years old I had memorized the Sermon on the Mount, and when I was 13 I decided to memorize the book of Philippians and Ruth. I was homeschooled and my Mom was everything to me: spiritual leader, best friend, teacher… I trained to become a professional dancer for 30 hours a week, and after learning my feet were too crooked to continue, redirected those hours to learning the harp. But when I was 15, God showed a different plan for my life. </p>

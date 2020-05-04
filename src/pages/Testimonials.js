@@ -5,7 +5,7 @@ import {Row, Col} from 'react-bootstrap'
 export default class Testimonials extends Component {
     render() {
         return (
-            <div className="Testimonials">
+            <div className="Testimonials container-fluid">
                 <Row>
                     <Col xs={12} md={{span: 6, order: 2}}>
                         <ReactPlayer url="https://vimeo.com/365195512/423dc7d469" width="100%" height="auto" controls/>
