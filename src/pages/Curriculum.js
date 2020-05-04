@@ -42,8 +42,8 @@ export default class Curriculum extends Component {
                             </ul>
                     </Col>
                     <Col md={5}>
-                        <ReactPlayer url="https://vimeo.com/368850113/c451975dc9" className="video" controls />
-                        <ReactPlayer url="https://vimeo.com/359427145/2078c17372" className="video" controls />
+                        <ReactPlayer url="https://vimeo.com/368850113/c451975dc9" width="100%" height="auto"  controls />
+                        <ReactPlayer url="https://vimeo.com/359427145/2078c17372" width="100%" height="auto"  controls />
                         <img src={cartoon_mountain} alt={"Coloring Page"}/>
                         <img src={boy_crafting} alt={"Coloring Page"}/>
                     </Col>

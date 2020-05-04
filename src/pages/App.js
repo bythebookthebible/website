@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import '../css/Text.css';
-import '../css/Layout.css';
+import '../styles/themes.scss';
+import '../styles/special.scss';
+import '../styles/base.scss';
 import {Navbar, Nav, NavDropdown} from 'react-bootstrap'
 import {
   BrowserRouter as Router,
@@ -48,53 +49,78 @@ export default class App extends Component {
         return (
             <Router>
                 <div className="App">
-                    <Navbar collapseOnSelect expand="md">
-                        <Navbar.Brand href="/"><img src={logo} height="35rem"/><div>By the Book</div></Navbar.Brand>
-                        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                        <Navbar.Collapse id="responsive-navbar-nav">
-                            <Nav className="mr-auto" >
-                                <Nav.Link href="/features">Features</Nav.Link>
-                                <Nav.Link href="/testimonials">Testimonials</Nav.Link>
-                                <Nav.Link href="/ourStory">Our Story</Nav.Link>
-                                <Nav.Link href="/camp">Camp</Nav.Link>
-                                <Nav.Link href="/memorize">Memorize</Nav.Link>
-                                <Nav.Link href={internLink}>Internship</Nav.Link>
-                                {/* <Nav.Link href={buyLink}>Sign Up</Nav.Link> */}
-                            </Nav>
-                            <Nav>
-                                {/* <a href={memorizeLink} className='button'>Thinkific Login</a> */}
-                                <UserNavButton />
-                            </Nav>
-                        </Navbar.Collapse>
-                    </Navbar>
 
                     {/* <div className="construction">This site is currently under construction.</div> */}
 
-                    <div className="Body">
-                        <div className="page">
-                            <Switch>
-                                <Route path="/ourStory"><OurStory /></Route>
-                                <Route path="/testimonials"><Testimonials /></Route>
-                                <Route path="/features"><Curriculum /></Route>
-                                <Route path="/camp"><Camp /></Route>
-                                <Route path="/memorize"><Memorize /></Route>
-                                <Route path="/login"><Login /></Route>
-                                <Route path="/manage"><Manage /></Route>
-                                <Route path="/subscribe"><Subscribe /></Route>
-                                <Route path="/account"><AccountSettings /></Route>
-                                <Route path="/"><Home /></Route>
-                            </Switch>
-                        </div>
-                    </div>
+                    <Switch>
+                        <Page path="/ourStory" ><OurStory /></Page>
+                        <Page path="/testimonials" ><Testimonials /></Page>
+                        <Page path="/features" ><Curriculum /></Page>
+                        <Page path="/camp" ><Camp /></Page>
+                        <Page path="/manage" ><Manage /></Page>
+                        <Page path="/subscribe" ><Subscribe /></Page>
+                        <Page path="/account" ><AccountSettings /></Page>
+                        <Page path="/memorize" theme="colorful-theme" nav={<LightNav />} footer={null} ><Memorize /></Page>
+                        <Page path="/termsOfService" ><Login.TermsOfService /></Page>
+                        <Page path="/privacy" ><Login.PrivacyPolicy /></Page>
+                        <Page path="/" ><Home /></Page>
+                    </Switch>
                     
-                    <div className="Footer">
-                        <div>Facebook: <a href={"https://www.facebook.com/" + facebook}>{facebook}</a></div>
-                        <div>Email: <a href={"mailto:" + email}>{email}</a></div>
-                        <div>Address: {address}</div>
-                    </div>
                 </div>
             </Router>
         );
     }
 
+}
+
+function Page(props) {
+    let defaultNav = <FullNav />
+    let defaultFooter = <Footer />
+    let defaultTheme = "plain-theme"
+
+    return <Route path={props.path}>
+        {props.nav === undefined ? defaultNav : props.nav}
+        <div className={"body " + (props.theme || defaultTheme)}>
+            {props.children}
+        </div>
+        {props.footer === undefined ? defaultFooter : props.footer}
+    </Route>
+}
+
+function Footer(props) {
+    return <div className="Footer">
+        <div>Facebook: <a href={"https://www.facebook.com/" + facebook}>{facebook}</a></div>
+        <div>Email: <a href={"mailto:" + email}>{email}</a></div>
+        <div>Address: {address}</div>
+    </div>
+}
+
+function FullNav(props) {
+    return <Navbar collapseOnSelect expand="md">
+        <Navbar.Brand href="/"><img src={logo} height="30rem"/><div>By the Book</div></Navbar.Brand>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
+        <Navbar.Collapse  id="responsive-navbar-nav">
+            <Nav className="mr-auto">
+                <Nav.Link href="/memorize">Memorize</Nav.Link>
+                <Nav.Link href="/camp">Camp</Nav.Link>
+                <Nav.Link href="/features">Features</Nav.Link>
+                <Nav.Link href="/testimonials">Testimonials</Nav.Link>
+                <Nav.Link href="/ourStory">Our&nbsp;Story</Nav.Link>
+                <Nav.Link href={internLink}>Internship</Nav.Link>
+            </Nav>
+            <Nav>
+                <UserNavButton className="button btn-primary mx-auto" />
+            </Nav>
+        </Navbar.Collapse>
+    </Navbar>
+}
+
+function LightNav(props) {
+    return <Navbar collapseOnSelect expand="md" >
+        <Navbar.Brand href="/"><img src={logo} height="20rem" /></Navbar.Brand>
+        <Nav className="ml-auto">
+            {/* <a href={memorizeLink} className='button'>Thinkific Login</a> */}
+            <UserNavButton />
+        </Nav>
+    </Navbar>
 }

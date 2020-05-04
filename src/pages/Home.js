@@ -13,20 +13,16 @@ export default class Home extends Component {
                 <div className='giant'>Memorize a Book<br />of the Bible</div>
                 <Row><Col sm={8}><h1>Our mission is to create a Biblically literate generation by giving families a fun way to memorize books of the Bible.</h1></Col></Row>
 
-                <Row className="Test flex-centered">
-                    <Col xs={12} md={{span: "auto", order: 2}}><a href={buyLink} className="big-button">Get&nbsp;Started</a></Col>
-                    <Col xs={5} md={{span: "auto", order: 1}}><a href={giftLink} className="button">Give as a Gift</a></Col>
-                    <Col xs={5} md={{span: "auto", order: 3}}><a href={redeemLink} className="button">Redeem my Gift</a></Col>
+                <Row className="flex-centered">
+                    <Col xs={12} md={{span: "auto", order: 2}}><a href={buyLink} className="big-button btn-primary">Get&nbsp;Started</a></Col>
+                    <Col xs={5} md={{span: "auto", order: 1}}><a href={giftLink} className="button btn-primary">Give as a Gift</a></Col>
+                    <Col xs={5} md={{span: "auto", order: 3}}><a href={redeemLink} className="button btn-primary">Redeem my Gift</a></Col>
                 </Row>
 
-                <Row className="">
-                    <Col xs={12} sm={12} lg={{span: 6, order: 2}}><ReactPlayer url="https://vimeo.com/385379882/4f267b11ed" className="video" controls /></Col>
-                    {/* <Col xs={12} sm={12} lg={{span: 6, order: 2}}><ReactPlayer url={marketingVideo} className="video" controls /></Col> */}
-                    {/* <Col xs={12} sm={12} lg={{span: 6, order: 2}}>
-                        <Player ref={player => {this.player = player;}} src={marketingVideo} />
-                    </Col> */}
-                    <Col xs={10} sm={6} lg={{span: 3, order: 1}}><q>My 4-year-old memorized 53 verse in 3 months!</q><caption> - Peter G (parent of ‘memorzie’)</caption></Col>
-                    <Col xs={10} sm={6} lg={{span: 3, order: 3}}><q>I love it so much it makes me want to laugh cry!</q><caption> - Maddie B. (4-year-old ‘memorzie’)</caption></Col>
+                <Row>
+                    <Col xs={12} sm={12} lg={{span: 6, order: 2}}><ReactPlayer url="https://vimeo.com/385379882/4f267b11ed" width="100%" height="auto" controls /></Col>
+                    <Col xs={10} sm={6} lg={{span: 3, order: 1}}><q>My 4-year-old memorized 53 verse in 3 months!</q><div className="caption"> - Peter G (parent of ‘memorzie’)</div></Col>
+                    <Col xs={10} sm={6} lg={{span: 3, order: 3}}><q>I love it so much it makes me want to laugh cry!</q><div className="caption"> - Maddie B. (4-year-old ‘memorzie’)</div></Col>
                 </Row>
 
                 <Row className=" pink">
@@ -42,7 +38,7 @@ export default class Home extends Component {
                             <li>Nov 2020 – Philippians</li>
                         </ul>
                     </Col>
-                    <Col xs={12} md={4}><ReactPlayer url="https://vimeo.com/385380297" className="video fill-y" controls /></Col>
+                    <Col xs={12} md={4}><ReactPlayer url="https://vimeo.com/385380297" height="100%" width="auto" controls /></Col>
                     <Col xs={12} md={4}>
                         <h1>Each chapter includes:</h1>
                         <ul>
@@ -63,19 +59,19 @@ export default class Home extends Component {
                 <Row>
                     <Col xs={12} sm={6} xl={{span: 4, order: 1}}>
                         <h1>Fun</h1>                        
-                        <q>They [my kids] enjoy singing along to the videos with so much enthusiasm whenever and wherever they are!</q><caption> - JoAe C (mother of ‘memorzie’)</caption>
+                        <q>They [my kids] enjoy singing along to the videos with so much enthusiasm whenever and wherever they are!</q><div className="caption"> - JoAe C (mother of ‘memorzie’)</div>
                     </Col>
-                    <Col xs={12} sm={6} xl={{span: 4, order: 4}}><ReactPlayer url="https://vimeo.com/368945565/f4437500a0" className="video" controls /></Col>
-                    <Col xs={12} sm={6} xl={{span: 4, order: 2}}><ReactPlayer url="https://vimeo.com/365858058/a5efa07acc" className="video" controls /></Col>
+                    <Col xs={12} sm={6} xl={{span: 4, order: 4}}><ReactPlayer url="https://vimeo.com/368945565/f4437500a0" width="100%" height="auto" controls /></Col>
+                    <Col xs={12} sm={6} xl={{span: 4, order: 2}}><ReactPlayer url="https://vimeo.com/365858058/a5efa07acc" width="100%" height="auto" controls /></Col>
                     <Col xs={12} sm={6} xl={{span: 4, order: 5}}>
                         <h1>Fast</h1>
-                        <q>we could just listen to the songs a few times and then she started to recite it!</q><caption> - Nancy H. (Parent of ‘memorzie’)</caption>
+                        <q>we could just listen to the songs a few times and then she started to recite it!</q><div className="caption"> - Nancy H. (Parent of ‘memorzie’)</div>
                     </Col>
                     <Col xs={12} sm={6} xl={{span: 4, order: 3}}>
                         <h1>Effective</h1>
-                        <q>I always struggled with even memorizing a few verses of the Bible but your catchy tunes and songs have helped me to memorize whole chapters!</q><caption> - Staci G (parent of ‘memorzie’)</caption>
+                        <q>I always struggled with even memorizing a few verses of the Bible but your catchy tunes and songs have helped me to memorize whole chapters!</q><div className="caption"> - Staci G (parent of ‘memorzie’)</div>
                     </Col>
-                    <Col xs={12} sm={6} xl={{span: 4, order: 6}}><ReactPlayer url="https://vimeo.com/385476859/3e4c0fc914" className="video" controls /></Col>
+                    <Col xs={12} sm={6} xl={{span: 4, order: 6}}><ReactPlayer url="https://vimeo.com/385476859/3e4c0fc914" width="100%" height="auto" controls /></Col>
                 </Row>
             </div>
         );

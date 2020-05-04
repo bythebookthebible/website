@@ -1,7 +1,7 @@
 import React, { Component, useEffect, useState} from 'react';
 import {useAuth} from '../hooks.js'
-import {Login, LoginButton} from '../forms/Login'
-import {Navbar, Nav, NavDropdown} from 'react-bootstrap'
+import {Login} from '../forms/Login'
+import {Navbar, Nav, NavDropdown, NavLink} from 'react-bootstrap'
 import {Row, Col} from 'react-bootstrap'
 import {loadStripe} from '@stripe/stripe-js'
 
@@ -22,13 +22,13 @@ export function UserNavButton(props) {
     let [user, claims] = useAuth(true)
 
     if(!user) {
-        return <a className="button" href={'/login?to='+window.location.pathname}>Login</a>
+        return <Login.LoginButton {...props} />
     }
     return [
-        <NavDropdown title={user.displayName} >
+        <NavDropdown title={user.displayName} as={NavLink}>
             {claims.admin && <NavDropdown.Item href='/manage' >Admin</NavDropdown.Item>}
             <NavDropdown.Item href='/account' >My Account</NavDropdown.Item>
-            <NavDropdown.Item onClick={() => {
+            <NavDropdown.Item {...props} onClick={() => {
                 firebase.auth().signOut().then(function(user) {
                         console.log('Signed out');
                     }).catch(function(e) {

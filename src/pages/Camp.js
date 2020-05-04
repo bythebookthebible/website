@@ -69,14 +69,14 @@ class CampListPage extends Component {
         return (
             <div className="Camp">
                 <Row className='yellowbg'>
-                    <Col sm={{order:2}}>
+                    <Col md={{order:2}}>
                         <h1>Let’s not let this virus steal our Summer dreams!</h1>
                         <p>Since we are all cooped up for a while, let's start dreaming of summer - then if things clear up and we have enough people interested, we can still be ready for a Memory Camp!</p>
                         <p>Right now we’re just collecting a list of people who would potentially be interested in camp if the virus clears in time. If that describes you, let us know by cicking below!</p>
                         <p>More info? email me at: <a href={"mailto:" + email}>{email}</a></p>
                     </Col>
-                    <Col sm={{order:1}}>
-                        <ReactPlayer url={campVideo} className="video" controls />
+                    <Col md={{order:1}}>
+                        <ReactPlayer url={campVideo} width="100%" height="auto" controls />
                         <p>What By the Book would need from your community:</p>
                         <ul>
                             <li>20 children</li>

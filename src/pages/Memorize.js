@@ -10,7 +10,7 @@ import "../../node_modules/video-react/dist/video-react.css"
 import {Row, Col} from 'react-bootstrap'
 import $ from "jquery"
 
-import {LoginButton} from '../forms/Login.js'
+import {Login} from '../forms/Login.js'
 
 import videoSplash from "../images/videoSplash.png"
 import { useAuth } from '../hooks';
@@ -113,7 +113,7 @@ export default function Memorize() {
     let upgradeMsg
     if (!user) {
         // Should log in
-        upgradeMsg = <div><LoginButton/> for free trial</div>
+        upgradeMsg = <div><Login.LoginButton/> for free trial</div>
     } else if(claims.expirationDate - Date.now() > 0 || claims.permanentAccess || claims.admin) {
         // Full access
         upgradeMsg = null
@@ -183,7 +183,7 @@ export default function Memorize() {
     </div>
 
     // Page layout
-    return (<div className="Memorize" >
+    return (<div className="container-xl" >
         <Row>
             {scriptureSelector}
             {memoryFormatSelector}

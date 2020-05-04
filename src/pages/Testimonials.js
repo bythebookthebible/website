@@ -8,29 +8,29 @@ export default class Testimonials extends Component {
             <div className="Testimonials">
                 <Row>
                     <Col xs={12} md={{span: 6, order: 2}}>
-                        <ReactPlayer url="https://vimeo.com/365195512/423dc7d469" className="video" controls/>
-                        <caption>4 years old. 10 days. 21 verses (Proverbs 31:10-31)</caption>
+                        <ReactPlayer url="https://vimeo.com/365195512/423dc7d469" width="100%" height="auto" controls/>
+                        <div className="caption">4 years old. 10 days. 21 verses (Proverbs 31:10-31)</div>
 
-                        <ReactPlayer url="https://vimeo.com/365858473/5f0e4750d1" className="video" controls/>
-                        <caption>5 years old. 1 month. 20 verses (Matthew 5:1-20)</caption>
+                        <ReactPlayer url="https://vimeo.com/365858473/5f0e4750d1" width="100%" height="auto" controls/>
+                        <div className="caption">5 years old. 1 month. 20 verses (Matthew 5:1-20)</div>
 
-                        <ReactPlayer url="https://vimeo.com/365197261/98a213c820" className="video" controls/>
-                        <caption>4, 5, 7 year olds. 3 months. 41 verses (Acts 7:1-41)</caption>
+                        <ReactPlayer url="https://vimeo.com/365197261/98a213c820" width="100%" height="auto" controls/>
+                        <div className="caption">4, 5, 7 year olds. 3 months. 41 verses (Acts 7:1-41)</div>
 
-                        <ReactPlayer url="https://vimeo.com/368945565/f4437500a0" className="video" controls/>
-                        <caption>6 years old. 1 week. 21 verses (Proverbs 31:10-31)</caption>
+                        <ReactPlayer url="https://vimeo.com/368945565/f4437500a0" width="100%" height="auto" controls/>
+                        <div className="caption">6 years old. 1 week. 21 verses (Proverbs 31:10-31)</div>
 
-                        <ReactPlayer url="https://vimeo.com/365858058/a5efa07acc" className="video" controls/>
-                        <caption>8 years old. 1 month. 20 verses (Matthew 5:1-20)</caption>
+                        <ReactPlayer url="https://vimeo.com/365858058/a5efa07acc" width="100%" height="auto" controls/>
+                        <div className="caption">8 years old. 1 month. 20 verses (Matthew 5:1-20)</div>
 
-                        <ReactPlayer url="https://vimeo.com/365088784/1ba722f24c" className="video" controls/>
-                        <caption>10, 15 years old. 5 days. 21 verses (Proverbs 31:10-31)</caption>
+                        <ReactPlayer url="https://vimeo.com/365088784/1ba722f24c" width="100%" height="auto" controls/>
+                        <div className="caption">10, 15 years old. 5 days. 21 verses (Proverbs 31:10-31)</div>
 
-                        <ReactPlayer url="https://vimeo.com/365194451/cb2bbb8d60" className="video" controls />
-                        <caption>6 years old. 10 days. 21 verses (Proverbs 31:10-31)</caption>
+                        <ReactPlayer url="https://vimeo.com/365194451/cb2bbb8d60" width="100%" height="auto" controls />
+                        <div className="caption">6 years old. 10 days. 21 verses (Proverbs 31:10-31)</div>
 
-                        <ReactPlayer url="https://vimeo.com/365092266/d15d6fd118" className="video" controls/>
-                        <caption>10, 11, 15, 15 years old. 5 days. 21 verses (Proverbs 31:10-31)</caption>
+                        <ReactPlayer url="https://vimeo.com/365092266/d15d6fd118" width="100%" height="auto" controls/>
+                        <div className="caption">10, 11, 15, 15 years old. 5 days. 21 verses (Proverbs 31:10-31)</div>
                     </Col>
 
                     <Col xs={12} md={{span: 6, order: 1}}>

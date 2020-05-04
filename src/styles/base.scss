@@ -1,0 +1,83 @@
+// Import Bootstrap to extend theme
+// @import "../../node_modules/bootstrap/scss/bootstrap";
+
+:root {
+    --blue: #28B7FF;
+    --pink: #FF4BBD;
+    --yellow: #FFFF00;
+    --darkYellow: #F1E935;
+    --gold: #F1E935;
+    --darkBlue: #0064A0;
+}    
+
+.yellow { background-color: var(--yellow)}
+.blue { background-color: var(--blue) }
+.pink { background-color: var(--pink) }
+
+@font-face {
+    font-family: "Loopiejuice-Regular";
+    src: url("Loopiejuice.ttf");
+}
+
+.App {
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    // text-align: center;
+    line-height: 110%;
+    -webkit-font-smoothing: antialiased;
+    font-size: 18px;
+    min-height: 100vh;
+}
+
+.body {
+    min-height: 100vh;
+    display: block;
+    flex-basis: 100%;
+    margin: 0;
+}
+
+.row {
+    margin: 0;
+    padding: 20px 0;
+    justify-content: center;
+}
+
+.flex-centered {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+// Animate Bounce
+.bounce:hover {
+    transition: all .4s;
+    transition-timing-function: cubic-bezier(.31, 2.02, .47, -.36);
+    transform: scale(1.16, 1.16);
+}
+
+.bounce,
+.bounce-once {
+    transition: all .2s;
+    transform: scale(1, 1);
+
+    :nth-of-type(1) { animation: 1s linear 0 1 bounce; }
+    :nth-of-type(2) { animation: 1.5s linear 0 1 bounce; }
+    :nth-of-type(3) { animation: 2s linear 0 1 bounce; }
+    :nth-of-type(4) { animation: 2.5s linear 0 1 bounce; }
+    :nth-of-type(5) { animation: 3s linear 0 1 bounce; }
+}
+
+@keyframes bounce {
+    0% {
+        transform: scale(0, 0);
+        animation-timing-function: ease;
+    }
+
+    30% {
+        transform: scale(1.2);
+        animation-timing-function: cubic-bezier(.31, 2.02, .47, -.36);
+    }
+
+    100% {
+        transform: scale(1, 1);
+    }
+}
