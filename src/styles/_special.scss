@@ -62,19 +62,19 @@
         margin-left: 60px;
         font-size: 25px;
         font-weight: bold;
+
+        >li {
+            list-style-type: none;
+
+            &::before {
+                content: '♦';
+                font-size: 2rem;
+                padding-right: 1rem;
+                color: $pink;
+            }
+        }
     }
 
-    ul>li {
-        // text-align: left;
-        list-style-type: none;
-    }
-
-    ul>li::before {
-        content: '♦';
-        font-size: 28px;
-        padding-right: 1em;
-        color: $pink;
-    }
 }
 
 .camp-box {

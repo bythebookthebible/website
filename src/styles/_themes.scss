@@ -10,12 +10,13 @@ q {
     margin: 1rem auto 0;
     display: block;
     max-width: 60%;
-}
-q::before,
-q::after {
-    font-size: 2rem;
-    position: relative;
-    top: .5rem;
+    
+    &::before,
+    &::after {
+        font-size: 2rem;
+        position: relative;
+        top: .5rem;
+    }
 }
 
 .caption {
@@ -46,12 +47,47 @@ q::after {
     padding: 0.5rem 1rem;
     color: white;
     border-radius: 100px;
+    
+    &:hover {
+        box-shadow: rgba(0, 0, 0, 0.5) 3px 3px 5px;
+        text-decoration: none;
+        color: white;
+    }
 }
-.button:hover,
-.big-button:hover {
-    box-shadow: rgba(0, 0, 0, 0.5) 3px 3px 5px;
-    text-decoration: none;
-    color: white;
+
+.btn.btn-round {
+    border-radius: 6rem;
+    padding: .37rem 1.25rem;
+}
+
+.btn.display-4 {
+    font-size: 3.5rem;
+}
+
+.btn-group-toggle {
+    margin: 5px;
+}
+
+.btn.btn-primary {    
+    &:not(:disabled):not(.disabled) {
+        background-color: darken($color: $blue, $amount: 5);
+        border-color: darken($color: $blue, $amount: 5);
+
+        &:hover {
+            // background-color: darken($color: $blue, $amount: 8);
+            // border-color: darken($color: $blue, $amount: 8);
+            box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 5px;
+
+        }
+
+        &:active,
+        &.active {
+            background-color: $blue;
+            border-color: $blue;
+            // box-shadow: darken($color: $blue, $amount: 22) 1px 1px 5px 1px;
+            box-shadow: darken($blue, 22) 1px 1px 5px 1px;
+        }
+    }
 }
 
 
@@ -88,7 +124,6 @@ input:invalid:not(:focus), #warnInvalid {
     right: 5px;
 }
 
-
 .plain-theme {
     background-image: linear-gradient(180deg, white, rgba(40, 183, 255, 0.3));
 }
@@ -97,15 +132,64 @@ input:invalid:not(:focus), #warnInvalid {
 
 .colorful-theme {
     background-image: url("../images/home_yellowbackgroundcenter.png");
-}
 
-.check-box {
-    box-sizing: border-box;
-    margin: 10px;
-    padding: 3px;
-    background-color: $blue;
+    .btn.btn-outline-primary {
+        border-width: .15rem;
+        
+        &:not(:disabled):not(.disabled) {
+            // background-color: darken($color: $blue, $amount: 5);
+            border-color: $blue;
 
-    [checked=true] {
-        box-shadow: 0 0 2px 2px #00e1ffc2;
+            &:hover, &.hover {
+                background-color: transparentize($blue, .4);
+            }
+
+            &:active,
+            &.active {
+                background-color: $blue;
+            }
+        }
+    }
+
+    .checkbox {
+        height: 4rem;
+        width: 4rem;
+        text-align: center;
+        grid-area: span 2 / span 1;
+
+        .btn {
+            padding: .15rem;
+        }
+    }
+
+    .wavy-col {
+        width: 12rem;
+        display: grid;
+        grid-template-columns: repeat(2, 5rem);
+        row-gap: .75rem;
+        column-gap: 1.5rem;
+    }
+
+    .selection-expand-box {
+        background-color: white;
+        margin: .5rem;
+        padding: .5rem;
+        border: .5rem solid $blue;
+        border-radius: 1rem;
+        width: fit-content;
+        
+        &:not(.show) {
+            width: 12rem;
+            height: 12rem;
+        }
+    }
+    
+    @media screen and (max-width: 768px) {
+        .selection-expand-box {
+            &:not(.show) {
+                width: 9rem;
+                height: 9rem;
+            }
+        }
     }
 }

@@ -18,7 +18,7 @@ function LogInOutButton(props) {
     let user = useAuth()
 
     if(user) {
-        return <div className="button btn-primary" onClick={() => {
+        return <div className="btn btn-round btn-primary" onClick={() => {
                 auth.signOut().then(function(user) {
                     }).catch(function(e) {
                         console.log('Signout error: ', e);
@@ -92,7 +92,7 @@ function LoginButton(props) {
     }
 
     return [
-        <button className="button btn-primary" {...props} onClick={() => setShow(true)}>Login</button>,
+        <button className="btn btn-round btn-primary" {...props} onClick={() => setShow(true)}>Login</button>,
         <Modal onHide={() => setShow(false)} show={show} size="sm" aria-labelledby="authTitle" centered>
             <Modal.Header closeButton>
                 <Modal.Title id="authTitle">Sign In</Modal.Title>
@@ -103,8 +103,8 @@ function LoginButton(props) {
                 <input type="password" className="form-control" id="password" placeholder="Password" />
                 <input type="text" className="form-control" id="name" placeholder="Name" style={{display: "none"}}/>
                 <div className="d-flex flex-centered">
-                    <button type="button" className="button btn-secondary m-1" onClick={() => setShow(false)} >Cancel</button>
-                    <button type="submit" className="button btn-primary m-1" id="submitAuth" readOnly>Submit</button>
+                    <button type="button" className="btn btn-round btn-secondary m-1" onClick={() => setShow(false)} >Cancel</button>
+                    <button type="submit" className="btn btn-round btn-primary m-1" id="submitAuth" readOnly>Submit</button>
                 </div>
                 <div id="error-message" className="text-danger">{errorMessage}</div>
                 {showResetPassword && <div id="resetPassword" className="p-1 text-center">

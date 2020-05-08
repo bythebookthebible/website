@@ -7,8 +7,9 @@ import {
   BigPlayButton
 } from 'video-react';
 import "../../node_modules/video-react/dist/video-react.css"
-import {Row, Col} from 'react-bootstrap'
+import {Row, Col, ToggleButton, ToggleButtonGroup, ButtonGroup, Dropdown} from 'react-bootstrap'
 import $ from "jquery"
+import logo from '../images/logo.svg';
 
 import {Login} from '../forms/Login.js'
 
@@ -29,7 +30,7 @@ const books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy',
 '1 Timothy', '2 Timothy', 'Titus', 'Philemon', 'Hebrews', 'James',
 '1 Peter', '2 Peter', '1 John', '2 John', '3 John', 'Jude', 'Revelation']
 
-const kinds = ["Music Video", "Dance Video", "Karaoke Video", "Slower Video", "Coloring Pages", "Teachers Guide"]
+const kinds = ["Music Video", "Dance Video", "Karaoke Video", "Coloring Pages", "Teachers Guide"]
 
 // convert between scripture references and a string key
 // used for tracking scripture selected
@@ -47,14 +48,16 @@ function mod(n, m) {
 
 // Media players for each kind of resource
 function PDFMedia(props) {
-    return <div>
-        <object data={props.src} type='application/pdf' width='500px' height='500px' />
-        <br/><a href={props.src}>Download</a>
-    </div>
+    return [
+        <div style={{maxWidth:'1000px', margin:'auto'}} className="embed-responsive embed-responsive-17by22" >
+            <object data={props.src} type='application/pdf' style={{overflow:'scroll'}}></object>
+        </div>,
+        <br/>,<a href={props.src}>Download</a>
+    ]
 }
 
 function VideoMedia(props) {
-    return <div style={{maxWidth:'1000px', margin:'auto'}}>
+    return <div style={{maxWidth:'1000px', margin:'auto'}} >
         <Player playsInline src={props.src} className="player" poster={videoSplash}>
             <BigPlayButton position="center" />
             <ControlBar>
@@ -73,42 +76,36 @@ let players = {
 export default function Memorize() {
     // Initialize and load resources and selections
     let [resources, setResources] = useState({})
-    let [scriptureSelected, setScriptureSelected] = useState({})
-    let [kindsSelected, setKindsSelected] = useState(kinds.reduce((prev, k) => {
-        prev[k] = k == kinds[0]
-        return prev
-    }, {}))
+    let [scriptureSelected, setScriptureSelected] = useState(new Set())
+    let [kindsSelected, setKindsSelected] = useState(new Set([kinds[0]]))
 
     // load list of video resources
     useEffect(() => {
         let mounted = true
         async function getResources() {
             let snapshot = await db.collection('memoryResources').get()
-            let scriptureSelected = {}
+            let scriptureSelected = new Set()
             let resources = snapshot.docs.reduce((r, doc) => {
                 let d = doc.data()
                 let verses = `${d.startVerse}-${d.endVerse}`
                 let key = keyFromScripture(d.book,d.chapter,verses)
                 r[key] = r[key] || {}
                 r[key][d.kind] = d
-                scriptureSelected[key] = true
+                scriptureSelected.add(key)
                 return r
             }, {})
 
             if(mounted) {
                 setResources(resources) // Must set resources before setting scriptureSelected
                 setScriptureSelected(scriptureSelected)
-                // scriptureSelected[Object.keys(scriptureSelected)[0]] = true
             }
         }
         getResources()
         return () => mounted = false;
     }, [])
-    
 
     // Adjust view for access level
     let [user, claims] = useAuth(true)
-    // console.log(claims)
 
     let upgradeMsg
     if (!user) {
@@ -130,10 +127,9 @@ export default function Memorize() {
     // update list of urls matching selection
     useEffect(() => {
         let newUrlList = []
-        for(let key in scriptureSelected) {
-            if(!scriptureSelected[key]) continue
-            for(let kind in kindsSelected) {
-                if(kindsSelected[kind] && kind in resources[key]) {
+        for(let key of scriptureSelected) {
+            for(let kind of kindsSelected) {
+                if(kind in resources[key]) {
                     newUrlList.push(resources[key][kind].url)
                 }
             }
@@ -143,13 +139,11 @@ export default function Memorize() {
 
     // update current url from index and urlList
     useEffect(() => {
-        // console.log('url', index, urlList)
         if(urlList.length > 0) {
             storage.ref(urlList[mod(index, urlList.length)]).getDownloadURL()
                 .then(url => setUrl(url))
                 .catch(e => console.error(e))
         }
-
     }, [urlList, index])
 
     // Choose correct player for current url
@@ -157,37 +151,24 @@ export default function Memorize() {
     let player = url && players[fileKind]
 
     // Memory format selector
-    let memoryFormatSelector = <div className='selection-expand-box'>
-        {/* FILTER SELECTION */}
-        <h1>How are we memorizing?</h1>
-        {kinds.map((kind) => <CheckBox key={kind} defaultChecked={kindsSelected[kind]} onChange={checked => {
-                let k = {...kindsSelected}
-                k[kind] = checked
+    let memoryFormatSelector = <div className='text-center'>
+        {kinds.map((kind) => 
+            <ToggleButtonGroup className='checkbox' type='checkbox' key={kind} defaultValue={kindsSelected.has(kind) ? kind : []} onChange={values => {
+                let k = new Set(kindsSelected)
+                if(!!values[0]) {k.add(kind)}
+                else {k.delete(kind)}
                 setKindsSelected(k)
                 setIndex(0)
-            }}>{kind}</CheckBox>
-        )}
-    </div>
-
-    // Scripture Selector
-    let scriptureSelector = <div className='selection-expand-box'>
-        <h1>What are we memorizing?</h1>
-        {Object.keys(scriptureSelected).sort().map(key => 
-            <CheckBox key={key} defaultChecked={scriptureSelected[key]} onChange={checked => {
-                let s = {...scriptureSelected}
-                s[key] = checked
-                setScriptureSelected(s)
-                setIndex(0)
-            }}>{Object.values(scriptureFromKey(key)).join(' ')}</CheckBox>
+            }}>
+                <ToggleButton value={kind} variant='outline-primary'>{kind}</ToggleButton>
+            </ToggleButtonGroup>
         )}
     </div>
 
     // Page layout
-    return (<div className="container-xl" >
-        <Row>
-            {scriptureSelector}
-            {memoryFormatSelector}
-        </Row>
+    return (<div className="container-xl py-2" >
+        {/* {scriptureSelector} */}
+        <ScriptureSelector defaultValue={scriptureSelected} resources={resources} onChange={v => {setScriptureSelected(v)}} />
         <Row>
             <i className="fa fa-5x fa-chevron-left player-control-prev" onClick={() => setIndex(index - 1) } />
             <Col>
@@ -195,19 +176,80 @@ export default function Memorize() {
             </Col>
             <i className="fa fa-5x fa-chevron-right player-control-next" onClick={() => setIndex(index + 1) }/>
         </Row>
+        {memoryFormatSelector}
         {upgradeMsg}
     </div>)
 }
 
-function CheckBox(props) {
-    let [checked, setChecked] = useState(!!props.defaultChecked)
-    let checkbox = useRef()
+function ScriptureSelector(props) {
+    let [show, setShow] = useState(!!props.defaultOpen) // bool: true if expanded
+    let [value, setValue] = useState(new Set()) // list of scripture key strings which are currently selected
+    let [scriptures, setScriptures] = useState({})
 
-    useEffect(() => checkbox.current.setAttribute('checked', checked), [checked])
+    console.log('default and value', props.defaultValue, value)
 
-    return <div className={'check-box ' + props.className} style={props.style} ref={checkbox} onClick={() => {
-        let c = !checked
-        setChecked(c)
-        props.onChange(c)
-    }}>{props.children}</div>
+    useEffect(() => {
+        setValue(new Set(props.defaultValue))
+    }, [props.defaultValue])
+
+    useEffect(() => {
+        // Make scripture grouped by Book, Chapter
+        let scriptures = Object.keys(props.resources).reduce((acc, key) => {
+            let s = scriptureFromKey(key)
+            acc[s.book] = acc[s.book] || {}
+            acc[s.book][s.chapter] = acc[s.book][s.chapter] || {}
+            acc[s.book][s.chapter][s.verses] = props.resources[key]
+            
+            // let bookChapter = `${s.book} ${s.chapter}`
+            // acc[bookChapter] = acc[bookChapter] ? [...acc[bookChapter], key] : [key]
+            return acc
+        }, {})
+        setScriptures(scriptures)
+        console.log('set scriptures:', scriptures)
+
+    }, [props.resources])
+
+    let title = "What do you want to memorize?"
+    if(!show) {
+        if(value.size > 0) {
+            let s = scriptureFromKey(value.keys().next().value)
+            title = `${s.book} ${s.chapter}`
+        }
+
+        return <div className='selection-expand-box text-center' onMouseEnter={() => setShow(true)} onClick={() => setShow(true)}>
+            <img src={logo} height="30rem"/>
+            <h2>{title}</h2>
+        </div>
+    } else {
+        return <div className='selection-expand-box show' onMouseLeave={() => setShow(false)}>
+            <div className='text-center' onClick={() => setShow(false)}>
+                <img src={logo} height="30rem"/>
+                <h2>{title}</h2>
+            </div>
+
+            {show &&
+            <Row>{Object.keys(scriptures).map(book => <Col>
+                <h3>{book}</h3>
+                <Row>{Object.keys(scriptures[book]).map(chapter => <Col>
+                    <h3>{chapter}</h3>
+                    <div className='wavy-col' >
+                        <div style={{height:'2.5rem', gridArea:'1 / 2 / 1 / 2'}} ></div>
+                        {Object.keys(scriptures[book][chapter]).map(verses => {
+                            let key = keyFromScripture(book, chapter, verses)
+                            return <ToggleButtonGroup className='checkbox' type='checkbox' key={key} defaultValue={value.has(key) ? key : []} onChange={values => {
+                                var v = new Set(value)
+                                if(!!values[0]) v.add(key)
+                                else v.delete(key)
+                                console.log('changing value:', value, v)
+                                setValue(v)
+                                props.onChange(v)
+                            }}>
+                                <ToggleButton value={key} variant='outline-primary'>{verses}</ToggleButton>
+                            </ToggleButtonGroup>}
+                        )}
+                    </div>
+                </Col>)}</Row>
+            </Col>)}</Row>}
+        </div>
+    }
 }

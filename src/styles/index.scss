@@ -18,6 +18,17 @@ $font-family-base: $font-family-sans-serif !default;
 
 $enable-responsive-font-sizes: true;
 
+$embed-responsive-aspect-ratios: (
+    (21 9),
+    (16 9),
+    (4 3),
+    (1 1),
+    (17 22), // 8.5 by 11
+    (3 4),
+    (9 16),
+    (9 21)
+);
+
 .yellow { background-color: $yellow}
 .blue { background-color: $blue }
 .pink { background-color: $pink }

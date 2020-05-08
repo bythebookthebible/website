@@ -15,9 +15,9 @@ export default class Home extends Component {
                     <h2>Our mission is to create a Biblically literate generation by giving families a fun way to memorize books of the Bible.</h2>
 
                     <Row className="flex-centered">
-                        <Col xs={12} md={{span: "auto", order: 2}}><a href={buyLink} className="button btn-primary display-4">Get&nbsp;Started</a></Col>
-                        <Col xs={5} md={{span: "auto", order: 1}}><a href={giftLink} className="button btn-primary">Give as a Gift</a></Col>
-                        <Col xs={5} md={{span: "auto", order: 3}}><a href={redeemLink} className="button btn-primary">Redeem my Gift</a></Col>
+                        <Col xs={12} md={{span: "auto", order: 2}}><a href={buyLink} className="display-4 btn btn-round btn-primary">Get&nbsp;Started</a></Col>
+                        <Col xs={5} md={{span: "auto", order: 1}}><a href={giftLink} className="btn btn-round btn-primary">Give as a Gift</a></Col>
+                        <Col xs={5} md={{span: "auto", order: 3}}><a href={redeemLink} className="btn btn-round btn-primary">Redeem my Gift</a></Col>
                     </Row>
 
                     <Row>

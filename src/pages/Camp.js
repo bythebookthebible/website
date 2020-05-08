@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactPlayer from 'react-player'
-import {Row, Col} from 'react-bootstrap'
+import {Row, Col, Spinner} from 'react-bootstrap'
 import {
   Switch,
   Route,
@@ -83,7 +83,7 @@ class CampListPage extends Component {
                             <li>A venue</li>
                             <li>A love for God's Word!</li>
                         </ul>
-                        <a className='button' href={'camp/addCamp'}>request camp near you</a>
+                        <a className='button btn-primary' href={'camp/addCamp'}>request camp near you</a>
                     </Col>
                 </Row>
                 <h1>Here's the proposed camps<br/>and their progress so far...</h1>
@@ -92,7 +92,7 @@ class CampListPage extends Component {
                     {this.state.campData.map(CampBox)}
                 </div>
                 <h1>Don't see a camp in your area?</h1>
-                <a className='button' href={'camp/addCamp'}>request camp near you</a>
+                <a className='button btn-primary' href={'camp/addCamp'}>request camp near you</a>
             </div>
         )
     }
@@ -108,12 +108,12 @@ const CampBox = (props) => {
                     <Col sm={6} xs={12}>
                         <h2>Camper Status:</h2>
                         <div className='giant'>{props.numStudents}/20</div>
-                        <a className='button' href={'camp/addStudent?location=' + props.location}>I have a camper!</a>
+                        <a className='button btn-primary' href={'camp/addStudent?location=' + props.location}>I have a camper!</a>
                     </Col>
                     <Col sm={6} xs={12}>
                         <h2>Venue Status:</h2>
                         <img src={venueProgress[props.venueStatus]} style={{width:'100%'}}></img>
-                        <a className='button' href={'camp/addVenue?location=' + props.location}>I have a venue idea!</a>
+                        <a className='button btn-primary' href={'camp/addVenue?location=' + props.location}>I have a venue idea!</a>
                     </Col>
                 </Row>
             </div>
@@ -121,7 +121,7 @@ const CampBox = (props) => {
     } catch(err) {
         // console.log(err);
         // console.log(props);
-        return '[loading camps...]';
+        return <Row><Col className="text-center"><Spinner animation="border" role="status" size="md" /><p>Loading Camps...</p></Col></Row>
     }
 }
 

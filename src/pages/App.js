@@ -18,7 +18,7 @@ import Testimonials from '../pages/Testimonials'
 import Memorize from '../pages/Memorize'
 import {Login} from '../forms/Login'
 import {AccountSettings, UserNavButton} from '../pages/User'
-import Manage from '../pages/Manage'
+import {Manage} from '../pages/Manage'
 import Subscribe from '../forms/Subscribe'
 
 var memorizeLink = 'https://memorize.bythebookthebible.com/courses/take/matthew-5-6-7-sermon-on-the-mount'
@@ -105,7 +105,7 @@ function FullNav(props) {
                 <Nav.Link href={internLink}>Internship</Nav.Link>
             </Nav>
             <Nav>
-                <UserNavButton className="button btn-primary mx-auto" />
+                <UserNavButton className="btn btn-round btn-primary mx-auto" />
             </Nav>
         </Navbar.Collapse>
     </Navbar>
