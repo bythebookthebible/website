@@ -38,18 +38,20 @@ $embed-responsive-aspect-ratios: (
     -webkit-font-smoothing: antialiased;
     font-size: 1.2rem;
     min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
 }
 
 .body {
-    min-height: 100vh;
-    display: block;
-    flex-basis: 100%;
-    margin: 0;
+    flex: 1 1 auto
+}
+
+.navbar, .Footer {
+    flex: 0 1 auto
 }
 
 .row {
-    // margin: 0;
-    // padding: 20px 0;
     justify-content: center;
 }
 

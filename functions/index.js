@@ -10,6 +10,30 @@ const stripeEndpointSecret = 'whsec_7WXe6AlYryY3B5QwqsJ63nOn5LOvusTm';
 
 // user custom claims are: admin, permanentAccess, expirationDate, stripeId
 
+exports.getUsers = functions.https.onCall(async (data, context) => {
+    let claims = (await admin.auth().getUser(context.auth.uid)).customClaims
+    console.log(claims)
+    if(!claims.admin) {
+        return new Error('Access Denied')
+    }
+
+    usersResult = await admin.auth().listUsers()
+    console.log(usersResult)
+    return usersResult
+})
+
+exports.setUser = functions.https.onCall(async (data, context) => {
+    let claims = (await admin.auth().getUser(context.auth.uid)).customClaims
+    console.log(claims)
+    if(!claims.admin) {
+        return new Error('Access Denied')
+    }
+
+    user = await admin.auth().getUser(data.uid)
+    console.log('new claims:', {...user.customClaims, ...data.customClaims})
+    await admin.auth().setCustomUserClaims(data.uid, {...user.customClaims, ...data.customClaims})
+})
+
 exports.renewSubscription = functions.https.onRequest(async (request, response) => {
     // Validate request and extract event
     console.log(`request.body: ${JSON.stringify(request.body)}`)

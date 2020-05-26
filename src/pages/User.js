@@ -3,11 +3,11 @@ import {useAuth} from '../hooks.js'
 import {Login} from '../forms/Login'
 import {Navbar, Nav, NavDropdown, NavLink} from 'react-bootstrap'
 import {Row, Col} from 'react-bootstrap'
-import {loadStripe} from '@stripe/stripe-js'
+// import {loadStripe} from '@stripe/stripe-js'
 
 var firebase = require('firebase');
 
-const stripePromise = loadStripe('pk_test_9tSyLuCY9rI4tFCjQ8MPpUxg00vLcOqtaT');
+// const stripePromise = loadStripe('pk_test_9tSyLuCY9rI4tFCjQ8MPpUxg00vLcOqtaT');
 
 // TESTING PLAN VALUES
 const plans = {

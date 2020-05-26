@@ -135,6 +135,7 @@ input:invalid:not(:focus), #warnInvalid {
 
     .btn.btn-outline-primary {
         border-width: .15rem;
+        font-size: 1rem;
         
         &:not(:disabled):not(.disabled) {
             // background-color: darken($color: $blue, $amount: 5);
@@ -166,8 +167,8 @@ input:invalid:not(:focus), #warnInvalid {
         width: 12rem;
         display: grid;
         grid-template-columns: repeat(2, 5rem);
-        row-gap: .75rem;
-        column-gap: 1.5rem;
+        row-gap: .5rem;
+        column-gap: .8rem;
     }
 
     .selection-expand-box {

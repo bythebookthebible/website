@@ -137,18 +137,37 @@ export default function Memorize() {
         setUrlList(newUrlList)
     }, [resources, scriptureSelected, kindsSelected])
 
-    // update current url from index and urlList
+    // get video from cache if available
+    let keyUrl = urlList[mod(index, urlList.length)]
     useEffect(() => {
-        if(urlList.length > 0) {
-            storage.ref(urlList[mod(index, urlList.length)]).getDownloadURL()
-                .then(url => setUrl(url))
-                .catch(e => console.error(e))
+        var cancel = false
+        async function fetchUrls() {
+            let newUrl = await getVideoUrl(keyUrl)
+            // console.log('newUrl', newUrl)
+            if(!cancel) {
+                URL.revokeObjectURL(url)
+                url = undefined
+                setUrl(newUrl)
+            } else {
+                URL.revokeObjectURL(newUrl)
+                newUrl = undefined
+            }
+            // premptively fetch prev / next videos if needed
+            preloadVideos([
+                urlList[mod(index + 1, urlList.length)], 
+                // urlList[mod(index - 1, urlList.length)]
+            ])
         }
+        fetchUrls()
+
+        return () => cancel = true
     }, [urlList, index])
 
+
+
     // Choose correct player for current url
-    let fileKind = url && url.split('?')[0].split('.').slice(-1)[0]
-    let player = url && players[fileKind]
+    let fileKind = keyUrl && keyUrl.split('.').slice(-1)[0]
+    let player = keyUrl && players[fileKind]
 
     // Memory format selector
     let memoryFormatSelector = <div className='text-center'>
@@ -186,8 +205,6 @@ function ScriptureSelector(props) {
     let [value, setValue] = useState(new Set()) // list of scripture key strings which are currently selected
     let [scriptures, setScriptures] = useState({})
 
-    console.log('default and value', props.defaultValue, value)
-
     useEffect(() => {
         setValue(new Set(props.defaultValue))
     }, [props.defaultValue])
@@ -205,7 +222,6 @@ function ScriptureSelector(props) {
             return acc
         }, {})
         setScriptures(scriptures)
-        console.log('set scriptures:', scriptures)
 
     }, [props.resources])
 
@@ -240,7 +256,6 @@ function ScriptureSelector(props) {
                                 var v = new Set(value)
                                 if(!!values[0]) v.add(key)
                                 else v.delete(key)
-                                console.log('changing value:', value, v)
                                 setValue(v)
                                 props.onChange(v)
                             }}>
@@ -251,5 +266,63 @@ function ScriptureSelector(props) {
                 </Col>)}</Row>
             </Col>)}</Row>}
         </div>
+    }
+}
+
+// preloadVideos(['memory/Matthew/007/39-007-001-006-music-video.mp4'])
+
+const cacheName = 'btbtb'
+const maxCache = 8 // safari warned at 1.2G
+
+async function getVideoUrl(url) {
+    if(!url)
+        return url
+    if(caches) {
+        let cache = await caches.open(cacheName)
+        let res = await cache.match(url)
+        if(res) {
+            let blob = await res.blob()
+            return URL.createObjectURL(blob)
+        } else {
+            preloadVideos([url])
+        }
+    }
+
+    const downloadUrl = await storage.ref(url).getDownloadURL()
+    return downloadUrl
+}
+
+async function preloadVideos(urls) {
+    if(!caches) return
+    let cache = await caches.open(cacheName)
+
+    let keys = await cache.keys()
+    for(let i in urls) {
+        let url = urls[i]
+        if(!url) continue
+        let res = await cache.match(url)
+        if(res) {
+            res = undefined
+            continue
+        }
+
+        let downloadUrl = await storage.ref(url).getDownloadURL()
+        console.log(downloadUrl)
+
+        // cannot get without setting configuring CORS from gsutil with
+        // gsutil cors set cors.json gs://bythebookthebible.appspot.com
+        res = await fetch(downloadUrl, {
+            method:'GET',
+            mode:'cors',
+            // credentials:'include',
+        })
+        console.log(url, downloadUrl, res)
+        await cache.put(url, res)
+        res = undefined
+    }
+    
+    if(keys.length > maxCache) {
+        // if too many items stored, remove some
+        
     }
 }

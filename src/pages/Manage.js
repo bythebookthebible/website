@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component, useState, useEffect, useRef } from 'react'
 import ReactPlayer from 'react-player'
-import {Row, Col, ProgressBar} from 'react-bootstrap'
+import {Row, Col, ProgressBar, Spinner, Button} from 'react-bootstrap'
 import $ from 'jquery'
 import {
   Switch,
@@ -10,6 +10,8 @@ import {
 } from "react-router-dom"
 
 import topImg  from '../images/R+C.svg'
+import {Login} from '../forms/Login'
+import { useAuth } from '../hooks'
 
 var firebase = require('firebase')
 var db = firebase.firestore()
@@ -24,7 +26,7 @@ const books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy',
 '1 Timothy', '2 Timothy', 'Titus', 'Philemon', 'Hebrews', 'James',
 '1 Peter', '2 Peter', '1 John', '2 John', '3 John', 'Jude', 'Revelation']
 
-const kinds = ["Music Video", "Dance Video", "Karaoke Video", "Slower Video", "Coloring Pages", "Teachers Guide"]
+const kinds = ["Music Video", "Dance Video", "Karaoke Video", "Coloring Pages", "Teachers Guide"]
 const defaultVideoData = {
     book: books[0],
     chapterVerse: '1:1-2',
@@ -32,46 +34,31 @@ const defaultVideoData = {
     title: 'Judge Not',
 }
 
-export default class Manage extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {user: firebase.auth().currentUser}
+export function Manage(props) {
+    let [user, claims] = useAuth(true)
 
-        firebase.auth().onAuthStateChanged(async function(user) {
-            if(!user) {
-                window.location = '/login?to=/manage'
-            }
-            let token = await user.getIdTokenResult(true)
-            if (!token.claims.admin) {
-                window.location = '/memorize'
-            }
-            this.setState({user: user})
-        }.bind(this))
+    if (claims && !claims.admin) {
+        window.location = '/'
     }
-    render() {
-        return (
-            <div className="Manage">
-                {
-                    firebase.auth().currentUser ? 
-                        <div className="button" onClick={() => {
-                            firebase.auth().signOut().then(function(user) {
-                                    window.location = '/memorize'
-                                }).catch(function(e) {
-                                    console.log('Signout error: ', e)
-                                })
-                        }}>Logout</div> :
-                        <a className="button" href='/login'>Login</a>
-                }
 
-                <Switch>
-                    <Route path={'/manage/manageUsers'}><h1>Manage Users</h1></Route>
-                    <Route path={'/manage/manageVideos'}><ManageVideos /></Route>
-                    <Route path={'/manage/manageCamps'}><ManageCamps /></Route>
-                    <Route path={'/manage'}><ManageMenu /></Route>
-                </Switch>
-            </div>
-        )
+    if(!user) {
+        return <div className="Manage text-center">
+            <br/>
+            Please Login.
+            <br/><br/>
+            <Login.LoginButton />
+        </div>
+    } else {
+        return <div className="Manage">
+            {<Switch>
+                <Route path={'/manage/manageUsers'}><ManageUsers /></Route>
+                <Route path={'/manage/manageVideos'}><ManageVideos /></Route>
+                <Route path={'/manage/manageCamps'}><ManageCamps /></Route>
+                <Route path={'/manage'}><ManageMenu /></Route>
+            </Switch>}
+        </div>
     }
+
 }
 
 var ManageMenu = function(props) {
@@ -79,9 +66,9 @@ var ManageMenu = function(props) {
         <div className='ManageMenu container-xl'>
             <Col>
                 <Row><img src={topImg} style={{width:'100%', maxWidth:'250px'}} /></Row>
-                <Row><a className='button' href='/manage/manageVideos'>Manage Videos</a></Row>
-                <Row><a className='button' href='/manage/manageCamps'>Manage Camps</a></Row>
-                {/* <Row><a className='button' href='/manage/manageUsers'>Manage Users</a></Row> */}
+                <Row><a className='btn-round btn btn-primary m-3' href='/manage/manageVideos'>Manage Videos</a></Row>
+                <Row><a className='btn-round btn btn-primary m-3' href='/manage/manageCamps'>Manage Camps</a></Row>
+                <Row><a className='btn-round btn btn-primary m-3' href='/manage/manageUsers'>Manage Users</a></Row>
             </Col>
         </div>
     )
@@ -261,7 +248,6 @@ class ManageVideos extends Component {
                                     newVideos.push(newRow)
                                 }
                             }
-                            
                             this.setState({videos: newVideos})
                         }.bind(this)}/></td>
 
@@ -306,4 +292,71 @@ class ResourceTableRow extends Component {
             </tr>
         )
     }
-} 
+}
+
+var getUsers = firebase.functions().httpsCallable('getUsers');
+var setUser = firebase.functions().httpsCallable('setUser');
+
+function ManageUsers(props) {
+    let currentUser = useAuth()
+    let [users, _setUsers] = useState(null)
+
+    // console.log(users)
+
+    useEffect(() => {
+        let cancel = false
+        if(currentUser) {
+            getUsers()
+                .then(_users => {
+                    if(!cancel) _setUsers(_users.data.users)
+                })
+                .catch(e => console.error(e))
+        }
+        return () => cancel = true
+    }, [currentUser])
+
+    return <div className='container-xl'>
+        <table className='mx-auto my-3' style={{fontSize:'1rem'}}><tbody>
+            <tr>
+                <th></th>
+                <th>Email</th>
+                <th>Full Name</th>
+                <th>Expiration Date</th>
+                <th>Permanent<br/>Access</th>
+                <th>Admin</th>
+                <th>Delete</th>
+            </tr>
+            {!users ? <Spinner animation="border"/> : users.map(user => <UserRow user={user} />)}
+        </tbody></table>
+    </div>
+}
+
+function UserRow(props) {
+    let user = props.user
+    let claims = user.customClaims
+
+    let expirationRef = useRef()
+    let adminRef = useRef()
+    let permanentAccessRef = useRef()
+
+    return <tr>
+        <td><Button size='sm' onClick={e => {
+            let newUser = {
+                uid: user.uid,
+                customClaims: {
+                    admin: adminRef.current.checked,
+                    permanentAccess: permanentAccessRef.current.checked,
+                    expirationDate: new Date(expirationRef.current.value).valueOf(),
+                }
+            }
+            console.log(newUser)
+            setUser(newUser)
+        }}>Update</Button></td>
+        <td><label>{user.email}</label></td>
+        <td><label>{user.displayName}</label></td>
+        <td><label><input type='date' ref={expirationRef} defaultValue={new Date(claims.expirationDate).toISOString().split('T')[0]} /></label></td>
+        <td><label><input type='checkbox' ref={permanentAccessRef} defaultChecked={claims.permanentAccess} /></label></td>
+        <td><label><input type='checkbox' ref={adminRef} defaultChecked={claims.admin} /></label></td>
+        <td className='p-2' style={{fontSize:'1.5rem'}}>&times;</td>
+    </tr>
+}
