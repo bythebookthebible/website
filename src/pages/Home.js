@@ -6,6 +6,8 @@ var giftLink = 'https://memorize.bythebookthebible.com/courses/give-as-a-gift'
 var buyLink = 'https://memorize.bythebookthebible.com'
 var redeemLink = 'https://memorize.bythebookthebible.com/cart/add_product/562899?price_id=641889'
 
+var marketingVideo = 'https://firebasestorage.googleapis.com/v0/b/bythebookthebible.appspot.com/o/public%2Fmarketingvid_16.mp4?alt=media'
+
 export default class Home extends Component {
     render() {
         return (
@@ -21,7 +23,7 @@ export default class Home extends Component {
                     </Row>
 
                     <Row>
-                        <Col xs={12} sm={12} lg={{span: 6, order: 2}}><ReactPlayer url="https://vimeo.com/385379882/4f267b11ed" width="100%" height="auto" controls /></Col>
+                        <Col xs={12} sm={12} lg={{span: 6, order: 2}}><ReactPlayer url={marketingVideo} width="100%" height="auto" controls /></Col>
                         <Col xs={10} sm={6} lg={{span: 3, order: 1}}><q>My 4-year-old memorized 53 verse in 3 months!</q><div className="caption"> - Peter G (parent of ‘memorzie’)</div></Col>
                         <Col xs={10} sm={6} lg={{span: 3, order: 3}}><q>I love it so much it makes me want to laugh cry!</q><div className="caption"> - Maddie B. (4-year-old ‘memorzie’)</div></Col>
                     </Row>

@@ -17,7 +17,6 @@ import venueIdea  from '../images/camp/venueIdea.png';
 import venuePending  from '../images/camp/venuePending.png';
 import venueConfirmed  from '../images/camp/venueConfirmed.png';
 
-import campVideo from '../videos/campPromo.mp4'
 
 var firebase = require('firebase');
 var db = firebase.firestore();
@@ -31,7 +30,7 @@ var venueProgress = {
 
 var venueProgressOrder = ['needed', 'idea', 'pending', 'confirmed'];
 
-// var campVideo = '../videos/campPromo.mp4'
+var campVideo = 'https://firebasestorage.googleapis.com/v0/b/bythebookthebible.appspot.com/o/public%2FcampPromo.mp4?alt=media'
 var email = 'rose@bythebookthebible.com'
 
 export default class Camp extends Component {
