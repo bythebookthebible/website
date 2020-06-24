@@ -9,6 +9,7 @@ import {
 import firebase from '../firebase.js';
 
 import logo from '../images/logo.svg';
+import map from '../images/maps/TestMap.svg';
 
 import Curriculum from '../pages/Curriculum'
 import Home from '../pages/Home'
@@ -20,6 +21,7 @@ import {Login} from '../forms/Login'
 import {AccountSettings, UserNavButton} from '../pages/User'
 import {Manage} from '../pages/Manage'
 import Subscribe from '../forms/Subscribe'
+import ButtonMap from '../forKids/buttonMap'
 
 var memorizeLink = 'https://memorize.bythebookthebible.com/courses/take/matthew-5-6-7-sermon-on-the-mount'
 var signInLink = 'https://memorize.bythebookthebible.com/users/sign_in'
@@ -60,6 +62,11 @@ export default class App extends Component {
                         <Page path="/termsOfService" ><Login.TermsOfService /></Page>
                         <Page path="/privacy" ><Login.PrivacyPolicy /></Page>
                         <Page path="/home" ><Home /></Page>
+                        <Page path="/kidMemorize" ><ButtonMap src={map} buttons={[
+                            {id:'Palace', onClick: () => console.log('Palace Click')},
+                            {id:'SchmoHouse', onClick: () => console.log('SchmoHouse Click')},
+                            {id:'Tree', onClick: () => console.log('Tree Click')},
+                        ]}/></Page>
                         <Page path="/" theme="colorful-theme" nav={<LightNav />} footer={null} ><Memorize /></Page>
                     </Switch>
                 </div>
