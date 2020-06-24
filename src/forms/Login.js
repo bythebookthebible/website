@@ -3,7 +3,7 @@ import {useAuth} from '../hooks.js'
 import { Modal } from 'react-bootstrap';
 import $ from 'jquery'
 
-var firebase = require('firebase');
+import {firebase, db, storage} from '../firebase'
 var auth = firebase.auth()
 // var firebaseui = require('firebaseui');
 

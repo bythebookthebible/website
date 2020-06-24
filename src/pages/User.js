@@ -5,7 +5,7 @@ import {Navbar, Nav, NavDropdown, NavLink} from 'react-bootstrap'
 import {Row, Col} from 'react-bootstrap'
 // import {loadStripe} from '@stripe/stripe-js'
 
-var firebase = require('firebase');
+import {firebase, db, storage} from '../firebase'
 
 // const stripePromise = loadStripe('pk_test_9tSyLuCY9rI4tFCjQ8MPpUxg00vLcOqtaT');
 

@@ -6,7 +6,7 @@ import {
   Switch,
   Route,
 } from 'react-router-dom';
-import firebase from '../firebase.js';
+import {firebase} from '../firebase.js';
 
 import logo from '../images/logo.svg';
 import map from '../images/maps/TestMap.svg';

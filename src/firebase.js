@@ -1,4 +1,4 @@
-var firebase = require('firebase')
+export var firebase = require('firebase')
 require('firebase/functions');
 var firebaseConfig = {
     apiKey: "AIzaSyBa--bg9-LoBToy8OBTS_pXhrn58VdLpNg",
@@ -12,5 +12,5 @@ var firebaseConfig = {
 
 // Initialize Firebase
 firebase = firebase.initializeApp(firebaseConfig);
-export default firebase;
-// var db = firebase.firestore();
+export var db = firebase.firestore()
+export var storage = firebase.storage()
