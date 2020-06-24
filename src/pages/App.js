@@ -18,6 +18,7 @@ import { AccountSettings, UserNavButton } from "../pages/User";
 import { Manage } from "../pages/Manage";
 import Subscribe from "../forms/Subscribe";
 import ButtonMap from "../forKids/buttonMap";
+import ActivityView from "../forKids/activityView";
 
 var memorizeLink =
   "https://memorize.bythebookthebible.com/courses/take/matthew-5-6-7-sermon-on-the-mount";
@@ -102,6 +103,9 @@ export default class App extends Component {
               footer={null}
             >
               <Memorize />
+            </Page>
+            <Page path="/acti">
+              <ActivityView />
             </Page>
           </Switch>
         </div>
