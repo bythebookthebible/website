@@ -43,12 +43,12 @@ const kindsImages = {
 
 // Media players for each kind of resource
 function PDFMedia(props) {
-    return [
-        <div className="player embed-responsive embed-responsive-17by22" >
+    return <div className="player text-right">
+        <a href={props.src}>Download</a><br/>
+        <div className="embed-responsive embed-responsive-17by22" >
             <object data={props.src} type='application/pdf' style={{overflow:'scroll'}}></object>
-        </div>,
-        <br/>,<a href={props.src}>Download</a>
-    ]
+        </div>
+    </div>
 }
 
 function VideoMedia(props) {
