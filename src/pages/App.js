@@ -59,8 +59,9 @@ export default class App extends Component {
                         <Page path="/account" ><AccountSettings /></Page>
                         <Page path="/termsOfService" ><Login.TermsOfService /></Page>
                         <Page path="/privacy" ><Login.PrivacyPolicy /></Page>
-                        <Page path="/home" ><Home /></Page>
-                        <Page path="/" theme="colorful-theme" nav={<LightNav />} footer={null} ><Memorize /></Page>
+                        <Page path="/memorize" theme="colorful-theme" nav={<LightNav />} footer={null} ><Memorize /></Page>
+                        <Page exact path="/" ><Home /></Page>
+                        <Page path="" ><NotFound /></Page>
                     </Switch>
                 </div>
             </Router>
@@ -69,12 +70,19 @@ export default class App extends Component {
 
 }
 
+function NotFound(props) {
+    return <div className='text-center p-5'>
+        <h1>Error 404, Page Not found.</h1>
+        <p>Go to <a href='/'>home page</a></p>
+    </div>
+}
+
 function Page(props) {
     let defaultNav = <FullNav />
     let defaultFooter = <Footer />
     let defaultTheme = "plain-theme"
 
-    return <Route path={props.path}>
+    return <Route {...props}>
         {props.nav === undefined ? defaultNav : props.nav}
         <div className={"body " + (props.theme || defaultTheme)}>
             {props.children}
@@ -93,11 +101,11 @@ function Footer(props) {
 
 function FullNav(props) {
     return <Navbar collapseOnSelect expand="md">
-        <Navbar.Brand href="/home"><img src={logo} height="30rem"/><div>By the Book</div></Navbar.Brand>
+        <Navbar.Brand href="/"><img src={logo} height="30rem"/><div>By the Book</div></Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
         <Navbar.Collapse  id="responsive-navbar-nav">
             <Nav className="mr-auto">
-                <Nav.Link href="/">Memorize</Nav.Link>
+                <Nav.Link href="/memorize">Memorize (Beta)</Nav.Link>
                 <Nav.Link href="/camp">Camp</Nav.Link>
                 <Nav.Link href="/features">Features</Nav.Link>
                 <Nav.Link href="/testimonials">Testimonials</Nav.Link>
@@ -105,7 +113,8 @@ function FullNav(props) {
                 <Nav.Link href={internLink}>Internship</Nav.Link>
             </Nav>
             <Nav>
-                <UserNavButton className="btn btn-round btn-primary mx-auto" />
+                <Nav.Link href={signInLink} className="btn btn-round btn-primary mx-auto">Login</Nav.Link>
+                {/* <UserNavButton className="btn btn-round btn-primary mx-auto" /> */}
             </Nav>
         </Navbar.Collapse>
     </Navbar>
@@ -113,7 +122,7 @@ function FullNav(props) {
 
 function LightNav(props) {
     return <Navbar collapseOnSelect expand="md" >
-        <Navbar.Brand href="/home"><img src={logo} height="20rem" /></Navbar.Brand>
+        <Navbar.Brand href="/"><img src={logo} height="20rem" /></Navbar.Brand>
         <Nav className="ml-auto">
             {/* <a href={memorizeLink} className='button'>Thinkific Login</a> */}
             <UserNavButton />

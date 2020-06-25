@@ -32,7 +32,7 @@ var storage = firebase.storage()
 
 const books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy',
 'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles',
-'Ezra', 'Nehemiah', 'Esther', 'Job', 'Psalms', 'Proverbs', 'Ecclesiastes', 'Song of Solomon',
+'Ezra', 'Nehemiah', 'Esther', 'Job', 'Psalm', 'Proverbs', 'Ecclesiastes', 'Song of Solomon',
 'Isaiah', 'Jeremiah', 'Lamentations', 'Ezekiel', 'Daniel', 'Hosea',
 'Joel', 'Amos', 'Obadiah', 'Jonah', 'Micah', 'Nahum', 'Habakkuk', 'Zephaniah', 'Haggai', 'Zechariah', 'Malachi',
 'Matthew', 'Mark', 'Luke', 'John', 'Acts', 'Romans', '1 Corinthians', '2 Corinthians',
@@ -54,14 +54,13 @@ const books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy',
 // }
 const kinds = {
     "Music Video": Watch,
-    // "What It Means": WhatItMeans,
+    "Teachers Guide": WhatItMeans,
     // "Speed Memory": SpeedMemory,
-    // "Schmoment": Schmoment,
+    "Schmoment": Schmoment,
     // "Music": Music,
     "Dance Video": Dance,
-    "Teachers Guide": FamilyChat,
     "Coloring Pages": Color,
-    // "Karaoke Video": Karaoke,
+    "Karaoke Video": Karaoke,
 }
 
 // convert between scripture references and a string key
@@ -125,11 +124,11 @@ export default function Memorize(props) {
     
     let upgradeMsg
     if (!user) {// Should log in
-        upgradeMsg = <div><Login.LoginButton/> for free trial</div>
+        upgradeMsg = <div><Login.LoginButton/> for 30 day trial access to all chapters.</div>
     } else if(claims.expirationDate - Date.now() > 0 || claims.permanentAccess || claims.admin) {
         upgradeMsg = null // Full access
     } else { // Should subscribe
-        upgradeMsg = <div><a href='/subscribe'>Subscribe to see everything</a></div>
+        upgradeMsg = <div><a href='/subscribe'>Subscribe to access all chapters</a></div>
     }
     
     // Choose correct resource to play
@@ -179,13 +178,15 @@ export default function Memorize(props) {
     let [showControls, setShowControls] = useState(true)
 
     // Page layout
-    return <div className={`container-xl py-2 memorize-controls ${showControls ? '' : 'hide'}`} onMouseMove={mouseMoving(setShowControls)}>
-        {player && player({src: url, style: {position:'absolute', zIndex:1}})}
-        <ScriptureSelector key='scripture-selector' className='scripture-selector' selected={scriptureSelected} resources={resources} onChange={v => {setScriptureSelected(v)}} />
-        <i className="fa fa-4x fa-chevron-left player-control-prev" onClick={() => setIndex(index - 1) } />
-        <i className="fa fa-4x fa-chevron-right player-control-next" onClick={() => setIndex(index + 1) }/>
-        {memoryFormatSelector}
-        {/* {upgradeMsg} */}
+    return <div className='text-center py-2'>
+        {upgradeMsg}
+        <div className={`container-xl py-5 memorize-controls ${showControls ? '' : 'hide'}`} onMouseMove={mouseMoving(setShowControls)}>
+            {player && player({src: url, style: {position:'absolute', zIndex:1}})}
+            <ScriptureSelector key='scripture-selector' className='scripture-selector' selected={scriptureSelected} resources={resources} onChange={v => {setScriptureSelected(v)}} />
+            <i className="fa fa-4x fa-chevron-left player-control-prev" onClick={() => setIndex(index - 1) } />
+            <i className="fa fa-4x fa-chevron-right player-control-next" onClick={() => setIndex(index + 1) }/>
+            {memoryFormatSelector}
+        </div>
     </div>
 }
 
@@ -195,7 +196,7 @@ let mouseMoving = (cb) => () => {
     
     (() => {
         clearTimeout(timeout);
-        timeout = setTimeout(() => cb(false), 5000);
+        timeout = setTimeout(() => cb(false), 3000);
     })();
 }
 

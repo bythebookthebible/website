@@ -27,7 +27,7 @@ export function UserNavButton(props) {
     return [
         <NavDropdown title={user.displayName} as={NavLink}>
             {claims.admin && <NavDropdown.Item href='/manage' >Admin</NavDropdown.Item>}
-            <NavDropdown.Item href='/account' >My Account</NavDropdown.Item>
+            {/* <NavDropdown.Item href='/account' >My Account</NavDropdown.Item> */}
             <NavDropdown.Item {...props} onClick={() => {
                 firebase.auth().signOut().then(function(user) {
                         console.log('Signed out');

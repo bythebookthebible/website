@@ -18,7 +18,7 @@ var db = firebase.firestore()
 
 const books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy',
 'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles',
-'Ezra', 'Nehemiah', 'Esther', 'Job', 'Psalms', 'Proverbs', 'Ecclesiastes', 'Song of Solomon',
+'Ezra', 'Nehemiah', 'Esther', 'Job', 'Psalm', 'Proverbs', 'Ecclesiastes', 'Song of Solomon',
 'Isaiah', 'Jeremiah', 'Lamentations', 'Ezekiel', 'Daniel', 'Hosea',
 'Joel', 'Amos', 'Obadiah', 'Jonah', 'Micah', 'Nahum', 'Habakkuk', 'Zephaniah', 'Haggai', 'Zechariah', 'Malachi',
 'Matthew', 'Mark', 'Luke', 'John', 'Acts', 'Romans', '1 Corinthians', '2 Corinthians',
@@ -26,7 +26,9 @@ const books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy',
 '1 Timothy', '2 Timothy', 'Titus', 'Philemon', 'Hebrews', 'James',
 '1 Peter', '2 Peter', '1 John', '2 John', '3 John', 'Jude', 'Revelation']
 
-const kinds = ["Music Video", "Dance Video", "Karaoke Video", "Coloring Pages", "Teachers Guide"]
+// const kinds = ["Music Video", "Dance Video", "Karaoke Video", "Coloring Pages", "Teachers Guide"]
+const kinds = ["Music Video", "Teachers Guide", "Speed Memory", "Schmoment", "Music", "Dance Video", "Coloring Pages", "Karaoke Video"]
+
 const defaultVideoData = {
     book: books[0],
     chapterVerse: '1:1-2',
@@ -234,16 +236,16 @@ class ManageVideos extends Component {
 
                         <td><input type='file' id='fileInput' size={8} multiple style={{display: 'none'}}
                         onChange={function(event) {
-                            let lastEntry = this.state.videos[this.state.videos.length - 1]
-                            if(this.state.videos.length == 0) {
-                                lastEntry = {data: defaultVideoData}
-                            }
+                            let defaultData
+                            if(this.state.videos.length == 0) defaultData = {...defaultVideoData}
+                            else defaultData = this.state.videos[this.state.videos.length - 1].data
+
                             let newVideos = [...this.state.videos]
 
                             for(let i = 0; i <  event.target.files.length; i++) {
                                 // Add a row to the table for each selected file.
-                                let newRow = {...lastEntry, newResource: true, key: event.target.files[i].name}
-                                newRow.data = {...newRow.data, file: event.target.files[i]}
+                                let file = event.target.files[i]
+                                let newRow = {data: {...videoDataGuess(file.name, defaultData), file: file}, newResource: true, key: file.name}
                                 if(!(newRow.key in newVideos.map(v => v.key))) {
                                     newVideos.push(newRow)
                                 }
@@ -257,6 +259,35 @@ class ManageVideos extends Component {
             </div>
         )
     }
+}
+
+function videoDataGuess(fileName, defaultData) {
+    let lastEntryData = {...defaultData}
+
+    // kind
+    if(/\.pdf$/.test(fileName)){
+        if(/[^a-z]+tg[^a-z$]+/i.test(fileName)) lastEntryData.kind = 'Teachers Guide'
+        else lastEntryData.kind = 'Coloring Pages'
+    } else if(/\.m4a$/.test(fileName)){
+        if(/[^a-z]+kar[^a-z$]+/i.test(fileName)) lastEntryData.kind = 'Karaoke Video'
+        if(/[^a-z]+dv[^a-z$]+/i.test(fileName)) lastEntryData.kind = 'Dance Video'
+        if(/[^a-z]+lv[^a-z$]+/i.test(fileName)) lastEntryData.kind = 'Schmoment'
+        else lastEntryData.kind = 'Music Video'
+    } else if(/\.mp3$/.test(fileName)){
+        lastEntryData.kind = 'Music'
+    }
+
+    // verse
+
+    // title
+    let title = /^[\w ]+/.exec(fileName)
+    if(title.length) lastEntryData.title = toTitleCase(title[0])
+
+    return lastEntryData
+}
+
+function toTitleCase(str) {
+    return str.trim().replace(/\b[a-z]|['_][a-z]|\B[A-Z]/g, function(x){return x[0]==="'"||x[0]==="_"?x:String.fromCharCode(x.charCodeAt(0)^32)})
 }
 
 class ResourceTableRow extends Component {
