@@ -1,4 +1,4 @@
-import {stripeKeyTest, stripeEndpointSecret} from '../api_keys.js'
+import {stripeSecretKey, stripeEndpointSecret} from '../test_api_keys.js'
 
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 const functions = require('firebase-functions');
@@ -7,7 +7,7 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
-const stripe = require('stripe')(stripeKeyTest);
+const stripe = require('stripe')(stripeSecretKey);
 
 // user custom claims are: admin, permanentAccess, expirationDate, stripeId
 
