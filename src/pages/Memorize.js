@@ -16,6 +16,9 @@ import {Login} from '../forms/Login.js'
 import videoSplash from "../images/videoSplash.png"
 import { useAuth, useFirestore, useCachedStorage } from '../hooks';
 
+import {firebase, db, storage} from '../firebase'
+import {books, kinds, keyFromScripture, scriptureFromKey, mod} from '../util'
+
 import WhatItMeans  from '../images/memoryKinds/WhatItMeans.svg'
 import Watch        from '../images/memoryKinds/Watch.svg'
 import SpeedMemory  from '../images/memoryKinds/SpeedMemory.svg'
@@ -26,33 +29,7 @@ import FamilyChat   from '../images/memoryKinds/FamilyChat.svg'
 import Dance        from '../images/memoryKinds/Dance.svg'
 import Color        from '../images/memoryKinds/Color.svg'
 
-var firebase = require('firebase')
-var db = firebase.firestore()
-var storage = firebase.storage()
-
-const books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy',
-'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles',
-'Ezra', 'Nehemiah', 'Esther', 'Job', 'Psalms', 'Proverbs', 'Ecclesiastes', 'Song of Solomon',
-'Isaiah', 'Jeremiah', 'Lamentations', 'Ezekiel', 'Daniel', 'Hosea',
-'Joel', 'Amos', 'Obadiah', 'Jonah', 'Micah', 'Nahum', 'Habakkuk', 'Zephaniah', 'Haggai', 'Zechariah', 'Malachi',
-'Matthew', 'Mark', 'Luke', 'John', 'Acts', 'Romans', '1 Corinthians', '2 Corinthians',
-'Galatians', 'Ephesians', 'Philippians', 'Colossians', '1 Thessalonians', '2 Thessalonians',
-'1 Timothy', '2 Timothy', 'Titus', 'Philemon', 'Hebrews', 'James',
-'1 Peter', '2 Peter', '1 John', '2 John', '3 John', 'Jude', 'Revelation']
-
-// const kinds = ["Music Video", "Dance Video", "Karaoke Video", "Coloring Pages", "Teachers Guide"]
-// const kinds = {
-//     "Watch": Watch,
-//     "What It Means": WhatItMeans,
-//     "Speed Memory": SpeedMemory,
-//     "Schmoment": Schmoment,
-//     "Music": Music,
-//     "Karaoke": Karaoke,
-//     "Family Chat": FamilyChat,
-//     "Dance": Dance,
-//     "Color": Color,
-// }
-const kinds = {
+const kindsImages = {
     "Music Video": Watch,
     // "What It Means": WhatItMeans,
     // "Speed Memory": SpeedMemory,
@@ -64,28 +41,14 @@ const kinds = {
     // "Karaoke Video": Karaoke,
 }
 
-// convert between scripture references and a string key
-// used for tracking scripture selected
-const keyFromScripture = (book, chapter, verses) => `${String(books.indexOf(book)).padStart(2,'0')}-${String(chapter).padStart(3,'0')}-${String(verses).padStart(7,'0')}`
-const scriptureFromKey = key => {
-    let r = key.split('-')
-    return {book: books[Number(r[0])], chapter: Number(r[1]), verses: `${Number(r[2])}-${Number(r[3])}`}
-}
-
-// this is a mathematically correct mod accounting for negative numbers
-// mod(n, m) returns i where 0 <= i < m, where n - i is divisible by m
-function mod(n, m) {
-  return m >= 0 ? n % m : (n % m) + m
-}
-
 // Media players for each kind of resource
 function PDFMedia(props) {
-    return [
-        <div className="player embed-responsive embed-responsive-17by22" >
+    return <div className="player text-right">
+        <a href={props.src}>Download</a><br/>
+        <div className="embed-responsive embed-responsive-17by22" >
             <object data={props.src} type='application/pdf' style={{overflow:'scroll'}}></object>
-        </div>,
-        <br/>,<a href={props.src}>Download</a>
-    ]
+        </div>
+    </div>
 }
 
 function VideoMedia(props) {
@@ -109,7 +72,7 @@ export default function Memorize(props) {
     // Initialize and load resources and selections
     let [scriptureSelected, setScriptureSelected] = useState(defaultSelected)
     // let [kindsSelected, setKindsSelected] = useState(new Set([kinds[0]]))
-    let [kindsSelected, setKindsSelected] = useState(new Set([Object.keys(kinds)[0]]))
+    let [kindsSelected, setKindsSelected] = useState(new Set([Object.keys(kindsImages)[0]]))
 
     let resources = useFirestore('memoryResources', (cum, doc) => {
         let d = doc.data()
@@ -163,7 +126,7 @@ export default function Memorize(props) {
 
     // Memory format selector
     let memoryFormatSelector = <div className='text-center' style={{bottom:0, zIndex:1}}>
-        {Object.keys(kinds).map((kind) => 
+        {Object.keys(kindsImages).map((kind) => 
             <ToggleButtonGroup className='checkbox' type='checkbox' key={kind} defaultValue={kindsSelected.has(kind) ? kind : []} onChange={values => {
                 let k = new Set(kindsSelected)
                 if(!!values[0]) {k.add(kind)}
@@ -171,7 +134,7 @@ export default function Memorize(props) {
                 setKindsSelected(k)
                 setIndex(0)
             }}>
-                <ToggleButton value={kind} variant='outline-primary'><div style={{WebkitMask:`url(${kinds[kind]})`, mask:`url(${kinds[kind]})`, maskSize: "cover"}}></div></ToggleButton>
+                <ToggleButton value={kind} variant='outline-primary'><div style={{WebkitMask:`url(${kindsImages[kind]})`, mask:`url(${kindsImages[kind]})`, maskSize: "cover"}}></div></ToggleButton>
             </ToggleButtonGroup>
         )}
     </div>

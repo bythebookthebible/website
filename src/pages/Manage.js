@@ -13,8 +13,7 @@ import topImg  from '../images/R+C.svg'
 import {Login} from '../forms/Login'
 import { useAuth } from '../hooks'
 
-var firebase = require('firebase')
-var db = firebase.firestore()
+import {firebase, db, storage} from '../firebase'
 
 const books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy',
 'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles',

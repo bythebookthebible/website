@@ -1,9 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import {openDB, deleteDB, wrap, unwrap} from 'idb'
 
-var firebase = require('firebase')
-var db = firebase.firestore()
-var storage = firebase.storage()
+import {firebase, db, storage} from './firebase'
 
 export function useAuth(useClaims) {
     let [user, setUser] = useState(null)

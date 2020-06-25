@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "../styles/index.scss";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import firebase from "../firebase.js";
+import { firebase } from "../firebase.js";
 
 import logo from "../images/logo.svg";
 import map from "../images/maps/TestMap.svg";
@@ -17,8 +17,7 @@ import { Login } from "../forms/Login";
 import { AccountSettings, UserNavButton } from "../pages/User";
 import { Manage } from "../pages/Manage";
 import Subscribe from "../forms/Subscribe";
-import ButtonMap from "../forKids/buttonMap";
-import ActivityView from "../forKids/activityView";
+import KidModeApp from "../forKids/kidModeApp";
 
 var memorizeLink =
   "https://memorize.bythebookthebible.com/courses/take/matthew-5-6-7-sermon-on-the-mount";
@@ -84,17 +83,7 @@ export default class App extends Component {
               <Home />
             </Page>
             <Page path="/kidMemorize">
-              <ButtonMap
-                src={map}
-                buttons={[
-                  { id: "Palace", onClick: () => console.log("Palace Click") },
-                  {
-                    id: "SchmoHouse",
-                    onClick: () => console.log("SchmoHouse Click"),
-                  },
-                  { id: "Tree", onClick: () => console.log("Tree Click") },
-                ]}
-              />
+              <KidModeApp />
             </Page>
             <Page
               path="/"
@@ -103,9 +92,6 @@ export default class App extends Component {
               footer={null}
             >
               <Memorize />
-            </Page>
-            <Page path="/acti">
-              <ActivityView />
             </Page>
           </Switch>
         </div>

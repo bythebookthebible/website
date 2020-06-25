@@ -18,8 +18,7 @@ import venuePending  from '../images/camp/venuePending.png';
 import venueConfirmed  from '../images/camp/venueConfirmed.png';
 
 
-var firebase = require('firebase');
-var db = firebase.firestore();
+import {firebase, db, storage} from '../firebase'
 
 var venueProgress = {
     needed: venueNeeded, 

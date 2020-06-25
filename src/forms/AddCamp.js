@@ -3,9 +3,7 @@ import {Row, Col} from 'react-bootstrap'
 import $ from "jquery";
 
 // import firebase from '../firebase.js';
-var firebase = require('firebase');
-
-var db = firebase.firestore();
+import {firebase, db, storage} from '../firebase'
 
 var email = 'rose@bythebookthebible.com'
 

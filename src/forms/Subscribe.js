@@ -3,7 +3,7 @@ import {loadStripe} from '@stripe/stripe-js'
 import $ from "jquery"
 import {useAuth} from '../hooks.js'
 
-const firebase = require('firebase');
+import {firebase, db, storage} from '../firebase'
 
 const createSession = firebase.functions().httpsCallable('createCheckoutSession');
 const stripePromise = loadStripe('pk_test_9tSyLuCY9rI4tFCjQ8MPpUxg00vLcOqtaT');
