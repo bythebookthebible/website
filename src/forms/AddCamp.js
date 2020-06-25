@@ -54,9 +54,8 @@ export default class AddCamp extends Component {
                                     startDate: $('#startDate').val(), 
                                     venue: $('#venue').val(), 
                                     notes: $('#notes').val()};
-                                console.log(data);
-                                addCamp(data).finally(function() {window.location = '/camp';});
-                                // window.location = '/camp';
+                                addCamp(data).finally(function() {window.location = '/camp/thankyou';});
+                                // window.location = '/camp/thankyou';
                             }}>
                             <Col>
                                 <input id='fname' type='text' placeholder='First Name'/>

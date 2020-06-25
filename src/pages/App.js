@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import '../css/Text.css';
-import '../css/Layout.css';
+import '../styles/index.scss';
 import {Navbar, Nav, NavDropdown} from 'react-bootstrap'
 import {
   BrowserRouter as Router,
@@ -16,8 +15,11 @@ import Home from '../pages/Home'
 import Camp from '../pages/Camp'
 import OurStory from '../pages/OurStory'
 import Testimonials from '../pages/Testimonials'
-import Login from '../forms/Login'
-import Manage from '../pages/Manage'
+import Memorize from '../pages/Memorize'
+import {Login} from '../forms/Login'
+import {AccountSettings, UserNavButton} from '../pages/User'
+import {Manage} from '../pages/Manage'
+import Subscribe from '../forms/Subscribe'
 
 var memorizeLink = 'https://memorize.bythebookthebible.com/courses/take/matthew-5-6-7-sermon-on-the-mount'
 var signInLink = 'https://memorize.bythebookthebible.com/users/sign_in'
@@ -35,6 +37,9 @@ export default class App extends Component {
 
         firebase.auth().onAuthStateChanged(function(user) {
             this.setState({user: user});
+            // user.getIdTokenResult(true).then((token) => {
+            //     console.log(token)
+            // })
         }.bind(this));
     }
 
@@ -42,62 +47,85 @@ export default class App extends Component {
         return (
             <Router>
                 <div className="App">
-                    <Navbar collapseOnSelect expand="md">
-                        <Navbar.Brand href="/"><img src={logo} height="35rem"/><div>By the Book</div></Navbar.Brand>
-                        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                        <Navbar.Collapse id="responsive-navbar-nav">
-                            <Nav className="mr-auto" >
-                                <Nav.Link href="/features">Features</Nav.Link>
-                                <Nav.Link href="/testimonials">Testimonials</Nav.Link>
-                                <Nav.Link href="/ourStory">Our Story</Nav.Link>
-                                <Nav.Link href="/camp">Camp</Nav.Link>
-                                <Nav.Link href={internLink}>Internship</Nav.Link>
-                                <Nav.Link href={buyLink}>Sign Up</Nav.Link>
-                            </Nav>
-                            <Nav>
-                                <a href={memorizeLink} className='button'>Login</a>
-
-                                {
-                                    // firebase.auth().currentUser ? 
-                                    //     <div className="button" onClick={() => {
-                                    //         console.log('Im trying :}')
-                                    //         firebase.auth().signOut().then(function(user) {
-                                    //                 console.log('Signed out');
-                                    //             }).catch(function(e) {
-                                    //                 console.log('Signout error: ', e);
-                                    //             });
-                                    //     }}>Logout</div> :
-                                    //     <a className="button" href='/login'>Login</a>
-                                }
-                                
-                            </Nav>
-                        </Navbar.Collapse>
-                    </Navbar>
-
                     {/* <div className="construction">This site is currently under construction.</div> */}
 
-                    <div className="Body">
-                        <div className="page">
-                            <Switch>
-                                <Route path="/ourStory"><OurStory /></Route>
-                                <Route path="/testimonials"><Testimonials /></Route>
-                                <Route path="/features"><Curriculum /></Route>
-                                <Route path="/camp"><Camp /></Route>
-                                {/* <Route path="/login"><Login /></Route>
-                                <Route path="/manage"><Manage /></Route> */}
-                                <Route path="/"><Home /></Route>
-                            </Switch>
-                        </div>
-                    </div>
-                    
-                    <div className="Footer">
-                        <div>Facebook: <a href={"https://www.facebook.com/" + facebook}>{facebook}</a></div>
-                        <div>Email: <a href={"mailto:" + email}>{email}</a></div>
-                        <div>Address: {address}</div>
-                    </div>
+                    <Switch>
+                        <Page path="/ourStory" ><OurStory /></Page>
+                        <Page path="/testimonials" ><Testimonials /></Page>
+                        <Page path="/features" ><Curriculum /></Page>
+                        <Page path="/camp" ><Camp /></Page>
+                        <Page path="/manage" ><Manage /></Page>
+                        <Page path="/subscribe" ><Subscribe /></Page>
+                        <Page path="/account" ><AccountSettings /></Page>
+                        <Page path="/termsOfService" ><Login.TermsOfService /></Page>
+                        <Page path="/privacy" ><Login.PrivacyPolicy /></Page>
+                        <Page path="/memorize" theme="colorful-theme" nav={<LightNav />} footer={null} ><Memorize /></Page>
+                        <Page exact path="/" ><Home /></Page>
+                        <Page path="" ><NotFound /></Page>
+                    </Switch>
                 </div>
             </Router>
         );
     }
 
+}
+
+function NotFound(props) {
+    return <div className='text-center p-5'>
+        <h1>Error 404, Page Not found.</h1>
+        <p>Go to <a href='/'>home page</a></p>
+    </div>
+}
+
+function Page(props) {
+    let defaultNav = <FullNav />
+    let defaultFooter = <Footer />
+    let defaultTheme = "plain-theme"
+
+    return <Route {...props}>
+        {props.nav === undefined ? defaultNav : props.nav}
+        <div className={"body " + (props.theme || defaultTheme)}>
+            {props.children}
+        </div>
+        {props.footer === undefined ? defaultFooter : props.footer}
+    </Route>
+}
+
+function Footer(props) {
+    return <div className="Footer">
+        <div>Facebook: <a href={"https://www.facebook.com/" + facebook}>{facebook}</a></div>
+        <div>Email: <a href={"mailto:" + email}>{email}</a></div>
+        <div>Address: {address}</div>
+    </div>
+}
+
+function FullNav(props) {
+    return <Navbar collapseOnSelect expand="md">
+        <Navbar.Brand href="/"><img src={logo} height="30rem"/><div>By the Book</div></Navbar.Brand>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
+        <Navbar.Collapse  id="responsive-navbar-nav">
+            <Nav className="mr-auto">
+                <Nav.Link href="/memorize">Memorize (Beta)</Nav.Link>
+                <Nav.Link href="/camp">Camp</Nav.Link>
+                <Nav.Link href="/features">Features</Nav.Link>
+                <Nav.Link href="/testimonials">Testimonials</Nav.Link>
+                <Nav.Link href="/ourStory">Our&nbsp;Story</Nav.Link>
+                <Nav.Link href={internLink}>Internship</Nav.Link>
+            </Nav>
+            <Nav>
+                <Nav.Link href={signInLink} className="btn btn-round btn-primary mx-auto">Login</Nav.Link>
+                {/* <UserNavButton className="btn btn-round btn-primary mx-auto" /> */}
+            </Nav>
+        </Navbar.Collapse>
+    </Navbar>
+}
+
+function LightNav(props) {
+    return <Navbar collapseOnSelect expand="md" >
+        <Navbar.Brand href="/"><img src={logo} height="20rem" /></Navbar.Brand>
+        <Nav className="ml-auto">
+            {/* <a href={memorizeLink} className='button'>Thinkific Login</a> */}
+            <UserNavButton />
+        </Nav>
+    </Navbar>
 }

@@ -56,9 +56,8 @@ export default class AddVenue extends Component {
                                     venueType: $('#venueType').val(), 
                                     scheduling: $('#scheduling').val(), 
                                     notes: $('#notes').val()};
-                                console.log(data);
-                                addVenue(data).finally(function() {window.location = '/camp';});
-                                // window.location = '/camp';
+                                addVenue(data).finally(function() {window.location = '/camp/thankyou';});
+                                // window.location = '/camp/thankyou';
                             }}>
                             <Col>
                                 <input id='fname' type='text' placeholder='First Name'/>
@@ -68,7 +67,7 @@ export default class AddVenue extends Component {
                                 <select id='location'>
                                     {
                                         this.state.camps ? 
-                                            this.state.camps.map(function(c) {return <option value={c} key={c==this.defaultCamp ? '_' : c}>{c}</option>}.bind(this)) :
+                                            this.state.camps.map(function(c) {return <option value={c} key={c===this.defaultCamp ? '_' : c}>{c}</option>}.bind(this)) :
                                             <option value={this.defaultCamp} key='_'>{this.defaultCamp}</option>
                                     }
                                 </select>

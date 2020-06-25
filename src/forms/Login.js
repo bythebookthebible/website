@@ -1,55 +1,133 @@
-import React, { Component } from 'react';
-import {
-  Switch,
-  Route,
-} from 'react-router-dom';
+import React, { useState} from 'react';
+import {useAuth} from '../hooks.js'
+import { Modal } from 'react-bootstrap';
+import $ from 'jquery'
 
 var firebase = require('firebase');
-var firebaseui = require('firebaseui');
+var auth = firebase.auth()
+// var firebaseui = require('firebaseui');
 
-export default class Login extends Component {
-    constructor(props) {
-        super(props);
+export var Login = {
+    LoginButton: LoginButton,
+    LogInOutButton: LogInOutButton,
+    TermsOfService: TermsOfService,
+    PrivacyPolicy: PrivacyPolicy,
+}
 
-        var toUrl = (new URLSearchParams(window.location.search)).get('to')
-        toUrl = toUrl ? toUrl : '/memorize';
-        console.log(toUrl);
+function LogInOutButton(props) {
+    let user = useAuth()
 
-        var uiConfig = {
-            signInSuccessUrl: toUrl,
-            credentialHelper: firebaseui.auth.CredentialHelper.NONE,
-            signInOptions: [
-                // Leave the lines as is for the providers you want to offer your users.
-                firebase.auth.EmailAuthProvider.PROVIDER_ID,
-                //   firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-                //   firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-                //   firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
-            ],
-            tosUrl: '/login/termsOfService',
-            privacyPolicyUrl: '/login/privacy'
-        };
-      // Initialize the FirebaseUI Widget using Firebase.
-      var ui = new firebaseui.auth.AuthUI(firebase.auth());
-      // The start method will wait until the DOM is loaded.
-      ui.start('#firebaseui-login', uiConfig);
-    }
-
-    render() {
-        return (
-            <div className="form">
-                <Switch>
-                    <Route path="/login/termsOfService"><TermsOfService /></Route>
-                    <Route path="/login/privacy"><PrivacyPolicy /></Route>
-                    <Route path="/"><div id="firebaseui-login" /></Route>
-                </Switch>
-            </div>
-        )
+    if(user) {
+        return <div className="btn btn-round btn-primary" onClick={() => {
+                auth.signOut().then(function(user) {
+                    }).catch(function(e) {
+                        console.log('Signout error: ', e);
+                    });
+            }}>Logout</div>
+    } else {
+        return <LoginButton className="btn-secondary" />
     }
 }
 
-const TermsOfService = (props) => {
+function LoginButton(props) {
+    const tosUrl = '/termsOfService'
+    const privacyPolicyUrl = '/privacy'
+    const [show, setShow] = useState(false);
+    const [showResetPassword, setShowResetPassword] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+
+    function error(e) {
+        let msg = e.message || e
+        // Change some error messages
+        if(e.code === 'auth/wrong-password') msg = 'Invalid Password.'
+        console.log(e);
+        setErrorMessage(msg);
+    }
+
+    async function checkEmail(email) {
+        let methods = await auth.fetchSignInMethodsForEmail(email)
+        if(methods.length == 0) {
+            $("#name").css({display: "block"})
+            $("#authTitle").text("Create Account")
+            $('#submitAuth').click(createAccount)
+        } else {
+            $("#name").css({display: "none"})
+            $("#authTitle").text("Sign In")
+            $('#submitAuth').click(signIn)
+        }
+        $('#submitAuth').attr("readonly", false)
+    }
+
+    async function createAccount() {
+        let email = $("#email").val()
+        let password = $("#password").val()
+        let name = $("#name").val()
+        // validate input
+        if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
+            error("Please enter a valid email.")
+        else if (password.length === 0)
+            error("Please enter password.")
+        else if (name.length === 0)
+            error("Please enter your name.")
+        else {
+            await auth.createUserWithEmailAndPassword(email, password)
+                .then(async () => {
+                    await firebase.auth().currentUser.updateProfile({displayName: name})
+                        .then(() => setShow(false))
+                        .catch(error)
+                })
+                .catch(error)
+        }
+    }
+
+    function signIn() {
+        let email = $("#email").val()
+        let password = $("#password").val()
+        auth.signInWithEmailAndPassword(email, password)
+            .then(() => setShow(false))
+            .catch(e => {
+                setShowResetPassword(true)
+                error(e)
+            })
+    }
+
+    return [
+        <button className="btn btn-round btn-primary" {...props} onClick={() => setShow(true)}>Login</button>,
+        <Modal onHide={() => setShow(false)} show={show} size="sm" aria-labelledby="authTitle" centered>
+            <Modal.Header closeButton>
+                <Modal.Title id="authTitle">Sign In</Modal.Title>
+            </Modal.Header>
+
+            <Modal.Body>
+                <input type="email" className="form-control" id="email" placeholder="Email" onBlur={e => checkEmail(e.target.value)} />
+                <input type="password" className="form-control" id="password" placeholder="Password" />
+                <input type="text" className="form-control" id="name" placeholder="Name" style={{display: "none"}}/>
+                <div className="d-flex flex-centered">
+                    <button type="button" className="btn btn-round btn-secondary m-1" onClick={() => setShow(false)} >Cancel</button>
+                    <button type="submit" className="btn btn-round btn-primary m-1" id="submitAuth" readOnly>Submit</button>
+                </div>
+                <div id="error-message" className="text-danger">{errorMessage}</div>
+                {showResetPassword && <div id="resetPassword" className="p-1 text-center">
+                    Having Trouble?
+                    <a href="" className="mx-1" onClick={() =>
+                        auth.sendPasswordResetPassword($("#email").val())
+                            .catch(error)
+                            .then(() => setShow(false)) // TODO set better response message
+                    }>Reset Password</a>
+                </div>}
+            </Modal.Body>
+
+            <Modal.Footer className="modal-footer d-flex flex-centered">
+                <a href={tosUrl} className="p-1">Terms of Service</a>
+                <a href={privacyPolicyUrl} className="p-1">Privacy Policy</a>
+            </Modal.Footer>
+        </Modal>
+    ]
+}
+
+function TermsOfService(props) {
     return (
-    <div className="TermsOfService">
+    <div className="container-xl" >
         <h1>-- By The Book The Bible - Terms of Service / Use --</h1>
         <h2>Terms of Use (the short, but not legal, version):</h2>
         <p>This subscription is for everyone in your household on any device your family uses for as long as your license is in good standing.</p>
@@ -133,9 +211,9 @@ const TermsOfService = (props) => {
     )
 }
 
-const PrivacyPolicy = (props) => {
+function PrivacyPolicy(props) {
     return (
-    <div className="PrivacyPolicy">
+    <div className="container-xl" >
         <h1>-- By The Book The Bible Privacy --</h1>
         <h2>1. What information do we collect and what do we do with it?</h2>
         <p>When you enroll as a student or subscriber (“learner”) on our site or related courses, as part of the enrolling process, we collect the personal information you give us such as your name and email address.</p>
