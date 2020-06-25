@@ -19,7 +19,7 @@ import { Manage } from "../pages/Manage";
 import Subscribe from "../forms/Subscribe";
 import KidModeApp from "../forKids/kidModeApp";
 import ActivityView from "../forKids/activityView";
-import SideBar from "../forKids/sideBar";
+import Activity from "../forKids/activity";
 
 var memorizeLink =
   "https://memorize.bythebookthebible.com/courses/take/matthew-5-6-7-sermon-on-the-mount";
@@ -88,10 +88,7 @@ export default class App extends Component {
               <KidModeApp />
             </Page>
             <Page path="/acti">
-              <ActivityView kind="Music Video" key="39-007-00001-6" />
-            </Page>
-            <Page path="/actiSideBar">
-              <SideBar kind="Music Video" key="39-007-00001-6" />
+              <Activity kind="Music Video" key="39-007-00001-6" />
             </Page>
             <Page
               path="/"

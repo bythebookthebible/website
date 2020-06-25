@@ -4,10 +4,7 @@ import { Row, Col } from "react-bootstrap";
 import ActivityView from "./activityView";
 import Testing from "./testing";
 
-export default function SideBar(props) {
-  function reloadPage() {
-    window.location.reload(false);
-  }
+export default function Activity(props) {
   return (
     <div>
       <Row>
@@ -15,7 +12,11 @@ export default function SideBar(props) {
           <ActivityView kind={props.kind} key={props.key} />
         </Col>
         <Col sm={3}>
-          <Button className="btn-round" variant="primary" onClick={reloadPage}>
+          <Button
+            className="btn-round"
+            variant="primary"
+            onClick={() => console.log("Clicked")}
+          >
             Repeat
           </Button>
           <Button
