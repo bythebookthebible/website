@@ -70,13 +70,10 @@ function LoginButton(props) {
         else if (name.length === 0)
             error("Please enter your name.")
         else {
-            await auth.createUserWithEmailAndPassword(email, password)
-                .then(async () => {
-                    await firebase.auth().currentUser.updateProfile({displayName: name})
-                        .then(() => setShow(false))
-                        .catch(error)
-                })
-                .catch(error)
+            await auth.createUserWithEmailAndPassword(email, password).catch(error)
+            await firebase.auth().currentUser.updateProfile({displayName: name}).catch(error)
+            setShow(false)
+            window.location.reload() // auth changes take effect on refresh                
         }
     }
 
