@@ -1,40 +1,51 @@
 import React, {useState, useEffect} from 'react'
 import {openDB, deleteDB, wrap, unwrap} from 'idb'
+import deepEqual from 'deep-equal'
+import { diff, detailedDiff } from 'deep-object-diff'
 
 var firebase = require('firebase')
 var db = firebase.firestore()
 var storage = firebase.storage()
 
-export function useAuth(useClaims) {
-    let [user, setUser] = useState(null)
-    let [claims, setClaims] = useState(null)
-    if(useClaims === undefined) useClaims = false
+// export function useAuth(useClaims) {
+//     let [user, setUser] = useState(null)
+//     let [claims, setClaims] = useState(null)
+//     if(useClaims === undefined) useClaims = false
 
-    firebase.auth().onAuthStateChanged(async (u) => {
-        if(useClaims && u != user) {
-            let newClaims = u && (await u.getIdTokenResult(true)).claims
-            setClaims(newClaims)
-        }
-        setUser(u)
-    })
-    // console.debug(user, claims)
+//     firebase.auth().onAuthStateChanged(async (u) => {
+//         if(useClaims && u != user) {
+//             let newClaims = u && (await u.getIdTokenResult(true)).claims
+//             setClaims(newClaims)
+//         }
+//         setUser(u)
+//     })
+//     // console.debug(user, claims)
 
-    return useClaims ? [user, claims] : user
-}
+//     return useClaims ? [user, claims] : user
+// }
 
 export var withAuth = wrappedComponent => props => {
     let [user, setUser] = useState(null)
     let [claims, setClaims] = useState(null)
 
     firebase.auth().onAuthStateChanged(async (u) => {
-        if(u != user) {
-            let newClaims = u && (await u.getIdTokenResult(true)).claims
-            setClaims(newClaims)
+        if(!deepEqual(u, user)) {
+            // console.log('user diff', detailedDiff(u, user))
             setUser(u)
         }
     })
 
-    return wrappedComponent({...props, 'user': {...user, 'claims': claims}})
+    useEffect(()=>{
+        let abort=false
+        async function updateClaims() {
+            let newClaims = user && (await user.getIdTokenResult()).claims
+            if(!abort) setClaims(newClaims)
+        }
+        updateClaims()
+        return ()=>abort=true
+    }, [user])
+
+    return wrappedComponent({...props, 'user': user && claims && {...user, 'claims': claims}})
 }
 
 export function useFirestore(collection, reduceFn=undefined, reduceInit={}) {
@@ -61,18 +72,48 @@ export function useFirestore(collection, reduceFn=undefined, reduceInit={}) {
     return resources
 }
 
-//
-// Placeholders for now
-//
+
+const cacheName = 'btbtb'
+const cacheMetaStore = 'resources'
+let totalCacheSize = 0
+const maxCacheSize = 300*1024*1024 // safari warned "lots of energy" at 500MB, and "permission to store" at 1.2GB
+
+// resource object with {url: "", version: ""}
 export function useCachedStorage(resource) {
-    // safari warned at 1.2G
     let [url, setUrl] = useState('')
     
     useEffect(() => {
         let abort = false
         async function getVideoUrl(resource) {
-            const downloadUrl = await storage.ref(resource.url).getDownloadURL()
-            if(!abort) setUrl(downloadUrl)
+
+            if(caches && resource.url) {
+                let cache = await caches.open(cacheName)
+                idb = await idb
+                
+                // update cache if needed (old or missing) but don't await
+                let meta = await idb.get(cacheMetaStore, resource.url)
+                let res = await cache.match(resource.url)
+                console.log('meta', meta)
+                if(!res || !(meta && meta.version && resource.version <= meta.version)) {
+                    preCacheStorage([resource])
+                }
+
+                // serve from cache if available
+                if(res) {
+                    console.log('using blob')
+                    let blob = await res.blob()
+                    if(!abort) setUrl(URL.createObjectURL(blob))
+                } else {
+                    console.log('using download url')
+                    const downloadUrl = await storage.ref(resource.url).getDownloadURL()
+                    if(!abort) setUrl(downloadUrl)
+                }
+                                
+            } else {
+                console.warn('caching not supported')
+                const downloadUrl = await storage.ref(resource.url).getDownloadURL()
+                if(!abort) setUrl(downloadUrl)
+            }
         }
         getVideoUrl(resource)
         return () => abort = true;
@@ -81,166 +122,62 @@ export function useCachedStorage(resource) {
     return url
 }
 
+// let resourceDataStore = 'resource-data'
+// let cacheMetaStore = 'resource-meta'
+deleteDB('btbtb')
+
+let idb = openDB('btbtb', 1, {
+    upgrade(db) {
+        // metadata and data blobs for video/pdf content
+        // let dataStore = db.createObjectStore(resourceDataStore, {keyPath: 'url'})
+        let metaStore = db.createObjectStore(cacheMetaStore, {keyPath: 'url'})
+        metaStore.createIndex('accessDate', 'accessDate')
+    },
+});
+
+// let totalCacheSize = 0
+// const maxCacheSize = 1<<9 // safari warned at 1.2G
+
 export async function preCacheStorage(resources) {
+    if(!caches) return
+    let cache = await caches.open(cacheName)
+    idb = await idb
+
+    for(let r of resources) {
+        let meta = await idb.count(cacheMetaStore, r.url).catch(e=>console.log(e))
+
+        if(meta && meta.version && r.version <= meta.version) continue
+        // if(meta > 0) continue
+        if(!r.url) continue
+
+        let downloadUrl = await storage.ref(r.url).getDownloadURL()
+
+        // cannot get without setting configuring CORS from gsutil with
+        // gsutil cors set cors.json gs://bythebookthebible.appspot.com
+        let res = await fetch(downloadUrl, {
+            method:'GET',
+            mode:'cors',
+            // credentials:'include',
+        })
+        console.log(r.url, downloadUrl, res)
+        await Promise.all([
+            idb.put(cacheMetaStore, {...r, accessDate: Date.now(), size: (await res.blob()).size}),
+            cache.put(r.url, res),
+        ]).catch(e=>console.log(e))
+        console.log('freshly cached', r)
+
+    }
+
+    totalCacheSize = 0
+    let tx = idb.transaction(cacheMetaStore, 'readwrite')
+    let cursor = await tx.store.index('accessDate').openCursor(null, 'prev')
+    while (cursor) {
+        totalCacheSize += cursor.value.size
+        if (totalCacheSize > maxCacheSize) {
+            totalCacheSize -= cursor.value.size
+            cursor.delete()
+        }
+        cursor = await cursor.continue()
+    }
+    console.log(totalCacheSize/1024/1024, 'MB cached')
 }
-
-//
-// The real thing
-//
-
-
-// const cacheName = 'btbtb'
-// const cacheMetaIdbName = 'btbtb_versions'
-// const maxCache = 8 // safari warned at 1.2G
-
-// // resource object with {url: "", version: ""}
-// export function useCachedStorage(resource, cacheName = cacheName, maxCache = maxCache) {
-//     // safari warned at 1.2G
-//     let [url, setUrl] = useState('')
-    
-//     useEffect(() => {
-//         let abort = false
-//         async function getVideoUrl(resource) {
-//             let cache = await caches.open(cacheName)
-//             let newUrl = resource.url
-//             let version = resource.version
-
-//             if(!newUrl) {
-//                 if(!abort) setUrl(newUrl)
-//             } else if(caches) {
-//                 let res = await cache.match(newUrl)
-//                 if(res) {
-//                     let blob = await res.blob()``
-//                     if(!abort) setUrl(URL.createObjectURL(blob))
-//                 } else {
-//                     const downloadUrl = await storage.ref(newUrl).getDownloadURL()
-                    
-//                     preCacheStorage([resource])
-//                     if(!abort) setUrl(downloadUrl)
-//                 }
-//             }
-//         }
-//         getVideoUrl(resource)
-//         return () => abort = true;
-//     }, [resource.url, resource.version])
-
-//     return url
-// }
-
-// export async function preCacheStorage(resources) {
-//     if(!caches) return
-//     let cache = await caches.open(cacheName)
-
-//     let keys = await cache.keys()
-//     for(let i in resources) {
-//         let url = resources[i].url
-//         let version = resources[i].version
-
-//         if(!url) continue
-//         let res = await cache.match(url)
-//         if(res) {
-//             res = undefined
-//             continue
-//         }
-
-//         let downloadUrl = await storage.ref(url).getDownloadURL()
-//         // console.log(downloadUrl)
-
-//         // cannot get without setting configuring CORS from gsutil with
-//         // gsutil cors set cors.json gs://bythebookthebible.appspot.com
-//         res = await fetch(downloadUrl, {
-//             method:'GET',
-//             mode:'cors',
-//             // credentials:'include',
-//         })
-//         console.log(url, downloadUrl, res)
-//         await cache.put(url, res)
-//         res = undefined
-//     }
-//     console.log(keys.length)
-//     for(let k in keys) {
-//         let res = await cache.match(keys[k])
-//         console.log(keys[k], res)
-//     }
-//     if(keys.length > maxCache) {
-//         // if too many items stored, remove some
-//     }
-// }
-
-// storeName = 'resource-cache'
-// // resourceCacheStore = 'resource-cache'
-// // resourceMetaStore = 'resources'
-// const idb = await openDB('btbtb', '1.0.0', {
-//     upgrade(db) {
-//         store = db.createObjectStore(storeName, {keyPath='url'})
-//         store.createIndex('accessDate', 'accessDate')
-//     },
-// });
-// const maxCacheSize = 8 // safari warned at 1.2G
-
-// // resource object with {url: "", version: ""}
-// export function useCachedStorage(resource, cacheName = cacheName, maxCache = maxCache) {
-//     // safari warned at 1.2G
-//     let [url, setUrl] = useState('')
-
-//     useEffect(() => {
-//         let abort = false
-//         async function getVideoUrl(resource) {
-//             let cached = idb.get(storeName, resource.url)
-//             if(cached && cached.version && cached.version >= resource.version) {
-//                 tx.store.put({...cached, accessDate: Date.now()})
-//                 if(!abort) setUrl(URL.createObjectURL(cached.blob))
-//             } else {
-//                 const downloadUrl = await storage.ref(resource.url).getDownloadURL()
-                
-//                 preCacheStorage([resource])
-//                 if(!abort) setUrl(downloadUrl)
-//             }
-//         }
-//         getVideoUrl(resource)
-//         return () => abort = true;
-//     }, [resource.url, resource.version])
-
-//     return url
-// }
-
-// export async function preCacheStorage(resource, cacheName = cacheName, maxCache = maxCache) {
-//     for(let r in resources) {
-//         let cached = idb.get(storeName, r.url)
-//         if(cached && cached.version && cached.version >= r.version) continue
-
-//         let downloadUrl = await storage.ref(r.url).getDownloadURL()
-//         // console.log(downloadUrl)
-
-//         // cannot get without setting configuring CORS from gsutil with
-//         // gsutil cors set cors.json gs://bythebookthebible.appspot.com
-//         res = await fetch(downloadUrl, {
-//             method:'GET',
-//             mode:'cors',
-//             // credentials:'include',
-//         })
-//         console.log(url, downloadUrl, res)
-//         blob = await res.blob()
-//         idb.put(storeName, {...r, blob: blob, accessDate: Date.now(), size: blob.size})
-//     }
-
-//     size = 0
-//     tx = idb.transaction(storeName)
-//     cursor = tx.store.index('date').openCursor(null, 'prev')
-//     while (cursor) {
-//         size += cursor.value.size
-//         if (size > maxCacheSize) {
-//             tx.store.re
-//         }
-//         cursor = await cursor.continue()
-//     }
-
-//     // console.log(keys.length)
-//     // for(let k in keys) {
-//     //     let res = await cache.match(keys[k])
-//     //     console.log(keys[k], res)
-//     // }
-//     // if(keys.length > maxCache) {
-//     //     // if too many items stored, remove some
-//     // }
-// }

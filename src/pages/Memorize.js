@@ -14,7 +14,7 @@ import logo from '../images/logo.svg';
 import {Login} from '../forms/Login.js'
 
 import videoSplash from "../images/videoSplash.png"
-import { useAuth, useFirestore, useCachedStorage } from '../hooks';
+import { useAuth, useFirestore, useCachedStorage, withAuth } from '../hooks';
 
 import WhatItMeans  from '../images/memoryKinds/WhatItMeans.svg'
 import Watch        from '../images/memoryKinds/Watch.svg'
@@ -120,12 +120,11 @@ export default function Memorize(props) {
     }, {})
     
     // Adjust view for access level
-    let [user, claims] = useAuth(true)
     
     let upgradeMsg
-    if (!user) {// Should log in
+    if (!props.user) {// Should log in
         upgradeMsg = <div><Login.LoginButton/> for 30 day trial access to all chapters.</div>
-    } else if(claims.expirationDate - Date.now() > 0 || claims.permanentAccess || claims.admin) {
+    } else if(props.user.claims.expirationDate - Date.now() > 0 || props.user.claims.permanentAccess || props.user.claims.admin) {
         upgradeMsg = null // Full access
     } else { // Should subscribe
         upgradeMsg = <div><a href='/subscribe'>Subscribe to access all chapters</a></div>

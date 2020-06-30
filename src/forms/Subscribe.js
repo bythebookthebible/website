@@ -1,7 +1,6 @@
 import React, { Component, useState} from 'react'
 import {loadStripe} from '@stripe/stripe-js'
 import $ from "jquery"
-import {useAuth} from '../hooks.js'
 
 const firebase = require('firebase');
 
@@ -16,8 +15,8 @@ const plans = {
     'super':'plan_H8szUndIpfJBm9',
 }
 
-export default function Subscribe() {
-    let user = useAuth()
+export default function Subscribe(props) {
+    let user = props.user
     console.log(user)
 
     let userInfo = user ?

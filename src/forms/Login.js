@@ -1,5 +1,4 @@
 import React, { useState} from 'react';
-import {useAuth} from '../hooks.js'
 import { Modal } from 'react-bootstrap';
 import $ from 'jquery'
 
@@ -15,7 +14,7 @@ export var Login = {
 }
 
 function LogInOutButton(props) {
-    let user = useAuth()
+    let user = props.user
 
     if(user) {
         return <div className="btn btn-round btn-primary" onClick={() => {

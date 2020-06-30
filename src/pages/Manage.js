@@ -11,7 +11,6 @@ import {
 
 import topImg  from '../images/R+C.svg'
 import {Login} from '../forms/Login'
-import { useAuth } from '../hooks'
 
 var firebase = require('firebase')
 var db = firebase.firestore()
@@ -37,13 +36,11 @@ const defaultVideoData = {
 }
 
 export function Manage(props) {
-    let [user, claims] = useAuth(true)
-
-    if (claims && !claims.admin) {
+    if (props.user && !props.user.claims.admin) {
         window.location = '/'
     }
 
-    if(!user) {
+    if(!props.user) {
         return <div className="Manage text-center">
             <br/>
             Please Login.
@@ -53,10 +50,10 @@ export function Manage(props) {
     } else {
         return <div className="Manage">
             {<Switch>
-                <Route path={'/manage/manageUsers'}><ManageUsers /></Route>
-                <Route path={'/manage/manageVideos'}><ManageVideos /></Route>
-                <Route path={'/manage/manageCamps'}><ManageCamps /></Route>
-                <Route path={'/manage'}><ManageMenu /></Route>
+                <Route path={'/manage/manageUsers'}><ManageUsers {...props} /></Route>
+                <Route path={'/manage/manageVideos'}><ManageVideos {...props} /></Route>
+                <Route path={'/manage/manageCamps'}><ManageCamps {...props} /></Route>
+                <Route path={'/manage'}><ManageMenu {...props} /></Route>
             </Switch>}
         </div>
     }
@@ -225,6 +222,7 @@ class ManageVideos extends Component {
                                         kind: v.data.kind,
                                         title: v.data.title,
                                         url: url,
+                                        version: Date.now(),
                                     }
                                     
                                     db.doc(`memoryResources/${id}`).set(dbRecord).then(() => {console.log('Updated DB')})
@@ -319,7 +317,7 @@ class ResourceTableRow extends Component {
                 <td>{p.data.kind}</td>
                 <td>{p.data.title}</td>
                 <td>{p.data.url.split('/').slice(-1)}</td>
-                {p.progress && <td><ProgressBar now={p.progress} /></td>}
+                <td>{p.progress && (p.progress<100 ? <ProgressBar now={p.progress} /> : <i class="fa fa-check" aria-hidden="true"></i>)}</td>
             </tr>
         )
     }
@@ -329,22 +327,20 @@ var getUsers = firebase.functions().httpsCallable('getUsers');
 var setUser = firebase.functions().httpsCallable('setUser');
 
 function ManageUsers(props) {
-    let currentUser = useAuth()
-    let [users, _setUsers] = useState(null)
-
+    let [users, setUsers] = useState(null)
     // console.log(users)
 
     useEffect(() => {
         let cancel = false
-        if(currentUser) {
+        if(props.user) {
             getUsers()
                 .then(_users => {
-                    if(!cancel) _setUsers(_users.data.users)
+                    if(!cancel) setUsers(_users.data.users)
                 })
                 .catch(e => console.error(e))
         }
         return () => cancel = true
-    }, [currentUser])
+    }, [props.user])
 
     return <div className='container-xl'>
         <table className='mx-auto my-3' style={{fontSize:'1rem'}}><tbody>

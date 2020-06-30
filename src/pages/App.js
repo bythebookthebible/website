@@ -20,6 +20,7 @@ import {Login} from '../forms/Login'
 import {AccountSettings, UserNavButton} from '../pages/User'
 import {Manage} from '../pages/Manage'
 import Subscribe from '../forms/Subscribe'
+import { withAuth } from '../hooks';
 
 var memorizeLink = 'https://memorize.bythebookthebible.com/courses/take/matthew-5-6-7-sermon-on-the-mount'
 var signInLink = 'https://memorize.bythebookthebible.com/users/sign_in'
@@ -77,19 +78,22 @@ function NotFound(props) {
     </div>
 }
 
-function Page(props) {
-    let defaultNav = <FullNav />
-    let defaultFooter = <Footer />
-    let defaultTheme = "plain-theme"
+var Page = withAuth(
+    props=> {
+        let {nav, footer, theme, path, children, ...passThru} = props
+        nav = nav  || <FullNav />
+        footer = footer || <Footer />
+        theme = theme || "plain-theme"
 
-    return <Route {...props}>
-        {props.nav === undefined ? defaultNav : props.nav}
-        <div className={"body " + (props.theme || defaultTheme)}>
-            {props.children}
-        </div>
-        {props.footer === undefined ? defaultFooter : props.footer}
-    </Route>
-}
+        return <Route path={path} {...passThru}>
+            {nav}
+            <div className={"body " + theme}>
+                {React.cloneElement(children, passThru)}
+            </div>
+            {footer}
+        </Route>
+    }
+)
 
 function Footer(props) {
     return <div className="Footer">
