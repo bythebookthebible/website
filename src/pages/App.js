@@ -81,9 +81,10 @@ function NotFound(props) {
 var Page = withAuth(
     props=> {
         let {nav, footer, theme, path, children, ...passThru} = props
-        nav = nav  || <FullNav />
-        footer = footer || <Footer />
-        theme = theme || "plain-theme"
+        console.log(nav, footer, theme)
+        nav = nav === undefined ? <FullNav /> : nav
+        footer = footer === undefined ? <Footer /> : footer
+        theme = theme === undefined ? "plain-theme" : theme
 
         return <Route path={path} {...passThru}>
             {nav}

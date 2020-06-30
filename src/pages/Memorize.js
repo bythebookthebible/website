@@ -202,6 +202,7 @@ let mouseMoving = (cb) => () => {
 function ScriptureSelector(props) {
     let [show, setShow] = useState(!!props.defaultOpen) // bool: true if expanded
     let [selected, setSelected] = useState(new Set(props.selected)) // list of scripture key strings which are currently selected
+    // show = true
 
     if(!props.resources) return null
 
@@ -220,15 +221,17 @@ function ScriptureSelector(props) {
         title = `${s.book} ${s.chapter}`
     }
 
-    return <div className={`selection-expand-box ${show ? 'show' : ''} ${props.className || ''}`}
+    return <Container className={`selection-expand-box ${show ? 'show' : ''} ${props.className || ''}`}
                 onMouseLeave={() => setShow(false)} onMouseEnter={() => setShow(true)} onClick={() => setShow(true)}>
-        <div className='text-center' onClick={() => setShow(false)}>
-            <img src={logo} height="30rem"/>
-            <h2>{title}</h2>
-        </div>
+        <Row className='text-center' onClick={() => setShow(false)}>
+            <Col>
+                <img src={logo} height="30rem"/>
+                <h2>{title}</h2>
+            </Col>
+        </Row>
 
         {show &&
-        <Container><Row style={{flexWrap:'nowrap', justifyContent:'flex-start'}}>{Object.keys(scriptures).map(book => <>
+        <Row style={{flexWrap:'nowrap', justifyContent:'flex-start'}}>{Object.keys(scriptures).map(book => <>
             {Object.keys(scriptures[book]).map(chapter => <Col>
                 <h3>{book + ' ' + chapter}</h3>
                 <div className='wavy-col'>
@@ -247,6 +250,7 @@ function ScriptureSelector(props) {
                     )}
                 </div>
             </Col>)}
-        </>)}</Row></Container>}
-    </div>
+        </>)}
+        </Row>}
+    </Container>
 }
