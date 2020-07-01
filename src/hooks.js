@@ -25,8 +25,8 @@ var storage = firebase.storage()
 // }
 
 export var withAuth = wrappedComponent => props => {
-    let [user, setUser] = useState(null)
-    let [claims, setClaims] = useState(null)
+    let [user, setUser] = useState(firebase.auth().currentUser)
+    let [claims, setClaims] = useState(undefined)
 
     firebase.auth().onAuthStateChanged(async (u) => {
         if(!deepEqual(u, user)) {
@@ -34,6 +34,11 @@ export var withAuth = wrappedComponent => props => {
             setUser(u)
         }
     })
+
+    async function refreshClaims() {
+        let newClaims = user && (await user.getIdTokenResult()).claims
+        setClaims(newClaims)
+    }
 
     useEffect(()=>{
         let abort=false
@@ -45,7 +50,7 @@ export var withAuth = wrappedComponent => props => {
         return ()=>abort=true
     }, [user])
 
-    return wrappedComponent({...props, 'user': user && claims && {...user, 'claims': claims}})
+    return wrappedComponent({...props, 'user': user && claims && {...user, 'claims': claims}, refreshClaims:refreshClaims})
 }
 
 export function useFirestore(collection, reduceFn=undefined, reduceInit={}) {

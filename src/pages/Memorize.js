@@ -25,6 +25,7 @@ import Karaoke      from '../images/memoryKinds/Karaoke.svg'
 import FamilyChat   from '../images/memoryKinds/FamilyChat.svg'
 import Dance        from '../images/memoryKinds/Dance.svg'
 import Color        from '../images/memoryKinds/Color.svg'
+import Subscribe from '../forms/Subscribe';
 
 var firebase = require('firebase')
 var db = firebase.firestore()
@@ -105,6 +106,18 @@ let players = {
 let defaultSelected = new Set(["39-007-00001-6", "39-007-0007-11", "39-007-0012-14", "39-007-0015-20", "39-007-0021-23", "39-007-0024-29"])
 
 export default function Memorize(props) {
+    return <Login.AuthSwitch {...props}
+        tests={[
+            {
+                test:user=>!(user.claims.expirationDate - Date.now() > 0 || user.claims.permanentAccess || user.claims.admin), 
+                value:<Subscribe />
+            },
+        ]}
+        default={<MemorizePage />}
+    />
+}
+
+function MemorizePage(props) {
     // Initialize and load resources and selections
     let [scriptureSelected, setScriptureSelected] = useState(defaultSelected)
     // let [kindsSelected, setKindsSelected] = useState(new Set([kinds[0]]))

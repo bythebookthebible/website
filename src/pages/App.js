@@ -81,17 +81,16 @@ function NotFound(props) {
 var Page = withAuth(
     props=> {
         let {nav, footer, theme, path, children, ...passThru} = props
-        console.log(nav, footer, theme)
         nav = nav === undefined ? <FullNav /> : nav
         footer = footer === undefined ? <Footer /> : footer
         theme = theme === undefined ? "plain-theme" : theme
 
         return <Route path={path} {...passThru}>
-            {nav}
+            {nav && React.cloneElement(nav, passThru)}
             <div className={"body " + theme}>
-                {React.cloneElement(children, passThru)}
+                {children && React.cloneElement(children, passThru)}
             </div>
-            {footer}
+            {footer && React.cloneElement(footer, passThru)}
         </Route>
     }
 )
@@ -118,8 +117,8 @@ function FullNav(props) {
                 <Nav.Link href={internLink}>Internship</Nav.Link>
             </Nav>
             <Nav>
-                <Nav.Link href={signInLink} className="btn btn-round btn-primary mx-auto">Login</Nav.Link>
-                {/* <UserNavButton className="btn btn-round btn-primary mx-auto" /> */}
+                <Nav.Link href={signInLink} className="btn btn-round btn-primary mx-auto">Thinkific Login</Nav.Link>
+                {/* <UserNavButton className="btn btn-round btn-primary mx-auto" {...props}/> */}
             </Nav>
         </Navbar.Collapse>
     </Navbar>
@@ -130,7 +129,7 @@ function LightNav(props) {
         <Navbar.Brand href="/"><img src={logo} height="20rem" /></Navbar.Brand>
         <Nav className="ml-auto">
             {/* <a href={memorizeLink} className='button'>Thinkific Login</a> */}
-            <UserNavButton />
+            <UserNavButton {...props}/>
         </Nav>
     </Navbar>
 }
