@@ -1,7 +1,7 @@
 
 import { Button } from "reactstrap"
 
-import React, { Component, useState, useEffect, useRef } from "react"
+import React, { Component, useState, useEffect, useRef, useContext } from "react"
 import {
   Player,
   ControlBar,
@@ -14,11 +14,15 @@ import ProcessVideoMemoryPower from "./processVideoMemoryPower"
 
 import videoSplash from "../images/videoSplash.png"
 import { useAuth, useFirestore, useCachedStorage } from "../hooks"
+import { DispatchContext } from "./kidModeApp"
 
 export default function ProcessVideoMemeoryPower(props) {
+    let dispatch = useContext(DispatchContext)
+
     let timer = useRef(0)
-    let [state, setState] = useState({})
     let player = useRef()
+    // @TODO: make player source change with props change
+    console.log(props, player.current && player.current.getState())
 
     useEffect(() => {
         player.current.subscribeToStateChange(handleStateChange)
@@ -26,24 +30,14 @@ export default function ProcessVideoMemeoryPower(props) {
 
     // @TODO: might want to fix the amount of powerLevel rewarded per second
     function handleStateChange(newState) {
-        console.log(timer.current)
-        setState(newState)
         if (newState.paused) {
             timer.current = newState.currentTime
         } else if (newState.currentTime - timer.current > 3.0) {
             timer.current = newState.currentTime
             let key = props.actKey
-            props.setMemoryP(prev => ({
-                ...prev,
-                [key]: {
-                    ...prev[key],  
-                    powerLevel: prev[key].powerLevel + 0.3
-                }
-            }))
-        console.log("changed")
+            dispatch({type:'addMemoryPower', power: 0.3})
         }
     }
-    console.log(timer, state.currentTime)
 
     return <div>
         <Player ref={player} playsInline className="player" poster={videoSplash}>

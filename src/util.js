@@ -1,6 +1,6 @@
 export const books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy',
 'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles',
-'Ezra', 'Nehemiah', 'Esther', 'Job', 'Psalms', 'Proverbs', 'Ecclesiastes', 'Song of Solomon',
+'Ezra', 'Nehemiah', 'Esther', 'Job', 'Psalm', 'Proverbs', 'Ecclesiastes', 'Song of Solomon',
 'Isaiah', 'Jeremiah', 'Lamentations', 'Ezekiel', 'Daniel', 'Hosea',
 'Joel', 'Amos', 'Obadiah', 'Jonah', 'Micah', 'Nahum', 'Habakkuk', 'Zephaniah', 'Haggai', 'Zechariah', 'Malachi',
 'Matthew', 'Mark', 'Luke', 'John', 'Acts', 'Romans', '1 Corinthians', '2 Corinthians',
@@ -23,4 +23,8 @@ export const scriptureFromKey = key => {
 // mod(n, m) returns i where 0 <= i < m, where n - i is divisible by m
 export function mod(n, m) {
   return m >= 0 ? n % m : (n % m) + m
+}
+
+export function valueAfter(arr, val, n=1) {
+  return arr[(arr.indexOf(val) + n) % arr.length]
 }
