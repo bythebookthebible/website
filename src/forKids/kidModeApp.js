@@ -8,6 +8,8 @@ import Activity from './activity'
 import { media } from "./media";
 import { useAuth, useFirestore, useCachedStorage } from "../hooks"
 import { keyFromScripture } from "../util"
+import MemoryPalaceView from './memoryPalaceView'
+import ReallyBadPalace from "../images/memoryPal/ReallyBadPalace.svg"
 
 let Tree = props => <div>
     <h1>Tree</h1>
@@ -26,7 +28,7 @@ let Map = props => <div>
     <h1>Map</h1>
     <ButtonMap src={treeMap} buttons={[
         {id:'SchmoHouse', onClick: ()=>props.setState({view:'tree'})},
-        {id:'Palace', onClick: ()=>props.setState({view:'tree'})},
+        {id:'Palace', onClick: ()=>props.setState({view:'memory palace'})},
         {id:'Tree', onClick: ()=>props.setState({view:'tree'})},
     ]}/>
 </div>
@@ -70,5 +72,6 @@ export default function KidModeApp(props) {
 
     if(state.view == 'map') return <Map setState={setState} />
     if(state.view == 'tree') return <Tree setState={setState} />
-    if(state.view == 'activity') return <Activity setState={setState} actKey={state.actKey} actKind={state.actKind} resources={resources} setMemoryP={setMemoryP}/>
+    if(state.view == 'activity' && memoryP) return <Activity setState={setState} actKey={state.actKey} actKind={state.actKind} resources={resources} setMemoryP={setMemoryP}/>
+    if(state.view == 'memory palace') return <MemoryPalaceView src={ReallyBadPalace} />
 }

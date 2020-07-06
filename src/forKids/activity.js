@@ -3,11 +3,15 @@ import {
   Row,
   Col,
   Button,
+  Modal,
 } from "react-bootstrap";
 import { media } from "./media";
 import ProcessVideoMemoryPower from "./processVideoMemoryPower";
 import { Player } from "video-react";
 import VideoMedia from "./VideoMedia";
+import PDFMedia from "./PDFMedia";
+import ProveOfMemReminder from "./proveOfMemReminder";
+
 
 // whenever click on next activity
 let nextAct = (props) => {
@@ -58,6 +62,7 @@ let sidebarLayout = (props) => <div>
   <Button className="btn-round" variant="primary" onClick={() => props.setState({view:'activity', actKind:nextAct(props), actKey:props.actKey})}>Explore other activities in this module!</Button>
   <Button className="btn-round" variant="primary" onClick={() => props.setState({view:'tree'})}>Back to Tree</Button>
   <Button className="btn-round" variant="primary" onClick={() => props.setState({view:'map'})}>Back to Map</Button>
+  <Button className="btn-round" variant="primary" onClick={() => props.setState({view:'memory palace'})}>Go to memory palace</Button>
 </div>
 
 
@@ -66,11 +71,21 @@ let sidebarLayout = (props) => <div>
 // 
 // note: i am filtering out some activities, passing only the implemented thru the media rn
 export default function Activity(props) {
+  let [show, setShow] = useState(false)
+ 
   if (props.resources && (props.actKind == "Music Video" || props.actKind == "Dance Video" )) {
     return (
       <div>
+
+
+        <Button variant="primary" onClick={()=>setShow(true)}>
+        REMOVE LATER
+        </Button>
+
+
+        {<ProveOfMemReminder show={show} onHide={()=>setShow(false)} />}
         <Row>
-          <Col sm={9}>{<VideoMedia src={props.resources[props.actKey][props.actKind]["url"]} setMemoryP={props.setMemoryP} actKey={props.actKey} />}</Col>
+          <Col sm={9}>{<VideoMedia src={props.resources[props.actKey][props.actKind]["url"]} setMemoryP={props.setMemoryP} actKey={props.actKey} actKind={props.actKind} />}</Col>
           <Col sm={3}>{sidebarLayout(props)}</Col>
         </Row>
       </div>
@@ -79,8 +94,8 @@ export default function Activity(props) {
              || props.actKind == "Coloring Pages")) {
     return (
       <div>
-        <Row>
-          <Col sm={9}>{media[props.actKind](props.resources[props.actKey][props.actKind])}</Col>
+       <Row>
+          <Col sm={9}>{<PDFMedia src={props.resources[props.actKey][props.actKind]["url"]} setMemoryP={props.setMemoryP} actKey={props.actKey} actKind={props.actKind} />}</Col>
           <Col sm={3}>{sidebarLayout(props)}</Col>
         </Row>
       </div>

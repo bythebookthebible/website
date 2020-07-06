@@ -15,6 +15,9 @@ import ProcessVideoMemoryPower from "./processVideoMemoryPower"
 import videoSplash from "../images/videoSplash.png"
 import { useAuth, useFirestore, useCachedStorage } from "../hooks"
 
+// @TODO: fix the weird video continuation when clicked on "More Video!", might have been due to using the same link?
+//
+// pre: parameters passed in: setMemoryP, actKey, src, incrementPer3Seconds(this can be found in VideoMedia)
 export default function ProcessVideoMemeoryPower(props) {
     let timer = useRef(0)
     let [state, setState] = useState({})
@@ -24,7 +27,6 @@ export default function ProcessVideoMemeoryPower(props) {
         player.current.subscribeToStateChange(handleStateChange)
     }, [])
 
-    // @TODO: might want to fix the amount of powerLevel rewarded per second
     function handleStateChange(newState) {
         console.log(timer.current)
         setState(newState)
@@ -33,11 +35,12 @@ export default function ProcessVideoMemeoryPower(props) {
         } else if (newState.currentTime - timer.current > 3.0) {
             timer.current = newState.currentTime
             let key = props.actKey
+            let increment = props.incrementPer3Seconds
             props.setMemoryP(prev => ({
                 ...prev,
                 [key]: {
                     ...prev[key],  
-                    powerLevel: prev[key].powerLevel + 0.3
+                    powerLevel: prev[key].powerLevel + increment
                 }
             }))
         console.log("changed")
