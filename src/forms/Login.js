@@ -145,8 +145,8 @@ function LoginForm(props) {
     
     let title = action=='signin' ? 'Sign In' : 'Create Account'
 
-    return <Card {...props} className={'login-card text-center '+props.className||''} >
-        <Card.Title as='h3' className='mt-3'>
+    return <Card {...props} className={'small-card '+(props.className||'')} >
+        <Card.Title as='h3' className='mt-3 text-center'>
             {title}
         </Card.Title>
         <hr/>
