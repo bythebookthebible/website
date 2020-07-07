@@ -73,7 +73,9 @@ export default class App extends Component {
 
 function NotFound(props) {
     return <div className='text-center p-5'>
-        <h1>Error 404, Page Not found.</h1>
+        <h1>Page Not Found.</h1>
+        <img src='https://www.biblestudytools.com/Content/Images/file-not-found.jpg' className='mw-100' />
+        <p>We're sorry, but the page you are looking for has been moved or is currently unavailable.</p>
         <p>Go to <a href='/'>home page</a></p>
     </div>
 }
