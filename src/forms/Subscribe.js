@@ -5,15 +5,27 @@ import $ from "jquery"
 const firebase = require('firebase');
 
 const createSession = firebase.functions().httpsCallable('createCheckoutSession');
-const stripePromise = loadStripe('pk_test_9tSyLuCY9rI4tFCjQ8MPpUxg00vLcOqtaT');
 
-// TESTING PLAN VALUES
+// TESTING STRIPE VALUES ///////////////////
+// const stripePromise = loadStripe('pk_test_9tSyLuCY9rI4tFCjQ8MPpUxg00vLcOqtaT');
+// const plans = {
+//     'basic':'plan_H8svWXaTyTFxtI',
+//     '6month':'plan_H8syj9jb8d6P0o',
+//     'family':'plan_H8sxFioNADFL4p',
+//     'super':'plan_H8szUndIpfJBm9',
+// }
+
+
+// LIVE STRIPE VALUES ///////////////////////
+const stripePromise = loadStripe('pk_live_l4082g2eunztoFbCGwpjGUA100Id9kYd0x');
 const plans = {
-    'basic':'plan_H8svWXaTyTFxtI',
-    '6month':'plan_H8syj9jb8d6P0o',
-    'family':'plan_H8sxFioNADFL4p',
-    'super':'plan_H8szUndIpfJBm9',
+    'basic':'plan_HbJmacXd7Y3GTh',
+    '6month':'plan_HbJmbbPzu1djjO',
+    'family':'plan_HbJmDYacJfVJrJ',
+    'super':'plan_HbJmmLL04gnIgS',
 }
+
+// //////////////////////////////////////////
 
 export default function Subscribe(props) {
     let user = props.user
