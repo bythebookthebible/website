@@ -180,7 +180,7 @@ function MemorizePage(props) {
     // Memory format selector
     let memoryFormatSelector = <div className='text-center' style={{bottom:0, zIndex:1}}>
         {Object.keys(kinds).map((kind) => 
-            <CustomToggleButton className='m-2' selected={kindsSelected} value={kind} onChange={v => {
+            <CustomToggleButton className='m-2' selected={kindsSelected} value={kind} variant='outline-primary outline-primary square-btn' onChange={v => {
                 setKindsSelected(v)
                 setIndex(0)
             }} ><div style={{WebkitMask:`url(${kinds[kind]})`, mask:`url(${kinds[kind]})`, maskSize: "cover"}}></div></CustomToggleButton>
@@ -195,8 +195,10 @@ function MemorizePage(props) {
         <div className={`container-xl py-5 memorize-controls ${showControls ? '' : 'hide'}`} onMouseMove={mouseMoving(setShowControls)}>
             {player && player({src: url, style: {position:'absolute', zIndex:1}})}
             <ScriptureSelector key='scripture-selector' className='scripture-selector' selected={scriptureSelected} resources={resources} onChange={v => {setScriptureSelected(v)}} />
-            <i className="fa fa-4x fa-chevron-left player-control-prev" onClick={() => setIndex(index - 1) } />
-            <i className="fa fa-4x fa-chevron-right player-control-next" onClick={() => setIndex(index + 1) }/>
+            {urlList.length > 1 && [
+                <i className="fa fa-4x fa-chevron-left player-control-prev" onClick={() => setIndex(index - 1) } />,
+                <i className="fa fa-4x fa-chevron-right player-control-next" onClick={() => setIndex(index + 1) }/>,
+            ]}
             {memoryFormatSelector}
         </div>
     </div>
@@ -215,7 +217,6 @@ let mouseMoving = (cb) => () => {
 function ScriptureSelector(props) {
     let [show, setShow] = useState(!!props.defaultOpen) // bool: true if expanded
     let [selected, setSelected] = useState(new Set(props.selected)) // list of scripture key strings which are currently selected
-    // show = true
 
     if(!props.resources) return null
 
@@ -234,7 +235,7 @@ function ScriptureSelector(props) {
         title = `${s.book} ${s.chapter}`
     }
 
-    return <Container className={`selection-expand-box ${show ? 'show' : ''} ${props.className || ''}`}
+    return <Container className={`selection-expand-box p-3 ${show ? 'show' : ''} ${props.className || ''}`}
                 onMouseLeave={() => setShow(false)} onMouseEnter={() => setShow(true)} onClick={() => setShow(true)}>
         <Row className='text-center' onClick={() => setShow(false)}>
             <Col>
@@ -244,14 +245,20 @@ function ScriptureSelector(props) {
         </Row>
 
         {show &&
-        <Row style={{flexWrap:'nowrap', justifyContent:'flex-start'}}>{Object.keys(scriptures).map(book => <>
+        <Row style={{flexWrap:'nowrap', justifyContent:'flex-start', overflowX:'auto'}}>{Object.keys(scriptures).map(book => <>
             {Object.keys(scriptures[book]).map(chapter => <Col>
-                <h3>{book + ' ' + chapter}</h3>
+                <CustomToggleButton selected={selected} variant='outline-primary my-1' style={{width: '8rem'}}
+                    value={Object.keys(scriptures[book][chapter]).map(verses => keyFromScripture(book, chapter, verses))}
+                    onChange={v => {
+                        props.onChange(v)
+                        setSelected(v)
+                }} >{book + ' ' + chapter}</CustomToggleButton>
+                {/* <h3>{book + ' ' + chapter}</h3> */}
                 <div className='wavy-col'>
                     <div style={{height:'2rem', gridArea:'1 / 2 / 1 / 2'}} ></div>
                     {Object.keys(scriptures[book][chapter]).map(verses => {
                         let key = keyFromScripture(book, chapter, verses)
-                        return <CustomToggleButton selected={selected} value={key} name='module' onChange={v => {
+                        return <CustomToggleButton selected={selected} value={key} variant='outline-primary square-btn' onChange={v => {
                             props.onChange(v)
                             setSelected(v)
                         }} >{verses}</CustomToggleButton>
@@ -266,14 +273,15 @@ function ScriptureSelector(props) {
 // props are selected (Set) and value
 function CustomToggleButton(props) {
     let {selected, value, onChange, children, ...passThrough} = props
+    if(!Array.isArray(value)) value = [value]
 
-    return <Button {...passThrough} active={selected.has(value) ? value : undefined} variant='outline-primary' 
+    return <Button {...passThrough} active={value.every(v => selected.has(v)) ? value : undefined} 
         onClick={() => {
             // var v = new Set(selected)
             // if(!!newSelected[0]) v.add(value)
             // else v.delete(value)
             // onChange(v)
-            onChange(new Set([value]))
+            onChange(new Set(value))
     }}>
         {children}
     </Button>
