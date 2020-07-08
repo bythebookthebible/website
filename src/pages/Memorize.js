@@ -10,6 +10,7 @@ import "../../node_modules/video-react/dist/video-react.css"
 import {Row, Col, ToggleButton, ToggleButtonGroup, ButtonGroup, Dropdown, Container, Button} from 'react-bootstrap'
 import $ from "jquery"
 import logo from '../images/logo.svg';
+import missing from '../images/missingContent.png';
 
 import {Login} from '../forms/Login.js'
 
@@ -98,6 +99,10 @@ function VideoMedia(props) {
     </Player>
 }
 
+function MissingPlayer(props) {
+    return <img src={missing} className="player" style={{maxWidth: '500px'}} />
+}
+
 let players = {
     "mp4": VideoMedia,
     "pdf": PDFMedia,
@@ -170,7 +175,7 @@ function MemorizePage(props) {
 
     // Choose correct player for current url
     let fileKind = keyUrl && keyUrl.split('.').slice(-1)[0]
-    let player = keyUrl && players[fileKind]
+    let player = keyUrl ? players[fileKind] : MissingPlayer
 
     // Memory format selector
     let memoryFormatSelector = <div className='text-center' style={{bottom:0, zIndex:1}}>
