@@ -7,7 +7,7 @@ import {
   BigPlayButton
 } from 'video-react';
 import "../../node_modules/video-react/dist/video-react.css"
-import {Row, Col, ToggleButton, ToggleButtonGroup, ButtonGroup, Dropdown, Container} from 'react-bootstrap'
+import {Row, Col, ToggleButton, ToggleButtonGroup, ButtonGroup, Dropdown, Container, Button} from 'react-bootstrap'
 import $ from "jquery"
 import logo from '../images/logo.svg';
 
@@ -175,15 +175,10 @@ function MemorizePage(props) {
     // Memory format selector
     let memoryFormatSelector = <div className='text-center' style={{bottom:0, zIndex:1}}>
         {Object.keys(kinds).map((kind) => 
-            <ToggleButtonGroup className='checkbox' type='checkbox' key={kind} defaultValue={kindsSelected.has(kind) ? kind : []} onChange={values => {
-                let k = new Set(kindsSelected)
-                if(!!values[0]) {k.add(kind)}
-                else {k.delete(kind)}
-                setKindsSelected(k)
+            <CustomToggleButton className='m-2' selected={kindsSelected} value={kind} onChange={v => {
+                setKindsSelected(v)
                 setIndex(0)
-            }}>
-                <ToggleButton value={kind} variant='outline-primary'><div style={{WebkitMask:`url(${kinds[kind]})`, mask:`url(${kinds[kind]})`, maskSize: "cover"}}></div></ToggleButton>
-            </ToggleButtonGroup>
+            }} ><div style={{WebkitMask:`url(${kinds[kind]})`, mask:`url(${kinds[kind]})`, maskSize: "cover"}}></div></CustomToggleButton>
         )}
     </div>
 
@@ -251,19 +246,30 @@ function ScriptureSelector(props) {
                     <div style={{height:'2rem', gridArea:'1 / 2 / 1 / 2'}} ></div>
                     {Object.keys(scriptures[book][chapter]).map(verses => {
                         let key = keyFromScripture(book, chapter, verses)
-                        return <ToggleButtonGroup className='checkbox' type='checkbox' key={key} defaultValue={selected.has(key) ? key : []} onChange={newSelected => {
-                            var v = new Set(selected)
-                            if(!!newSelected[0]) v.add(key)
-                            else v.delete(key)
+                        return <CustomToggleButton selected={selected} value={key} name='module' onChange={v => {
                             props.onChange(v)
                             setSelected(v)
-                        }}>
-                            <ToggleButton selected={key} value={key} variant='outline-primary'>{verses}</ToggleButton>
-                        </ToggleButtonGroup>}
-                    )}
+                        }} >{verses}</CustomToggleButton>
+                    })}
                 </div>
             </Col>)}
         </>)}
         </Row>}
     </Container>
+}
+
+// props are selected (Set) and value
+function CustomToggleButton(props) {
+    let {selected, value, onChange, children, ...passThrough} = props
+
+    return <Button {...passThrough} active={selected.has(value) ? value : undefined} variant='outline-primary' 
+        onClick={() => {
+            // var v = new Set(selected)
+            // if(!!newSelected[0]) v.add(value)
+            // else v.delete(value)
+            // onChange(v)
+            onChange(new Set([value]))
+    }}>
+        {children}
+    </Button>
 }

@@ -106,7 +106,7 @@ function LoginForm(props) {
         else if (name.length === 0)
             error("Please enter your name.")
         else {
-            console.log('create account', email, name, password.replaceAll(/./g, '*'))
+            // console.log('create account', email, name, password.replaceAll(/./g, '*'))
 
             await auth.createUserWithEmailAndPassword(email, password).catch(error)
             await firebase.auth().currentUser.updateProfile({displayName: name}).catch(error)
@@ -119,7 +119,7 @@ function LoginForm(props) {
         let email = emailRef.current.value
         let password = pwdRef.current.value
 
-        console.log('sign in', email, password.replaceAll(/./g, '*'))
+        // console.log('sign in', email, password.replaceAll(/./g, '*'))
 
         auth.signInWithEmailAndPassword(email, password)
             .then(props.onSubmit)

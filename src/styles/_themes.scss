@@ -137,6 +137,12 @@ input:invalid:not(:focus), #warnInvalid {
         border-width: .3rem;
         border-radius: .8rem;
         font-size: 1rem;
+
+        padding: 0;
+        height: 4rem;
+        width: 4rem;
+        text-align: center;
+        grid-area: span 2 / span 1;
         
         &:not(:disabled):not(.disabled) {
             // background-color: darken($color: $blue, $amount: 5);
@@ -158,17 +164,6 @@ input:invalid:not(:focus), #warnInvalid {
                 height: 100%;
                 background-color: $blue;
             }
-        }
-    }
-
-    .checkbox {
-        height: 4rem;
-        width: 4rem;
-        text-align: center;
-        grid-area: span 2 / span 1;
-
-        .btn {
-            padding: 0;
         }
     }
 
