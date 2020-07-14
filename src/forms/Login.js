@@ -1,21 +1,25 @@
-import React, { useState} from 'react';
-import {useAuth} from '../hooks.js'
-import { Modal } from 'react-bootstrap';
+import React, { useState, useRef} from 'react';
+import { Modal, Container, Row, Col, Card } from 'react-bootstrap';
 import $ from 'jquery'
 
 var firebase = require('firebase');
 var auth = firebase.auth()
 // var firebaseui = require('firebaseui');
 
+const tosUrl = '/termsOfService'
+const privacyPolicyUrl = '/privacy'
+
 export var Login = {
     LoginButton: LoginButton,
     LogInOutButton: LogInOutButton,
     TermsOfService: TermsOfService,
     PrivacyPolicy: PrivacyPolicy,
+    LoginFrom: LoginForm,
+    AuthSwitch: AuthSwitch,
 }
 
 function LogInOutButton(props) {
-    let user = useAuth()
+    let user = props.user
 
     if(user) {
         return <div className="btn btn-round btn-primary" onClick={() => {
@@ -30,11 +34,41 @@ function LogInOutButton(props) {
 }
 
 function LoginButton(props) {
-    const tosUrl = '/termsOfService'
-    const privacyPolicyUrl = '/privacy'
     const [show, setShow] = useState(false);
+
+    return <>
+        <button {...props} className="btn btn-round btn-primary" onClick={() => setShow(true)}>Login</button>
+        <Modal onHide={() => setShow(false)} show={show} size="sm" aria-labelledby="authTitle" centered>
+            <LoginForm {...props} onCancel={()=>setShow(false)} onSubmit={()=>{window.location.reload()}}/>
+        </Modal>
+    </>
+}
+
+// requires withAuth
+function AuthSwitch(props) {
+    let {user, tests, ...passThru} = props
+    console.log(user)
+    if(!user) {
+        return <LoginForm className='mt-5 mx-auto' user={user} {...passThru} />
+    }
+    for(let {test, value} of tests) {
+        if(test(user)) return React.cloneElement(value, {user, ...passThru})
+    }
+    return React.cloneElement(props.default || props.children, {user, ...passThru})
+}
+
+function validEmail(email) {
+    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
+}
+
+function LoginForm(props) {
     const [showResetPassword, setShowResetPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [action, setAction] = useState('signin')
+
+    const emailRef = useRef()
+    const pwdRef = useRef()
+    const nameRef = useRef()
 
     function error(e) {
         let msg = e.message || e
@@ -44,85 +78,104 @@ function LoginButton(props) {
         setErrorMessage(msg);
     }
 
+    // checks the email to change between signin and signup
+    // returns true if the action was changed
     async function checkEmail(email) {
-        let methods = await auth.fetchSignInMethodsForEmail(email)
-        if(methods.length == 0) {
-            $("#name").css({display: "block"})
-            $("#authTitle").text("Create Account")
-            $('#submitAuth').click(createAccount)
-        } else {
-            $("#name").css({display: "none"})
-            $("#authTitle").text("Sign In")
-            $('#submitAuth').click(signIn)
+        if(validEmail(email)) {
+            let methods = await auth.fetchSignInMethodsForEmail(email)        
+            let newAction = methods.length == 0 ? 'create' : 'signin'
+    
+            if(newAction != action) {
+                setAction(newAction)
+                return true
+            }
         }
-        $('#submitAuth').attr("readonly", false)
+        return false
     }
 
     async function createAccount() {
-        let email = $("#email").val()
-        let password = $("#password").val()
-        let name = $("#name").val()
+        let email = emailRef.current.value
+        let password = pwdRef.current.value
+        let name = nameRef.current.value
+
         // validate input
-        if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
+        if(!validEmail(email))
             error("Please enter a valid email.")
         else if (password.length === 0)
             error("Please enter password.")
         else if (name.length === 0)
             error("Please enter your name.")
         else {
-            await auth.createUserWithEmailAndPassword(email, password)
-                .then(async () => {
-                    await firebase.auth().currentUser.updateProfile({displayName: name})
-                        .then(() => setShow(false))
-                        .catch(error)
-                })
-                .catch(error)
+            // console.log('create account', email, name, password.replaceAll(/./g, '*'))
+
+            await auth.createUserWithEmailAndPassword(email, password).catch(error)
+            await firebase.auth().currentUser.updateProfile({displayName: name}).catch(error)
+            props.user && props.user.refreshClaims()
+            props.onSubmit && props.onSubmit()
         }
     }
 
-    function signIn() {
-        let email = $("#email").val()
-        let password = $("#password").val()
+    async function signIn() {
+        let email = emailRef.current.value
+        let password = pwdRef.current.value
+
+        // console.log('sign in', email, password.replaceAll(/./g, '*'))
+
         auth.signInWithEmailAndPassword(email, password)
-            .then(() => setShow(false))
+            .then(props.onSubmit)
             .catch(e => {
                 setShowResetPassword(true)
                 error(e)
             })
     }
 
-    return [
-        <button className="btn btn-round btn-primary" {...props} onClick={() => setShow(true)}>Login</button>,
-        <Modal onHide={() => setShow(false)} show={show} size="sm" aria-labelledby="authTitle" centered>
-            <Modal.Header closeButton>
-                <Modal.Title id="authTitle">Sign In</Modal.Title>
-            </Modal.Header>
+    let submitForm = e=>{
+        e.preventDefault()
 
-            <Modal.Body>
-                <input type="email" className="form-control" id="email" placeholder="Email" onBlur={e => checkEmail(e.target.value)} />
-                <input type="password" className="form-control" id="password" placeholder="Password" />
-                <input type="text" className="form-control" id="name" placeholder="Name" style={{display: "none"}}/>
+        let submit = async ()=>{
+            // if the action has changed on this submit (ex: auto-submit), cancel submit and let form update
+            let email = emailRef.current.value
+            if(await checkEmail(email)) return
+            
+            if(action=='signin') await signIn()
+            else await createAccount()
+        }
+        submit()        
+    }
+    
+    let title = action=='signin' ? 'Sign In' : 'Create Account'
+
+    return <Card {...props} className={'small-card '+(props.className||'')} >
+        <Card.Title as='h3' className='mt-3 text-center'>
+            {title}
+        </Card.Title>
+        <hr/>
+        <Card.Body as='form' onSubmit={submitForm}>
+            <Card.Text>
+                {action=='create' && <input type="text" className="form-control" name='name' ref={nameRef} placeholder="Name"/>}
+                <input type="email" className="form-control" name='email' ref={emailRef} placeholder="Email" onBlur={e => checkEmail(e.target.value)} />
+                <input type="password" className="form-control" name='password' ref={pwdRef} placeholder="Password" />
+            </Card.Text>
+            <Card.Text as='div'>
                 <div className="d-flex flex-centered">
-                    <button type="button" className="btn btn-round btn-secondary m-1" onClick={() => setShow(false)} >Cancel</button>
-                    <button type="submit" className="btn btn-round btn-primary m-1" id="submitAuth" readOnly>Submit</button>
+                    <button type="button" className="btn btn-round btn-secondary m-1" onClick={props.onCancel} >Cancel</button>
+                    <button type="submit" className="btn btn-round btn-primary m-1" id="submitAuth" onClick={submitForm}>Submit</button>
                 </div>
-                <div id="error-message" className="text-danger">{errorMessage}</div>
-                {showResetPassword && <div id="resetPassword" className="p-1 text-center">
-                    Having Trouble?
-                    <a href="" className="mx-1" onClick={() =>
-                        auth.sendPasswordResetPassword($("#email").val())
-                            .catch(error)
-                            .then(() => setShow(false)) // TODO set better response message
-                    }>Reset Password</a>
-                </div>}
-            </Modal.Body>
-
-            <Modal.Footer className="modal-footer d-flex flex-centered">
-                <a href={tosUrl} className="p-1">Terms of Service</a>
-                <a href={privacyPolicyUrl} className="p-1">Privacy Policy</a>
-            </Modal.Footer>
-        </Modal>
-    ]
+                <div id="error-message" className="text-danger py-2">{errorMessage}</div>
+            </Card.Text>
+            {showResetPassword && <Card.Text id="resetPassword" className="p-1 text-center">
+                Having Trouble?
+                <a href="" className="mx-1" onClick={() =>
+                    auth.sendPasswordResetPassword($("#email").val()).catch(error) // TODO set better response message
+                }>Reset Password</a>
+            </Card.Text>}
+        </Card.Body>
+        <Card.Footer >
+            <a href={tosUrl} className="p-1">Terms of Service</a>
+            &#x27E1; {/* Diamond */}
+            <a href={privacyPolicyUrl} className="p-1">Privacy Policy</a>
+        </Card.Footer>
+    </Card>
 }
 
 function TermsOfService(props) {

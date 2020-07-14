@@ -1,4 +1,5 @@
-import {stripeSecretKey, stripeEndpointSecret} from '../api_keys.js'
+// import {stripeSecretKey, stripeEndpointSecret} from './live_api_keys.js'
+const stripeKeys = require('./test_api_keys.js')
 
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 const functions = require('firebase-functions');
@@ -7,7 +8,7 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
-const stripe = require('stripe')(stripeSecretKey);
+const stripe = require('stripe')(stripeKeys.stripeSecretKey);
 
 // user custom claims are: admin, permanentAccess, expirationDate, stripeId
 
@@ -42,7 +43,7 @@ exports.renewSubscription = functions.https.onRequest(async (request, response) 
 
     let event;
     try {
-        event = stripe.webhooks.constructEvent(request.rawBody, sig, stripeEndpointSecret);
+        event = stripe.webhooks.constructEvent(request.rawBody, sig, stripeKeys.stripeEndpointSecret);
     } catch (err) {
         console.error(`Webhook Error: ${err.message}`)
         return response.status(400).send(`Webhook Error: ${err.message}`);

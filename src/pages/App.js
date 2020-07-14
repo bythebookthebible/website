@@ -20,6 +20,7 @@ import {Login} from '../forms/Login'
 import {AccountSettings, UserNavButton} from '../pages/User'
 import {Manage} from '../pages/Manage'
 import Subscribe from '../forms/Subscribe'
+import { withAuth } from '../hooks';
 
 var memorizeLink = 'https://memorize.bythebookthebible.com/courses/take/matthew-5-6-7-sermon-on-the-mount'
 var signInLink = 'https://memorize.bythebookthebible.com/users/sign_in'
@@ -72,24 +73,29 @@ export default class App extends Component {
 
 function NotFound(props) {
     return <div className='text-center p-5'>
-        <h1>Error 404, Page Not found.</h1>
+        <h1>Page Not Found.</h1>
+        <img src='https://www.biblestudytools.com/Content/Images/file-not-found.jpg' className='mw-100' />
+        <p>We're sorry, but the page you are looking for has been moved or is currently unavailable.</p>
         <p>Go to <a href='/'>home page</a></p>
     </div>
 }
 
-function Page(props) {
-    let defaultNav = <FullNav />
-    let defaultFooter = <Footer />
-    let defaultTheme = "plain-theme"
+var Page = withAuth(
+    props=> {
+        let {nav, footer, theme, path, children, ...passThru} = props
+        nav = nav === undefined ? <FullNav /> : nav
+        footer = footer === undefined ? <Footer /> : footer
+        theme = theme === undefined ? "plain-theme" : theme
 
-    return <Route {...props}>
-        {props.nav === undefined ? defaultNav : props.nav}
-        <div className={"body " + (props.theme || defaultTheme)}>
-            {props.children}
-        </div>
-        {props.footer === undefined ? defaultFooter : props.footer}
-    </Route>
-}
+        return <Route path={path} {...passThru}>
+            {nav && React.cloneElement(nav, passThru)}
+            <div className={"body " + theme}>
+                {children && React.cloneElement(children, passThru)}
+            </div>
+            {footer && React.cloneElement(footer, passThru)}
+        </Route>
+    }
+)
 
 function Footer(props) {
     return <div className="Footer">
@@ -113,8 +119,8 @@ function FullNav(props) {
                 <Nav.Link href={internLink}>Internship</Nav.Link>
             </Nav>
             <Nav>
-                <Nav.Link href={signInLink} className="btn btn-round btn-primary mx-auto">Login</Nav.Link>
-                {/* <UserNavButton className="btn btn-round btn-primary mx-auto" /> */}
+                <Nav.Link href={signInLink} className="btn btn-round btn-primary mx-auto">Thinkific Login</Nav.Link>
+                {/* <UserNavButton className="btn btn-round btn-primary mx-auto" {...props}/> */}
             </Nav>
         </Navbar.Collapse>
     </Navbar>
@@ -125,7 +131,7 @@ function LightNav(props) {
         <Navbar.Brand href="/"><img src={logo} height="20rem" /></Navbar.Brand>
         <Nav className="ml-auto">
             {/* <a href={memorizeLink} className='button'>Thinkific Login</a> */}
-            <UserNavButton />
+            <UserNavButton {...props}/>
         </Nav>
     </Navbar>
 }

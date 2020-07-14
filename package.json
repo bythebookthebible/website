@@ -6,6 +6,8 @@
     "@stripe/react-stripe-js": "^1.1.2",
     "@stripe/stripe-js": "^1.4.0",
     "bootstrap": "^4.4.1",
+    "deep-equal": "^2.0.3",
+    "deep-object-diff": "^1.1.0",
     "firebase": "^7.14.3",
     "firebaseui": "^4.5.0",
     "idb": "^5.0.2",
