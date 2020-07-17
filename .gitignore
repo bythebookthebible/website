@@ -19,6 +19,7 @@
 .env.production.local
 .idea
 .firebase/*.cache
+.vscode/*
 
 npm-debug.log*
 yarn-debug.log*
