@@ -22,7 +22,7 @@ export default function ProcessVideoMemeoryPower(props) {
     let timer = useRef(0)
     let player = useRef()
     // @TODO: make player source change with props change
-    console.log(props, player.current && player.current.getState())
+    // console.log(props, player.current && player.current.getState())
 
     useEffect(() => {
         player.current.subscribeToStateChange(handleStateChange)
@@ -34,7 +34,7 @@ export default function ProcessVideoMemeoryPower(props) {
             timer.current = newState.currentTime
         } else if (newState.currentTime - timer.current > 3.0) {
             timer.current = newState.currentTime
-            let key = props.actKey
+            // let key = props.actKey
             dispatch({type:'addMemoryPower', power: 0.3})
         }
     }

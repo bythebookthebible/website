@@ -7,32 +7,32 @@ import Activity from './activity'
 
 import { media } from "./media";
 import { useAuth, useFirestore, useCachedStorage } from "../hooks"
-import { keyFromScripture, valueAfter } from "../util"
+import { keyFromScripture, scriptureFromKey, valueAfter, pathFilters } from "../util"
 import { Spinner } from 'react-bootstrap'
 
 export var DispatchContext = React.createContext(undefined)
 export var StateContext = React.createContext(undefined)
 
-// state is of the form {view:"", activity:{key:"", kind:""}, resources:{}, map:"", path:[], memoryPower:{}}
+// state is of the form {view:"", activity:{key:"", kind:""}, resources:{}, map:"", paths:{<book>:{progress: 0}, ...}, path:"", memoryPower:{}}
 // where view is one of "loading", "map", "activity"
-// action.type is one of "newResources", "newView", "nextVerse", "nextActivity", "nextInPath", "addMemoryPower"
+// action.type is a string coresponding to the next action
 // action has other properties for each action.type
-function kidAppReducer(state, action) {
-    console.log(state, action)
+function kidAppReducer(oldState, action) {
+    console.log(oldState, action)
 
-    let newState = {...state}
+    let state = {...oldState}
 
     for(const act of (Array.isArray(action) ? action : [action])) {
         switch(act.type) {
             case 'newView':
-                newState.view = act.view
+                state.view = act.view
                 if(act.view === 'map') {
-                    newState.map = act.map
+                    state.map = act.map
                 }
                 if(act.view === 'activity') {
-                    newState.activity = act.activity
+                    state.activity = act.activity
                 }
-                newState.path = act.path || newState.path
+                state.path = act.path || state.path
                 continue
 
             case 'nextModule':
@@ -40,38 +40,74 @@ function kidAppReducer(state, action) {
                     key => Object.keys(state.resources[key]).includes(state.activity.kind)
                 )
                 let newActivity = {...state.activity, key: valueAfter(keys, state.activity.key)}
-                newState.activity = newActivity
+                console.log(keys, state.activity.key)
+                state.activity = newActivity
                 continue
 
             case 'nextActivity':
                 let kinds = Object.keys(state.resources[state.activity.key])
                 newActivity = {...state.activity, kind: valueAfter(kinds, state.activity.kind)}
-                newState.activity = newActivity
+                console.log(kinds, state.activity.kind)
+                state.activity = newActivity
                 continue
 
             case 'nextInPath':
-                // LEARNING PATH UNIMPLIMENTED
+                let path = action.path || state.path
+                state = {...state, path:path, paths:{[path]:-1, ...state.paths}} // create any missing state objects
+
+                let activities = getPathActivities(state.resources, path)
+                let pathIndex = action.index || state.paths[path]+1
+                pathIndex = Math.min(pathIndex, activities.length-1)
+
+                state.activity = activities[pathIndex]
+                state.paths = {...state.paths, [path]:pathIndex}
+
                 continue
 
             case 'addMemoryPower':
                 let key = act.key || state.activity.key
                 let newMP = {...state.memoryPower, [key]:state.memoryPower[key]+act.power}
-                newState.memoryPower = newMP
+                state.memoryPower = newMP
                 continue
 
             case 'newResources':
                 let defaultMemoryPower = Object.keys(act.resources).reduce((cum, key) => { cum[key] = 0; return cum }, {})
-                newState = {...newState, resources:act.resources,
+                state = {...state, resources:act.resources,
                     memoryPower:{...defaultMemoryPower, ...state.memoryPower}}
                 continue
 
             case 'loadState':
-                newState = {...newState, ...act.state}
+                state = {...state, ...act.state}
                 continue
         }
     }
-    console.log(newState)
-    return newState
+    console.log(state)
+    return state
+}
+
+function getPathActivities(resources, path) {
+    let filter
+    if(Object.keys(pathFilters).includes(path)) {
+        filter = pathFilters[path]
+    } else {
+        let p = path.split('')
+        let chapter = parseInt(p[p.length-1])
+        if(chapter) {
+            let book = p.slice(0,p.length-1).join(' ');
+            filter = r=>(r.book==book && r.chapter == chapter)
+        } else {
+            filter = r=>(r.book==path)
+        }
+    }
+
+    return Object.entries(resources).reduce(
+        (acc,[key, kinds])=>{
+            return [...acc, ...Object.values(kinds).filter(filter).map(
+                r=>{
+                    return {key:key, kind:r.kind}
+                }
+            )]
+        }, [])
 }
 
 let Tree = props => <div>

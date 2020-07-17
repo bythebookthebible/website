@@ -16,7 +16,8 @@ let sidebarLayout = (props) => {
   return <div>
     <Button className="btn-round" variant="primary" onClick={() => {}}>Repeat</Button>
     <Button className="btn-round" variant="primary" onClick={() => dispatch({type:'nextModule'})}>Go Wider! (More {props.actKind})</Button>
-    <Button className="btn-round" variant="primary" onClick={() => dispatch({type:'nextActivity'})}>Go Deeper! (Explore other activities in this module)</Button>
+    <Button className="btn-round" variant="primary" onClick={() => dispatch({type:'nextActivity'})}>Go Deeper! (Different activities)</Button>
+    <Button className="btn-round" variant="primary" onClick={() => dispatch({type:'nextInPath', path:'Proverbs'})}>Next in Learning Path</Button>
     <Button className="btn-round" variant="primary" onClick={() => dispatch({type:'newView', view:'map', map:'tree'})}>Back to Tree</Button>
     <Button className="btn-round" variant="primary" onClick={() => dispatch({type:'newView', view:'map', map:'home'})}>Back to Map</Button>
   </div>
