@@ -10,7 +10,7 @@ import { Player } from "video-react";
 import VideoMedia from "./VideoMedia";
 import { DispatchContext } from "./kidModeApp"
 
-let sidebarLayout = (props) => {
+let SidebarLayout = (props) => {
   let dispatch = useContext(DispatchContext)
 
   return <div>
@@ -34,7 +34,7 @@ export default function Activity(props) {
       <div>
         <Row>
           <Col sm={9}>{<VideoMedia src={props.resources[props.actKey][props.actKind]["url"]} setMemoryP={props.setMemoryP} actKey={props.actKey} />}</Col>
-          <Col sm={3}>{sidebarLayout(props)}</Col>
+          <Col sm={3}>{SidebarLayout(props)}</Col>
         </Row>
       </div>
     )  
@@ -44,7 +44,7 @@ export default function Activity(props) {
       <div>
         <Row>
           <Col sm={9}>{media[props.actKind](props.resources[props.actKey][props.actKind])}</Col>
-          <Col sm={3}>{sidebarLayout(props)}</Col>
+          <Col sm={3}>{SidebarLayout(props)}</Col>
         </Row>
       </div>
     );
@@ -53,7 +53,7 @@ export default function Activity(props) {
     <div>
       <Row>
         <Col sm={9}>Coming Soon</Col>
-        <Col sm={3}>{sidebarLayout(props)}</Col>
+        <Col sm={3}>{SidebarLayout(props)}</Col>
       </Row>
     </div>
     ); 

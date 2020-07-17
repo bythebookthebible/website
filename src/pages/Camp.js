@@ -32,20 +32,16 @@ var venueProgressOrder = ['needed', 'idea', 'pending', 'confirmed'];
 var campVideo = 'https://firebasestorage.googleapis.com/v0/b/bythebookthebible.appspot.com/o/public%2FcampPromo.mp4?alt=media'
 var email = 'rose@bythebookthebible.com'
 
-export default class Camp extends Component {
-    render() {
-        return (
-            <div>
-                <Switch>
-                    <Route path={'/camp/addStudent'}><AddStudent /></Route>
-                    <Route path={'/camp/addVenue'}><AddVenue /></Route>
-                    <Route path={'/camp/addCamp'}><AddCamp /></Route>
-                    <Route path={'/camp/thankyou'}><Thankyou /></Route>
-                    <Route path={'/camp'}><CampListPage /></Route>
-                </Switch>
-            </div>
-        )
-    }
+export default function Camp() {
+    return <div>
+        <Switch>
+            <Route path={'/camp/addStudent'}><AddStudent /></Route>
+            <Route path={'/camp/addVenue'}><AddVenue /></Route>
+            <Route path={'/camp/addCamp'}><AddCamp /></Route>
+            <Route path={'/camp/thankyou'}><Thankyou /></Route>
+            <Route path={'/camp'}><CampListPage /></Route>
+        </Switch>
+    </div>
 }
 
 class CampListPage extends Component {

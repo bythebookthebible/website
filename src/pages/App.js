@@ -20,6 +20,7 @@ import Subscribe from "../forms/Subscribe";
 import KidModeApp from "../forKids/kidModeApp";
 import ActivityView from "../forKids/activityView";
 import Activity from "../forKids/activity";
+import { withAuth } from '../hooks';
 
 var memorizeLink =
   "https://memorize.bythebookthebible.com/courses/take/matthew-5-6-7-sermon-on-the-mount";
@@ -54,50 +55,19 @@ export default class App extends Component {
           {/* <div className="construction">This site is currently under construction.</div> */}
 
           <Switch>
-            <Page path="/ourStory">
-              <OurStory />
-            </Page>
-            <Page path="/testimonials">
-              <Testimonials />
-            </Page>
-            <Page path="/features">
-              <Curriculum />
-            </Page>
-            <Page path="/camp">
-              <Camp />
-            </Page>
-            <Page path="/manage">
-              <Manage />
-            </Page>
-            <Page path="/subscribe">
-              <Subscribe />
-            </Page>
-            <Page path="/account">
-              <AccountSettings />
-            </Page>
-            <Page path="/termsOfService">
-              <Login.TermsOfService />
-            </Page>
-            <Page path="/privacy">
-              <Login.PrivacyPolicy />
-            </Page>
-            <Page path="/home">
-              <Home />
-            </Page>
-            <Page path="/kidMemorize">
-              <KidModeApp />
-            </Page>
-            <Page path="/acti">
-              <Activity kind="Music Video" key="39-007-00001-6" />
-            </Page>
-            <Page
-              path="/"
-              theme="colorful-theme"
-              nav={<LightNav />}
-              footer={null}
-            >
-              <Memorize />
-            </Page>
+            <Page path="/ourStory" ><OurStory /></Page>
+            <Page path="/testimonials" ><Testimonials /></Page>
+            <Page path="/features" ><Curriculum /></Page>
+            <Page path="/camp" ><Camp /></Page>
+            <Page path="/manage" ><Manage /></Page>
+            <Page path="/subscribe" ><Subscribe /></Page>
+            <Page path="/account" ><AccountSettings /></Page>
+            <Page path="/termsOfService" ><Login.TermsOfService /></Page>
+            <Page path="/privacy" ><Login.PrivacyPolicy /></Page>
+            <Page path="/memorize" theme="colorful-theme" nav={<LightNav />} footer={null} ><Memorize /></Page>
+            <Page path="/kidMemorize"><KidModeApp /></Page>
+            <Page exact path="/" ><Home /></Page>
+            <Page path="" ><NotFound /></Page>
           </Switch>
         </div>
       </Router>
@@ -105,21 +75,31 @@ export default class App extends Component {
   }
 }
 
-function Page(props) {
-  let defaultNav = <FullNav />;
-  let defaultFooter = <Footer />;
-  let defaultTheme = "plain-theme";
-
-  return (
-    <Route path={props.path}>
-      {props.nav === undefined ? defaultNav : props.nav}
-      <div className={"body " + (props.theme || defaultTheme)}>
-        {props.children}
-      </div>
-      {props.footer === undefined ? defaultFooter : props.footer}
-    </Route>
-  );
+function NotFound(props) {
+  return <div className='text-center p-5'>
+    <h1>Page Not Found.</h1>
+    <img src='https://www.biblestudytools.com/Content/Images/file-not-found.jpg' className='mw-100' />
+    <p>We're sorry, but the page you are looking for has been moved or is currently unavailable.</p>
+    <p>Go to <a href='/'>home page</a></p>
+  </div>
 }
+
+var Page = withAuth(
+  props=> {
+    let {nav, footer, theme, path, children, ...passThru} = props
+    nav = nav === undefined ? <FullNav /> : nav
+    footer = footer === undefined ? <Footer /> : footer
+    theme = theme === undefined ? "plain-theme" : theme
+
+    return <Route path={path} {...passThru}>
+      {nav && React.cloneElement(nav, passThru)}
+      <div className={"body " + theme}>
+        {children && React.cloneElement(children, passThru)}
+      </div>
+      {footer && React.cloneElement(footer, passThru)}
+    </Route>
+  }
+)
 
 function Footer(props) {
   return (
@@ -137,40 +117,32 @@ function Footer(props) {
 }
 
 function FullNav(props) {
-  return (
-    <Navbar collapseOnSelect expand="md">
-      <Navbar.Brand href="/home">
-        <img src={logo} height="30rem" />
-        <div>By the Book</div>
-      </Navbar.Brand>
-      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-      <Navbar.Collapse id="responsive-navbar-nav">
-        <Nav className="mr-auto">
-          <Nav.Link href="/">Memorize</Nav.Link>
-          <Nav.Link href="/camp">Camp</Nav.Link>
-          <Nav.Link href="/features">Features</Nav.Link>
-          <Nav.Link href="/testimonials">Testimonials</Nav.Link>
-          <Nav.Link href="/ourStory">Our&nbsp;Story</Nav.Link>
-          <Nav.Link href={internLink}>Internship</Nav.Link>
-        </Nav>
-        <Nav>
-          <UserNavButton className="btn btn-round btn-primary mx-auto" />
-        </Nav>
-      </Navbar.Collapse>
-    </Navbar>
-  );
+  return <Navbar collapseOnSelect expand="md">
+    <Navbar.Brand href="/"><img src={logo} height="30rem"/><div>By the Book</div></Navbar.Brand>
+    <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
+    <Navbar.Collapse  id="responsive-navbar-nav">
+      <Nav className="mr-auto">
+        <Nav.Link href="/memorize">Memorize (Beta)</Nav.Link>
+        <Nav.Link href="/camp">Camp</Nav.Link>
+        <Nav.Link href="/features">Features</Nav.Link>
+        <Nav.Link href="/testimonials">Testimonials</Nav.Link>
+        <Nav.Link href="/ourStory">Our&nbsp;Story</Nav.Link>
+        <Nav.Link href={internLink}>Internship</Nav.Link>
+      </Nav>
+      <Nav>
+        <Nav.Link href={signInLink} className="btn btn-round btn-primary mx-auto">Thinkific Login</Nav.Link>
+        {/* <UserNavButton className="btn btn-round btn-primary mx-auto" {...props}/> */}
+      </Nav>
+    </Navbar.Collapse>
+  </Navbar>
 }
 
 function LightNav(props) {
-  return (
-    <Navbar collapseOnSelect expand="md">
-      <Navbar.Brand href="/home">
-        <img src={logo} height="20rem" />
-      </Navbar.Brand>
-      <Nav className="ml-auto">
-        {/* <a href={memorizeLink} className='button'>Thinkific Login</a> */}
-        <UserNavButton />
-      </Nav>
-    </Navbar>
-  );
+  return <Navbar collapseOnSelect expand="md" >
+    <Navbar.Brand href="/"><img src={logo} height="20rem" /></Navbar.Brand>
+    <Nav className="ml-auto">
+      {/* <a href={memorizeLink} className='button'>Thinkific Login</a> */}
+      <UserNavButton {...props}/>
+    </Nav>
+  </Navbar>
 }

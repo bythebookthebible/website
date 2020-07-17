@@ -100,6 +100,11 @@
     }
 }
 
+.small-card {
+    width: 22rem;
+    max-width: 100%;
+}
+
 .player-control-prev,
 .player-control-next {
     z-index: 1;
@@ -124,7 +129,7 @@
     left: 0;
     z-index: 2;
     max-height: 100%;
-    overflow: auto;
+    // overflow-x: auto;
 }
 
 .memorize-controls {

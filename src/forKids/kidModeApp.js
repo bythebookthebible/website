@@ -18,9 +18,8 @@ export var StateContext = React.createContext(undefined)
 // action.type is a string coresponding to the next action
 // action has other properties for each action.type
 function kidAppReducer(oldState, action) {
-    console.log(oldState, action)
-
     let state = {...oldState}
+    let newActivity = ""
 
     for(const act of (Array.isArray(action) ? action : [action])) {
         switch(act.type) {
@@ -39,15 +38,13 @@ function kidAppReducer(oldState, action) {
                 let keys = Object.keys(state.resources).filter(
                     key => Object.keys(state.resources[key]).includes(state.activity.kind)
                 )
-                let newActivity = {...state.activity, key: valueAfter(keys, state.activity.key)}
-                console.log(keys, state.activity.key)
+                newActivity = {...state.activity, key: valueAfter(keys, state.activity.key)}
                 state.activity = newActivity
                 continue
 
             case 'nextActivity':
                 let kinds = Object.keys(state.resources[state.activity.key])
                 newActivity = {...state.activity, kind: valueAfter(kinds, state.activity.kind)}
-                console.log(kinds, state.activity.kind)
                 state.activity = newActivity
                 continue
 
@@ -81,7 +78,7 @@ function kidAppReducer(oldState, action) {
                 continue
         }
     }
-    console.log(state)
+    console.log(oldState, action, state)
     return state
 }
 
