@@ -1,6 +1,6 @@
 import React, { Component, useState, useEffect, useRef, useReducer} from 'react'
 
-import treeMap from '../images/maps/TestMap.svg'
+import mainMap from '../images/maps/MainMap.svg'
 import readingTree from '../images/maps/TestTree.svg'
 import ButtonMap from './buttonMap'
 import Activity from './activity'
@@ -121,11 +121,15 @@ let Tree = props => <div>
 </div>
 
 let Map = props => <div>
-    <h1>Map</h1>
-    <ButtonMap src={treeMap} buttons={[
-        {id:'SchmoHouse', dispatch: {type:'newView', view:'map', map:'tree'}},
-        {id:'Palace', dispatch: {type:'newView', view:'map', map:'tree'}},
-        {id:'Tree', dispatch: {type:'newView', view:'map', map:'tree'}},
+    <ButtonMap src={mainMap} buttons={[
+        {id:'City_Center', dispatch: {type:'newView', view:'map', map:'tree'}},
+        {id:'Water_Well', dispatch: {type:'newView', view:'map', map:'tree'}},
+        {id:'Jo_Schmo_House', dispatch: {type:'newView', view:'map', map:'tree'}},
+        {id:'Art_Gazebo', dispatch: {type:'newView', view:'map', map:'tree'}},
+        {id:'Dragon', dispatch: {type:'newView', view:'map', map:'tree'}},
+        {id:'Memory_Palace', dispatch: {type:'newView', view:'map', map:'tree'}},
+        {id:'Game_Factory', dispatch: {type:'newView', view:'map', map:'tree'}},
+        {id:'Book_Tree', dispatch: {type:'newView', view:'map', map:'tree'}},
     ]}/>
 </div>
 
