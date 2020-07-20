@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect, useRef } from "react";
+import React, { Component, useState, useEffect, useRef, useContext } from "react";
 import {
   Player,
   ControlBar,
@@ -13,24 +13,19 @@ import ProcessVideoMemoryPower from "./processVideoMemoryPower";
 import videoSplash from "../images/videoSplash.png";
 import { useAuth, useFirestore, useCachedStorage } from "../hooks";
 import VideoMedia from "./VideoMedia";
+import { DispatchContext, StateContext } from "./kidModeApp";
 
 
 // the default is that everytime a pdf rendors, the user will get one point
 //
 // pre: parameters passed in: setMemoryP, actKey, src, actKind
 export default function ProcessPDFMemoryPower(props) {
-    let [count, setCount] = useState(0);
+    let dispatch = useContext(DispatchContext)
+    let state = useContext(StateContext)
 
     useEffect(() => {
-        let key = props.actKey;
-        props.setMemoryP(prev => ({
-            ...prev,
-            [key]: {
-                ...prev[key],
-                powerLevel: prev[key].powerLevel + 1
-            }
-        }))
-    }, [props.actKey, props.actKind])
+        dispatch({type:'addMemoryPower', power: 1})
+    }, [state.activity.key, state.activity.kind])
 
     return (
         <div className="player text-right">
@@ -48,3 +43,5 @@ export default function ProcessPDFMemoryPower(props) {
 
 
 }
+
+// props.src

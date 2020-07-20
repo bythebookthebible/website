@@ -18,6 +18,7 @@ import { AccountSettings, UserNavButton } from "../pages/User";
 import { Manage } from "../pages/Manage";
 import Subscribe from "../forms/Subscribe";
 import KidModeApp from "../forKids/kidModeApp";
+import AdultModeApp from "../forAdults/adultModeApp";
 import ActivityView from "../forKids/activityView";
 import Activity from "../forKids/activity";
 
@@ -87,8 +88,8 @@ export default class App extends Component {
             <Page path="/kidMemorize">
               <KidModeApp />
             </Page>
-            <Page path="/acti">
-              <Activity kind="Music Video" key="39-007-00001-6" />
+            <Page path="/adultMemorize">
+              <AdultModeApp />
             </Page>
             <Page
               path="/"

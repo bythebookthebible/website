@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect, useRef } from 'react'
+import React, { Component, useState, useEffect, useRef, useReducer} from 'react'
 
 import treeMap from '../images/maps/TestMap.svg'
 import readingTree from '../images/maps/TestTree.svg'
@@ -7,34 +7,117 @@ import Activity from './activity'
 
 import { media } from "./media";
 import { useAuth, useFirestore, useCachedStorage } from "../hooks"
-import { keyFromScripture } from "../util"
-import MemoryPalaceView from './memoryPalaceView'
-import ReallyBadPalace from "../images/memoryPal/ReallyBadPalace.svg"
+import { keyFromScripture, valueAfter } from "../util"
+import { Spinner } from 'react-bootstrap'
+import MemoryPowerView from './memoryPalaceView'
+import ReallyBadPalace from '../images/memoryPalace/ReallyBadPalace.svg'
+import MemorizedPrompt from './memorizedPrompt'
+import AdultModeApp from "../forAdults/adultModeApp"
+
+export var DispatchContext = React.createContext(undefined)
+export var StateContext = React.createContext(undefined)
+
+
+
+// state is of the form {view:"", activity:{key:"", kind:""}, resources:{}, map:"", path:[], memoryPower:{}}
+// where view is one of "loading", "map", "activity", "palace"
+// action.type is one of "newResources", "newView", "nextVerse", "nextActivity", "nextInPath", "addMemoryPower"
+// action has other properties for each action.type
+
+let showMemoryPrompt;
+
+function kidAppReducer(state, action) {
+    console.log(state, action)
+
+    let newState = {...state}
+
+    function memorizedPromptCheck(value, index, array) {
+        return value >= 100.0
+    }
+
+    for(const act of (Array.isArray(action) ? action : [action])) {
+        switch(act.type) {
+            case 'newView':
+                newState.view = act.view
+                if(act.view === 'map') {
+                    newState.map = act.map
+                }
+                if(act.view === 'activity') {
+                    newState.activity = act.activity
+                }
+                newState.path = act.path || newState.path
+                continue
+
+            case 'nextModule':
+                let keys = Object.keys(state.resources).filter(
+                    key => Object.keys(state.resources[key]).includes(state.activity.kind)
+                )
+                let newActivity = {...state.activity, key: valueAfter(keys, state.activity.key)}
+                newState.activity = newActivity
+                continue
+
+            case 'nextActivity':
+                let kinds = Object.keys(state.resources[state.activity.key])
+                newActivity = {...state.activity, kind: valueAfter(kinds, state.activity.kind)}
+                newState.activity = newActivity
+                continue
+
+            case 'nextInPath':
+                // LEARNING PATH UNIMPLIMENTED
+                continue
+
+            case 'addMemoryPower':
+                let key = act.key || state.activity.key
+                let newMP = {...state.memoryPower, [key]:state.memoryPower[key]+act.power}
+                newState.memoryPower = newMP
+                showMemoryPrompt = Object.values(newMP).filter(memorizedPromptCheck).length > 0
+                continue
+
+            case 'newResources':
+                let defaultMemoryPower = Object.keys(act.resources).reduce((cum, key) => { cum[key] = 0; return cum }, {})
+                newState = {...newState, resources:act.resources,
+                    memoryPower:{...defaultMemoryPower, ...state.memoryPower}}
+                continue
+
+            case 'loadState':
+                newState = {...newState, ...act.state}
+                continue
+        }
+    }
+    // console.log(newState)
+    return newState
+}
 
 let Tree = props => <div>
     <h1>Tree</h1>
     <ButtonMap src={readingTree} buttons={[
-        {id:'Palace',  onClick: ()=>props.setState({view:'map'})},
-        {id:'Branch1', onClick: ()=>props.setState({view:'activity', actKind:'Music Video', actKey:'39-007-0001-10'})},
-        {id:'Branch2', onClick: ()=>props.setState({view:'activity', actKind:'Music Video', actKey:'39-007-0007-11'})},
-        {id:'Branch3', onClick: ()=>props.setState({view:'activity', actKind:'Music Video', actKey:'39-007-0012-14'})},
-        {id:'Branch4', onClick: ()=>props.setState({view:'activity', actKind:'Music Video', actKey:'39-007-0015-20'})},
-        {id:'Branch5', onClick: ()=>props.setState({view:'activity', actKind:'Music Video', actKey:'39-007-0021-23'})},
-        {id:'Branch6', onClick: ()=>props.setState({view:'activity', actKind:'Music Video', actKey:'39-007-0024-29'})},
+        {id:'Palace', dispatch: {type:'newView', view:'map', map:'home'}},
+        {id:'Branch1', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-0001-10', kind:'Music Video'}}},
+        {id:'Branch2', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-0007-11', kind:'Music Video'}}},
+        {id:'Branch3', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-0012-14', kind:'Music Video'}}},
+        {id:'Branch4', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-0015-20', kind:'Music Video'}}},
+        {id:'Branch5', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-0021-23', kind:'Music Video'}}},
+        {id:'Branch6', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-0024-29', kind:'Music Video'}}},
     ]}/>
 </div>
 
 let Map = props => <div>
     <h1>Map</h1>
     <ButtonMap src={treeMap} buttons={[
-        {id:'SchmoHouse', onClick: ()=>props.setState({view:'tree'})},
-        {id:'Palace', onClick: ()=>props.setState({view:'memory palace'})},
-        {id:'Tree', onClick: ()=>props.setState({view:'tree'})},
+        {id:'SchmoHouse', dispatch: {type:'newView', view:'map', map:'tree'}},
+        {id:'Palace', dispatch: {type:'newView', view:'palace'}},
+        {id:'Tree', dispatch: {type:'newView', view:'map', map:'tree'}},
     ]}/>
 </div>
 
+let Maps = {
+    home:Map,
+    tree:Tree,
+}
+
 export default function KidModeApp(props) {
-    let [state, setState] = useState({view:'map'})
+    let [state, dispatch] = useReducer(kidAppReducer, {view:'loading'})
+    let halfMemoryPower = 50
 
     let resources = useFirestore(
         "memoryResources",
@@ -49,29 +132,43 @@ export default function KidModeApp(props) {
         {}
     );
 
-    // helper method to update memoryP to an object of objects
-    let modulePowerObjectList = resources && Object.keys(resources).reduce(
-        (cummulative, newKey) => {
-            cummulative[newKey] = {powerLevel:0, progress:'start'}
-            return cummulative
-        }, 
-        {}
-    );
+    useEffect(() => {
+        if(resources) {
+            console.log(resources)
+            dispatch([
+                {type:'newResources', resources:resources}, 
+                {type:'newView', view:'map', map:'home'}
+            ])
+        }
+    }, [resources])
+
+    // // helper method to update memoryP to an object of objects
+    // let modulePowerObjectList = resources && Object.keys(resources).reduce(
+    //     (cummulative, newKey) => {
+    //         cummulative[newKey] = {powerLevel:0, progress:'start'}
+    //         return cummulative
+    //     }, 
+    //     {}
+    // );
     
-    // memoryP stores the object containing {{key: {powerLevel, progress}},..., {...}}
-    let [memoryP, setMemoryP] = useState({});
-    useEffect(
-        () => {
-            setMemoryP(modulePowerObjectList);
-        },
-        [resources],
-    );
-    console.log(memoryP)
+    // // memoryP stores the object containing {{key: {powerLevel, progress}},..., {...}}
+    // let [memoryP, setMemoryP] = useState({});
+    // useEffect(
+    //     () => {
+    //         setMemoryP(modulePowerObjectList);
+    //     },
+    //     [resources],
+    // );
 
-    // @TODO: add component when the powerLevel is over 100, prompt the user to send in a video/ zoom Rose and Catherine
+    {console.log("resource:", state.resources)}
+    console.log("resource spec:", state.resources && state.resources["18-001-00001-6"]["Music Video"]["book"])
+    let content = <div className='text-center pt-3'><Spinner animation="border" role="status" size="md" /><h1 className='d-inline-block'>Loading...</h1></div>
+    if(state.view == 'map') content = Maps[state.map]()
+    if(state.view == 'tree') content = <Tree />
+    if(state.view == 'palace') content = <MemoryPowerView src={ReallyBadPalace} halfMemoryPower={halfMemoryPower} showMemoryPrompt={showMemoryPrompt} />
+    if(state.view == 'activity') content = <Activity showMemoryPrompt={showMemoryPrompt} halfMemoryPower={halfMemoryPower} />
 
-    if(state.view == 'map') return <Map setState={setState} />
-    if(state.view == 'tree') return <Tree setState={setState} />
-    if(state.view == 'activity' && memoryP) return <Activity setState={setState} actKey={state.actKey} actKind={state.actKind} resources={resources} setMemoryP={setMemoryP}/>
-    if(state.view == 'memory palace') return <MemoryPalaceView src={ReallyBadPalace} />
+    return <DispatchContext.Provider value={dispatch}><StateContext.Provider value={state}>
+            {content}
+        </StateContext.Provider></DispatchContext.Provider>
 }

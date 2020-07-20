@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 
-export default function ProveOfMemReminder(props) {
-
+export default function MemorizedPrompt(props) {
 
     return (
         <Modal {...props}>
