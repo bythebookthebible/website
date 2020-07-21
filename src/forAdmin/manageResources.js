@@ -1,136 +1,19 @@
-import React, { Component, useState, useEffect, useRef } from 'react'
-import ReactPlayer from 'react-player'
+import React, { useState, useEffect, useRef } from 'react'
 import {Row, Col, ProgressBar, Spinner, Button} from 'react-bootstrap'
 import $ from 'jquery'
-import {
-  Switch,
-  Route,
-  useRouteMatch,
-  useParams
-} from "react-router-dom"
 
-import topImg  from '../images/R+C.svg'
-import {Login} from '../forms/Login'
 import { useFirestore } from '../hooks'
-
+import {books, kinds} from '../util'
 import {firebase, db, storage} from '../firebase'
-
-const books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy',
-'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles',
-'Ezra', 'Nehemiah', 'Esther', 'Job', 'Psalm', 'Proverbs', 'Ecclesiastes', 'Song of Solomon',
-'Isaiah', 'Jeremiah', 'Lamentations', 'Ezekiel', 'Daniel', 'Hosea',
-'Joel', 'Amos', 'Obadiah', 'Jonah', 'Micah', 'Nahum', 'Habakkuk', 'Zephaniah', 'Haggai', 'Zechariah', 'Malachi',
-'Matthew', 'Mark', 'Luke', 'John', 'Acts', 'Romans', '1 Corinthians', '2 Corinthians',
-'Galatians', 'Ephesians', 'Philippians', 'Colossians', '1 Thessalonians', '2 Thessalonians',
-'1 Timothy', '2 Timothy', 'Titus', 'Philemon', 'Hebrews', 'James',
-'1 Peter', '2 Peter', '1 John', '2 John', '3 John', 'Jude', 'Revelation']
-
-// const kinds = ["Music Video", "Dance Video", "Karaoke Video", "Coloring Pages", "Teachers Guide"]
-const kinds = ["Music Video", "Teachers Guide", "Speed Memory", "Schmoment", "Music", "Dance Video", "Coloring Pages", "Karaoke Video"]
 
 const defaultVideoData = {
     book: books[0],
-    chapterVerse: '1:1-2',
+    chapterVerse: '1:1-5',
     kind: kinds[0],
-    title: 'Judge Not',
+    title: 'Title',
 }
 
-export function Manage(props) {
-    if (props.user && !props.user.claims.admin) {
-        window.location = '/'
-    }
-
-    if(!props.user) {
-        return <div className="Manage text-center">
-            <br/>
-            Please Login.
-            <br/><br/>
-            <Login.LoginButton />
-        </div>
-    } else {
-        return <div className="Manage">
-            {<Switch>
-                <Route path={'/manage/manageUsers'}><ManageUsers {...props} /></Route>
-                <Route path={'/manage/manageVideos'}><ManageVideos {...props} /></Route>
-                <Route path={'/manage/manageCamps'}><ManageCamps {...props} /></Route>
-                <Route path={'/manage'}><ManageMenu {...props} /></Route>
-            </Switch>}
-        </div>
-    }
-
-}
-
-function ManageMenu(props) {
-    return (
-        <div className='ManageMenu container-xl'>
-            <Col>
-                <Row><img src={topImg} style={{width:'100%', maxWidth:'250px'}} /></Row>
-                <Row><a className='btn-round btn btn-primary m-3' href='/manage/manageVideos'>Manage Videos</a></Row>
-                <Row><a className='btn-round btn btn-primary m-3' href='/manage/manageCamps'>Manage Camps</a></Row>
-                <Row><a className='btn-round btn btn-primary m-3' href='/manage/manageUsers'>Manage Users</a></Row>
-            </Col>
-        </div>
-    )
-}
-
-function ManageCamps(props) {
-    let [campData, setCampData] = useState([])
-
-    db.collection("summercamps").get().then(function(querySnapshot) {
-        campData = querySnapshot.docs.map(function(doc) {
-            return doc.data()
-        })
-        setCampData(campData)
-    })
-
-    return <div className='container form'>
-        <div className='construction'>This page is under construction</div>
-        <table>
-            <tr>
-                <th></th>
-                <th>Location</th>
-                <th>Start Date</th>
-                <th>Student Count</th>
-                <th>Venue Status</th>
-                <th>Students List</th>
-                <th>Venues List</th>
-            </tr>
-            {console.log(campData)}
-            {campData.map(CampTableRow)}
-            <tr>
-                <th></th>
-                <td><button onClick={function(event) {
-                    // Add a row to the table. Will update db with button when filled in.
-                    campData.push({
-                        location: 'New Camp',
-                        startDate: {toDate: function() {return new Date()}},
-                        numStudents: 0,
-                        venueStatus: 'idea',
-                    })
-                    setCampData(campData)
-                }}>Add Camp</button></td>
-            </tr>
-        </table>
-    </div>
-}
-
-var CampTableRow = function(props) {
-    return (
-        <tr key={props.location}>
-            <td><button onClick={function(event) {
-                // update db for this camp
-            }}>Update</button></td>
-            <td><input type='text' id='location' size={16} defaultValue={props.location} /></td>
-            <td><input type='date' id='startDate' size={16} defaultValue={props.startDate.toDate().toISOString().split('T')[0]} /></td>
-            <td>{props.numStudents}</td>
-            <td><input type='text' id='venueStatus' size={8} defaultValue={props.venueStatus} /></td>
-            <td>Students List</td>
-            <td>Venues List</td>
-        </tr>
-    )
-}
-
-function ManageVideos(props) {
+export default function ManageVideos(props) {
     let [videos, setVideos] = useState([])
 
     useEffect(() => {
@@ -297,70 +180,5 @@ function ResourceTableRow(p) {
         <td>{p.data.title}</td>
         <td>{p.data.url.split('/').slice(-1)}</td>
         <td>{p.progress && (p.progress<100 ? <ProgressBar now={p.progress} /> : <i class="fa fa-check" aria-hidden="true"></i>)}</td>
-    </tr>
-}
-
-var getUsers = firebase.functions().httpsCallable('getUsers');
-var setUser = firebase.functions().httpsCallable('setUser');
-
-function ManageUsers(props) {
-    let [users, setUsers] = useState(null)
-    // console.log(users)
-
-    useEffect(() => {
-        let cancel = false
-        if(props.user) {
-            getUsers()
-                .then(_users => {
-                    if(!cancel) setUsers(_users.data.users)
-                })
-                .catch(e => console.error(e))
-        }
-        return () => cancel = true
-    }, [props.user])
-
-    return <div className='container-xl'>
-        <table className='mx-auto my-3' style={{fontSize:'1rem'}}><tbody>
-            <tr>
-                <th></th>
-                <th>Email</th>
-                <th>Full Name</th>
-                <th>Expiration Date</th>
-                <th>Permanent<br/>Access</th>
-                <th>Admin</th>
-                <th>Delete</th>
-            </tr>
-            {!users ? <Spinner animation="border"/> : users.map(user => <UserRow user={user} />)}
-        </tbody></table>
-    </div>
-}
-
-function UserRow(props) {
-    let user = props.user
-    let claims = user.customClaims
-
-    let expirationRef = useRef()
-    let adminRef = useRef()
-    let permanentAccessRef = useRef()
-
-    return <tr>
-        <td><Button size='sm' onClick={e => {
-            let newUser = {
-                uid: user.uid,
-                customClaims: {
-                    admin: adminRef.current.checked,
-                    permanentAccess: permanentAccessRef.current.checked,
-                    expirationDate: new Date(expirationRef.current.value).valueOf(),
-                }
-            }
-            console.log(newUser)
-            setUser(newUser)
-        }}>Update</Button></td>
-        <td><label>{user.email}</label></td>
-        <td><label>{user.displayName}</label></td>
-        <td><label><input type='date' ref={expirationRef} defaultValue={new Date(claims.expirationDate).toISOString().split('T')[0]} /></label></td>
-        <td><label><input type='checkbox' ref={permanentAccessRef} defaultChecked={claims.permanentAccess} /></label></td>
-        <td><label><input type='checkbox' ref={adminRef} defaultChecked={claims.admin} /></label></td>
-        <td className='p-2' style={{fontSize:'1.5rem'}}>&times;</td>
     </tr>
 }

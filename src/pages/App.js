@@ -15,7 +15,7 @@ import Testimonials from "../pages/Testimonials";
 import Memorize from "../pages/Memorize";
 import { Login } from "../forms/Login";
 import { AccountSettings, UserNavButton } from "../pages/User";
-import { Manage } from "../pages/Manage";
+import { Manage } from "../forAdmin/Manage";
 import Subscribe from "../forms/Subscribe";
 import KidModeApp from "../forKids/kidModeApp";
 import ActivityView from "../forKids/activityView";
