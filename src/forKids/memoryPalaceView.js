@@ -16,18 +16,18 @@ export default function MemoryPalaceView(props) {
         <div>
             {<MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />}
             <ReactSVG 
-                 src={props.src} 
-                 afterInjection={(err, svg) => {
-                     // fix the i < 8 later (bc rn we only have 8 rectangles)
-                     let MPArray = Object.values(state.memoryPower)
-                     for (let i = 0; i < 8; i++) {
-                         // this is to set an asymptote at half way mark
-                         let percentageFilled = MPArray[i] / (MPArray[i] + (props.halfMemoryPower || defaultHalfMemoryPower))
-                         let glow = $('#glow_' + (i + 1)).children().css({'transform-origin': 'bottom', 'transform-box': 'fill-box', 'transform': 'scaleY(' + percentageFilled + ')'})
-                     }
-                 }} 
+                src={props.src} 
+                afterInjection={(err, svg) => {
+                    // fix the i < 8 later (bc rn we only have 8 rectangles)
+                    let MPArray = Object.values(state.memoryPower)
+                    for (let i = 0; i < 8; i++) {
+                        // this is to set an asymptote at half way mark
+                        let percentageFilled = MPArray[i] / (MPArray[i] + (props.halfMemoryPower || defaultHalfMemoryPower))
+                        let glow = $('#glow_' + (i + 1)).children().css({'transform-origin': 'bottom', 'transform-box': 'fill-box', 'transform': 'scaleY(' + percentageFilled + ')'})
+                    }
+                }}
             />
-            <Button className="btn-round" variant="primary" onClick={() => dispatch({type:'newView', view:'map', map:'home'})}>Back to Map</Button>
+            <Button className="btn-round" variant="primary" onClick={() => dispatch({type:'newView', view:'map', viewSelected:'home'})}>Back to Map</Button>
         </div>
     )
 }
