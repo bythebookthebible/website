@@ -32,10 +32,10 @@ let Map = props => <div>
 
 let Palace = props => <div>
     <ButtonMap src={palaceMap} buttons={[
-        {id:'Psalms_Proverbs', dispatch: {type:'newView', view:'map', map:'tree'}},
-        {id:'Matthew', dispatch: {type:'newView', view:'map', map:'tree'}},
-        {id:'James', dispatch: {type:'newView', view:'map', map:'tree'}},
-        {id:'Ephesians', dispatch: {type:'newView', view:'map', map:'tree'}},
+        {id:'Psalms_Proverbs', dispatch: {type:'newView', view:'palace'}},
+        {id:'Matthew', dispatch: {type:'newView', view:'palace'}},
+        {id:'James', dispatch: {type:'newView', view:'palace'}},
+        {id:'Ephesians', dispatch: {type:'newView', view:'palace'}},
     ]}/>
 </div>
 
