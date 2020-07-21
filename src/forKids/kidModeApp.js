@@ -5,11 +5,21 @@ import { media } from "./media";
 import { useAuth, useFirestore, useCachedStorage } from "../hooks"
 import { keyFromScripture, scriptureFromKey, valueAfter, pathFilters } from "../util"
 import { Spinner } from 'react-bootstrap'
+import MemoryPowerView from './memoryPalaceView'
+import ReallyBadPalace from '../images/memoryPalace/ReallyBadPalace.svg'
+import MemorizedPrompt from './memorizedPrompt'
+import AdultModeApp from "../forAdults/adultModeApp"
 
 import {Maps} from './maps'
 
 export var DispatchContext = React.createContext(undefined)
 export var StateContext = React.createContext(undefined)
+
+let showMemoryPrompt;
+
+function memorizedPromptCheck(value, index, array) {
+    return value >= 100.0
+}
 
 // state is of the form {view:"", activity:{key:"", kind:""}, resources:{}, map:"", paths:{<book>:{progress: 0}, ...}, path:"", memoryPower:{}}
 // where view is one of "loading", "map", "activity"
@@ -63,6 +73,7 @@ function kidAppReducer(oldState, action) {
                 let key = act.key || state.activity.key
                 let newMP = {...state.memoryPower, [key]:state.memoryPower[key]+act.power}
                 state.memoryPower = newMP
+                showMemoryPrompt = Object.values(newMP).filter(memorizedPromptCheck).length > 0
                 continue
 
             case 'newResources':
@@ -138,6 +149,9 @@ function getPathActivities(resources, path) {
 
 export default function KidModeApp(props) {
     let [state, dispatch] = useReducer(kidAppReducer, {view:'loading'})
+    console.log(state)
+
+    let halfMemoryPower = 50
 
     let resources = useFirestore(
         "memoryResources",
@@ -151,6 +165,7 @@ export default function KidModeApp(props) {
         },
         {}
     );
+    console.log(resources)
 
     useEffect(() => {
         if(resources) {
@@ -180,11 +195,13 @@ export default function KidModeApp(props) {
     //     [resources],
     // );
 
-    // @TODO: add component when the powerLevel is over 100, prompt the user to send in a video/ zoom Rose and Catherine
+    {console.log("resource:", state.resources)}
+    console.log("resource spec:", state.resources && state.resources["18-001-00001-6"]["Music Video"]["book"])
     let content = <div className='text-center pt-3'><Spinner animation="border" role="status" size="md" /><h1 className='d-inline-block'>Loading...</h1></div>
+    
     if(state.view == 'map') content = Maps[state.map]()
-    // if(state.view == 'tree') content = <Tree />
-    if(state.view == 'activity') content = <Activity actKey={state.activity.key} actKind={state.activity.kind} resources={resources} />
+    if(state.view == 'palace') content = <MemoryPowerView src={ReallyBadPalace} halfMemoryPower={halfMemoryPower} showMemoryPrompt={showMemoryPrompt} />
+    if(state.view == 'activity') content = <Activity showMemoryPrompt={showMemoryPrompt} halfMemoryPower={halfMemoryPower} />
 
     return <DispatchContext.Provider value={dispatch}><StateContext.Provider value={state}>
             {content}
