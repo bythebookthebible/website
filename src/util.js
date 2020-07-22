@@ -1,3 +1,6 @@
+import deepEqual from 'fast-deep-equal/es6/react'
+import { isAssertionExpression } from 'typescript'
+
 export const books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy',
 'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles',
 'Ezra', 'Nehemiah', 'Esther', 'Job', 'Psalm', 'Proverbs', 'Ecclesiastes', 'Song of Solomon',
@@ -11,12 +14,21 @@ export const books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy'
 // const kinds = ["Music Video", "Dance Video", "Karaoke Video", "Coloring Pages", "Teachers Guide"]
 export const kinds = ["Watch", "What It Means", "Speed Memory", "Schmoment", "Music", "Karaoke", "Family Chat", "Dance", "Color"]
 
+// paths not in this list are of the form
+// 'Book': r=>(r.book=='Book'),
+// or
+// 'Book Ch': r=>(r.book=='Book' && r.chapter == parseInt(Ch)),
+export const pathFilters = {
+  'Armor of God': r=>(r.book=='Ephesians' && r.chapter==6),
+  'Sermon on the Mount': r=>(r.book=='Matthew' && 5<=r.chapter && r.chapter<=7),
+}
+
 // convert between scripture references and a string key
 // used for tracking scripture selected
 export const keyFromScripture = (book, chapter, verses) => `${String(books.indexOf(book)).padStart(2,'0')}-${String(chapter).padStart(3,'0')}-${String(verses).padStart(7,'0')}`
 export const scriptureFromKey = key => {
-    let r = key.split('-')
-    return {book: books[Number(r[0])], chapter: Number(r[1]), verses: `${Number(r[2])}-${Number(r[3])}`}
+  let r = key.split('-')
+  return {book: books[Number(r[0])], chapter: Number(r[1]), verses: `${Number(r[2])}-${Number(r[3])}`}
 }
 
 // this is a mathematically correct mod accounting for negative numbers
@@ -26,5 +38,10 @@ export function mod(n, m) {
 }
 
 export function valueAfter(arr, val, n=1) {
-  return arr[(arr.indexOf(val) + n) % arr.length]
+  for(let i in arr) {
+    i=Number(i) // apparently i is a string
+    if(deepEqual(arr[i], val))
+      return arr[(i+n) % arr.length]
+  }
+  return arr[0]
 }

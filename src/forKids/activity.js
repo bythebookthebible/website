@@ -52,7 +52,7 @@ export default function Activity(props) {
     setShowSidebar(false)
   }
 
-  let sidebarLayout = () => {
+  let SidebarLayout = () => {
     let dispatch = useContext(DispatchContext)
     let state = useContext(StateContext)
   
@@ -73,7 +73,7 @@ export default function Activity(props) {
     return (
       <div>
         {<MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />}
-        {<SidebarPopUp sidebarLayout={sidebarLayout} setShow={sidebarHandler} show={showSidebar} />}
+        {<SidebarPopUp sidebarLayout={SidebarLayout} setShow={sidebarHandler} show={showSidebar} />}
         <div onClick={() => closeSidebar()}>{<VideoMedia src={state.resources[state.activity.key][state.activity.kind]["url"]} setShow={openSidebar}/>}</div>
       </div>
     )  
@@ -82,7 +82,7 @@ export default function Activity(props) {
   //   return (
   //     <div>
   //       {<MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />}
-  //       {<SidebarPopUp sidebarLayout={sidebarLayout} setShow={sidebarHandler} show={showSidebar} />}
+  //       {<SidebarPopUp sidebarLayout={SidebarLayout} setShow={sidebarHandler} show={showSidebar} />}
   //       <div onClick={() => closeSidebar()}>{<PDFMedia src={state.resources[state.activity.key][state.activity.kind]["url"]} />}</div>
   //     </div>
   //   );
@@ -93,7 +93,7 @@ export default function Activity(props) {
     return (
       <div>  
         {<MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />}
-        {<SidebarPopUp sidebarLayout={sidebarLayout} setShow={sidebarHandler} show={showSidebar} />}
+        {<SidebarPopUp sidebarLayout={SidebarLayout} setShow={sidebarHandler} show={showSidebar} />}
         {<ColoringPageGenerator onOpen={openSidebar} onClose={closeSidebar} src={state.resources[state.activity.key][state.activity.kind]['url']} />}
       </div>
     );  
@@ -110,7 +110,7 @@ export default function Activity(props) {
     return (
       <div>
         {<MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />}
-        {<SidebarPopUp sidebarLayout={sidebarLayout} setShow={sidebarHandler} show={showSidebar} />}
+        {<SidebarPopUp sidebarLayout={SidebarLayout} setShow={sidebarHandler} show={showSidebar} />}
         <div onClick={() => closeSidebar()}>Coming Soon!</div>
       </div>
     ); 

@@ -83,11 +83,11 @@ export default function ProcessVideoMemeoryPower(props) {
     }
 
     function traverse(timestamps) {
-        arrTimestamps = timestamps.split(' ') // arr of timestamps
-        let half = Math.floor(arrTimestamps.length / 2)
-        let firstHalf = arrTimestamps.slice(0, half + 1)
-        let secondHalf = arrTimestamps.slice(half, arrTimestamps.length)
-        let startEndTimePair = "" + arrTimestamps[0] + " " + arrTimestamps[arrTimestamps.length - 1]
+        let timeArr = timestamps.split(' ') // arr of timestamps
+        let half = Math.floor(timeArr.length / 2)
+        let firstHalf = timeArr.slice(0, half + 1)
+        let secondHalf = timeArr.slice(half, timeArr.length)
+        let startEndTimePair = "" + timeArr[0] + " " + timeArr[timeArr.length - 1]
         let arr = [startEndTimePair]
         return traverseHelper(firstHalf, secondHalf, arr)
     }

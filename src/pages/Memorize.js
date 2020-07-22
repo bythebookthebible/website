@@ -7,14 +7,15 @@ import {
   BigPlayButton
 } from 'video-react';
 import "../../node_modules/video-react/dist/video-react.css"
-import {Row, Col, ToggleButton, ToggleButtonGroup, ButtonGroup, Dropdown, Container} from 'react-bootstrap'
+import {Row, Col, ToggleButton, ToggleButtonGroup, ButtonGroup, Dropdown, Container, Button} from 'react-bootstrap'
 import $ from "jquery"
 import logo from '../images/logo.svg';
+import missing from '../images/missingContent.png';
 
 import {Login} from '../forms/Login.js'
 
 import videoSplash from "../images/videoSplash.png"
-import { useAuth, useFirestore, useCachedStorage } from '../hooks';
+import { useAuth, useFirestore, useCachedStorage, withAuth } from '../hooks';
 
 import {firebase, db, storage} from '../firebase'
 import {books, kinds, keyFromScripture, scriptureFromKey, mod} from '../util'
@@ -28,17 +29,17 @@ import Karaoke      from '../images/memoryKinds/Karaoke.svg'
 import FamilyChat   from '../images/memoryKinds/FamilyChat.svg'
 import Dance        from '../images/memoryKinds/Dance.svg'
 import Color        from '../images/memoryKinds/Color.svg'
+import Subscribe from '../forms/Subscribe';
 
 const kindsImages = {
     "Music Video": Watch,
-    // "What It Means": WhatItMeans,
+    "Teachers Guide": WhatItMeans,
     // "Speed Memory": SpeedMemory,
-    // "Schmoment": Schmoment,
+    "Schmoment": Schmoment,
     // "Music": Music,
     "Dance Video": Dance,
-    "Teachers Guide": FamilyChat,
     "Coloring Pages": Color,
-    // "Karaoke Video": Karaoke,
+    "Karaoke Video": Karaoke,
 }
 
 // Media players for each kind of resource
@@ -61,6 +62,10 @@ function VideoMedia(props) {
     </Player>
 }
 
+function MissingPlayer(props) {
+    return <img src={missing} className="player" style={{maxWidth: '500px'}} />
+}
+
 let players = {
     "mp4": VideoMedia,
     "pdf": PDFMedia,
@@ -69,6 +74,18 @@ let players = {
 let defaultSelected = new Set(["39-007-00001-6", "39-007-0007-11", "39-007-0012-14", "39-007-0015-20", "39-007-0021-23", "39-007-0024-29"])
 
 export default function Memorize(props) {
+    return <Login.AuthSwitch {...props}
+        tests={[
+            {
+                test:user=>!(user.claims.expirationDate - Date.now() > 0 || user.claims.permanentAccess || user.claims.admin), 
+                value:<Subscribe />
+            },
+        ]}
+        default={<MemorizePage />}
+    />
+}
+
+function MemorizePage(props) {
     // Initialize and load resources and selections
     let [scriptureSelected, setScriptureSelected] = useState(defaultSelected)
     // let [kindsSelected, setKindsSelected] = useState(new Set([kinds[0]]))
@@ -84,15 +101,14 @@ export default function Memorize(props) {
     }, {})
     
     // Adjust view for access level
-    let [user, claims] = useAuth(true)
     
     let upgradeMsg
-    if (!user) {// Should log in
-        upgradeMsg = <div><Login.LoginButton/> for free trial</div>
-    } else if(claims.expirationDate - Date.now() > 0 || claims.permanentAccess || claims.admin) {
+    if (!props.user) {// Should log in
+        upgradeMsg = <div><Login.LoginButton/> for 30 day trial access to all chapters.</div>
+    } else if(props.user.claims.expirationDate - Date.now() > 0 || props.user.claims.permanentAccess || props.user.claims.admin) {
         upgradeMsg = null // Full access
     } else { // Should subscribe
-        upgradeMsg = <div><a href='/subscribe'>Subscribe to see everything</a></div>
+        upgradeMsg = <div><a href='/subscribe'>Subscribe to access all chapters</a></div>
     }
     
     // Choose correct resource to play
@@ -122,33 +138,34 @@ export default function Memorize(props) {
 
     // Choose correct player for current url
     let fileKind = keyUrl && keyUrl.split('.').slice(-1)[0]
-    let player = keyUrl && players[fileKind]
+    let player = keyUrl ? players[fileKind] : MissingPlayer
 
     // Memory format selector
     let memoryFormatSelector = <div className='text-center' style={{bottom:0, zIndex:1}}>
         {Object.keys(kindsImages).map((kind) => 
-            <ToggleButtonGroup className='checkbox' type='checkbox' key={kind} defaultValue={kindsSelected.has(kind) ? kind : []} onChange={values => {
-                let k = new Set(kindsSelected)
-                if(!!values[0]) {k.add(kind)}
-                else {k.delete(kind)}
-                setKindsSelected(k)
+            <CustomToggleButton selected={kindsSelected} value={kind} variant='outline-primary square-btn' onChange={v => {
+                setKindsSelected(v)
                 setIndex(0)
             }}>
-                <ToggleButton value={kind} variant='outline-primary'><div style={{WebkitMask:`url(${kindsImages[kind]})`, mask:`url(${kindsImages[kind]})`, maskSize: "cover"}}></div></ToggleButton>
-            </ToggleButtonGroup>
+                <div style={{WebkitMask:`url(${kindsImages[kind]})`, mask:`url(${kindsImages[kind]})`, maskSize: "cover"}} />
+            </CustomToggleButton>
         )}
     </div>
 
     let [showControls, setShowControls] = useState(true)
 
     // Page layout
-    return <div className={`container-xl py-2 memorize-controls ${showControls ? '' : 'hide'}`} onMouseMove={mouseMoving(setShowControls)}>
-        {player && player({src: url, style: {position:'absolute', zIndex:1}})}
-        <ScriptureSelector key='scripture-selector' className='scripture-selector' selected={scriptureSelected} resources={resources} onChange={v => {setScriptureSelected(v)}} />
-        <i className="fa fa-4x fa-chevron-left player-control-prev" onClick={() => setIndex(index - 1) } />
-        <i className="fa fa-4x fa-chevron-right player-control-next" onClick={() => setIndex(index + 1) }/>
-        {memoryFormatSelector}
-        {/* {upgradeMsg} */}
+    return <div className='text-center py-2'>
+        {upgradeMsg}
+        <div className={`container-xl py-5 memorize-controls ${showControls ? '' : 'hide'}`} onMouseMove={mouseMoving(setShowControls)}>
+            {player && player({src: url, style: {position:'absolute', zIndex:1}})}
+            <ScriptureSelector key='scripture-selector' className='scripture-selector' selected={scriptureSelected} resources={resources} onChange={v => {setScriptureSelected(v)}} />
+            {urlList.length > 1 && [
+                <i className="fa fa-4x fa-chevron-left player-control-prev" onClick={() => setIndex(index - 1) } />,
+                <i className="fa fa-4x fa-chevron-right player-control-next" onClick={() => setIndex(index + 1) }/>,
+            ]}
+            {memoryFormatSelector}
+        </div>
     </div>
 }
 
@@ -158,7 +175,7 @@ let mouseMoving = (cb) => () => {
     
     (() => {
         clearTimeout(timeout);
-        timeout = setTimeout(() => cb(false), 5000);
+        timeout = setTimeout(() => cb(false), 3000);
     })();
 }
 
@@ -183,33 +200,54 @@ function ScriptureSelector(props) {
         title = `${s.book} ${s.chapter}`
     }
 
-    return <div className={`selection-expand-box ${show ? 'show' : ''} ${props.className || ''}`}
+    return <Container className={`selection-expand-box p-3 ${show ? 'show' : ''} ${props.className || ''}`}
                 onMouseLeave={() => setShow(false)} onMouseEnter={() => setShow(true)} onClick={() => setShow(true)}>
-        <div className='text-center' onClick={() => setShow(false)}>
-            <img src={logo} height="30rem"/>
-            <h2>{title}</h2>
-        </div>
+        <Row className='text-center' onClick={() => setShow(false)}>
+            <Col>
+                <img src={logo} height="30rem"/>
+                <h2>{title}</h2>
+            </Col>
+        </Row>
 
         {show &&
-        <Container><Row style={{flexWrap:'nowrap', justifyContent:'flex-start'}}>{Object.keys(scriptures).map(book => <>
+        <Row style={{flexWrap:'nowrap', justifyContent:'flex-start', overflowX:'auto'}}>{Object.keys(scriptures).map(book => <>
             {Object.keys(scriptures[book]).map(chapter => <Col>
-                <h3>{book + ' ' + chapter}</h3>
+                <CustomToggleButton selected={selected} variant='outline-primary my-1' style={{width: '8rem'}}
+                    value={Object.keys(scriptures[book][chapter]).map(verses => keyFromScripture(book, chapter, verses))}
+                    onChange={v => {
+                        props.onChange(v)
+                        setSelected(v)
+                }} >{book + ' ' + chapter}</CustomToggleButton>
+                {/* <h3>{book + ' ' + chapter}</h3> */}
                 <div className='wavy-col'>
                     <div style={{height:'2rem', gridArea:'1 / 2 / 1 / 2'}} ></div>
                     {Object.keys(scriptures[book][chapter]).map(verses => {
                         let key = keyFromScripture(book, chapter, verses)
-                        return <ToggleButtonGroup className='checkbox' type='checkbox' key={key} defaultValue={selected.has(key) ? key : []} onChange={newSelected => {
-                            var v = new Set(selected)
-                            if(!!newSelected[0]) v.add(key)
-                            else v.delete(key)
+                        return <CustomToggleButton selected={selected} value={key} variant='outline-primary square-btn' onChange={v => {
                             props.onChange(v)
                             setSelected(v)
-                        }}>
-                            <ToggleButton selected={key} value={key} variant='outline-primary'>{verses}</ToggleButton>
-                        </ToggleButtonGroup>}
-                    )}
+                        }} >{verses}</CustomToggleButton>
+                    })}
                 </div>
             </Col>)}
-        </>)}</Row></Container>}
-    </div>
+        </>)}
+        </Row>}
+    </Container>
+}
+
+// props are selected (Set) and value
+function CustomToggleButton(props) {
+    let {selected, value, onChange, children, ...passThrough} = props
+    if(!Array.isArray(value)) value = [value]
+
+    return <Button {...passThrough} active={value.every(v => selected.has(v)) ? value : undefined} 
+        onClick={() => {
+            // var v = new Set(selected)
+            // if(!!newSelected[0]) v.add(value)
+            // else v.delete(value)
+            // onChange(v)
+            onChange(new Set(value))
+    }}>
+        {children}
+    </Button>
 }

@@ -1,5 +1,4 @@
 import React, { Component, useEffect, useState} from 'react';
-import {useAuth} from '../hooks.js'
 import {Login} from '../forms/Login'
 import {Navbar, Nav, NavDropdown, NavLink} from 'react-bootstrap'
 import {Row, Col} from 'react-bootstrap'
@@ -17,9 +16,9 @@ const plans = {
     'super':'plan_H8szUndIpfJBm9',
 }
 
-
 export function UserNavButton(props) {
-    let [user, claims] = useAuth(true)
+    let user = props.user
+    let claims = user && user.claims
 
     if(!user) {
         return <Login.LoginButton {...props} />
@@ -27,7 +26,7 @@ export function UserNavButton(props) {
     return [
         <NavDropdown title={user.displayName} as={NavLink}>
             {claims.admin && <NavDropdown.Item href='/manage' >Admin</NavDropdown.Item>}
-            <NavDropdown.Item href='/account' >My Account</NavDropdown.Item>
+            {/* <NavDropdown.Item href='/account' >My Account</NavDropdown.Item> */}
             <NavDropdown.Item {...props} onClick={() => {
                 firebase.auth().signOut().then(function(user) {
                         console.log('Signed out');
@@ -40,8 +39,8 @@ export function UserNavButton(props) {
 }
 
 export function AccountSettings(props) {
-    let [user, claims] = useAuth(true)
-    console.log(user,claims)
+    let user = props.user
+    console.log(user,user.claims)
 
     return user && <table className='container form'><tbody>
 
