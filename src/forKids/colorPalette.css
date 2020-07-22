@@ -74,15 +74,64 @@
     margin-bottom: 40px;
 }
 
-.pdf-page {
-    flex-direction: row;
+.pdf-page-display {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 1rem;
 }
 
-.pdf {
-    flex-direction: row;
-    height: 100vh;
-    overflow: visible;
+.pdf-btn {
+    border: 0;
+    outline: 0;
+    background-color: transparent;
 }
+
+.pdf-btn:hover {
+    outline: 0;
+    transform:scale(1.05);
+    transition: 0.2s; 
+
+}
+
+.pdf-btn:focus {
+    outline: 0;
+}
+
+/* 
+.pdf {
+    /* display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    /* align-items: stretch; 
+    align-content: space-between; */
+    /* width: 100vw;
+} */
+
+/* 
+.pdf-page-left {
+    width: 50vw;
+    float: left;
+}
+
+.pdf-page-right {
+    width: 50vw;
+    position: relative;
+    float: left;
+}   */
+
+/* .pdf-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    /* align-items: stretch; */
+    /* align-content: space-between;
+    width: 100px;
+}
+
+.page-container {
+    width: 200px;
+} */
 
 /* .div-logo {
     text-align: center;
