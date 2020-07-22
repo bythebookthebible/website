@@ -19,8 +19,6 @@ import { Manage } from "../forAdmin/Manage";
 import Subscribe from "../forms/Subscribe";
 import KidModeApp from "../forKids/kidModeApp";
 import AdultModeApp from "../forAdults/adultModeApp";
-import ActivityView from "../forKids/activityView";
-import Activity from "../forKids/activity";
 import { withAuth } from '../hooks';
 
 var memorizeLink =

@@ -36,6 +36,7 @@ export const kinds = {
   discussion:'discussion',
   dance:'dance',
   coloring:'coloring',
+  book:'book',
 }
 
 export const resoucesForKinds = {
@@ -48,6 +49,7 @@ export const resoucesForKinds = {
   discussion:['discussion'],
   dance:['dance'],
   coloring:['coloring'],
+  book:['book'],
 }
 
 export function getKinds(moduleResource) {

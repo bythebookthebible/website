@@ -63,18 +63,16 @@ function kidAppReducer(oldState, action) {
             case actionTypes.nextModule:
                 let keys = Object.keys(state.resources).filter(
                     key => {
-                        console.log(state.resources[key], getKinds(state.resources[key]))
                         return getKinds(state.resources[key]).includes(state.activity.kind)
                     }
                 )
                 
-                newActivity = {...state.activity, key: valueAfter(keys, state.activity.key)}
-                state.activity = newActivity
+                state.activity = {...state.activity, key: valueAfter(keys, state.activity.key)}
                 continue
 
             case actionTypes.nextActivity:
-                newActivity = {...state.activity, kind: valueAfter(getKinds(state.resources[key]), state.activity.kind)}
-                state.activity = newActivity
+                state.activity = {...state.activity, 
+                    kind: valueAfter(getKinds(state.resources[state.activity.key]), state.activity.kind)}
                 continue
 
             case actionTypes.nextInPath:
