@@ -6,6 +6,7 @@ import { scriptureFromKey } from '../util'
 
 import karaokeBg from '../images/maps/KaraokeBackground.svg'
 import karaokeBar from '../images/maps/KaraokeVerseBar.svg'
+import bookBar from '../images/maps/BookVerseBar.svg'
 
 function ModuleSelctor(props) {
   let dispatch = useContext(DispatchContext)
@@ -22,7 +23,7 @@ function ModuleSelctor(props) {
     return cum
   }, {})
 
-  return <div style={{height:'90vh', position:'relative', backgroundImage: "url(" + props.background + ")"}}>
+  return <div style={{height:'90vh', position:'relative', backgroundImage: "url(" + props.background + ")", ...props.style}}>
     <Container fluid style={{...props.style}}>
       {Object.keys(scriptures).map(book =>
         Object.keys(scriptures[book]).map(chapter => <>
@@ -42,4 +43,5 @@ function ModuleSelctor(props) {
 
 export default {
   dragon: <ModuleSelctor background={karaokeBg} chapterBackground={karaokeBar} />,
+  book: <ModuleSelctor style={{backgroundColor:"#dd08"}} chapterBackground={bookBar} />,
 }

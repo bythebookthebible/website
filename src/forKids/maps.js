@@ -23,11 +23,11 @@ let Map = props => <div>
         {id:'Memory_Palace',  dispatch: {type:'newView', view:'map', viewSelected:'palace'}},
         {id:'City_Center',    dispatch: {type:'newView', view:'map', viewSelected:'townSquare'}},
         {id:'Water_Well',     dispatch: {type:'newView', view:'moduleSelector', viewSelected:'dragon'}},
-        {id:'Jo_Schmo_House', dispatch: {type:'newView', view:'moduleSelector', viewSelected:'dragon'}},
+        {id:'Jo_Schmo_House', dispatch: {type:'newView', view:'map', viewSelected:'tree'}},
         {id:'Art_Gazebo',     dispatch: {type:'newView', view:'moduleSelector', viewSelected:'dragon'}},
         {id:'Dragon',         dispatch: {type:'newView', view:'moduleSelector', viewSelected:'dragon'}},
         {id:'Game_Factory',   dispatch: {type:'newView', view:'moduleSelector', viewSelected:'dragon'}},
-        {id:'Book_Tree',      dispatch: {type:'newView', view:'moduleSelector', viewSelected:'dragon'}},
+        {id:'Book_Tree',      dispatch: {type:'newView', view:'moduleSelector', viewSelected:'book'}},
     ]}/>
 </div>
 
