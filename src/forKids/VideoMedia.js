@@ -14,6 +14,7 @@ import ProcessVideoMemoryPower from "./processVideoMemoryPower";
 import videoSplash from "../images/videoSplash.png";
 import { useAuth, useFirestore, useCachedStorage } from "../hooks";
 import { DispatchContext, StateContext } from "./kidModeApp"
+import { kinds } from "../util";
 
 
 
@@ -26,9 +27,9 @@ export default function VideoMedia(props) {
     let state = useContext(StateContext)
 
     let src = useCachedStorage(props.src);
-    if (state.activity.kind == "Music Video") {
+    if (state.activity.kind == kinds.watch) {
         return <ProcessVideoMemoryPower setShow={props.setShow} src={"https://firebasestorage.googleapis.com/v0/b/bythebookthebible.appspot.com/o/memory%2FMatthew%2F007%2F39-007-001-006-music-video.mp4?alt=media&token=ec02c263-e4ee-4868-ab18-4027a75fc3a9"} />
-    } else if (state.activity.kind == "Dance Video") {
+    } else if (state.activity.kind == kinds.dance) {
         return <ProcessVideoMemoryPower setShow={props.setShow} src={"http://media.w3.org/2010/05/bunny/movie.mp4"} />
     }
 }

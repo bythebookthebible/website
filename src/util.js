@@ -12,7 +12,49 @@ export const books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy'
 '1 Peter', '2 Peter', '1 John', '2 John', '3 John', 'Jude', 'Revelation']
 
 // const kinds = ["Music Video", "Dance Video", "Karaoke Video", "Coloring Pages", "Teachers Guide"]
-export const kinds = ["Watch", "What It Means", "Speed Memory", "Schmoment", "Music", "Karaoke", "Family Chat", "Dance", "Color"]
+// export const kinds = ["Watch", "What It Means", "Speed Memory", "Schmoment", "Music", "Karaoke", "Family Chat", "Dance", "Color"]
+
+// export const kinds = {
+//   watch:"Watch",
+//   teacherGuide:"What It Means",
+//   speed:"Speed Memory",
+//   schmoment:"Schmoment",
+//   music:"Music",
+//   karaoke:"Karaoke",
+//   discussion:"Family Chat",
+//   dance:"Dance",
+//   coloring:"Color"
+// }
+
+export const kinds = {
+  watch:'watch',
+  teacherGuide:'teacherGuide',
+  speed:'speed',
+  schmoment:'schmoment',
+  music:'music',
+  karaoke:'karaoke',
+  discussion:'discussion',
+  dance:'dance',
+  coloring:'coloring',
+}
+
+export const resoucesForKinds = {
+  watch:['watch'],
+  teacherGuide:['teacherGuide'],
+  speed:['speed', 'watch'],
+  schmoment:['schmoment'],
+  music:['music'],
+  karaoke:['karaoke'],
+  discussion:['discussion'],
+  dance:['dance'],
+  coloring:['coloring'],
+}
+
+export function getKinds(moduleResource) {
+  return Object.keys(kinds).filter(
+    k=>resoucesForKinds[k].every(r=>moduleResource[r])
+  )
+}
 
 // paths not in this list are of the form
 // 'Book': r=>(r.book=='Book'),
@@ -25,7 +67,11 @@ export const pathFilters = {
 
 // convert between scripture references and a string key
 // used for tracking scripture selected
-export const keyFromScripture = (book, chapter, verses) => `${String(books.indexOf(book)).padStart(2,'0')}-${String(chapter).padStart(3,'0')}-${String(verses).padStart(7,'0')}`
+export const keyFromScripture = (book, chapter, verses) => {
+  let [startVerse, endVerse] = verses.split('-')
+  `${String(books.indexOf(book)).padStart(2,'0')}-${String(chapter).padStart(3,'0')}-${String(startVerse).padStart(3,'0')}-${String(endVerse).padStart(3,'0')}`
+}
+
 export const scriptureFromKey = key => {
   let r = key.split('-')
   return {book: books[Number(r[0])], chapter: Number(r[1]), verses: `${Number(r[2])}-${Number(r[3])}`}

@@ -2,7 +2,7 @@ import React, { useContext } from "react"
 import { Container, Row, Col } from "react-bootstrap"
 
 import { DispatchContext, StateContext } from "./kidModeApp"
-import { scriptureFromKey } from '../util'
+import { scriptureFromKey, getKinds, kinds } from '../util'
 
 import karaokeBg from '../images/maps/KaraokeBackground.svg'
 import karaokeBar from '../images/maps/KaraokeVerseBar.svg'
@@ -12,7 +12,7 @@ function ModuleSelctor(props) {
   let dispatch = useContext(DispatchContext)
   let state = useContext(StateContext);
 
-  let moduleFilter = props.moduleFilter || (key=>Object.keys(state.resources[key]).includes('Music Video'))
+  let moduleFilter = props.moduleFilter || (key=>getKinds(state.resources[key]).includes(kinds.watch))
 
   // Make scripture grouped by Book, Chapter
   let scriptures = Object.keys(state.resources).filter(moduleFilter).reduce((cum, key) => {

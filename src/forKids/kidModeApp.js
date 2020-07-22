@@ -3,6 +3,7 @@ import Activity from './activity'
 
 import { media } from "./media";
 import { useAuth, useFirestore, useCachedStorage } from "../hooks"
+import { getKinds } from '../util'
 import { keyFromScripture, scriptureFromKey, valueAfter, pathFilters } from "../util"
 import { Spinner } from 'react-bootstrap'
 import MemoryPowerView from './memoryPalaceView'
@@ -13,13 +14,30 @@ import AdultModeApp from "../forAdults/adultModeApp"
 import Maps from './maps'
 import ModuleSelectors from './ModuleSelector'
 
-export var DispatchContext = React.createContext(undefined)
-export var StateContext = React.createContext(undefined)
-
 let showMemoryPrompt;
 
 function memorizedPromptCheck(value, index, array) {
     return value >= 100.0
+}
+
+export var DispatchContext = React.createContext(undefined)
+export var StateContext = React.createContext(undefined)
+
+export const actionTypes = {
+    newView:'newView',
+    nextModule:'nextModule',
+    nextActivity:'nextActivity',
+    nextInPath:'nextInPath',
+    addMemoryPower:'addMemoryPower',
+    newResources:'newResources',
+    loadState:'loadState',
+}
+
+export const actionViews = {
+    map:'map',
+    moduleSelector:'moduleSelector',
+    palace:'palace',
+    activity:'activity',
 }
 
 // state is of the form {view:"", activity:{key:"", kind:""}, resources:{}, viewSelected:"", paths:{<book>:{progress: 0}, ...}, path:"", memoryPower:{}}
@@ -32,31 +50,34 @@ function kidAppReducer(oldState, action) {
 
     for(const act of (Array.isArray(action) ? action : [action])) {
         switch(act.type) {
-            case 'newView':
+            case actionTypes.newView:
                 state.view = act.view
                 state.viewSelected = act.viewSelected
                 
-                if(act.view === 'activity') {
+                if(act.view === actionViews.activity) {
                     state.activity = act.activity
                 }
                 state.path = act.path || state.path
                 continue
 
-            case 'nextModule':
+            case actionTypes.nextModule:
                 let keys = Object.keys(state.resources).filter(
-                    key => Object.keys(state.resources[key]).includes(state.activity.kind)
+                    key => {
+                        console.log(state.resources[key], getKinds(state.resources[key]))
+                        return getKinds(state.resources[key]).includes(state.activity.kind)
+                    }
                 )
+                
                 newActivity = {...state.activity, key: valueAfter(keys, state.activity.key)}
                 state.activity = newActivity
                 continue
 
-            case 'nextActivity':
-                let kinds = Object.keys(state.resources[state.activity.key])
-                newActivity = {...state.activity, kind: valueAfter(kinds, state.activity.kind)}
+            case actionTypes.nextActivity:
+                newActivity = {...state.activity, kind: valueAfter(getKinds(state.resources[key]), state.activity.kind)}
                 state.activity = newActivity
                 continue
 
-            case 'nextInPath':
+            case actionTypes.nextInPath:
                 let path = action.path || state.path
                 state = {...state, path:path, paths:{[path]:-1, ...state.paths}} // create any missing state objects
 
@@ -69,20 +90,20 @@ function kidAppReducer(oldState, action) {
 
                 continue
 
-            case 'addMemoryPower':
+            case actionTypes.addMemoryPower:
                 let key = act.key || state.activity.key
                 let newMP = {...state.memoryPower, [key]:state.memoryPower[key]+act.power}
                 state.memoryPower = newMP
                 showMemoryPrompt = Object.values(newMP).filter(memorizedPromptCheck).length > 0
                 continue
 
-            case 'newResources':
+            case actionTypes.newResources:
                 let defaultMemoryPower = Object.keys(act.resources).reduce((cum, key) => { cum[key] = 0; return cum }, {})
                 state = {...state, resources:act.resources,
                     memoryPower:{...defaultMemoryPower, ...state.memoryPower}}
                 continue
 
-            case 'loadState':
+            case actionTypes.loadState:
                 state = {...state, ...act.state}
                 continue
         }
@@ -107,8 +128,8 @@ function getPathActivities(resources, path) {
     }
 
     return Object.entries(resources).reduce(
-        (acc,[key, kinds])=>{
-            return [...acc, ...Object.values(kinds).filter(filter).map(
+        (acc,[key, res])=>{
+            return [...acc, ...getKinds(res).filter(filter).map(
                 r=>{
                     return {key:key, kind:r.kind}
                 }
@@ -122,32 +143,52 @@ export default function KidModeApp(props) {
 
     let halfMemoryPower = 50
 
-    let resources = useFirestore(
-        "memoryResources",
+    let modules = useFirestore(
+        "memoryResources_02",
         (cum, doc) => {
-          let d = doc.data();
-          let verses = `${d.startVerse}-${d.endVerse}`
-          let key = keyFromScripture(d.book, d.chapter, verses)
-          cum[key] = cum[key] || {}
-          cum[key][d.kind] = d
-          return cum
-        },
-        {}
+            let d = doc.data();
+            let chapterVerse = `${d.chapter}:${d.startVerse}-${d.endVerse}`
+            cum[doc.id] = {...d, chapterVerse: chapterVerse, newResource: false}
+            return cum
+        }, {}
     );
-    console.log(resources)
 
     useEffect(() => {
-        if(resources) {
-            console.log(resources)
+        if(modules) {
+            console.log(modules)
             dispatch([
-                {type:'newResources', resources:resources}, 
+                {type:'newResources', resources:modules}, 
                 {type:'newView', view:'map', viewSelected:'home'}
             ])
         }
-    }, [resources])
+    }, [modules])
 
-    {console.log("resource:", state.resources)}
-    console.log("resource spec:", state.resources && state.resources["18-001-00001-6"]["Music Video"]["book"])
+    // let resources = useFirestore(
+    //     "memoryResources",
+    //     (cum, doc) => {
+    //       let d = doc.data();
+    //       let verses = `${d.startVerse}-${d.endVerse}`
+    //       let key = keyFromScripture(d.book, d.chapter, verses)
+    //       cum[key] = cum[key] || {}
+    //       cum[key][d.kind] = d
+    //       return cum
+    //     },
+    //     {}
+    // );
+    // console.log(resources)
+
+    // useEffect(() => {
+    //     if(resources) {
+    //         console.log(resources)
+    //         dispatch([
+    //             {type:'newResources', resources:resources}, 
+    //             {type:'newView', view:'map', viewSelected:'home'}
+    //         ])
+    //     }
+    // }, [resources])
+
+    // {console.log("resource:", state.resources)}
+    // console.log("resource spec:", state.resources && state.resources["18-001-00001-6"]["Music Video"]["book"])
     let content = <div className='text-center pt-3'><Spinner animation="border" role="status" size="md" /><h1 className='d-inline-block'>Loading...</h1></div>
     
     if(state.view == 'map') content = Maps[state.viewSelected]

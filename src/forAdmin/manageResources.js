@@ -11,7 +11,7 @@ import {firebase, db, storage} from '../firebase'
 const defaultVideoData = {
   book: books[0],
   chapterVerse: '1:1-5',
-  kind: kinds[0],
+  kind: Object.keys(kinds)[0],
   title: 'Title',
 }
 
@@ -391,7 +391,7 @@ function ResourceTableRow(p) {
       </td>
       <td>
         <select defaultValue={p.kind} onChange={p.onChange} name='kind' >
-          {kinds.map((b) => <option value={b}>{b}</option>)}
+          {Object.keys(kinds).map((b) => <option value={b}>{b}</option>)}
         </select>
       </td>
       <td><input type='text' name='title' pattern={'[A-Za-z ]+'} size={5} defaultValue={p.title} onChange={p.onChange}/></td>

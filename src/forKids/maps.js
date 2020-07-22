@@ -4,17 +4,18 @@ import palaceMap from '../images/maps/palaceDoors.svg'
 import readingTree from '../images/maps/TestTree.svg'
 import townSquare from '../images/maps/TownSquareMap.svg'
 import ButtonMap from './buttonMap'
+import { kinds } from '../util'
 
 let Tree = props => <div>
     <h1>Tree</h1>
     <ButtonMap src={readingTree} buttons={[
         {id:'Palace', dispatch: {type:'newView', view:'map', viewSelected:'home'}},
-        {id:'Branch1', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-0001-10', kind:'Music Video'}}},
-        {id:'Branch2', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-0007-11', kind:'Music Video'}}},
-        {id:'Branch3', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-0012-14', kind:'Music Video'}}},
-        {id:'Branch4', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-0015-20', kind:'Music Video'}}},
-        {id:'Branch5', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-0021-23', kind:'Music Video'}}},
-        {id:'Branch6', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-0024-29', kind:'Music Video'}}},
+        {id:'Branch1', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-001-010', kind: kinds.watch}}},
+        {id:'Branch2', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-007-011', kind: kinds.watch}}},
+        {id:'Branch3', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-012-014', kind: kinds.watch}}},
+        {id:'Branch4', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-015-020', kind: kinds.watch}}},
+        {id:'Branch5', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-021-023', kind: kinds.watch}}},
+        {id:'Branch6', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-024-029', kind: kinds.watch}}},
     ]}/>
 </div>
 

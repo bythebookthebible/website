@@ -27,6 +27,7 @@ import deeper from '../images/kidsPageSidebar/deeper.png';
 import wider from '../images/kidsPageSidebar/wider.png';
 import test_cp from '../images/coloringPages/test_cp.svg';
 import PopupBookGenerator from './popupBookGenerator';
+import { kinds } from "../util";
 
 // (More {state.activity.kind})
 
@@ -39,6 +40,8 @@ export default function Activity(props) {
   let dispatch = useContext(DispatchContext)
   let state = useContext(StateContext)
   let [showSidebar, setShowSidebar] = useState(false);
+
+  if(! state.resources) return
 
   let sidebarHandler = () => {
     setShowSidebar(!showSidebar);
@@ -69,12 +72,12 @@ export default function Activity(props) {
   console.log('width: ', window.innerWidth)
   console.log('activity:', state.activity.kind)
 
-  if (state.activity.kind == "Music Video" || state.activity.kind == "Dance Video" || state.activity.kind == "Repetition Video") {
+  if (state.activity.kind == kinds.watch || state.activity.kind == kinds.dance || state.activity.kind == kinds.speed) {
     return (
       <div>
         {<MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />}
         {<SidebarPopUp sidebarLayout={SidebarLayout} setShow={sidebarHandler} show={showSidebar} />}
-        <div onClick={() => closeSidebar()}>{<VideoMedia src={state.resources[state.activity.key][state.activity.kind]["url"]} setShow={openSidebar}/>}</div>
+        <div onClick={() => closeSidebar()}>{<VideoMedia src={state.resources[state.activity.key]["watch"]} setShow={openSidebar}/>}</div>
       </div>
     )  
   } 
@@ -88,22 +91,22 @@ export default function Activity(props) {
   //   );
 
   // } 
-  else if (state.activity.kind == "Coloring Pages") {
-    console.log('coloringPages=', state.resources[state.activity.key][state.activity.kind])
+  else if (state.activity.kind == kinds.coloring) {
+    console.log('coloringPages=', state.resources[state.activity.key])
     return (
       <div>  
         {<MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />}
         {<SidebarPopUp sidebarLayout={SidebarLayout} setShow={sidebarHandler} show={showSidebar} />}
-        {<ColoringPageGenerator onOpen={openSidebar} onClose={closeSidebar} src={state.resources[state.activity.key][state.activity.kind]['url']} />}
+        {<ColoringPageGenerator onOpen={openSidebar} onClose={closeSidebar} src={state.resources[state.activity.key]['coloring']} />}
       </div>
     );  
     // for now (use teachers guide to lead into books)
-  } else if (state.activity.kind == "Teachers Guide") {
+  } else if (state.activity.kind == kinds.teacherGuide) {
       return (
         <div>
           {<MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />}
           {<SidebarPopUp sidebarLayout={SidebarLayout} setShow={sidebarHandler} show={showSidebar} />}
-          {<PopupBookGenerator openSidebar={openSidebar} closeSidebar={closeSidebar} src={state.resources[state.activity.key][state.activity.kind]["url"]} />}
+          {<PopupBookGenerator openSidebar={openSidebar} closeSidebar={closeSidebar} src={state.resources[state.activity.key]["teacherGuide"]} />}
         </div>
       );
   } else {
