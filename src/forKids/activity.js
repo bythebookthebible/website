@@ -102,7 +102,7 @@ export default function Activity(props) {
       return (
         <div>
           {<MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />}
-          {<SidebarPopUp sidebarLayout={sidebarLayout} setShow={sidebarHandler} show={showSidebar} />}
+          {<SidebarPopUp sidebarLayout={SidebarLayout} setShow={sidebarHandler} show={showSidebar} />}
           {<PopupBookGenerator openSidebar={openSidebar} closeSidebar={closeSidebar} src={state.resources[state.activity.key][state.activity.kind]["url"]} />}
         </div>
       );
