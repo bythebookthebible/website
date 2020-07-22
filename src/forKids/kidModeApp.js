@@ -10,7 +10,8 @@ import ReallyBadPalace from '../images/memoryPalace/ReallyBadPalace.svg'
 import MemorizedPrompt from './memorizedPrompt'
 import AdultModeApp from "../forAdults/adultModeApp"
 
-import {Maps} from './maps'
+import Maps from './maps'
+import ModuleSelectors from './ModuleSelector'
 
 export var DispatchContext = React.createContext(undefined)
 export var StateContext = React.createContext(undefined)
@@ -21,7 +22,7 @@ function memorizedPromptCheck(value, index, array) {
     return value >= 100.0
 }
 
-// state is of the form {view:"", activity:{key:"", kind:""}, resources:{}, map:"", paths:{<book>:{progress: 0}, ...}, path:"", memoryPower:{}}
+// state is of the form {view:"", activity:{key:"", kind:""}, resources:{}, viewSelected:"", paths:{<book>:{progress: 0}, ...}, path:"", memoryPower:{}}
 // where view is one of "loading", "map", "activity"
 // action.type is a string coresponding to the next action
 // action has other properties for each action.type
@@ -33,9 +34,8 @@ function kidAppReducer(oldState, action) {
         switch(act.type) {
             case 'newView':
                 state.view = act.view
-                if(act.view === 'map') {
-                    state.map = act.map
-                }
+                state.viewSelected = act.viewSelected
+                
                 if(act.view === 'activity') {
                     state.activity = act.activity
                 }
@@ -116,37 +116,6 @@ function getPathActivities(resources, path) {
         }, [])
 }
 
-// let Tree = props => <div>
-//     <h1>Tree</h1>
-//     <ButtonMap src={readingTree} buttons={[
-//         {id:'Palace', dispatch: {type:'newView', view:'map', map:'home'}},
-//         {id:'Branch1', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-0001-10', kind:'Music Video'}}},
-//         {id:'Branch2', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-0007-11', kind:'Music Video'}}},
-//         {id:'Branch3', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-0012-14', kind:'Music Video'}}},
-//         {id:'Branch4', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-0015-20', kind:'Music Video'}}},
-//         {id:'Branch5', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-0021-23', kind:'Music Video'}}},
-//         {id:'Branch6', dispatch: {type:'newView', view:'activity', activity:{key:'39-007-0024-29', kind:'Music Video'}}},
-//     ]}/>
-// </div>
-
-// let Map = props => <div>
-//     <ButtonMap src={mainMap} buttons={[
-//         {id:'City_Center', dispatch: {type:'newView', view:'map', map:'tree'}},
-//         {id:'Water_Well', dispatch: {type:'newView', view:'map', map:'tree'}},
-//         {id:'Jo_Schmo_House', dispatch: {type:'newView', view:'map', map:'tree'}},
-//         {id:'Art_Gazebo', dispatch: {type:'newView', view:'map', map:'tree'}},
-//         {id:'Dragon', dispatch: {type:'newView', view:'map', map:'tree'}},
-//         {id:'Memory_Palace', dispatch: {type:'newView', view:'map', map:'tree'}},
-//         {id:'Game_Factory', dispatch: {type:'newView', view:'map', map:'tree'}},
-//         {id:'Book_Tree', dispatch: {type:'newView', view:'map', map:'tree'}},
-//     ]}/>
-// </div>
-
-// let Maps = {
-//     home:Map,
-//     tree:Tree,
-// }
-
 export default function KidModeApp(props) {
     let [state, dispatch] = useReducer(kidAppReducer, {view:'loading'})
     console.log(state)
@@ -172,34 +141,17 @@ export default function KidModeApp(props) {
             console.log(resources)
             dispatch([
                 {type:'newResources', resources:resources}, 
-                {type:'newView', view:'map', map:'home'}
+                {type:'newView', view:'map', viewSelected:'home'}
             ])
         }
     }, [resources])
-
-    // // helper method to update memoryP to an object of objects
-    // let modulePowerObjectList = resources && Object.keys(resources).reduce(
-    //     (cummulative, newKey) => {
-    //         cummulative[newKey] = {powerLevel:0, progress:'start'}
-    //         return cummulative
-    //     }, 
-    //     {}
-    // );
-    
-    // // memoryP stores the object containing {{key: {powerLevel, progress}},..., {...}}
-    // let [memoryP, setMemoryP] = useState({});
-    // useEffect(
-    //     () => {
-    //         setMemoryP(modulePowerObjectList);
-    //     },
-    //     [resources],
-    // );
 
     {console.log("resource:", state.resources)}
     console.log("resource spec:", state.resources && state.resources["18-001-00001-6"]["Music Video"]["book"])
     let content = <div className='text-center pt-3'><Spinner animation="border" role="status" size="md" /><h1 className='d-inline-block'>Loading...</h1></div>
     
-    if(state.view == 'map') content = Maps[state.map]()
+    if(state.view == 'map') content = Maps[state.viewSelected]
+    if(state.view == 'moduleSelector') content = ModuleSelectors[state.viewSelected]
     if(state.view == 'palace') content = <MemoryPowerView src={ReallyBadPalace} halfMemoryPower={halfMemoryPower} showMemoryPrompt={showMemoryPrompt} />
     if(state.view == 'activity') content = <Activity showMemoryPrompt={showMemoryPrompt} halfMemoryPower={halfMemoryPower} />
 

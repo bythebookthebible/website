@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import {Row, Col, ProgressBar, Spinner, Button} from 'react-bootstrap'
 import $ from 'jquery'
+import {useDropzone} from 'react-dropzone'
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar'
 
 import { useFirestore } from '../hooks'
 import {books, kinds} from '../util'
@@ -14,40 +16,46 @@ const defaultVideoData = {
 }
 
 export default function ManageVideos(props) {
-  let [videos, setVideos] = useState([])
+  let [localModules, setLocalModules] = useState({})
+  let modules = useFirestore(
+    "memoryResources_02",
+    (cum, doc) => {
+      let d = doc.data();
+      let chapterVerse = `${d.chapter}:${d.startVerse}-${d.endVerse}`
+      cum[doc.id] = {...d, chapterVerse: chapterVerse, newResource: false}
+      return cum
+    }, {}
+  );
+  console.log(modules)
 
-  useEffect(() => {
-    db.collection("memoryResources").get().then(querySnapshot => {
-      var newVideos = querySnapshot.docs.map(doc => {
-        let d = doc.data()
-        let chapterVerse = `${d.chapter}:${d.startVerse}-${d.endVerse}`
-        return {key: doc.id, data: {...d, chapterVerse: chapterVerse}, newResource: false}
-      })
-      setVideos(newVideos)
-    })
-  }, [])
+  useEffect(() => { setLocalModules(modules) }, [modules])
 
-  return <div className='container form'>
+
+
+
+  return <div className='container-xl form'>
     <table><tbody>
       <tr>
         <th>Scripture</th>
-        <th>Kind</th>
         <th>Title</th>
-        <th>File</th>
+
+        <th className='rotate'><div><span>music</span></div></th>
+        <th className='rotate'><div><span>watch</span></div></th>
+        <th className='rotate'><div><span>dance</span></div></th>
+        <th className='rotate'><div><span>karaoke</span></div></th>
+        <th className='rotate'><div><span>schmoment</span></div></th>
+        <th className='rotate'><div><span>speed</span></div></th>
+        <th className='rotate'><div><span>coloring</span></div></th>
+        <th className='rotate'><div><span>discussion</span></div></th>
+        <th className='rotate'><div><span>teacherGuide</span></div></th>
       </tr>
-      {videos.map(props => <ResourceTableRow {...props} onChange={e => {
+      {modules && Object.keys(modules).map(mod => <ResourceTableRow {...modules[mod]} onChange={e => {
         // update state to match the updated form
         // data validation could go here too
-        setVideos(videos.map(v => {
-          if (v.key === props.key) {
-            v = {...v}
-            v.data[e.target.name] = e.target.value
-          }
-          return v
-        }))
+        modules[mod][e.target.name] = e.target.value
+        setLocalModules(modules)
       }}/>)}
       <tr>
-        <th></th>
         <td><button onClick={() => {$('#fileInput').click()}}>Add Videos</button></td>
         <td><button onClick={function(event) {
           // upload all new files to storage
@@ -59,68 +67,80 @@ export default function ManageVideos(props) {
             $('#warnInvalid').css({'display':'none'})
           }
 
-          let uploadTasks = {}
-          let dbTasks = {}
+          // let uploadTasks = {}
+          // let dbTasks = {}
 
-          for(var v of videos) {
-            if(v.newResource) {
-              let bookIndex = String(books.indexOf(v.data.book)).padStart(2, '0')
-              let chapter=v.data.chapterVerse.split(':')[0].padStart(3, '0')
-              let startVerse=v.data.chapterVerse.split(':')[1].split('-')[0].padStart(3, '0')
-              let endVerse=v.data.chapterVerse.split(':')[1].split('-')[1].padStart(3, '0')
+          // console.log(videos)
 
-              let id = `${bookIndex}-${chapter}-${startVerse}-${endVerse}-${v.data.kind.toLowerCase().replaceAll(' ', '-')}`
-              let fileType = v.data.file.name.split('.').slice(-1)
-              let url = `memory/${v.data.book}/${chapter}/${id}.${fileType}`
+          // // group into modules
+          // let byModule = videos.reduce((prev, cur) => {
+          //     let bookIndex = String(books.indexOf(cur.data.book)).padStart(2, '0')
+          //     let chapter=cur.data.chapterVerse.split(':')[0].padStart(3, '0')
+          //     let startVerse=cur.data.chapterVerse.split(':')[1].split('-')[0].padStart(3, '0')
+          //     let endVerse=cur.data.chapterVerse.split(':')[1].split('-')[1].padStart(3, '0')
 
-              let ref = firebase.storage().ref(url)
-              let uploadTask = ref.put(v.data.file)
-              uploadTask.on('state_changed', (snapshot) => {
-                let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-                setVideos(videos.map(_v => {
-                  if (_v.key === v.key) {
-                    _v = {..._v, progress: progress}
-                  }
-                  return _v
-                }))
-              })
-              uploadTask.then(() => {console.log('Uploaded File')})
+          //     let key = `${bookIndex}-${chapter}-${startVerse}-${endVerse}`
 
-              let dbRecord = {
-                book: v.data.book,
-                chapter: Number(chapter),
-                startVerse: Number(startVerse),
-                endVerse: Number(endVerse),
-                kind: v.data.kind,
-                title: v.data.title,
-                url: url,
-                version: Date.now(),
-              }
-              
-              db.doc(`memoryResources/${id}`).set(dbRecord).then(() => {console.log('Updated DB')})
-              v.data = {...dbRecord, chapterVerse: v.data.chapterVerse}
-            }
-          }
-          setVideos(videos.map(v => {return {...v, newResource: false}}))
-        }}>Upload</button></td>
+          //     prev[key] = Object.keys(prev).includes(key) ? [...prev[key], cur] : [cur]
+          //     return prev
+          // }, {})
+
+          // console.log(byModule)
+
+          // for(var key in byModule) {
+          //   let d = byModule[key][0].data
+          //   let dbRecord = {
+          //     book: d.book,
+          //     chapter: d.chapter,
+          //     startVerse: d.startVerse,
+          //     endVerse: d.endVerse,
+          //     title: d.title,
+          //     version: Date.now(),
+          //   }
+
+          //   for(var v of byModule[key]) {
+          //     let id = `${key}-${v.data.kind.toLowerCase().replaceAll(' ', '-')}`
+          //     // let fileType = v.data.file.name.split('.').slice(-1)
+          //     // let url = `memory/${v.data.book}/${chapter}/${id}.${fileType}`
+  
+          //     // let ref = firebase.storage().ref(url)
+          //     // let uploadTask = ref.put(v.data.file)
+          //     // uploadTask.on('state_changed', (snapshot) => {
+          //     //   let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          //     //   setVideos(videos.map(_v => {
+          //     //     if (_v.key === v.key) {
+          //     //       _v = {..._v, progress: progress}
+          //     //     }
+          //     //     return _v
+          //     //   }))
+          //     // uploadTask.then(() => {console.log(`Uploaded ${url}`)})
+          //   }
+
+          //   console.log(key, dbRecord)
+            
+          //   db.doc(`memoryResources_02/${key}`).set(dbRecord).then(() => {console.log('Updated DB', key)})
+          //   // v.data = {...dbRecord, chapterVerse: v.data.chapterVerse}
+          // }
+
+        }} >Upload</button></td>
 
         <td><input type='file' id='fileInput' size={8} multiple style={{display: 'none'}}
         onChange={function(event) {
-          let defaultData
-          if(videos.length == 0) defaultData = {...defaultVideoData}
-          else defaultData = videos[videos.length - 1].data
+          // let defaultData
+          // if(videos.length == 0) defaultData = {...defaultVideoData}
+          // else defaultData = videos[videos.length - 1].data
 
-          let newVideos = [...videos]
+          // let newVideos = [...videos]
 
-          for(let i = 0; i <  event.target.files.length; i++) {
-            // Add a row to the table for each selected file.
-            let file = event.target.files[i]
-            let newRow = {data: {...videoDataGuess(file.name, defaultData), file: file}, newResource: true, key: file.name}
-            if(!(newRow.key in newVideos.map(v => v.key))) {
-              newVideos.push(newRow)
-            }
-          }
-          setVideos(newVideos)
+          // for(let i = 0; i <  event.target.files.length; i++) {
+          //   // Add a row to the table for each selected file.
+          //   let file = event.target.files[i]
+          //   let newRow = {data: {...videoDataGuess(file.name, defaultData), file: file}, newResource: true, key: file.name}
+          //   if(!(newRow.key in newVideos.map(v => v.key))) {
+          //     newVideos.push(newRow)
+          //   }
+          // }
+          // setVideos(newVideos)
         }}/></td>
 
       </tr>
@@ -128,6 +148,209 @@ export default function ManageVideos(props) {
     <div colSpan={3} id='warnInvalid' style={{display:'none'}}>Data format error</div>
   </div>
 }
+
+
+// export default function ManageVideos(props) {
+//   let [videos, setVideos] = useState([])
+
+//   useEffect(() => {
+//     db.collection("memoryResources").get().then(querySnapshot => {
+//       var newVideos = querySnapshot.docs.map(doc => {
+//         let d = doc.data()
+//         let chapterVerse = `${d.chapter}:${d.startVerse}-${d.endVerse}`
+//         return {key: doc.id, data: {...d, chapterVerse: chapterVerse}, newResource: false}
+//       })
+//       setVideos(newVideos)
+//     })
+//   }, [])
+
+//   return <div className='container form'>
+//     <table><tbody>
+//       <tr>
+//         <th>Scripture</th>
+//         <th>Kind</th>
+//         <th>Title</th>
+//         <th>File</th>
+//       </tr>
+//       {videos.map(props => <ResourceTableRow {...props} onChange={e => {
+//         // update state to match the updated form
+//         // data validation could go here too
+//         setVideos(videos.map(v => {
+//           if (v.key === props.key) {
+//             v = {...v}
+//             v.data[e.target.name] = e.target.value
+//           }
+//           return v
+//         }))
+//       }}/>)}
+//       <tr>
+//         <th></th>
+//         <td><button onClick={() => {$('#fileInput').click()}}>Add Videos</button></td>
+//         <td><button onClick={function(event) {
+//           // upload all new files to storage
+//           // add entry for each file to db
+//           if($(':invalid').length !== 0) {
+//             $('#warnInvalid').css({'display':'block'})
+//             return
+//           } else {
+//             $('#warnInvalid').css({'display':'none'})
+//           }
+
+//           let uploadTasks = {}
+//           let dbTasks = {}
+
+//           console.log(videos)
+
+//           // group into modules
+//           let byModule = videos.reduce((prev, cur) => {
+//               let bookIndex = String(books.indexOf(cur.data.book)).padStart(2, '0')
+//               let chapter=cur.data.chapterVerse.split(':')[0].padStart(3, '0')
+//               let startVerse=cur.data.chapterVerse.split(':')[1].split('-')[0].padStart(3, '0')
+//               let endVerse=cur.data.chapterVerse.split(':')[1].split('-')[1].padStart(3, '0')
+
+//               let key = `${bookIndex}-${chapter}-${startVerse}-${endVerse}`
+
+//               prev[key] = Object.keys(prev).includes(key) ? [...prev[key], cur] : [cur]
+//               return prev
+//           }, {})
+
+//           console.log(byModule)
+
+//           for(var key in byModule) {
+//             let d = byModule[key][0].data
+//             let dbRecord = {
+//               book: d.book,
+//               chapter: d.chapter,
+//               startVerse: d.startVerse,
+//               endVerse: d.endVerse,
+//               title: d.title,
+//               version: Date.now(),
+//             }
+
+//             for(var v of byModule[key]) {
+//               let id = `${key}-${v.data.kind.toLowerCase().replaceAll(' ', '-')}`
+//               // let fileType = v.data.file.name.split('.').slice(-1)
+//               // let url = `memory/${v.data.book}/${chapter}/${id}.${fileType}`
+//               switch(v.data.kind) {
+//                 case "What It Means":
+//                   dbRecord.teacherGuide = [v.data.url]; break
+//                 case "Teachers Guide":
+//                   dbRecord.teacherGuide = [v.data.url]; break
+//                 case "Speed Memory":
+//                   dbRecord.speed = [v.data.url]; break
+//                 case "Schmoment":
+//                   dbRecord.schmoment = [v.data.url]; break
+//                 case "Music":
+//                   dbRecord.music = [v.data.url]; break
+//                 case "Karaoke":
+//                   dbRecord.karaoke = [v.data.url]; break
+//                 case "Karaoke Video":
+//                   dbRecord.karaoke = [v.data.url]; break
+//                 case "Family Chat":
+//                   dbRecord.discussion = [v.data.url]; break
+//                 case "Dance":
+//                   dbRecord.dance = [v.data.url]; break
+//                 case "Dance Video":
+//                   dbRecord.dance = [v.data.url]; break
+//                 case "Color":
+//                   dbRecord.coloring = [v.data.url]; break
+//                 case "Coloring Pages":
+//                   dbRecord.coloring = [v.data.url]; break
+//                 case "Music Video":
+//                   dbRecord.watch = [v.data.url]; break
+//                 case "Watch":
+//                   dbRecord.watch = [v.data.url]; break
+//                 default:
+//                   console.log('invalid kind:', v.data.kind)
+//               }
+  
+//               // let ref = firebase.storage().ref(url)
+//               // let uploadTask = ref.put(v.data.file)
+//               // uploadTask.on('state_changed', (snapshot) => {
+//               //   let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+//               //   setVideos(videos.map(_v => {
+//               //     if (_v.key === v.key) {
+//               //       _v = {..._v, progress: progress}
+//               //     }
+//               //     return _v
+//               //   }))
+//               // uploadTask.then(() => {console.log(`Uploaded ${url}`)})
+//             }
+
+//             console.log(key, dbRecord)
+            
+//             db.doc(`memoryResources_02/${key}`).set(dbRecord).then(() => {console.log('Updated DB', key)})
+//             // v.data = {...dbRecord, chapterVerse: v.data.chapterVerse}
+//           }
+            
+
+//           // for(var v of videos) {
+//           //   if(v.newResource) {
+//           //     let bookIndex = String(books.indexOf(v.data.book)).padStart(2, '0')
+//           //     let chapter=v.data.chapterVerse.split(':')[0].padStart(3, '0')
+//           //     let startVerse=v.data.chapterVerse.split(':')[1].split('-')[0].padStart(3, '0')
+//           //     let endVerse=v.data.chapterVerse.split(':')[1].split('-')[1].padStart(3, '0')
+
+//           //     let id = `${bookIndex}-${chapter}-${startVerse}-${endVerse}-${v.data.kind.toLowerCase().replaceAll(' ', '-')}`
+//           //     let fileType = v.data.file.name.split('.').slice(-1)
+//           //     let url = `memory/${v.data.book}/${chapter}/${id}.${fileType}`
+
+//           //     let ref = firebase.storage().ref(url)
+//           //     let uploadTask = ref.put(v.data.file)
+//           //     uploadTask.on('state_changed', (snapshot) => {
+//           //       let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+//           //       setVideos(videos.map(_v => {
+//           //         if (_v.key === v.key) {
+//           //           _v = {..._v, progress: progress}
+//           //         }
+//           //         return _v
+//           //       }))
+//           //     })
+//           //     uploadTask.then(() => {console.log('Uploaded File')})
+
+//           //     let dbRecord = {
+//           //       book: v.data.book,
+//           //       chapter: Number(chapter),
+//           //       startVerse: Number(startVerse),
+//           //       endVerse: Number(endVerse),
+//           //       title: v.data.title,
+//           //       kind: v.data.kind,
+//           //       url: url,
+//           //       version: Date.now(),
+//           //     }
+              
+//           //     db.doc(`memoryResources/${id}`).set(dbRecord).then(() => {console.log('Updated DB')})
+//           //     v.data = {...dbRecord, chapterVerse: v.data.chapterVerse}
+//           //   }
+//           // }
+//           // setVideos(videos.map(v => {return {...v, newResource: false}}))
+
+//         }} >Upload</button></td>
+
+//         <td><input type='file' id='fileInput' size={8} multiple style={{display: 'none'}}
+//         onChange={function(event) {
+//           let defaultData
+//           if(videos.length == 0) defaultData = {...defaultVideoData}
+//           else defaultData = videos[videos.length - 1].data
+
+//           let newVideos = [...videos]
+
+//           for(let i = 0; i <  event.target.files.length; i++) {
+//             // Add a row to the table for each selected file.
+//             let file = event.target.files[i]
+//             let newRow = {data: {...videoDataGuess(file.name, defaultData), file: file}, newResource: true, key: file.name}
+//             if(!(newRow.key in newVideos.map(v => v.key))) {
+//               newVideos.push(newRow)
+//             }
+//           }
+//           setVideos(newVideos)
+//         }}/></td>
+
+//       </tr>
+//     </tbody></table>
+//     <div colSpan={3} id='warnInvalid' style={{display:'none'}}>Data format error</div>
+//   </div>
+// }
 
 function videoDataGuess(fileName, defaultData) {
   let lastEntryData = {...defaultData}
@@ -161,24 +384,64 @@ function toTitleCase(str) {
 function ResourceTableRow(p) {
   if(p.newResource) return <tr>
       <td>
-        <select defaultValue={p.data.book} onChange={p.onChange} name='book' >
+        <select defaultValue={p.book} onChange={p.onChange} name='book' >
           {books.map((b) => <option value={b}>{b}</option>)}
         </select>
-        <input type='text' name='chapterVerse' pattern={'\\d+:\\d+-\\d+'} size={3} defaultValue={p.data.chapterVerse} onChange={p.onChange}/>
+        <input type='text' name='chapterVerse' pattern={'\\d+:\\d+-\\d+'} size={3} defaultValue={p.chapterVerse} onChange={p.onChange}/>
       </td>
       <td>
-        <select defaultValue={p.data.kind} onChange={p.onChange} name='kind' >
+        <select defaultValue={p.kind} onChange={p.onChange} name='kind' >
           {kinds.map((b) => <option value={b}>{b}</option>)}
         </select>
       </td>
-      <td><input type='text' name='title' pattern={'[A-Za-z ]+'} size={5} defaultValue={p.data.title} onChange={p.onChange}/></td>
-      <td>{p.data.file.name}</td>
+      <td><input type='text' name='title' pattern={'[A-Za-z ]+'} size={5} defaultValue={p.title} onChange={p.onChange}/></td>
+      <td>{p.file.name}</td>
     </tr>
   else return <tr>
-    <td>{`${p.data.book} ${p.data.chapterVerse}`}</td>
-    <td>{p.data.kind}</td>
-    <td>{p.data.title}</td>
-    <td>{p.data.url.split('/').slice(-1)}</td>
+    <td>{`${p.book} ${p.chapterVerse}`}</td>
+    <td>{p.title}</td>
+
+    <td><FileUpload moduleKey={p.key} files={p.music} /></td>
+    <td><FileUpload moduleKey={p.key} files={p.watch} /></td>
+    <td><FileUpload moduleKey={p.key} files={p.dance} /></td>
+    <td><FileUpload moduleKey={p.key} files={p.karaoke} /></td>
+    <td><FileUpload moduleKey={p.key} files={p.schmoment} /></td>
+    <td><FileUpload moduleKey={p.key} files={p.speed} /></td>
+    <td><FileUpload moduleKey={p.key} files={p.coloring} /></td>
+    <td><FileUpload moduleKey={p.key} files={p.discussion} /></td>
+    <td><FileUpload moduleKey={p.key} files={p.teacherGuide} /></td>
+
     <td>{p.progress && (p.progress<100 ? <ProgressBar now={p.progress} /> : <i class="fa fa-check" aria-hidden="true"></i>)}</td>
   </tr>
+}
+
+function FileUpload(props) {
+  let file = useRef()
+  let [uploading, setUploading] = useState(false)
+  let [progress, setProgress] = useState(0)
+
+  let onDrop = useCallback(files => {
+    let fileType = files[0].name.split('.').slice(-1)
+    let path = `memory/${props.moduleKey}${'-' + props.suffix || ''}.${fileType}`
+
+    let ref = firebase.storage().ref(path)
+    let uploadTask = ref.put(files[0])
+    uploadTask.on('state_changed', (snapshot) => {
+      setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+      if(snapshot.bytesTransferred == snapshot.totalBytes) {
+        setUploading(false)
+      }
+    })
+    uploadTask.then(() => {console.log('Uploaded File')})
+  })
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
+
+  let icon = <i class="fa fa-plus-square-o" aria-hidden="true" />
+  if (uploading) icon = <CircularProgressbar value={progress} strokeWidth={50} styles={buildStyles({trailColor: '#eee', pathColor:'#10fc'})} />
+  else if(props.files) icon = <i class="fa fa-file" aria-hidden="true" />
+  
+  return <div onClick={() => {$(file.current).click()}} {...getRootProps()} style={{width:'25px'}} >
+      <input ref={file} style={{display: 'none'}} {...getInputProps()} />
+      {icon}
+  </div>
 }

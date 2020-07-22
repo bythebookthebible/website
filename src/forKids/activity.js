@@ -60,8 +60,8 @@ export default function Activity(props) {
       <Button className="btnn" variant="primary" onClick={() => {}}><img src={repeat} style={{height: '30px', width: '30px'}}/>   Repeat</Button>
       <Button className="btnn" variant="primary" onClick={() => dispatch({type:'nextModule'})}><img src={wider} style={{height: '30px', width: '30px'}}/>   Go Wider!</Button>
       <Button className="btnn" variant="primary" onClick={() => dispatch({type:'nextActivity'})}><img src={deeper} style={{height: '30px', width: '30px'}}/>   Go Deeper!</Button>
-      <Button className="btnn" variant="primary" onClick={() => dispatch({type:'newView', view:'map', map:'tree'})}><img src={tree} style={{height: '30px', width: '30px'}}/>   Back to Tree</Button>
-      <Button className="btnn" variant="primary" onClick={() => dispatch({type:'newView', view:'map', map:'home'})}><img src={map} style={{height: '30px', width: '30px'}}/>   Back to Map</Button>
+      <Button className="btnn" variant="primary" onClick={() => dispatch({type:'newView', view:'map', viewSelected:'tree'})}><img src={tree} style={{height: '30px', width: '30px'}}/>   Back to Tree</Button>
+      <Button className="btnn" variant="primary" onClick={() => dispatch({type:'newView', view:'map', viewSelected:'home'})}><img src={map} style={{height: '30px', width: '30px'}}/>   Back to Map</Button>
       <ModulePedestal src={ReallyBadPedestal} halfMemoryPower={props.halfMemoryPower} />
       </div>
   }

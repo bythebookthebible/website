@@ -16,6 +16,7 @@ import ManageUsers from './manageUsers'
 import ManageVideos from './manageResources'
 
 import {firebase, db, storage} from '../firebase'
+import './manage.scss'
 
 export function Manage(props) {
     if (props.user && !props.user.claims.admin) {
