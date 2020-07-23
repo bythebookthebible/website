@@ -38,7 +38,7 @@ let Map = props => <div>
 
 let TownSquare = props => <div>
     <ButtonMap src={townSquareMap} buttons={[
-        {id:'Dancer_Button', dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.dance}},
+        {id:'DancerButton', dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.dance}},
         {id:'MicButton',     dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.karaoke}},
         {id:'StageButton',   dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.watch}},
     ]}/>
@@ -46,16 +46,16 @@ let TownSquare = props => <div>
 
 let SchmoHouses = props => <div>
     <ButtonMap src={schmoMap} buttons={[
-        {id:'Dancer_Button', dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.discussion}},
-        {id:'MicButton',     dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.schmoment}},
-        {id:'StageButton',   dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.joSchmo}},
+        {id:'YellowHouse', dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.discussion}},
+        {id:'PinkHouse',     dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.schmoment}},
+        {id:'BlueHouse',   dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.joSchmo}},
     ]}/>
 </div>
 
 let ArtGazebo = props => <div>
     <ButtonMap src={artMap} buttons={[
-        {id:'Dancer_Button', dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.coloring}},
-        {id:'StageButton',   dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.craft}},
+        {id:'Color', dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.coloring}},
+        {id:'Craft',   dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.craft}},
     ]}/>
 </div>
 
