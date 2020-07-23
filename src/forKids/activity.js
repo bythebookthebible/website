@@ -31,7 +31,7 @@ import back from '../images/kidsPageSidebar/back.png';
 export default function Activity(props) {
   // let dispatch = useContext(DispatchContext)
   let state = useContext(StateContext)
-  let [showSidebar, setShowSidebar] = useState(false);
+  let [showSidebar, setShowSidebar] = useState(true);
   let [showMemoryPrompt, setShowMemoryPrompt] = useState(props.showMemoryPrompt)
 
   // if(! state.resources) return null
