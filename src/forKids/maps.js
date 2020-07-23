@@ -3,12 +3,12 @@ import ButtonMap from './buttonMap'
 import { kinds } from '../util'
 import { actionTypes, actionViews } from './kidModeApp'
 
-import townSquareMap from '../images/maps/TownSquareMap.svg'
-import testMap from '../images/maps/TestMap.svg'
-import palaceMap from '../images/maps/palaceDoors.svg'
+import artMap from '../images/maps/ArtMap.svg'
 import mainMap from '../images/maps/MainMap.svg'
-
-import palaceInside from '../images/maps/PalaceInside.svg'
+import palaceDoors from '../images/maps/palaceDoors.svg'
+import schmoMap from '../images/maps/SchmoMap.svg'
+import testMap from '../images/maps/TestMap.svg'
+import townSquareMap from '../images/maps/TownSquareMap.svg'
 
 let Test = props => <div>
     <h1>Test</h1>
@@ -45,7 +45,7 @@ let TownSquare = props => <div>
 </div>
 
 let SchmoHouses = props => <div>
-    <ButtonMap src={townSquareMap} buttons={[
+    <ButtonMap src={schmoMap} buttons={[
         {id:'Dancer_Button', dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.discussion}},
         {id:'MicButton',     dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.schmoment}},
         {id:'StageButton',   dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.joSchmo}},
@@ -53,14 +53,14 @@ let SchmoHouses = props => <div>
 </div>
 
 let ArtGazebo = props => <div>
-    <ButtonMap src={townSquareMap} buttons={[
+    <ButtonMap src={artMap} buttons={[
         {id:'Dancer_Button', dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.coloring}},
         {id:'StageButton',   dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.craft}},
     ]}/>
 </div>
 
 let Palace = props => <div>
-    <ButtonMap src={palaceMap} buttons={[
+    <ButtonMap src={palaceDoors} buttons={[
         {id:'Psalms_Proverbs', dispatch: {type:actionTypes.newView, view:actionViews.palace}},
         {id:'Matthew', dispatch: {type:actionTypes.newView, view:actionViews.palace}},
         {id:'James', dispatch: {type:actionTypes.newView, view:actionViews.palace}},

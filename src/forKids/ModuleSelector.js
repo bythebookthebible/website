@@ -8,33 +8,25 @@ import defaultIcon from '../images/kidsPageSidebar/tree.png'
 
 import testTree from '../images/maps/TestTree.svg'
 
-import wellBackground from '../images/maps/WellBackground.svg'
-import stageVerseBar from '../images/maps/StageVerseBar.svg'
-import stageBackground from '../images/maps/StageBackground.svg'
-import karaokeVerseBar from '../images/maps/KaraokeVerseBar.svg'
-import karaokeBackground from '../images/maps/KaraokeBackground.svg'
-import dragonVerseBar from '../images/maps/DragonVerseBar.svg'
+import artVerseBar from '../images/maps/ArtVerseBar.svg'
+import blueHouseInside from '../images/maps/BlueHouseInside.svg'
 import bookVerseBar from '../images/maps/BookVerseBar.svg'
+import colorBackground from '../images/maps/ColorBackground.svg'
+import craftBackground from '../images/maps/CraftBackground.svg'
+import danceBackground from '../images/maps/DanceBackground.svg'
+import danceVerseBar from '../images/maps/DanceVerseBar.svg'
+import dragonBackground from '../images/maps/DragonBackground.svg'
+import dragonVerseBar from '../images/maps/DragonVerseBar.svg'
+import echoBackground from '../images/maps/EchoBackground.svg'
+import echoVerseBar from '../images/maps/EchoVerseBar.svg'
+import stageBackground from '../images/maps/StageBackground.svg'
+import stageVerseBar from '../images/maps/StageVerseBar.svg'
+import karaokeBackground from '../images/maps/KaraokeBackground.svg'
+import karaokeVerseBar from '../images/maps/KaraokeVerseBar.svg'
+import yelllowHouseInside from '../images/maps/YelllowHouseInside.svg'
 
-// to import later
-let gamesVerseBar = defaultIcon
-let coloringVerseBar = defaultIcon
-let craftVerseBar = defaultIcon
-let watchVerseBar = defaultIcon
-let wellVerseBar = defaultIcon
-let joSchmoVerseBar = defaultIcon
-let schmomentVerseBar = defaultIcon
-let discussionVerseBar = defaultIcon
-
-let dragonBackground = testTree
-let gamesBackground = testTree
-let coloringBackground = testTree
-let craftBackground = testTree
-let watchBackground = testTree
-let joSchmoBackground = testTree
-let schmomentBackground = testTree
-let discussionBackground = testTree
-
+// // to import later
+let pinkHouseInside = yelllowHouseInside
 
 
 function ModuleSelctor(props) {
@@ -103,16 +95,16 @@ function ModuleSelctor(props) {
 }
 
 export default {
-  book: <ModuleSelctor style={{backgroundColor:"#dd08", minHeight: '100vh'}} chapterBackground={bookVerseBar} module='book' />,
+  book: <ModuleSelctor style={{backgroundColor:"#ffde1a4c"}} chapterBackground={bookVerseBar} module='book' />,
   // games: <ModuleSelctor background={gamesBackground} chapterBackground={gamesVerseBar} module='games' />,
   speed: <ModuleSelctor background={dragonBackground} chapterBackground={dragonVerseBar} module='speed' />,
-  coloring: <ModuleSelctor background={coloringBackground} chapterBackground={coloringVerseBar} module='coloring' />,
-  craft: <ModuleSelctor background={craftBackground} chapterBackground={craftVerseBar} module='craft' />,
-  dance: <ModuleSelctor background={stageBackground} chapterBackground={stageVerseBar} module='dance' />,
+  coloring: <ModuleSelctor background={colorBackground} chapterBackground={artVerseBar} module='coloring' />,
+  craft: <ModuleSelctor background={craftBackground} chapterBackground={artVerseBar} module='craft' />,
+  dance: <ModuleSelctor background={danceBackground} chapterBackground={danceVerseBar} module='dance' />,
   karaoke: <ModuleSelctor background={karaokeBackground} chapterBackground={karaokeVerseBar} module='karaoke' />,
-  watch: <ModuleSelctor background={watchBackground} chapterBackground={watchVerseBar} module='watch' />,
-  // echo: <ModuleSelctor background={wellBackground} chapterBackground={wellVerseBar} module='echo' />,
-  joSchmo: <ModuleSelctor background={joSchmoBackground} chapterBackground={joSchmoVerseBar} module='joSchmo' />,
-  schmoment: <ModuleSelctor background={schmomentBackground} chapterBackground={schmomentVerseBar} module='schmoment' />,
-  discussion: <ModuleSelctor background={discussionBackground} chapterBackground={discussionVerseBar} module='discussion' />,
+  watch: <ModuleSelctor background={stageBackground} chapterBackground={stageVerseBar} module='watch' />,
+  echo: <ModuleSelctor background={echoBackground} chapterBackground={echoVerseBar} module='echo' />,
+  joSchmo: <ModuleSelctor style={{backgroundColor:"#ffde1a4c"}} chapterBackground={bookVerseBar} cornerIcon={blueHouseInside} module='joSchmo' />,
+  schmoment: <ModuleSelctor style={{backgroundColor:"#ffde1a4c"}} chapterBackground={bookVerseBar} cornerIcon={pinkHouseInside} module='schmoment' />,
+  discussion: <ModuleSelctor style={{backgroundColor:"#ffde1a4c"}} chapterBackground={bookVerseBar} cornerIcon={yelllowHouseInside} module='discussion' />,
 }
