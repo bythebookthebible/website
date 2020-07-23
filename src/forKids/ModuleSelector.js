@@ -37,7 +37,9 @@ function ModuleSelctor(props) {
           <Row style={{ marginLeft: '30px', marginRight: '30px', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' }}>
             {Object.keys(scriptures[book][chapter]).map(verses =>
               //content
-              <Col sm={2} style={{ }}><img src={tree} style={{width: '60px', height: '60px'}} /><br></br>{verses}</Col>
+              <div>
+                <Col sm={2} style={{ }}><img src={tree} style={{width: '60px', height: '60px'}} /><br></br>{verses}</Col>
+              </div>
             )}
           </Row>
         </>)
