@@ -31,11 +31,14 @@ export const kinds = {
   teacherGuide:'teacherGuide',
   speed:'speed',
   schmoment:'schmoment',
+  joSchmo:'joSchmo',
   music:'music',
   karaoke:'karaoke',
   discussion:'discussion',
   dance:'dance',
+  echo:'echo',
   coloring:'coloring',
+  craft:'craft',
   book:'book',
 }
 
@@ -44,11 +47,14 @@ export const resoucesForKinds = {
   teacherGuide:['teacherGuide'],
   speed:['speed', 'watch'],
   schmoment:['schmoment'],
+  joSchmo:['joSchmo'],
   music:['music'],
   karaoke:['karaoke'],
   discussion:['discussion'],
   dance:['dance'],
+  echo:['watch', 'karaoke'],
   coloring:['coloring'],
+  craft:['craft'],
   book:['book'],
 }
 
@@ -71,7 +77,7 @@ export const pathFilters = {
 // used for tracking scripture selected
 export const keyFromScripture = (book, chapter, verses) => {
   let [startVerse, endVerse] = verses.split('-')
-  `${String(books.indexOf(book)).padStart(2,'0')}-${String(chapter).padStart(3,'0')}-${String(startVerse).padStart(3,'0')}-${String(endVerse).padStart(3,'0')}`
+  return `${String(books.indexOf(book)).padStart(2,'0')}-${String(chapter).padStart(3,'0')}-${String(startVerse).padStart(3,'0')}-${String(endVerse).padStart(3,'0')}`
 }
 
 export const scriptureFromKey = key => {
@@ -92,4 +98,8 @@ export function valueAfter(arr, val, n=1) {
       return arr[(i+n) % arr.length]
   }
   return arr[0]
+}
+
+export function toTitleCase(str) {
+  return str.trim().replace(/\b[a-z]|['_][a-z]|\B[A-Z]/g, function(x){return x[0]==="'"||x[0]==="_"?x:String.fromCharCode(x.charCodeAt(0)^32)})
 }
