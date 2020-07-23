@@ -11,21 +11,6 @@ export const books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy'
 '1 Timothy', '2 Timothy', 'Titus', 'Philemon', 'Hebrews', 'James',
 '1 Peter', '2 Peter', '1 John', '2 John', '3 John', 'Jude', 'Revelation']
 
-// const kinds = ["Music Video", "Dance Video", "Karaoke Video", "Coloring Pages", "Teachers Guide"]
-// export const kinds = ["Watch", "What It Means", "Speed Memory", "Schmoment", "Music", "Karaoke", "Family Chat", "Dance", "Color"]
-
-// export const kinds = {
-//   watch:"Watch",
-//   teacherGuide:"What It Means",
-//   speed:"Speed Memory",
-//   schmoment:"Schmoment",
-//   music:"Music",
-//   karaoke:"Karaoke",
-//   discussion:"Family Chat",
-//   dance:"Dance",
-//   coloring:"Color"
-// }
-
 export const kinds = {
   watch:'watch',
   teacherGuide:'teacherGuide',
@@ -39,7 +24,7 @@ export const kinds = {
   echo:'echo',
   coloring:'coloring',
   craft:'craft',
-  book:'book',
+  popupBook:'popupBook',
 }
 
 export const resoucesForKinds = {
@@ -55,7 +40,7 @@ export const resoucesForKinds = {
   echo:['watch', 'karaoke', 'timestamps'],
   coloring:['coloring'],
   craft:['craft'],
-  book:['book'],
+  popupBook:['popupBook'],
 }
 
 export function getKinds(moduleResource) {

@@ -29,9 +29,11 @@ export default function ManageVideos(props) {
     }, {}
   );
 
+  console.log(modules)
+
   useEffect(() => { setModules(dbModules) }, [dbModules])
 
-  let attributeOptions = ['icon', ...Object.values(resoucesForKinds).reduce((cum, arr)=>[...cum, ...arr],[])]
+  let attributeOptions = ['icon', ...Object.values(resoucesForKinds).reduce((cum, arr)=>new Set([...cum, ...arr]).values(),[])]
 
   return <div className='container-xl form'>
     <table><tbody>
@@ -148,7 +150,7 @@ function FileUploader(props) {
   })
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
-  let icon = <i class="fa fa-plus-square-o" aria-hidden="true" />
+  let icon = <i className="fa fa-plus-square-o" aria-hidden="true" />
   if (uploading) icon = <CircularProgressbar value={progress} strokeWidth={30} styles={buildStyles({trailColor: '#eee', pathColor:'#10fc'})} />
   else if(props.resource[props.attribute]) icon = <i class="fa fa-file" aria-hidden="true" />
   
