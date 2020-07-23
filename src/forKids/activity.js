@@ -6,6 +6,7 @@ import {
   Modal,
 } from "react-bootstrap";
 import { media } from "./media";
+import ButtonMap from './buttonMap';
 import { Player, MenuButton } from "video-react";
 import { DispatchContext, StateContext } from "./kidModeApp"
 import MemorizedPrompt from './memorizedPrompt'
@@ -45,6 +46,28 @@ export default function Activity(props) {
     }
   </div>
 }
+
+// let SidebarLayout = props => {
+//   let dispatch = useContext(DispatchContext)
+//   let state = useContext(StateContext)
+
+
+// }
+
+// function SidebarPopUp(props) {
+//   return <div>
+//     <Row>
+//       <Col lg={9} xl={9}>
+//         <div className="sidemenu-kids" style={(props.show)? {marginLeft: '70%'} : {marginLeft: '100%'}}>
+//           {sidebarLayout()}
+//         </div>
+//       </Col>
+//     </Row>
+//     <div style={{textAlign: 'left'}}>
+//       <Button className='btnn-display' onClick={() => props.setShow()}><img src={diamond} style={{height: '50px', width: '60px'}}/>   Click Me   </Button>
+//     </div>
+//   </div>
+// }
 
 let SidebarLayout = props => {
   let dispatch = useContext(DispatchContext)
