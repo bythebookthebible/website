@@ -24,6 +24,7 @@ import test_cp from '../images/coloringPages/test_cp.svg';
 import diamond from '../images/kidsPageSidebar/diamond.png';
 import back from '../images/kidsPageSidebar/back.png';
 
+import activitySideBar from '../images/maps/ActivitySideBar.svg'
 
 // @TODO: 1) some contents are not implemented by the media yet
 //        2) might want to add prev module and prev activity >> idea for later

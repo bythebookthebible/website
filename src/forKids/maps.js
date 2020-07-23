@@ -1,15 +1,18 @@
 import React, { Component, useState, useEffect, useRef, useReducer} from 'react'
-import mainMap from '../images/maps/MainMap.svg'
-import palaceMap from '../images/maps/palaceDoors.svg'
-import readingTree from '../images/maps/TestTree.svg'
-import townSquare from '../images/maps/TownSquareMap.svg'
 import ButtonMap from './buttonMap'
 import { kinds } from '../util'
 import { actionTypes, actionViews } from './kidModeApp'
 
+import artMap from '../images/maps/ArtMap.svg'
+import mainMap from '../images/maps/MainMap.svg'
+import palaceDoors from '../images/maps/palaceDoors.svg'
+import schmoMap from '../images/maps/SchmoMap.svg'
+import testMap from '../images/maps/TestMap.svg'
+import townSquareMap from '../images/maps/TownSquareMap.svg'
+
 let Test = props => <div>
     <h1>Test</h1>
-    <ButtonMap src={readingTree} buttons={[
+    <ButtonMap src={testMap} buttons={[
         {id:'Palace', dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'home'}},
         {id:'Branch1', dispatch: {type:actionTypes.newView, view:actionViews.activity, activity:{key:'39-007-001-010', kind: kinds.watch}}},
         {id:'Branch2', dispatch: {type:actionTypes.newView, view:actionViews.activity, activity:{key:'39-007-007-011', kind: kinds.watch}}},
@@ -34,7 +37,7 @@ let Map = props => <div>
 </div>
 
 let TownSquare = props => <div>
-    <ButtonMap src={townSquare} buttons={[
+    <ButtonMap src={townSquareMap} buttons={[
         {id:'Dancer_Button', dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.dance}},
         {id:'MicButton',     dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.karaoke}},
         {id:'StageButton',   dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.watch}},
@@ -42,7 +45,7 @@ let TownSquare = props => <div>
 </div>
 
 let SchmoHouses = props => <div>
-    <ButtonMap src={townSquare} buttons={[
+    <ButtonMap src={schmoMap} buttons={[
         {id:'Dancer_Button', dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.discussion}},
         {id:'MicButton',     dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.schmoment}},
         {id:'StageButton',   dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.joSchmo}},
@@ -50,14 +53,14 @@ let SchmoHouses = props => <div>
 </div>
 
 let ArtGazebo = props => <div>
-    <ButtonMap src={townSquare} buttons={[
+    <ButtonMap src={artMap} buttons={[
         {id:'Dancer_Button', dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.coloring}},
         {id:'StageButton',   dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.craft}},
     ]}/>
 </div>
 
 let Palace = props => <div>
-    <ButtonMap src={palaceMap} buttons={[
+    <ButtonMap src={palaceDoors} buttons={[
         {id:'Psalms_Proverbs', dispatch: {type:actionTypes.newView, view:actionViews.palace}},
         {id:'Matthew', dispatch: {type:actionTypes.newView, view:actionViews.palace}},
         {id:'James', dispatch: {type:actionTypes.newView, view:actionViews.palace}},

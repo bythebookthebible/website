@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.1.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 315 768" style="enable-background:new 0 0 315 768;" xml:space="preserve">
+<font horiz-adv-x="1000">
+<!-- (c) 2011 Typodermic Fonts -->
+<!-- Copyright: Copyright 2020 Adobe System Incorporated. All rights reserved. -->
+<font-face font-family="Loopiejuice-Regular" units-per-em="1000" underline-position="-75" underline-thickness="50"/>
+<missing-glyph horiz-adv-x="558" d="M99,-200C46,-200 20,-177 20,-132l0,759C20,673 46,696 99,696l358,0C510,696 537,673 537,627l0,-759C537,-177 510,-200 457,-200M221,102C218,107 217,114 217,122C217,143 223,158 234,169C245,180 259,188 276,194C293,200 313,205 334,210C355,215 376,222 397,231C431,246 458,270 478,303C498,335 508,371 508,410C508,437 502,463 489,487C476,511 458,532 435,550C412,568 386,582 357,593C327,603 295,608 262,608C234,608 208,602 185,591C161,579 140,564 123,545C106,526 92,504 81,479C70,454 63,428 60,401l111,-50C175,371 180,389 185,406C190,422 197,436 205,448C213,460 223,469 234,476C245,483 259,486 276,486C307,486 334,478 355,463C376,447 386,428 386,405C386,380 378,359 362,344C345,328 322,314 292,302C275,295 257,288 237,281C217,274 198,265 181,254C164,243 149,229 138,212C126,195 120,173 120,146C120,137 122,128 125,118M136,-95C155,-95 172,-87 185,-72C198,-57 204,-39 204,-19C204,-10 203,0 201,9C198,18 195,27 190,35C185,42 178,49 170,54C162,59 152,61 141,61C127,61 116,58 107,52C98,45 91,38 86,29C81,20 77,12 75,3C73,-6 72,-14 72,-19C72,-40 78,-58 91,-73C103,-88 118,-95 136,-95z"/>
+<glyph unicode="A" horiz-adv-x="538" d="M391,120l-260,-10l-42,-116l-89,29l200,584l124,-12l214,-581l-92,-32M159,188l200,13l-101,253l-2,0z"/>
+<glyph unicode="V" horiz-adv-x="499" d="M203,-13l-203,602l120,17l136,-484l2,0l128,486l113,-27l-189,-594z"/>
+<glyph unicode="c" horiz-adv-x="522" d="M403,290C404,295 404,300 405,305C405,310 405,319 405,330C405,349 403,369 400,390C396,410 389,428 379,445C369,461 355,474 338,485C321,496 298,501 271,501C248,501 227,496 209,486C191,475 176,461 164,443C151,424 142,403 136,378C129,353 126,325 126,295C126,262 130,232 138,205C145,178 156,155 170,136C184,117 201,102 220,92C239,82 260,77 283,77C356,77 406,112 431,182l73,-39C495,122 485,102 472,83C459,64 443,47 424,33C405,19 384,8 360,0C335,-8 307,-12 276,-12C239,-12 204,-4 173,12C142,27 115,49 92,78C69,106 52,140 39,180C26,219 19,263 19,310C19,355 26,396 39,433C52,470 69,502 92,529C114,555 140,575 171,590C202,605 235,612 271,612C292,612 317,609 344,603C371,597 396,585 420,566C443,547 463,521 479,486C495,451 503,404 503,346C503,333 503,320 502,307C501,294 499,286 498,283z"/>
+<glyph unicode="e" horiz-adv-x="425" d="M44,-21l-11,602l363,12l0,-112l-252,1l-3,-191l221,10l0,-100l-223,3l-4,-134l265,19l-2,-97z"/>
+<glyph unicode="i" horiz-adv-x="189" d="M43,0l-7,430l114,5l-6,-431M160,549C160,533 154,518 143,503C132,488 116,480 97,480C88,480 79,482 71,487C62,491 55,497 49,505C42,512 37,521 33,531C29,541 27,552 27,564C27,571 28,578 31,587C33,595 37,603 42,610C47,617 54,623 63,628C71,633 81,635 93,635C104,635 113,632 122,626C130,620 137,613 143,604C148,595 153,586 156,576C159,566 160,557 160,549z"/>
+<glyph unicode="r" horiz-adv-x="502" d="M417,-32l-164,193C223,161 199,162 181,163C162,164 149,166 140,168l1,-166l-96,-11l-11,608C52,602 78,606 113,609C147,612 185,613 226,613C270,613 308,607 340,596C372,585 399,569 420,550C441,531 456,508 466,482C476,456 481,428 481,399C481,346 471,302 451,265C431,228 401,200 362,182l122,-157M142,248C151,247 161,246 174,245C187,244 206,244 232,244C257,244 278,248 295,255C312,262 326,272 337,285C348,298 355,312 360,328C365,344 367,361 367,378C367,420 355,453 332,476C308,499 273,510 227,510C206,510 189,510 178,509C167,508 156,506 145,503z"/>
+<glyph unicode="s" horiz-adv-x="480" d="M364,366C363,381 362,397 360,414C357,430 352,445 343,459C334,472 322,484 305,493C288,502 265,506 236,506C199,506 171,498 150,483C129,468 118,444 118,412C118,382 130,358 155,340C166,331 181,324 199,317C217,310 239,305 264,300C293,295 319,289 342,283C365,276 385,268 402,258C421,247 436,232 447,214C458,196 463,174 463,147C463,119 458,95 447,74C436,53 420,37 401,24C381,11 358,1 332,-5C306,-12 278,-15 248,-15C176,-15 121,-1 82,27C43,54 20,93 12,142l100,35C115,139 129,111 152,94C175,76 205,67 244,67C278,67 306,73 328,86C350,98 361,116 361,140C361,149 360,157 358,164C355,171 350,177 342,182C332,189 316,196 295,203C273,209 242,216 202,223C159,231 125,242 99,257C69,274 47,295 33,322C19,348 12,380 12,418C12,455 20,485 35,510C50,535 70,555 93,570C116,585 142,595 169,602C196,609 222,612 245,612C286,612 320,606 347,594C374,581 397,565 414,545C431,524 444,501 453,474C461,447 466,420 468,391z"/>
+<glyph unicode="t" horiz-adv-x="464" d="M169,-7l0,504l-162,0l0,101l450,11l0,-112l-180,0l-18,-495z"/>
+<glyph unicode="v" horiz-adv-x="499" d="M203,-13l-203,602l120,17l136,-484l2,0l128,486l113,-27l-189,-594z"/>
+<glyph unicode="y" horiz-adv-x="518" d="M236,-4l-15,247l-219,310l110,59l158,-266l3,0l139,265l106,-44l-188,-322l2,-240z"/>
+</font>
+
+	<g id="Background">
+	<g>
+		<defs>
+			<rect id="SVGID_1_" x="1" y="-6" width="312" height="775.5"/>
+		</defs>
+		<clipPath id="SVGID_2_">
+			<use xlink:href="#SVGID_1_"  style="overflow:visible;"/>
+		</clipPath>
+		<g style="clip-path:url(#SVGID_2_);">
+			<g>
+				<defs>
+					<rect id="SVGID_3_" x="-768.9" y="-3.8" width="1086.3" height="780.5"/>
+				</defs>
+				<clipPath id="SVGID_4_">
+					<use xlink:href="#SVGID_3_"  style="overflow:visible;"/>
+				</clipPath>
+				<g style="clip-path:url(#SVGID_4_);">
+					<defs>
+						<rect id="SVGID_5_" x="-768.9" y="-3.8" width="1086.3" height="780.5"/>
+					</defs>
+					<clipPath id="SVGID_6_">
+						<use xlink:href="#SVGID_5_"  style="overflow:visible;"/>
+					</clipPath>
+					<g style="clip-path:url(#SVGID_6_);">
+						
+							<image style="overflow:visible;" width="2732" height="2048" xlink:href="14FC8319AF26D1BE.jpg"  transform="matrix(0.3976 0 0 0.3811 -768.8733 -3.8154)">
+						</image>
+					</g>
+				</g>
+			</g>
+		</g>
+	</g>
+</g>
+<g id="MemoryCup">
+	<g>
+		<defs>
+			<path id="SVGID_7_" d="M155,454L155,454c-22.6,1.9-54.3,8.7-79,32c-67.9,63.8-50.3,220.2,29,255c41.6,18.2,91.7-0.7,121-24
+				c68.9-54.8,73.8-174.5,17-229c-23.3-22.4-52.6-29.5-72-32"/>
+		</defs>
+		<clipPath id="SVGID_8_">
+			<use xlink:href="#SVGID_7_"  style="overflow:visible;"/>
+		</clipPath>
+		<g style="clip-path:url(#SVGID_8_);">
+			<g>
+				<defs>
+					<rect id="SVGID_9_" x="-765" y="4.1" width="1081.2" height="771.9"/>
+				</defs>
+				<clipPath id="SVGID_10_">
+					<use xlink:href="#SVGID_9_"  style="overflow:visible;"/>
+				</clipPath>
+				<g style="clip-path:url(#SVGID_10_);">
+					<defs>
+						<rect id="SVGID_11_" x="-765" y="4.1" width="1081.2" height="771.9"/>
+					</defs>
+					<clipPath id="SVGID_12_">
+						<use xlink:href="#SVGID_11_"  style="overflow:visible;"/>
+					</clipPath>
+					<g style="clip-path:url(#SVGID_12_);">
+						
+							<image style="overflow:visible;" width="2732" height="2048" xlink:href="14FC8319AF26D1C2.jpg"  transform="matrix(0.3957 0 0 0.3769 -765 4.0744)">
+						</image>
+					</g>
+				</g>
+			</g>
+		</g>
+	</g>
+</g>
+<g id="MemoryPower">
+	<g>
+		<defs>
+			<path id="SVGID_13_" d="M221,541.8c-15.6-7.7-59.9-26.8-104.9-10.3c-7,2.6-13.4,5.8-19.1,9.3c0.5,21.6,4.2,38.9,7.4,50.5
+				c5.6,20,10.4,36.1,25.4,47.4c4.3,3.3,12.8,9.5,24.4,9.3c12.3-0.2,20.9-7.6,27.6-13.4c5.9-5.2,14.8-14.5,24.4-37.1
+				C211.5,584.9,218,566,221,541.8z"/>
+		</defs>
+		<clipPath id="SVGID_14_">
+			<use xlink:href="#SVGID_13_"  style="overflow:visible;"/>
+		</clipPath>
+		<g style="clip-path:url(#SVGID_14_);">
+			<g>
+				<defs>
+					<rect id="SVGID_15_" x="-806" y="-16" width="1132.1" height="796"/>
+				</defs>
+				<clipPath id="SVGID_16_">
+					<use xlink:href="#SVGID_15_"  style="overflow:visible;"/>
+				</clipPath>
+				<g style="clip-path:url(#SVGID_16_);">
+					<defs>
+						<rect id="SVGID_17_" x="-806" y="-16" width="1132.1" height="796"/>
+					</defs>
+					<clipPath id="SVGID_18_">
+						<use xlink:href="#SVGID_17_"  style="overflow:visible;"/>
+					</clipPath>
+					<g style="clip-path:url(#SVGID_18_);">
+						
+							<image style="overflow:visible;" width="2732" height="2048" xlink:href="14FC8319AF26D1C5.jpg"  transform="matrix(0.4144 0 0 0.3887 -806 -16)">
+						</image>
+					</g>
+				</g>
+			</g>
+		</g>
+	</g>
+</g>
+<g id="ToMemoryPalace">
+	<g>
+		<defs>
+			<path id="SVGID_19_" d="M193,256.7c-6.3,8.7-12.7,17.3-19,26c10.7,10,21.3,20,32,30c-3.5,1-6,4.3-6,8c0,3.7,2.5,7,6,8
+				c3.3,1,6.9-0.2,9-3c0.7,0.5,4.5,3.1,9,2c4.8-1.2,9-6.2,8-11c-0.8-3.7-4.3-5.6-5-6c9-9.7,18-19.3,27-29c-6.7-7.7-13.3-15.3-20-23
+				C220.4,258.1,206.7,257.4,193,256.7z"/>
+		</defs>
+		<clipPath id="SVGID_20_">
+			<use xlink:href="#SVGID_19_"  style="overflow:visible;"/>
+		</clipPath>
+		<g style="clip-path:url(#SVGID_20_);">
+			<g>
+				<defs>
+					<rect id="SVGID_21_" x="-808" y="-16" width="1132.1" height="796"/>
+				</defs>
+				<clipPath id="SVGID_22_">
+					<use xlink:href="#SVGID_21_"  style="overflow:visible;"/>
+				</clipPath>
+				<g style="clip-path:url(#SVGID_22_);">
+					<defs>
+						<rect id="SVGID_23_" x="-808" y="-16" width="1132.1" height="796"/>
+					</defs>
+					<clipPath id="SVGID_24_">
+						<use xlink:href="#SVGID_23_"  style="overflow:visible;"/>
+					</clipPath>
+					<g style="clip-path:url(#SVGID_24_);">
+						
+							<image style="overflow:visible;" width="2732" height="2048" xlink:href="14FC8319AF26D1C6.jpg"  transform="matrix(0.4144 0 0 0.3887 -808 -16)">
+						</image>
+					</g>
+				</g>
+			</g>
+		</g>
+	</g>
+</g>
+<g id="Repeat">
+	<g>
+		<defs>
+			<path id="SVGID_25_" d="M103,256c2.2-1.1,10.2-4.5,20-2c1.2,0.3,13.7,3.8,19,16c6.9,15.8-5.2,30.9-7,33c-1.8,2.2-6.3,7.4-14,10
+				c-1.4,0.5-14.3,4.6-25-3c-2.4-1.7-9-6.4-9-14c0-5.8,3.8-9.8,5-11c-2.3-2.3-4.7-4.7-7-7c1.3-7.3,2.7-14.7,4-22
+				C93.7,256,98.3,256,103,256z"/>
+		</defs>
+		<clipPath id="SVGID_26_">
+			<use xlink:href="#SVGID_25_"  style="overflow:visible;"/>
+		</clipPath>
+		<g style="clip-path:url(#SVGID_26_);">
+			<g>
+				<defs>
+					<rect id="SVGID_27_" x="-806.4" y="-12.5" width="1132.1" height="796"/>
+				</defs>
+				<clipPath id="SVGID_28_">
+					<use xlink:href="#SVGID_27_"  style="overflow:visible;"/>
+				</clipPath>
+				<g style="clip-path:url(#SVGID_28_);">
+					<defs>
+						<rect id="SVGID_29_" x="-806.4" y="-12.5" width="1132.1" height="796"/>
+					</defs>
+					<clipPath id="SVGID_30_">
+						<use xlink:href="#SVGID_29_"  style="overflow:visible;"/>
+					</clipPath>
+					<g transform="matrix(1 0 0 1 0 -9.536743e-07)" style="clip-path:url(#SVGID_30_);">
+						
+							<image style="overflow:visible;" width="2732" height="2048" xlink:href="14FC8319AF26D1C4.jpg"  transform="matrix(0.4144 0 0 0.3887 -806.3802 -12.5264)">
+						</image>
+					</g>
+				</g>
+			</g>
+		</g>
+	</g>
+</g>
+<g id="ToVerse">
+	<path style="fill:#EF5BBD;" d="M249.1,403c-22.9-3.5-49.8-6.1-80-6c-29.4,0.1-55.6,2.6-78,6c1.6-7.4,3-16.9,3-28
+		c0-10.7-1.4-19.8-3-27c22.5,2.9,48,4.9,76,5c30.4,0.1,57.9-1.9,82-5c-1.9,6.5-3.9,15.8-4,27C245.1,386.7,247.1,396.3,249.1,403z"/>
+	<rect x="106.4" y="368.9" style="fill:none;" width="120.2" height="23.8"/>
+	<text transform="matrix(1 0 0 1 106.4407 384.4225)" style="fill:#FFFFFF; font-family:'Loopiejuice-Regular'; font-size:26px;">Verse</text>
+	<path style="fill:#FFFFFF;stroke:#FFFFFF;stroke-width:2.7147;stroke-miterlimit:10;" d="M182,376c16.4,0.6,32.9,1.2,49.3,1.8
+		c-4.6-2-9.2-4-13.8-6c0.4,3.5,0.8,7,1.2,10.5c3.6-1.2,9-3.3,12.6-4.5"/>
+</g>
+<g id="NextActivity">
+	<path style="fill:#EF5BBD;" d="M249.1,224c-22.9-3.5-49.8-6.1-80-6c-29.4,0.1-55.6,2.6-78,6c1.6-7.4,3-16.9,3-28
+		c0-10.7-1.4-19.8-3-27c22.5,2.9,48,4.9,76,5c30.4,0.1,57.9-1.9,82-5c-1.9,6.5-3.9,15.8-4,27C245.1,207.7,247.1,217.3,249.1,224z"/>
+	<rect x="106.4" y="187.3" style="fill:none;" width="120.2" height="23.8"/>
+	<text transform="matrix(1 0 0 1 106.4417 202.8779)" style="fill:#FFFFFF; font-family:'Loopiejuice-Regular'; font-size:26px;">Activity</text>
+	<path style="fill:#FFFFFF;stroke:#FFFFFF;stroke-width:2.2039;stroke-miterlimit:10;" d="M203,196c11.3-0.3,22.7-0.7,34-1
+		c-3.2-1.7-6.5-3.3-9.7-5c0.4,3.3,0.8,6.7,1.2,10c2.4-1.3,6.1-3.7,8.5-5"/>
+</g>
+</svg>

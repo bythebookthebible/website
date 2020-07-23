@@ -4,11 +4,30 @@ import { Container, Row, Col } from "react-bootstrap"
 import { DispatchContext, StateContext } from "./kidModeApp"
 import { scriptureFromKey, getKinds, kinds } from '../util'
 
-import karaokeBg from '../images/maps/KaraokeBackground.svg'
-import karaokeBar from '../images/maps/KaraokeVerseBar.svg'
-import bookBar from '../images/maps/BookVerseBar.svg'
+import defaultIcon from '../images/kidsPageSidebar/tree.png'
 
-import tree from '../images/kidsPageSidebar/tree.png'
+import testTree from '../images/maps/TestTree.svg'
+
+import artVerseBar from '../images/maps/ArtVerseBar.svg'
+import blueHouseInside from '../images/maps/BlueHouseInside.svg'
+import bookVerseBar from '../images/maps/BookVerseBar.svg'
+import colorBackground from '../images/maps/ColorBackground.svg'
+import craftBackground from '../images/maps/CraftBackground.svg'
+import danceBackground from '../images/maps/DanceBackground.svg'
+import danceVerseBar from '../images/maps/DanceVerseBar.svg'
+import dragonBackground from '../images/maps/DragonBackground.svg'
+import dragonVerseBar from '../images/maps/DragonVerseBar.svg'
+import echoBackground from '../images/maps/EchoBackground.svg'
+import echoVerseBar from '../images/maps/EchoVerseBar.svg'
+import stageBackground from '../images/maps/StageBackground.svg'
+import stageVerseBar from '../images/maps/StageVerseBar.svg'
+import karaokeBackground from '../images/maps/KaraokeBackground.svg'
+import karaokeVerseBar from '../images/maps/KaraokeVerseBar.svg'
+import yelllowHouseInside from '../images/maps/YelllowHouseInside.svg'
+
+// // to import later
+let pinkHouseInside = yelllowHouseInside
+
 
 function ModuleSelctor(props) {
   let dispatch = useContext(DispatchContext)
@@ -37,9 +56,7 @@ function ModuleSelctor(props) {
           <Row style={{ marginLeft: '30px', marginRight: '30px', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' }}>
             {Object.keys(scriptures[book][chapter]).map(verses =>
               //content
-              <div>
-                <Col sm={2} style={{ }}><img src={tree} style={{width: '60px', height: '60px'}} /><br></br>{verses}</Col>
-              </div>
+              <Col sm={2} style={{ }}><img src={defaultIcon} style={{width: '60px', height: '60px'}} /><br></br>{verses}</Col>
             )}
           </Row>
         </>)
@@ -61,7 +78,7 @@ function ModuleSelctor(props) {
               //content
               <Col sm={4} style={{ }}>
                 <div>
-                  <img src={tree} style={{width: '60px', height: '60px'}} /><br></br>{verses}
+                  <img src={defaultIcon} style={{width: '60px', height: '60px'}} /><br></br>{verses}
                 </div>
               </Col>
             )}
@@ -78,6 +95,16 @@ function ModuleSelctor(props) {
 }
 
 export default {
-  dragon: <ModuleSelctor background={karaokeBg} chapterBackground={karaokeBar} module='dragon' />,
-  book: <ModuleSelctor style={{backgroundColor:"#dd08", minHeight: '100vh'}} chapterBackground={bookBar} module='book' />,
+  book: <ModuleSelctor style={{backgroundColor:"#ffde1a4c"}} chapterBackground={bookVerseBar} module='book' />,
+  // games: <ModuleSelctor background={gamesBackground} chapterBackground={gamesVerseBar} module='games' />,
+  speed: <ModuleSelctor background={dragonBackground} chapterBackground={dragonVerseBar} module='speed' />,
+  coloring: <ModuleSelctor background={colorBackground} chapterBackground={artVerseBar} module='coloring' />,
+  craft: <ModuleSelctor background={craftBackground} chapterBackground={artVerseBar} module='craft' />,
+  dance: <ModuleSelctor background={danceBackground} chapterBackground={danceVerseBar} module='dance' />,
+  karaoke: <ModuleSelctor background={karaokeBackground} chapterBackground={karaokeVerseBar} module='karaoke' />,
+  watch: <ModuleSelctor background={stageBackground} chapterBackground={stageVerseBar} module='watch' />,
+  echo: <ModuleSelctor background={echoBackground} chapterBackground={echoVerseBar} module='echo' />,
+  joSchmo: <ModuleSelctor style={{backgroundColor:"#ffde1a4c"}} chapterBackground={bookVerseBar} cornerIcon={blueHouseInside} module='joSchmo' />,
+  schmoment: <ModuleSelctor style={{backgroundColor:"#ffde1a4c"}} chapterBackground={bookVerseBar} cornerIcon={pinkHouseInside} module='schmoment' />,
+  discussion: <ModuleSelctor style={{backgroundColor:"#ffde1a4c"}} chapterBackground={bookVerseBar} cornerIcon={yelllowHouseInside} module='discussion' />,
 }
