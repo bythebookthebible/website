@@ -12,7 +12,7 @@ import MemorizedPrompt from './memorizedPrompt'
 import AdultModeApp from "../forAdults/adultModeApp"
 
 import Maps from './maps'
-import ModuleSelectors from './ModuleSelector'
+import ModuleSelector from './ModuleSelector'
 
 let showMemoryPrompt;
 
@@ -190,7 +190,7 @@ export default function KidModeApp(props) {
     let content = <div className='text-center pt-3'><Spinner animation="border" role="status" size="md" /><h1 className='d-inline-block'>Loading...</h1></div>
     
     if(state.view == 'map') content = Maps[state.viewSelected]
-    if(state.view == 'moduleSelector') content = ModuleSelectors[state.viewSelected]
+    if(state.view == 'moduleSelector') content = ModuleSelector[state.viewSelected]
     if(state.view == 'palace') content = <MemoryPowerView src={ReallyBadPalace} halfMemoryPower={halfMemoryPower} showMemoryPrompt={showMemoryPrompt} />
     if(state.view == 'activity') content = <Activity showMemoryPrompt={showMemoryPrompt} halfMemoryPower={halfMemoryPower} />
 

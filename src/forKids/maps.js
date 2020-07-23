@@ -7,7 +7,7 @@ import artMap from '../images/maps/ArtMap.svg'
 import mainMap from '../images/maps/MainMap.svg'
 import palaceDoors from '../images/maps/palaceDoors.svg'
 import schmoMap from '../images/maps/SchmoMap.svg'
-import testMap from '../images/maps/TestMap.svg'
+import testMap from '../images/maps/TestTree.svg'
 import townSquareMap from '../images/maps/TownSquareMap.svg'
 
 let Test = props => <div>
