@@ -93,42 +93,57 @@ function ResourceTableRow(props) {
     <td>{`${p.book} ${p.chapterVerse}`}</td>
     <td>{p.title}</td>
 
-    {props.attributeOptions.map(attr => <td><FileUpload resource={p} attribute={attr} /></td>)}
+    {props.attributeOptions.map(attr => <td><FileUploader resource={p} attribute={attr} /></td>)}
   </tr>
 }
 
-function FileUpload(props) {
+function FileUploader(props) {
   let file = useRef()
   let [uploading, setUploading] = useState(false)
   let [progress, setProgress] = useState(0)
   
   
-  let onDrop = useCallback(files => {
+  let onDrop = useCallback(async files => {
     let r = props.resource
     console.log(r)
 
     let fileType = files[0].name.split('.').slice(-1)
-    let path = `memory/${r.key}-${props.attribute}${props.suffix ? '-' + props.suffix : ''}.${fileType}`
+    let value = `memory/${r.key}-${props.attribute}${props.suffix ? '-' + props.suffix : ''}.${fileType}`
 
-    // upload to storage
-    let ref = firebase.storage().ref(path)
-    let uploadTask = ref.put(files[0])
-    setUploading(true)
-    uploadTask.on('state_changed', (snapshot) => {
-      setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
-      if(snapshot.bytesTransferred == snapshot.totalBytes) {
-        setUploading(false)
-      }
-    })
-    uploadTask.then(() => {console.log('Uploaded File')})
-
-    // update database
+    // new db contents
     let dbKeys = ['book', 'chapter', 'startVerse', 'endVerse', 'title', 'icon', ...Object.values(resoucesForKinds).reduce((cum, arr)=>[...cum, ...arr],[])]
     let dbRecord = Object.keys(r).filter(k=>dbKeys.includes(k)).reduce((cum, key)=>{return {...cum, [key]:r[key]}},{})
-    dbRecord = {...dbRecord, version: Date.now(), [props.attribute]:[path]}
-    console.log(r.key, dbRecord)
 
-    db.doc(`${memoryResources}/${r.key}`).set(dbRecord).catch(() => {console.log('Error Updating DB')})
+    if(props.attribute == 'timestamps') {
+      // timestamp special case: read file into text
+      let reader = new FileReader()
+      reader.onload = e=>{
+        // update to database
+        dbRecord = {...dbRecord, version: Date.now(), [props.attribute]:[reader.result]}
+        console.log(dbRecord)
+        db.doc(`${memoryResources}/${r.key}`).set(dbRecord).catch(() => {console.log('Error Updating DB')})
+      }
+      reader.readAsText(files[0])
+
+    } else {
+      // upload to storage
+      let ref = firebase.storage().ref(value)
+      let uploadTask = ref.put(files[0])
+      setUploading(true)
+      uploadTask.on('state_changed', (snapshot) => {
+        setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+        if(snapshot.bytesTransferred == snapshot.totalBytes) {
+          setUploading(false)
+        }
+      })
+      uploadTask.then(() => {console.log('Uploaded File')})
+
+      // update to database
+      dbRecord = {...dbRecord, version: Date.now(), [props.attribute]:[value]}
+      console.log(dbRecord)
+      db.doc(`${memoryResources}/${r.key}`).set(dbRecord).catch(() => {console.log('Error Updating DB')})
+    }
+
 
   })
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
