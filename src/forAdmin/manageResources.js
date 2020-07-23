@@ -5,7 +5,7 @@ import {useDropzone} from 'react-dropzone'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar'
 
 import { useFirestore } from '../hooks'
-import {books, kinds} from '../util'
+import {books, kinds, resoucesForKinds} from '../util'
 import {firebase, db, storage} from '../firebase'
 
 const defaultVideoData = {
@@ -15,14 +15,16 @@ const defaultVideoData = {
   title: 'Title',
 }
 
+const memoryResources = 'memoryResources_02'
+
 export default function ManageVideos(props) {
   let [localModules, setLocalModules] = useState({})
   let modules = useFirestore(
-    "memoryResources_02",
+    memoryResources,
     (cum, doc) => {
       let d = doc.data();
       let chapterVerse = `${d.chapter}:${d.startVerse}-${d.endVerse}`
-      cum[doc.id] = {...d, chapterVerse: chapterVerse, newResource: false}
+      cum[doc.id] = {...d, key:doc.id, chapterVerse: chapterVerse, newResource: false}
       return cum
     }, {}
   );
@@ -30,14 +32,12 @@ export default function ManageVideos(props) {
 
   useEffect(() => { setLocalModules(modules) }, [modules])
 
-
-
-
   return <div className='container-xl form'>
     <table><tbody>
       <tr>
         <th>Scripture</th>
         <th>Title</th>
+        <th className='rotate'><div><span>icon</span></div></th>
 
         <th className='rotate'><div><span>music</span></div></th>
         <th className='rotate'><div><span>watch</span></div></th>
@@ -56,16 +56,25 @@ export default function ManageVideos(props) {
         setLocalModules(modules)
       }}/>)}
       <tr>
-        <td><button onClick={() => {$('#fileInput').click()}}>Add Videos</button></td>
         <td><button onClick={function(event) {
-          // upload all new files to storage
-          // add entry for each file to db
-          if($(':invalid').length !== 0) {
-            $('#warnInvalid').css({'display':'block'})
-            return
-          } else {
-            $('#warnInvalid').css({'display':'none'})
-          }
+
+        // let dbRecord = {
+        //   book: r.book,
+        //   chapter: Number(r.chapter),
+        //   startVerse: Number(r.startVerse),
+        //   endVerse: Number(r.endVerse),
+        //   title: r.title,
+        //   version: Date.now(),
+        //   icon: r.icon,
+        // }
+
+
+          // if($(':invalid').length !== 0) {
+          //   $('#warnInvalid').css({'display':'block'})
+          //   return
+          // } else {
+          //   $('#warnInvalid').css({'display':'none'})
+          // }
 
           // let uploadTasks = {}
           // let dbTasks = {}
@@ -118,7 +127,7 @@ export default function ManageVideos(props) {
 
           //   console.log(key, dbRecord)
             
-          //   db.doc(`memoryResources_02/${key}`).set(dbRecord).then(() => {console.log('Updated DB', key)})
+          //   db.doc(`${memoryResources}/${key}`).set(dbRecord).then(() => {console.log('Updated DB', key)})
           //   // v.data = {...dbRecord, chapterVerse: v.data.chapterVerse}
           // }
 
@@ -279,7 +288,7 @@ export default function ManageVideos(props) {
 
 //             console.log(key, dbRecord)
             
-//             db.doc(`memoryResources_02/${key}`).set(dbRecord).then(() => {console.log('Updated DB', key)})
+//             db.doc(`${memoryResources}/${key}`).set(dbRecord).then(() => {console.log('Updated DB', key)})
 //             // v.data = {...dbRecord, chapterVerse: v.data.chapterVerse}
 //           }
             
@@ -382,36 +391,38 @@ function toTitleCase(str) {
 }
 
 function ResourceTableRow(p) {
-  if(p.newResource) return <tr>
-      <td>
-        <select defaultValue={p.book} onChange={p.onChange} name='book' >
-          {books.map((b) => <option value={b}>{b}</option>)}
-        </select>
-        <input type='text' name='chapterVerse' pattern={'\\d+:\\d+-\\d+'} size={3} defaultValue={p.chapterVerse} onChange={p.onChange}/>
-      </td>
-      <td>
-        <select defaultValue={p.kind} onChange={p.onChange} name='kind' >
-          {Object.keys(kinds).map((b) => <option value={b}>{b}</option>)}
-        </select>
-      </td>
-      <td><input type='text' name='title' pattern={'[A-Za-z ]+'} size={5} defaultValue={p.title} onChange={p.onChange}/></td>
-      <td>{p.file.name}</td>
-    </tr>
-  else return <tr>
+  // if(p.newResource) return <tr>
+  //     <td>
+  //       <select defaultValue={p.book} onChange={p.onChange} name='book' >
+  //         {books.map((b) => <option value={b}>{b}</option>)}
+  //       </select>
+  //       <input type='text' name='chapterVerse' pattern={'\\d+:\\d+-\\d+'} size={3} defaultValue={p.chapterVerse} onChange={p.onChange}/>
+  //     </td>
+  //     <td>
+  //       <select defaultValue={p.kind} onChange={p.onChange} name='kind' >
+  //         {Object.keys(kinds).map((b) => <option value={b}>{b}</option>)}
+  //       </select>
+  //     </td>
+  //     <td><input type='text' name='title' pattern={'[A-Za-z ]+'} size={5} defaultValue={p.title} onChange={p.onChange}/></td>
+  //     <td>{p.file.name}</td>
+  //   </tr>
+  // else
+  return <tr>
     <td>{`${p.book} ${p.chapterVerse}`}</td>
     <td>{p.title}</td>
+    <td><FileUpload resource={p} attribute={'icon'} /></td>
 
-    <td><FileUpload moduleKey={p.key} files={p.music} /></td>
-    <td><FileUpload moduleKey={p.key} files={p.watch} /></td>
-    <td><FileUpload moduleKey={p.key} files={p.dance} /></td>
-    <td><FileUpload moduleKey={p.key} files={p.karaoke} /></td>
-    <td><FileUpload moduleKey={p.key} files={p.schmoment} /></td>
-    <td><FileUpload moduleKey={p.key} files={p.speed} /></td>
-    <td><FileUpload moduleKey={p.key} files={p.coloring} /></td>
-    <td><FileUpload moduleKey={p.key} files={p.discussion} /></td>
-    <td><FileUpload moduleKey={p.key} files={p.teacherGuide} /></td>
+    <td><FileUpload resource={p} attribute={kinds.music} /></td>
+    <td><FileUpload resource={p} attribute={kinds.watch} /></td>
+    <td><FileUpload resource={p} attribute={kinds.dance} /></td>
+    <td><FileUpload resource={p} attribute={kinds.karaoke} /></td>
+    <td><FileUpload resource={p} attribute={kinds.schmoment} /></td>
+    <td><FileUpload resource={p} attribute={kinds.speed} /></td>
+    <td><FileUpload resource={p} attribute={kinds.coloring} /></td>
+    <td><FileUpload resource={p} attribute={kinds.discussion} /></td>
+    <td><FileUpload resource={p} attribute={kinds.teacherGuide} /></td>
 
-    <td>{p.progress && (p.progress<100 ? <ProgressBar now={p.progress} /> : <i class="fa fa-check" aria-hidden="true"></i>)}</td>
+    {/* <td>{p.progress && (p.progress<100 ? <ProgressBar now={p.progress} /> : <i class="fa fa-check" aria-hidden="true"></i>)}</td> */}
   </tr>
 }
 
@@ -419,26 +430,41 @@ function FileUpload(props) {
   let file = useRef()
   let [uploading, setUploading] = useState(false)
   let [progress, setProgress] = useState(0)
-
+  
+  
   let onDrop = useCallback(files => {
-    let fileType = files[0].name.split('.').slice(-1)
-    let path = `memory/${props.moduleKey}${'-' + props.suffix || ''}.${fileType}`
+    let r = props.resource
+    console.log(r)
 
+    let fileType = files[0].name.split('.').slice(-1)
+    let path = `memory/${r.key}${'-' + props.suffix || ''}.${fileType}`
+
+    // upload to storage
     let ref = firebase.storage().ref(path)
-    let uploadTask = ref.put(files[0])
-    uploadTask.on('state_changed', (snapshot) => {
-      setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
-      if(snapshot.bytesTransferred == snapshot.totalBytes) {
-        setUploading(false)
-      }
-    })
-    uploadTask.then(() => {console.log('Uploaded File')})
+    // let uploadTask = ref.put(files[0])
+    // uploadTask.on('state_changed', (snapshot) => {
+    //   setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+    //   if(snapshot.bytesTransferred == snapshot.totalBytes) {
+    //     setUploading(false)
+    //   }
+    // })
+    // uploadTask.then(() => {console.log('Uploaded File')})
+
+    // update database
+    
+    let dbKeys = ['book', 'chapter', 'startVerse', 'endVerse', 'title', 'icon', ...Object.values(resoucesForKinds).reduce((cum, arr)=>[...cum, ...arr],[])]
+    let dbRecord = Object.keys(r).filter(k=>dbKeys.includes(k)).reduce((cum, key)=>{return {...cum, [key]:r[key]}},{})
+    dbRecord = {...dbRecord, version: Date.now(), [props.attribute]:[path]}
+    console.log(r.key, dbRecord)
+
+    // db.doc(`${memoryResources}/${id}`).set(dbRecord).then(() => {console.log('Updated DB')})
+
   })
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
   let icon = <i class="fa fa-plus-square-o" aria-hidden="true" />
   if (uploading) icon = <CircularProgressbar value={progress} strokeWidth={50} styles={buildStyles({trailColor: '#eee', pathColor:'#10fc'})} />
-  else if(props.files) icon = <i class="fa fa-file" aria-hidden="true" />
+  else if(props.resource[props.attribute]) icon = <i class="fa fa-file" aria-hidden="true" />
   
   return <div onClick={() => {$(file.current).click()}} {...getRootProps()} style={{width:'25px'}} >
       <input ref={file} style={{display: 'none'}} {...getInputProps()} />
