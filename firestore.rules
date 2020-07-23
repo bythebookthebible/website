@@ -7,6 +7,9 @@ service cloud.firestore {
     match /memoryResources/{document=**} {
       allow read;
     }
+    match /memoryResources_02/{document=**} {
+      allow read;
+    }
     match /summercamps/{document=**} {
     	allow read;
     }

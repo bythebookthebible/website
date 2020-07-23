@@ -18,20 +18,42 @@ function SimpleVideo(props) {
     return <VideoMedia src={src} setShow={props.doneCallback}/>
 }
 
-export const media = {
-  [kinds.watch]: SimpleVideo,
-  [kinds.dance]: SimpleVideo,
-  [kinds.karaoke]: SimpleVideo,
-
-  [kinds.coloring]: (props) => {
+function SimplePdf(props) {
     let state = useContext(StateContext)
     let src = state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0]
-    return <ColoringPageGenerator onOpen={props.doneCallback} onClose={null} src={src} />
-  },
+    return <PDFMedia src={src} />
+}
 
-  [kinds.book]: (props) => {
+function Coloring(props) {
+  let state = useContext(StateContext)
+  let src = state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0]
+  return <ColoringPageGenerator onOpen={props.doneCallback} onClose={null} src={src} />
+}
+
+function Book(props) {
     let state = useContext(StateContext)
     let src = state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0]
     return <PopupBookGenerator openSidebar={props.doneCallback} closeSidebar={null} src={src} />
-  },
+}
+
+export const media = {
+  [kinds.watch]: SimpleVideo,
+  [kinds.karaoke]: SimpleVideo,
+  [kinds.dance]: SimpleVideo,
+  [kinds.joSchmo]: SimpleVideo,
+  
+  [kinds.craft]: SimplePdf,
+  [kinds.schmoment]: SimplePdf,
+  [kinds.discussion]: SimplePdf,
+  
+  // should be separated into different components, rather than included with simple video
+  [kinds.speed]: SimpleVideo,
+  [kinds.echo]: SimpleVideo,
+
+  [kinds.coloring]: Coloring,
+  [kinds.book]: Book,
+
+  // Only in adult version
+  // [kinds.music]: ,
+  // [kinds.teacherGuide]: ,
 };
