@@ -21,11 +21,10 @@
     position: fixed;
     background: #28B7FF;
     overflow: hidden;
-    /* margin-left: -100%; */
     transition: 0.5s; 
     z-index: 1;
     overflow-y: scroll;
-    padding-top: 10px;
+    padding-top: 10px;    
 }
 
 .color-swatch {
@@ -95,6 +94,10 @@
 
 .pdf-btn:focus {
     outline: 0;
+}
+
+.book-verse-chooser {
+
 }
 
 /* 

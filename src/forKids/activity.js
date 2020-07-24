@@ -23,14 +23,43 @@ import wider from '../images/kidsPageSidebar/wider.png';
 import test_cp from '../images/coloringPages/test_cp.svg';
 import diamond from '../images/kidsPageSidebar/diamond.png';
 import back from '../images/kidsPageSidebar/back.png';
-import sidebar from '../images/maps/ActivitySideBar.svg';
 import { actionTypes, actionViews } from './kidModeApp';
-
+import { kinds } from '../util'
+import sidebarSVG from '../images/maps/ActivitySideBar1.svg';
+import testMap from '../images/maps/TestTree.svg'
 
 // @TODO: 1) some contents are not implemented by the media yet
 //        2) might want to add prev module and prev activity >> idea for later
 // 
 // note: i am filtering out some activities, passing only the implemented thru the media rn
+
+import { ReactSVG } from "react-svg";
+
+import $ from "jquery";
+
+
+export function SVGRendor(props) {
+    let dispatch = useContext(DispatchContext)
+    let state = useContext(StateContext);
+    let defaultHalfMemoryPower = 50.0
+
+    return <ReactSVG src={sidebarSVG} afterInjection={(err, svg) => {
+        for (let button of props.buttons) {
+            $("#" + button.id).click(() => {
+                button.dispatch && dispatch(button.dispatch)
+                button.onClick && button.onClick()
+            });
+        }
+        let MP = state.memoryPower[state.activity.key]
+        console.log("np:", MP)
+        let percentageHeight = MP / (MP + (props.halfMemoryPower || defaultHalfMemoryPower))
+        let percentageWidth = (percentageHeight + 0.39 > 1)? 1 : percentageHeight + 0.39
+
+        $('#power').children().css({'transform-origin': '47% 82%', 'transform': 'scale(' +  percentageWidth + ', '+ percentageHeight + ')'})
+    }}/>
+}
+
+
 export default function Activity(props) {
   // let dispatch = useContext(DispatchContext)
   let state = useContext(StateContext)
@@ -53,30 +82,56 @@ let SidebarLayout = props => {
   let dispatch = useContext(DispatchContext)
   let state = useContext(StateContext)
 
-  return <div className="sidemenu-kids" style={(props.show)? {marginLeft: '70%'} : {marginLeft: '100%'}}>
-  <ButtonMap src={sidebar} button={[
-    {id: 'ToMemoryPalace', dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'palace'}},
-    {id: 'Repeat', dispatch: {type:'nextModule'}},
-    {id: 'ToVerse', dispatch: {type:'nextModule'}},
-    {id: 'NextActivity', dispatch: {type:'nextActivity'}}
-  ]} />
+return <div>
+<SVGRendor src={sidebarSVG} buttons={[
+  {id: 'jewel', dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'palace'}},
+  {id: 'repeat', dispatch: {type:actionTypes.nextActivity}},
+  {id: 'verse', dispatch: {type:actionTypes.nextModule}},
+  {id: 'activity', dispatch: {type:actionTypes.nextActivity}}
+]} halfMemoryPower={props.halfMemoryPower} />
+    {/* <ButtonMap src={testMap} buttons={[
+        {id:'Palace', dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'home'}},
+        {id:'Branch1', dispatch: {type:actionTypes.newView, view:actionViews.activity, activity:{key:'39-007-001-010', kind: kinds.watch}}},
+        {id:'Branch2', dispatch: {type:actionTypes.newView, view:actionViews.activity, activity:{key:'39-007-007-011', kind: kinds.watch}}},
+        {id:'Branch3', dispatch: {type:actionTypes.newView, view:actionViews.activity, activity:{key:'39-007-012-014', kind: kinds.watch}}},
+        {id:'Branch4', dispatch: {type:actionTypes.newView, view:actionViews.activity, activity:{key:'39-007-015-020', kind: kinds.watch}}},
+        {id:'Branch5', dispatch: {type:actionTypes.newView, view:actionViews.activity, activity:{key:'39-007-021-023', kind: kinds.watch}}},
+        {id:'Branch6', dispatch: {type:actionTypes.newView, view:actionViews.activity, activity:{key:'39-007-024-029', kind: kinds.watch}}},
+    ]}/> */}
 </div>
 }
 
 function SidebarPopUp(props) {
   return <div>
-    <Row>
-      <Col lg={9} xl={9}>
-
-          {SidebarLayout(props.show)}
-
+    {/* <Row>
+      <Col lg={9} xl={9}> */}
+        <div className="sidemenu-kids" style={(props.show)? {marginLeft: '70%'} : {marginLeft: '100%'}}>
+        {props.sidebarLayout()}
+        </div>
+{/*           
       </Col>
-    </Row>
+    </Row> */}
     <div style={{textAlign: 'left'}}>
       <Button className='btnn-display' onClick={() => props.setShow()}><img src={diamond} style={{height: '50px', width: '60px'}}/>   Click Me   </Button>
     </div>
   </div>
 }
+
+// function SidebarPopUp(props) {
+//     return <div>
+//         <Row>
+//         <Col lg={9} xl={9}>
+//             <div className="sidemenu-kids" style={(props.show)? {marginLeft: '70%'} : {marginLeft: '100%'}}>
+//                 <Button className="btnn" variant="primary" onClick={() => props.setShow()} ><img src={back} style={{height: '30px', width: '30px'}}/>   Close</Button>
+//                 {props.sidebarLayout()}
+//             </div>
+//         </Col> 
+//         </Row>
+//         <div style={{textAlign: 'left'}}>
+//             <Button className='btnn-display' onClick={() => props.setShow()}><img src={diamond} style={{height: '50px', width: '60px'}}/>   Click Me   </Button>
+//         </div>
+//     </div>
+// }
 
 // let SidebarLayout = props => {
 //   let dispatch = useContext(DispatchContext)
@@ -84,10 +139,10 @@ function SidebarPopUp(props) {
 
 //   return <div className='sidebar-layout'>
 //     <Button className="btnn" variant="primary" onClick={() => {}}><img src={repeat} style={{height: '30px', width: '30px'}}/>   Repeat</Button>
-//     <Button className="btnn" variant="primary" onClick={() => dispatch({type:'nextModule'})}><img src={wider} style={{height: '30px', width: '30px'}}/>   Go Wider!</Button>
-//     <Button className="btnn" variant="primary" onClick={() => dispatch({type:'nextActivity'})}><img src={deeper} style={{height: '30px', width: '30px'}}/>   Go Deeper!</Button>
+//     <Button className="btnn" variant="primary" onClick={() => dispatch({type:actionTypes.nextModule})}><img src={wider} style={{height: '30px', width: '30px'}}/>   Go Wider!</Button>
+//     <Button className="btnn" variant="primary" onClick={() => dispatch({type:actionTypes.nextActivity})}><img src={deeper} style={{height: '30px', width: '30px'}}/>   Go Deeper!</Button>
 //     <Button className="btnn" variant="primary" onClick={() => dispatch({type:'newView', view:'map', viewSelected:'tree'})}><img src={tree} style={{height: '30px', width: '30px'}}/>   Back to Tree</Button>
-//     <Button className="btnn" variant="primary" onClick={() => dispatch({type:'newView', view:'map', viewSelected:'home'})}><img src={map} style={{height: '30px', width: '30px'}}/>   Back to Map</Button>
+//     <Button className="btnn" variant="primary" onClick={() => dispatch({type:actionTypes.newView, view:actionViews.map, viewSelected:'palace'})}><img src={map} style={{height: '30px', width: '30px'}}/>   Back to Map</Button>
 //     <ModulePedestal src={ReallyBadPedestal} halfMemoryPower={props.halfMemoryPower} />
 //     </div>
 // }

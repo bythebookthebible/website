@@ -24,12 +24,11 @@ import stageVerseBar from '../images/maps/StageVerseBar.svg'
 import karaokeBackground from '../images/maps/KaraokeBackground.svg'
 import karaokeVerseBar from '../images/maps/KaraokeVerseBar.svg'
 import yelllowHouseInside from '../images/maps/YelllowHouseInside.svg'
-
-// // to import later
-let pinkHouseInside = yelllowHouseInside
-
+import colorVerseBar from '../images/maps/ColorVerseBar.svg'
+import pinkHouseInside from '../images/maps/PinkHouseInside.svg'
 
 function ModuleSelctor(props) {
+  console.log("at least here")
   let dispatch = useContext(DispatchContext)
   let state = useContext(StateContext);
 
@@ -44,67 +43,266 @@ function ModuleSelctor(props) {
     return cum
   }, {})
 
-  if (props.module == 'book') {
-    return <div style={{minHeight:'90vh', position:'relative', backgroundImage: "url(" + props.background + ")", ...props.style}}>
-    <Container fluid style={{...props.style, paddingLeft: '0', paddingRight: '0'}}>
-    {/* <div style={{backgroundOrigin: 'content-box', backgroundImage: "url(" + props.chapterBackground + ")", backgroundRepeat: 'none', backgroundAttachment: 'local'}}> */}
-      {Object.keys(scriptures).map(book =>
-        Object.keys(scriptures[book]).map(chapter => <>
-          <Row style={{backgroundOrigin: 'content-box', backgroundImage: "url(" + props.chapterBackground + ")", backgroundRepeat: 'none', backgroundAttachment: 'local', backgroundSize: 'cover'}}>
-            <Col style={{ padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'white' }}>{`${book} ${chapter}`}</Col>
-          </Row>
-          <Row style={{ marginLeft: '30px', marginRight: '30px', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' }}>
-            {Object.keys(scriptures[book][chapter]).map(verses =>
-              //content
-              <Col sm={2} style={{ }}><img src={defaultIcon} style={{width: '60px', height: '60px'}} /><br></br>{verses}</Col>
-            )}
-          </Row>
-        </>)
-      )}
-    </Container>
-  </div>
-  } else if (props.module == 'dragon') {
-    return <div>
-    <Container fluid style={{...props.style, paddingLeft: '0', paddingRight: '0'}}>
-    <div style={{marginTop: '-55px', marginBottom: '-70px',backgroundSize: 'cover, contain', backgroundImage: "url(" + props.background + ")", backgroundRepeat: 'no-repeat', backgroundAttachment: 'local'}}>
-      <div style={{padding: '70px', paddingBottom: '100px'}}>
-      {Object.keys(scriptures).map(book =>
-        Object.keys(scriptures[book]).map(chapter => <>
-          <Row style={{position:'relative', backgroundImage: "url(" + props.chapterBackground + ")", backgroundRepeat: 'no-repeat', right: '-50%'}}>
-            <Col style={{ padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'black' }}>{`${book} ${chapter}`}</Col>
-          </Row>
-          <Row style={{ marginLeft:'50%', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' }}>
-            {Object.keys(scriptures[book][chapter]).map(verses =>
-              //content
-              <Col sm={4} style={{ }}>
-                <div>
-                  <img src={defaultIcon} style={{width: '60px', height: '60px'}} /><br></br>{verses}
-                </div>
-              </Col>
-            )}
+    return <div style={props.style['firstDiv']}>
 
-          </Row>
-        </>)
-      )}
-      </div>
+    <Container fluid style={props.style['container']}>
+
+      <div style={props.style['secondDiv']}>
+      
+        <div style={props.style['thirdDiv']}>
+          {/* <div style={{backgroundOrigin: 'content-box', backgroundImage: "url(" + props.chapterBackground + ")", backgroundRepeat: 'none', backgroundAttachment: 'local'}}> */}
+            {Object.keys(scriptures).map(book =>
+              Object.keys(scriptures[book]).map(chapter => <>
+                <Row style={props.style['bookRow']}>
+                  <Col style={props.style['bookCol']}>{`${book} ${chapter}`}</Col>
+                </Row>
+                <Row style={props.style['verseRow']}>
+                  {Object.keys(scriptures[book][chapter]).map(verses =>
+                    //content
+                    <Col xs={props.verseDisplaySmall} sm={props.verseDisplaySmall} lg={props.verseDisplayLarge} style={props.style['verseCol']}><img src={defaultIcon} style={{width: '60px', height: '60px'}} /><br></br>{verses}</Col>
+                  )}
+                </Row>
+              </>)
+            )}
+        </div>
       </div>
     </Container>
   </div>
-  }
 
+// return <div style={{minHeight:'90vh', position:'relative', backgroundColor:"#ffde1a4c"}}>
+
+// <Container fluid style={{paddingLeft: '0', paddingRight: '0', backgroundColor:"#ffde1a4c" }}>
+
+// {/* <div style={{backgroundOrigin: 'content-box', backgroundImage: "url(" + props.chapterBackground + ")", backgroundRepeat: 'none', backgroundAttachment: 'local'}}> */}
+//   {Object.keys(scriptures).map(book =>
+//     Object.keys(scriptures[book]).map(chapter => <>
+//       <Row style={{backgroundOrigin: 'content-box', backgroundImage: "url(" + bookVerseBar + ")", backgroundRepeat: 'none', backgroundAttachment: 'local', backgroundSize: 'cover'}}>
+//         <Col style={{ padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'white' }}>{`${book} ${chapter}`}</Col>
+//       </Row>
+//       <Row style={{ marginLeft: '30px', marginRight: '30px', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' }}>
+//         {Object.keys(scriptures[book][chapter]).map(verses =>
+//           //content
+//           <Col sm={props.scale} style={{ }}><img src={defaultIcon} style={{width: '60px', height: '60px'}} /><br></br>{verses}</Col>
+//         )}
+//       </Row>
+//     </>)
+//   )}
+// </Container>
+// </div>
+  // } 
+  // else if (props.module == 'dragon') {
+  //   return <div>
+
+  //   <Container fluid style={{...props.style, paddingLeft: '0', paddingRight: '0'}}>
+      
+  //   <div style={{marginTop: '-55px', marginBottom: '-70px',backgroundSize: 'cover, contain', backgroundImage: "url(" + props.background + ")", backgroundRepeat: 'no-repeat', backgroundAttachment: 'local'}}>
+  //     <div style={{padding: '70px', paddingBottom: '100px'}}>
+  //     {Object.keys(scriptures).map(book =>
+  //       Object.keys(scriptures[book]).map(chapter => <>
+  //         <Row style={{position:'relative', backgroundImage: "url(" + props.chapterBackground + ")", backgroundRepeat: 'no-repeat', right: '-50%'}}>
+  //           <Col style={{ padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'black' }}>{`${book} ${chapter}`}</Col>
+  //         </Row>
+  //         <Row style={{ marginLeft:'50%', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' }}>
+  //           {Object.keys(scriptures[book][chapter]).map(verses =>
+  //             //content
+  //             <Col sm={4} style={{ }}>
+  //               <div>
+  //                 <img src={defaultIcon} style={{width: '60px', height: '60px'}} /><br></br>{verses}
+  //               </div>
+  //             </Col>
+  //           )}
+
+  //         </Row>
+  //       </>)
+  //     )}
+  //     </div>
+  //     </div>
+  //   </Container>
+  // </div>
+  
+  // }
 }
 
+let styles = {
+  bookStyle: {
+    firstDiv: {minHeight:'90vh', position:'relative', backgroundColor:"#ffde1a4c"},
+    container: {paddingLeft: '0', paddingRight: '0', backgroundColor:"#ffde1a4c" },
+    secondDiv: {},
+    thirdDiv: {},
+    bookRow: {backgroundOrigin: 'content-box', backgroundImage: "url(" + bookVerseBar + ")", backgroundRepeat: 'no-repeat', backgroundAttachment: 'local', backgroundSize: 'cover'},
+    bookCol: { fontFamily: 'Loopiejuice-Regular', padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'white' },
+    verseRow: { marginLeft: '30px', marginRight: '30px', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' },
+    verseCol: {}
+  },
+  // fix with actual dragon background
+  // speedStyle: {
+  //   firstDiv: {position:'relative', backgroundColor:"#ffde1a4c"},
+  //   container: {paddingLeft: '0', paddingRight: '0', backgroundColor:"#ffde1a4c" },
+  //   secondDiv: {backgroundSize: 'contain, cover', backgroundImage: "url(" + dragonBackground + ")", backgroundRepeat: 'no-repeat', backgroundAttachment: 'local', backgroudSize: 'cover'},
+  //   thirdDiv: {},
+  //   bookRow: {backgroundImage: "url(" + dragonVerseBar + ")", backgroundRepeat: 'no-repeat', backgroundAttachment: 'local', backgroundSize: 'cover', paddingTop: '100px'},
+  //   bookCol: {  padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'white', textAlign: 'center' },
+  //   verseRow: { marginBottom:'-100px', marginLeft: '30px', marginRight: '30px', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' },
+  //   verseCol: {color: 'white'}
+  // },
+
+  speedStyle: {
+    firstDiv: {position:'relative', backgroundColor:"#ffde1a4c"},
+    container: {paddingLeft: '0', paddingRight: '0', backgroundColor:"#ffde1a4c" },
+    secondDiv: {position: 'relative',width: '100vw', height: '120vh', backgroundSize: 'cover', backgroundImage: "url(" + dragonBackground + ")", backgroundRepeat: 'no-repeat', backgroundAttachment: 'local'},
+    thirdDiv: {position: 'absolute', top: '40%', right: '20%', left: '5%', bottom:'5%', overflowX:'hidden'},
+    bookRow: {backgroundImage: "url(" + dragonVerseBar + ")", backgroundRepeat: 'no-repeat', backgroundAttachment: 'local', backgroundSize: 'cover'},
+    bookCol: { fontFamily: 'Loopiejuice-Regular', fontSize: '1.4rem', fontWeight: 'bold', color: 'white', textAlign: 'center' },
+    verseRow: { marginRight: '30px', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowY: 'hidden' },
+    verseCol: {color: 'white', paddingBottom: '10px'}
+  },
+
+  coloringStyle: {
+    firstDiv: {minHeight:'90vh', position:'relative'},
+    container: {paddingLeft: '0', paddingRight: '0', backgroundColor:"white" },
+    secondDiv: {backgroundSize: 'cover', backgroundImage: "url(" + colorBackground + ")", backgroundRepeat: 'no-repeat', backgroundAttachment: 'local', backgroundPosition: 'center top'},
+    thirdDiv: {paddingLeft: '30%', paddingRight: '27%', paddingTop: '23%', paddingBottom: '40%', overflowX: 'hidden'},
+    bookRow: {backgroundOrigin: 'content-box', backgroundImage: "url(" + colorVerseBar + ")", backgroundRepeat: 'none', backgroundAttachment: 'local', backgroundSize: 'cover', backgroundPosition: 'center'},
+    bookCol: {fontFamily: 'Loopiejuice-Regular', padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'black', textAlign: 'center'},
+    verseRow: { marginLeft: '30px', marginRight: '30px', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowY: 'hidden' },
+    verseCol: {}
+  },
+
+  craftStyle: {
+    firstDiv: {minHeight:'90vh', position:'relative'},
+    container: {paddingLeft: '0', paddingRight: '0', backgroundColor:"white" },
+    secondDiv: {backgroundSize: 'cover', backgroundImage: "url(" + craftBackground + ")", backgroundRepeat: 'no-repeat', backgroundAttachment: 'local', backgroundPosition: 'center top'},
+    thirdDiv: {paddingLeft: '30%', paddingRight: '27%', paddingTop: '23%', paddingBottom: '40%', overflowX: 'hidden'},
+    bookRow: {backgroundOrigin: 'content-box', backgroundImage: "url(" + colorVerseBar + ")", backgroundRepeat: 'none', backgroundAttachment: 'local', backgroundSize: 'cover', backgroundPosition: 'center'},
+    bookCol: { fontFamily: 'Loopiejuice-Regular', padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'black', textAlign: 'center'},
+    verseRow: { marginLeft: '30px', marginRight: '30px', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowY: 'hidden' },
+    verseCol: {}
+  },
+
+  danceStyle: {
+    firstDiv: {position:'relative'},
+    container: {paddingLeft: '0', paddingRight: '0', backgroundColor:"#ffde1a4c" },
+    secondDiv: {backgroundSize: 'cover cover', backgroundImage: "url(" + danceBackground + ")", backgroundRepeat: 'no-repeat', backgroundAttachment: 'local', backgroundPosition: 'center top'},
+    thirdDiv: {paddingLeft: '30%', paddingRight: '27%', paddingTop: '23%' },
+    bookRow: {backgroundOrigin: 'content-box', backgroundImage: "url(" + danceVerseBar + ")", backgroundRepeat: 'none', backgroundAttachment: 'local', backgroundSize: 'cover', backgroundPosition: 'center', paddingTop: '40px'},
+    bookCol: { fontFamily: 'Loopiejuice-Regular', padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'black', textAlign: 'center'},
+    verseRow: { marginLeft: '30px', marginRight: '30px', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' },
+    verseCol: {}
+  },
+
+  karaokeStyle: {
+    firstDiv: {},
+    container: {paddingLeft: '0', paddingRight: '0', backgroundColor:"#ffde1a4c" },
+    secondDiv: {marginTop:'-65px', marginBottom: '-70px', backgroundSize: 'cover', backgroundImage: "url(" + karaokeBackground + ")", backgroundRepeat: 'no-repeat', backgroundAttachment: 'local', backgroundPosition: 'center top'},
+    thirdDiv: {padding: '70px', paddingBottom: '100px'},
+    bookRow: {position:'relative', backgroundImage: "url(" + karaokeVerseBar + ")", backgroundRepeat: 'no-repeat', right: '-50%'},
+    bookCol: {fontFamily: 'Loopiejuice-Regular', padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'black' },
+    verseRow: { marginLeft:'50%', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' },
+    verseCol: {}
+  },
+
+  watchStyle: {
+    firstDiv: {position:'relative'},
+    container: {paddingLeft: '0', paddingRight: '0', backgroundColor:"white" },
+    secondDiv: {marginTop: '-10px', backgroundSize: '130vw', backgroundImage: "url(" + stageBackground + ")", backgroundRepeat: 'no-repeat', backgroundAttachment: 'local', backgroundPosition: 'center top'},
+    thirdDiv: {paddingLeft: '30%', paddingRight: '27%', paddingTop: '10%' },
+    bookRow: {backgroundOrigin: 'content-box', backgroundImage: "url(" + danceVerseBar + ")", backgroundRepeat: 'none', backgroundAttachment: 'local', backgroundSize: 'cover', backgroundPosition: 'center', paddingTop: '60px'},
+    bookCol: {fontFamily: 'Loopiejuice-Regular', padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'black', textAlign: 'center'},
+    verseRow: { marginLeft: '30px', marginRight: '30px', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' },
+    verseCol: {}
+  },
+
+  echoStyle: {
+    firstDiv: {position:'relative'},
+    container: {paddingLeft: '0', paddingRight: '0', backgroundColor:"#ffde1a4c" },
+    secondDiv: {backgroundSize: 'cover cover', backgroundImage: "url(" + echoBackground + ")", backgroundRepeat: 'no-repeat', backgroundAttachment: 'local', backgroundPosition: 'center top'},
+    thirdDiv: {paddingLeft: '30%', paddingRight: '30%', paddingTop: '5%'},
+    bookRow: { backgroundOrigin: 'content-box', backgroundImage: "url(" + echoVerseBar + ")", backgroundRepeat: 'none', backgroundAttachment: 'local', backgroundSize: 'cover', backgroundPosition: 'center'},
+    bookCol: {fontFamily: 'Loopiejuice-Regular', padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'black', textAlign: 'center'},
+    verseRow: { marginLeft: '-20%', marginRight: '-20%', marginBottom: '10px', marginTop: '4px', justifyContent: 'center', flexWrap: 'nowrap', overflowX: 'auto' },
+    verseCol: {color: 'white'}
+  },
+
+  joSchmoStyle: {
+    firstDiv: {minHeight:'90vh', position:'relative', backgroundColor:"#ffde1a4c"},
+    container: {paddingLeft: '0', paddingRight: '0', backgroundColor:"#ffde1a4c" },
+    secondDiv: {},
+    thirdDiv: {},
+    bookRow: {backgroundOrigin: 'content-box', backgroundImage: "url(" + bookVerseBar + ")", backgroundRepeat: 'none', backgroundAttachment: 'local', backgroundSize: 'cover'},
+    bookCol: {fontFamily: 'Loopiejuice-Regular', padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'white' },
+    verseRow: { marginLeft: '30px', marginRight: '30px', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' },
+    verseCol: {}
+  },
+
+  schmomentStyle: {
+    firstDiv: {minHeight:'90vh', position:'relative', backgroundColor:"#ffde1a4c"},
+    container: {paddingLeft: '0', paddingRight: '0', backgroundColor:"#ffde1a4c" },
+    secondDiv: {},
+    thirdDiv: {},
+    bookRow: {backgroundOrigin: 'content-box', backgroundImage: "url(" + bookVerseBar + ")", backgroundRepeat: 'none', backgroundAttachment: 'local', backgroundSize: 'cover'},
+    bookCol: {fontFamily: 'Loopiejuice-Regular', padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'white' },
+    verseRow: { marginLeft: '30px', marginRight: '30px', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' },
+    verseCol: {}
+  },
+
+  discussionStyle: {
+    firstDiv: {minHeight:'90vh', position:'relative', backgroundColor:"#ffde1a4c"},
+    container: {paddingLeft: '0', paddingRight: '0', backgroundColor:"#ffde1a4c" },
+    secondDiv: {},
+    thirdDiv: {},
+    bookRow: {backgroundOrigin: 'content-box', backgroundImage: "url(" + bookVerseBar + ")", backgroundRepeat: 'none', backgroundAttachment: 'local', backgroundSize: 'cover'},
+    bookCol: {fontFamily: 'Loopiejuice-Regular', padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'white' },
+    verseRow: { marginLeft: '30px', marginRight: '30px', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' },
+    verseCol: {}
+  }
+
+  
+
+
+  //   return <div>
+
+  //   <Container fluid style={{...props.style, paddingLeft: '0', paddingRight: '0'}}>
+      
+  //   <div style={{marginTop: '-55px', marginBottom: '-70px',backgroundSize: 'cover, contain', backgroundImage: "url(" + props.background + ")", backgroundRepeat: 'no-repeat', backgroundAttachment: 'local'}}>
+  //     <div style={{padding: '70px', paddingBottom: '100px'}}>
+  //     {Object.keys(scriptures).map(book =>
+  //       Object.keys(scriptures[book]).map(chapter => <>
+  //         <Row style={{position:'relative', backgroundImage: "url(" + props.chapterBackground + ")", backgroundRepeat: 'no-repeat', right: '-50%'}}>
+  //           <Col style={{ padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'black' }}>{`${book} ${chapter}`}</Col>
+  //         </Row>
+  //         <Row style={{ marginLeft:'50%', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' }}>
+  //           {Object.keys(scriptures[book][chapter]).map(verses =>
+  //             //content
+  //             <Col sm={4} style={{ }}>
+  //               <div>
+  //                 <img src={defaultIcon} style={{width: '60px', height: '60px'}} /><br></br>{verses}
+  //               </div>
+  //             </Col>
+    
+  
+
+  
+}
+
+
 export default {
-  book: <ModuleSelctor style={{backgroundColor:"#ffde1a4c"}} chapterBackground={bookVerseBar} module='book' />,
-  // games: <ModuleSelctor background={gamesBackground} chapterBackground={gamesVerseBar} module='games' />,
-  speed: <ModuleSelctor background={dragonBackground} chapterBackground={dragonVerseBar} module='speed' />,
-  coloring: <ModuleSelctor background={colorBackground} chapterBackground={artVerseBar} module='coloring' />,
-  craft: <ModuleSelctor background={craftBackground} chapterBackground={artVerseBar} module='craft' />,
-  dance: <ModuleSelctor background={danceBackground} chapterBackground={danceVerseBar} module='dance' />,
-  karaoke: <ModuleSelctor background={karaokeBackground} chapterBackground={karaokeVerseBar} module='karaoke' />,
-  watch: <ModuleSelctor background={stageBackground} chapterBackground={stageVerseBar} module='watch' />,
-  echo: <ModuleSelctor background={echoBackground} chapterBackground={echoVerseBar} module='echo' />,
-  joSchmo: <ModuleSelctor style={{backgroundColor:"#ffde1a4c"}} chapterBackground={bookVerseBar} cornerIcon={blueHouseInside} module='joSchmo' />,
-  schmoment: <ModuleSelctor style={{backgroundColor:"#ffde1a4c"}} chapterBackground={bookVerseBar} cornerIcon={pinkHouseInside} module='schmoment' />,
-  discussion: <ModuleSelctor style={{backgroundColor:"#ffde1a4c"}} chapterBackground={bookVerseBar} cornerIcon={yelllowHouseInside} module='discussion' />,
+  // book: <ModuleSelctor verseDisplaySmall={2} verseDisplayLarge={2} style={styles['bookStyle']} />,
+  // ========= games: <ModuleSelctor background={gamesBackground} chapterBackground={gamesVerseBar} module='games' />,
+
+  // speed: <ModuleSelctor verseDisplaySmall={2} verseDisplayLarge={2} style={styles['speedStyle']} />,
+  // coloring: <ModuleSelctor verseDisplaySmall={6} verseDisplayLarge={4} style={styles['coloringStyle']} />,
+  // craft
+  speed: <ModuleSelctor verseDisplaySmall={6} verseDisplayLarge={4} style={styles['craftStyle']} />,
+  // fix the overflow thing and the bleachers
+  dance: <ModuleSelctor verseDisplaySmall={6} verseDisplayLarge={4} style={styles['danceStyle']} />,
+  karaoke: <ModuleSelctor verseDisplaySmall={6} verseDisplayLarge={3} style={styles['karaokeStyle']} />,
+  // fix the overflow thing and the bleachers
+  watch: <ModuleSelctor verseDisplaySmall={6} verseDisplayLarge={3} style={styles['watchStyle']} />,
+  // fix overflow
+  echo: <ModuleSelctor verseDisplaySmall={3} verseDisplayLarge={2} style={styles['echoStyle']} />,
+
+  // FOR ALL, fix the joshmo image thing
+  joSchmo: <ModuleSelctor verseDisplaySmall={2} verseDisplayLarge={2} style={styles['joSchmoStyle']}  cornerIcon={blueHouseInside} />,
+  schmoment: <ModuleSelctor verseDisplaySmall={2} verseDisplayLarge={2} style={styles['schmomentStyle']} cornerIcon={pinkHouseInside} />,
+  discussion: <ModuleSelctor verseDisplaySmall={2} verseDisplayLarge={2} style={styles['discussionStyle']} cornerIcon={yelllowHouseInside} />,
 }

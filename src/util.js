@@ -24,7 +24,7 @@ export const kinds = {
   echo:'echo',
   coloring:'coloring',
   craft:'craft',
-  popupBook:'popupBook',
+  book:'book',
 }
 
 export const resoucesForKinds = {
@@ -40,7 +40,7 @@ export const resoucesForKinds = {
   echo:['watch', 'karaoke', 'timestamps'],
   coloring:['coloring'],
   craft:['craft'],
-  popupBook:['popupBook'],
+  book:['book'],
 }
 
 export function getKinds(moduleResource) {
