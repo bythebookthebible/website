@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import {openDB, deleteDB, wrap, unwrap} from 'idb'
 import deepEqual from 'deep-equal'
-// import { diff, detailedDiff } from 'deep-object-diff'
+import { diff, detailedDiff } from 'deep-object-diff'
 
 import {firebase, db, storage} from './firebase'
 
@@ -75,6 +75,70 @@ export function useFirestore(collection, reduceFn=undefined, reduceInit={}) {
     return resources
 }
 
+export function useFirestoreState(ref, onload) {
+    let [data, setData] = useState(undefined)
+
+    // initial fetch from firestore
+    useEffect(()=>{
+        let abort = false
+        async function getResources() {
+            let snapshot = await db.doc(ref).get()
+            let data = snapshot.data() || {} // create new object if not exist
+            console.log('data from firebase', data)
+            // .docs.reduce(
+            //     (cum, doc) => { cum[doc.id]=doc.data(); return cum }, {}
+            // )
+
+            if(!abort) {
+                setData(data)
+                onload(data)
+            }
+        }
+        getResources()
+        return () => abort = true;
+    }, [])
+
+    // update function
+    function updateData(newData) {
+        let d = Object.entries(diff(data, newData))
+            .filter(([k,v])=>v!=undefined)
+            .reduce((obj, [k,v])=>{obj[k]=v; return obj}, {})
+        console.log('updating firebase:', data, newData, d)
+
+        db.doc(`${ref}`).set(d, {merge: true})
+        setData(newData)
+        // go through the changed values, and upload to fb
+        // update data state
+        // do not update if not loaded yet
+    }
+
+    return [data, updateData]
+}
+
+export function useIdbState(ref, onload) {
+    let [data, setData] = useState(undefined)
+
+    // initial fetch from idb
+    useEffect(()=>{
+        let abort = false
+        async function getResources() {
+            // fetch from idb
+            onload(data)
+        }
+        getResources()
+        return () => abort = true;
+    }, [])
+
+    // update function
+    function updateData(newData) {
+        console.log(diff(data, newData))
+        // go through the changed values, and upload to fb
+        // update data state
+        // do not update if not loaded yet
+    }
+
+    return [data, updateData]
+}
 
 const cacheName = 'btbtb'
 const cacheMetaStore = 'resources'
