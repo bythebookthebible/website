@@ -234,8 +234,8 @@ function useCachedFirebaseReducer(reducer, initialState, user) {
         // // pass whole state to idb
         // setIdbState(state)
         // pass state without resources to firestore
-        if(shouldUpdateFirestoreState(firestoreState, state)) {
-            let {resources, ...withoutResources} = state
+        let {resources, ...withoutResources} = state
+        if(shouldUpdateFirestoreState(firestoreState, withoutResources)) {
             setFirestoreState(withoutResources)
         }
     }, [state])
@@ -256,46 +256,40 @@ function shouldUpdateFirestoreState(firestoreState, newState) {
 }
 shouldUpdateFirestoreState.counter = 0
 
-function mergeStates(state1, state2) {
+function mergeStates(internalState, externalState) {
     // merge two copies of the state
-    if(!state1) return state2
-    if(!state2) return state1
+    if(!externalState) return internalState
+    if(!internalState) return externalState
 
-    var {resources, memoryPower, paths, ...view1} = state1
-    let resources1 = resources, memoryPower1 = memoryPower, paths1 = paths
+    var {resources, memoryPower, paths, ...viewExternal} = externalState
+    let resourcesExternal = resources, memoryPowerExternal = memoryPower, pathsExternal = paths
 
-    var {resources, memoryPower, paths, ...view2} = state2
-    let resources2 = resources, memoryPower2 = memoryPower, paths2 = paths
+    var {resources, memoryPower, paths, ...viewInternal} = internalState
 
-    // merge view by main timestamp
-    let view = view1 && view2 ? 
-        (view1.timestamp > view2.timestamp ? view1 : view2)
-        : view1 || view2
+    // merge view
+    let view = {...viewExternal, ...viewInternal}
 
     // // merge power, paths by the max value
-    // memoryPower = memoryPower1 && memoryPower2 ? 
-    //     Object.keys(memoryPower1).reduce((pow, key) => {
-    //         pow[key] = Math.max(pow[key], memoryPower1[key]) || memoryPower1[key]
-    //     }, memoryPower2)
-    //     : memoryPower1 || memoryPower2
-    memoryPower = memoryPower1 || memoryPower2
+    memoryPower = memoryPower && memoryPowerExternal ? 
+        Object.keys(memoryPowerExternal).reduce((pow, key) => {
+            pow[key] = Math.max(pow[key] || 0, memoryPowerExternal[key] || 0)
+            return pow
+        }, memoryPower)
+        : memoryPower || memoryPowerExternal
+    // memoryPower = memoryPower || memoryPowerExternal
 
-    // paths = paths1 && paths2 ?
-    //     Object.keys(paths1).reduce((p, key) => {
-    //         p[key] = Math.max(p[key], paths1[key]) || paths1[key]
-    //     }, paths2)
-    //     : paths1 || paths2
-    paths = paths1 || paths2
+    paths = paths && pathsExternal ?
+        Object.keys(pathsExternal).reduce((p, key) => {
+            p[key] = Math.max(p[key], pathsExternal[key]) || pathsExternal[key]
+            return p
+        }, paths)
+        : paths || pathsExternal
+    // paths = paths || pathsExternal
 
-    // // merge resources by individual timestamps
-    // resources = resources1 && resources2 ?
-    //     Object.keys(resources1).reduce((r, key) => {
-    //         r[key] = (resources1[key] && resources1[key].timestamp) > r[key].timestamp ? resources1[key] : r[key]
-    //     }, resources2)
-    //     : resources1 || resources2
-    resources = resources1 || resources2
+    // prefer resources from the internal state
+    resources = resources || resourcesExternal
 
     let state = {resources: resources, memoryPower: memoryPower, paths: paths, ...view}
-    // console.log('merging', state1, state2, state)
+    // console.log('merging', internalState, externalState, state)
     return state
 }
