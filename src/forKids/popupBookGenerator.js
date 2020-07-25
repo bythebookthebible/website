@@ -109,7 +109,7 @@ export default function ProcessPDFMemoryPower(props) {
                 render={({ size }) => (
                     <Container>
                     <Document
-                        file={testPDF}
+                        file={props.src}
                         onLoadSuccess={onDocumentLoadSuccess}
                     >
                         <Row>

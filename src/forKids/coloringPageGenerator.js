@@ -70,6 +70,6 @@ export default function VideoMedia(props) {
 
     // let src = useCachedStorage(props.src);
     if (state.activity.kind == "Coloring Pages") {
-        return <ProcessCPMemoryPower onOpen={props.onOpen} onClose={props.onClose} src={test_cp} />
+        return <ProcessCPMemoryPower onOpen={props.onOpen} onClose={props.onClose} src={props.src} />
     }
 }
