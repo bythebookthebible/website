@@ -103,7 +103,16 @@ export function useFirestoreState(ref, onload) {
 
     // update function
     function updateData(newData) {
-        let d = Object.entries(diff(data, newData))
+        let d = diff(data, newData)
+        // TODO: less hacky fix to diff of mp wrongly being 0
+        if (d.memoryPower) {
+            d.memoryPower = Object.entries(d.memoryPower)
+                .filter(([k,v])=>v>0)
+                .reduce((obj, [k,v])=>{obj[k]=v; return obj}, {})
+            d.memoryPower = deepEqual(d.memoryPower, {}) ? undefined : d.memoryPower
+        }
+        
+        d = Object.entries(d)
             .filter(([k,v])=>v!=undefined)
             .reduce((obj, [k,v])=>{obj[k]=v; return obj}, {})
         console.log('updating firebase:', data, newData, d)

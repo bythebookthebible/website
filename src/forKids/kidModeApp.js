@@ -145,18 +145,6 @@ function getPathActivities(resources, path) {
 const halfMemoryPower = 50
 const loadingState = {view:'loading'}
 
-// function LogIntoKidMode(props) {
-//     return <Login.AuthSwitch {...props}
-//         tests={[
-//             {
-//                 test:user=>!(user.claims.expirationDate - Date.now() > 0 || user.claims.permanentAccess || user.claims.admin), 
-//                 value:<Subscribe />
-//             },
-//         ]}
-//         default={<KidModeApp />}
-//     />
-// }
-
 export default function KidModeApp(props) {
     let [state, dispatch] = useCachedFirebaseReducer(kidAppReducer, loadingState, props.user)
     
@@ -168,30 +156,6 @@ export default function KidModeApp(props) {
         }
         lastState.current = state
     }, [state])
-
-    // let [state, dispatch] = useReducer(kidAppReducer, {view:'loading'})
-    // console.log(state)
-
-    // let firestoreModules = useFirestore(
-    //     "memoryResources_02",
-    //     (cum, doc) => {
-    //         let d = doc.data();
-    //         let chapterVerse = `${d.chapter}:${d.startVerse}-${d.endVerse}`
-    //         cum[doc.id] = {...d, chapterVerse: chapterVerse, newResource: false}
-    //         return cum
-    //     }, {}
-    // );
-
-
-    // useEffect(() => {
-    //     if(firestoreModules) {
-    //         console.log(firestoreModules)
-    //         dispatch([
-    //             {type:'newResources', resources:firestoreModules}, 
-    //             {type:'newView', view:'map', viewSelected:'home'}
-    //         ])
-    //     }
-    // }, [firestoreModules])
 
     let content = <div className='text-center pt-3'>
         <Spinner animation="border" role="status" size="md" />
@@ -248,18 +212,20 @@ function useCachedFirebaseReducer(reducer, initialState, user) {
     return [state, dispatch]
 }
 
+const minFirestoreInterval = 3000
+shouldUpdateFirestoreState.lastTime = 0
 function shouldUpdateFirestoreState(firestoreState, newState) {
     // send every nth update to firebase
     // will change to update on important state transitions
     if(!firestoreState) return false
     if(newState.view == actionViews.loadState) return false
     
-    shouldUpdateFirestoreState.counter = (shouldUpdateFirestoreState.counter + 1) % 1
-    if(shouldUpdateFirestoreState.counter == 0) {
+    // throttle updates
+    if(Date.now() - shouldUpdateFirestoreState.lastTime > minFirestoreInterval) {
+        shouldUpdateFirestoreState.lastTime = Date.now()
         return true
     }
 }
-shouldUpdateFirestoreState.counter = 0
 
 function mergeStates(internalState, externalState) {
     // merge two copies of the state
