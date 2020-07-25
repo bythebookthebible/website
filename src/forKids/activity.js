@@ -53,9 +53,64 @@ export function SVGRendor(props) {
         let MP = state.memoryPower[state.activity.key]
         console.log("np:", MP)
         let percentageHeight = MP / (MP + (props.halfMemoryPower || defaultHalfMemoryPower))
-        let percentageWidth = (percentageHeight + 0.39 > 1)? 1 : percentageHeight + 0.39
+        // let exponent = Math.pow(MP / 0.8367278, 0.6455746)
+        // let percentageWidth = 2.087596 + (0.0002291838 - 2.087596)/(1 + exponent)
 
-        $('#power').children().css({'transform-origin': '47% 82%', 'transform': 'scale(' +  percentageWidth + ', '+ percentageHeight + ')'})
+        
+        let square;
+        let percentageWidth;
+        if (MP <= 15) {
+          percentageWidth= percentageHeight + 0.3
+        } else if (MP <= 15) {
+          percentageWidth= percentageHeight + 0.39
+        } else if (MP <= 25) {
+          square = -2.171550024 * Math.pow(percentageHeight, 2)
+          percentageWidth = square + 2.683222598 * percentageHeight + 0.0631248262 
+        } else if (MP <= 75) {
+          // smaller
+          square = -2.3 * Math.pow(percentageHeight, 2)
+          percentageWidth = square + 2.683222598 * percentageHeight + 0.0631248262 
+        } else if (MP <= 110) {
+          square = -2.171550024 * Math.pow(percentageHeight, 2)
+          percentageWidth = square + 2.683222598 * percentageHeight + 0.0631248262 
+        } else if (MP <= 132) {
+          // bigger
+          square = -2.1 * Math.pow(percentageHeight, 2)
+          percentageWidth = square + 2.683222598 * percentageHeight + 0.0631248262 
+        } else if (MP<= 210) {
+          square = -2.001550024 * Math.pow(percentageHeight, 2)
+          percentageWidth = square + 2.683222598 * percentageHeight + 0.0631248262 
+        } else if (MP<= 240) {
+          percentageWidth= percentageHeight + 0.14
+        } else {
+          percentageWidth= percentageHeight + 0.1
+        }
+
+
+        // 30-85 smaller, 115 - bigger
+
+        // let percentageWidth = 1.017485 - 1.007568 / Math.pow(2, exponent)
+        // if (MP <= 25) {
+        //   percentageHeight = MP / (MP + (props.halfMemoryPower || defaultHalfMemoryPower))
+        //   percentageWidth = (percentageHeight + 0.39 > 1)? 1 : percentageHeight + 0.39
+         
+        // } else if (MP <= 65) {
+        //   percentageHeight = MP / (MP + (props.halfMemoryPower || defaultHalfMemoryPower))
+        //   percentageWidth = (percentageHeight + 0.39 > 1)? 1 : percentageHeight + 0.3
+        // } else if (MP <= 120) {
+        //   percentageHeight = MP / (MP + (props.halfMemoryPower || defaultHalfMemoryPower))
+        //   percentageWidth = percentageHeight + 0.22
+        // } else if (MP <= 180) {
+        //   percentageHeight = MP / (MP + (props.halfMemoryPower || defaultHalfMemoryPower))
+        //   percentageWidth = percentageHeight + 0.17
+        // } else {
+        //   percentageHeight = MP / (MP + (props.halfMemoryPower || defaultHalfMemoryPower))
+        //   percentageWidth = percentageHeight + 0.1
+        // }
+        // 0.69
+
+        $('#power').children().css({'transform-origin': '46% 83.6%', 'transform': 'scale(' +  percentageWidth + ', '+ percentageHeight + ')'})
+        
     }}/>
 }
 
@@ -84,7 +139,7 @@ let SidebarLayout = props => {
 
 return <div>
 <SVGRendor src={sidebarSVG} buttons={[
-  {id: 'jewel', dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'palace'}},
+  {id: 'sendVideo', dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'palace'}},
   {id: 'repeat', dispatch: {type:actionTypes.nextActivity}},
   {id: 'verse', dispatch: {type:actionTypes.nextModule}},
   {id: 'activity', dispatch: {type:actionTypes.nextActivity}}
