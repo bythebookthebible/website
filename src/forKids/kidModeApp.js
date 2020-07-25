@@ -145,19 +145,19 @@ function getPathActivities(resources, path) {
 const halfMemoryPower = 50
 const loadingState = {view:'loading'}
 
-export default function LogIntoKidMode(props) {
-    return <Login.AuthSwitch {...props}
-        tests={[
-            {
-                test:user=>!(user.claims.expirationDate - Date.now() > 0 || user.claims.permanentAccess || user.claims.admin), 
-                value:<Subscribe />
-            },
-        ]}
-        default={<KidModeApp />}
-    />
-}
+// function LogIntoKidMode(props) {
+//     return <Login.AuthSwitch {...props}
+//         tests={[
+//             {
+//                 test:user=>!(user.claims.expirationDate - Date.now() > 0 || user.claims.permanentAccess || user.claims.admin), 
+//                 value:<Subscribe />
+//             },
+//         ]}
+//         default={<KidModeApp />}
+//     />
+// }
 
-function KidModeApp(props) {
+export default function KidModeApp(props) {
     let [state, dispatch] = useCachedFirebaseReducer(kidAppReducer, loadingState, props.user)
     
     // set state to newView after freshly loaded

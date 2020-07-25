@@ -17,17 +17,19 @@ const plans = {
 }
 
 export function UserNavButton(props) {
+    let {buttons, ...otherProps} = props
     let user = props.user
     let claims = user && user.claims
 
     if(!user) {
-        return <Login.LoginButton {...props} />
+        return <Login.LoginButton {...otherProps} />
     }
     return [
         <NavDropdown title={user.displayName} as={NavLink}>
             {claims.admin && <NavDropdown.Item href='/manage' >Admin</NavDropdown.Item>}
             {/* <NavDropdown.Item href='/account' >My Account</NavDropdown.Item> */}
-            <NavDropdown.Item {...props} onClick={() => {
+            {buttons && buttons.map(b => <NavDropdown.Item {...otherProps} onClick={b.onClick} >{b.content}</NavDropdown.Item>)}
+            <NavDropdown.Item {...otherProps} onClick={() => {
                 firebase.auth().signOut().then(function(user) {
                         console.log('Signed out');
                     }).catch(function(e) {

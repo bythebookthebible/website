@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import "../styles/index.scss";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { firebase } from "../firebase.js";
+import { firebase, db } from "../firebase.js";
 
 import logo from "../images/logo.svg";
 import map from "../images/maps/TestMap.svg";
@@ -12,13 +12,13 @@ import Home from "../pages/Home";
 import Camp from "../pages/Camp";
 import OurStory from "../pages/OurStory";
 import Testimonials from "../pages/Testimonials";
-import Memorize from "../pages/Memorize";
 import { Login } from "../forms/Login";
 import { AccountSettings, UserNavButton } from "../pages/User";
 import { Manage } from "../forAdmin/Manage";
 import Subscribe from "../forms/Subscribe";
 import KidModeApp from "../forKids/kidModeApp";
-import AdultModeApp from "../forAdults/adultModeApp";
+import AdultModeApp from "../pages/Memorize";
+// import AdultModeApp from "../forAdults/adultModeApp";
 import { withAuth } from '../hooks';
 
 var memorizeLink =
@@ -63,9 +63,10 @@ export default class App extends Component {
             <Page path="/account" ><AccountSettings /></Page>
             <Page path="/termsOfService" ><Login.TermsOfService /></Page>
             <Page path="/privacy" ><Login.PrivacyPolicy /></Page>
-            <Page path="/memorize" theme="colorful-theme" nav={<LightNav />} footer={null} ><Memorize /></Page>
+            <MemorizeApp path="/memorize"></MemorizeApp>
+            {/* <Page path="/memorize" theme="colorful-theme" nav={<LightNav />} footer={null} ><Memorize /></Page>
             <Page path="/kidMemorize"><KidModeApp /></Page>
-            <Page path="/adultMemorize"><AdultModeApp /></Page>
+            <Page path="/adultMemorize"><AdultModeApp /></Page> */}
             <Page exact path="/" ><Home /></Page>
             <Page path="" ><NotFound /></Page>
           </Switch>
@@ -84,22 +85,76 @@ function NotFound(props) {
   </div>
 }
 
-var Page = withAuth(
-  props=> {
-    let {nav, footer, theme, path, children, ...passThru} = props
-    nav = nav === undefined ? <FullNav /> : nav
-    footer = footer === undefined ? <Footer /> : footer
-    theme = theme === undefined ? "plain-theme" : theme
+var Page = props=> {
+  let {nav, footer, theme, path, children, ...passThru} = props
+  nav = nav === undefined ? <FullNav /> : nav
+  footer = footer === undefined ? <Footer /> : footer
+  theme = theme === undefined ? "plain-theme" : theme
 
-    return <Route path={path} {...passThru}>
-      {nav && React.cloneElement(nav, passThru)}
-      <div className={"body " + theme}>
-        {children && React.cloneElement(children, passThru)}
-      </div>
-      {footer && React.cloneElement(footer, passThru)}
-    </Route>
+  return <Route path={path} {...passThru}>
+    {nav && React.cloneElement(nav, passThru)}
+    <div className={"body " + theme}>
+      {children && React.cloneElement(children, passThru)}
+    </div>
+    {footer && React.cloneElement(footer, passThru)}
+  </Route>
+}
+
+const AppModes = {
+  kids:'Kid Mode',
+  adults:'Adult Mode',
+  // teachers:'Teacher Mode',
+}
+const DefaultMode = AppModes.kids
+
+var MemorizeApp = withAuth(MemorizeAppBody)
+
+function MemorizeAppBody(props) {
+  let [mode, setMode] = useState('')
+  let user = props.user
+  console.log('mode', mode, user)
+
+  // load mode from last time
+  useEffect(()=>{
+    if(user && user.uid) {
+      async function getResources() {
+        let snapshot = await db.doc(`userData/${user.uid}/`).get()
+        let data = {mode: DefaultMode, ...snapshot.data()}
+        console.log('new mode', data.mode)
+
+        setMode(data.mode)
+      }
+      getResources()
+    }
+  }, [user && user.uid])
+
+  // set mode when changed
+  useEffect(()=>{
+    if(user && user.uid)
+      db.doc(`userData/${user.uid}/`).set({mode: mode}, {merge: true})
+  }, [mode])
+  
+  // choose app by mode
+  let app = null
+  switch(mode) {
+    case AppModes.kids: app = <KidModeApp {...props} />; break
+    default: app = <AdultModeApp {...props} />; break
   }
-)
+  
+  // insert buttons to change mode
+  let modeButtons = user && Object.values(AppModes).filter(m=>m!=mode).map(m=>{return {content: m, onClick: () => setMode(m)}})
+  return <Page path={props.path} theme="colorful-theme" nav={<LightNav buttons={modeButtons} {...props}/>} footer={null} >
+    <Login.AuthSwitch {...props}
+      tests={[
+        {
+          test:user=>!(user.claims.expirationDate - Date.now() > 0 || user.claims.permanentAccess || user.claims.admin),
+          value:<Subscribe />
+        },
+      ]}
+      default={app}
+    />
+  </Page>
+}
 
 function Footer(props) {
   return (
@@ -140,8 +195,7 @@ function FullNav(props) {
 function LightNav(props) {
   return <Navbar collapseOnSelect expand="md" >
     <Navbar.Brand href="/"><img src={logo} height="20rem" /></Navbar.Brand>
-    <Nav className="ml-auto">
-      {/* <a href={memorizeLink} className='button'>Thinkific Login</a> */}
+    <Nav>
       <UserNavButton {...props}/>
     </Nav>
   </Navbar>
