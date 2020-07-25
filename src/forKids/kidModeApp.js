@@ -35,6 +35,7 @@ export const actionTypes = {
     addMemoryPower:'addMemoryPower',
     newResources:'newResources',
     loadState:'loadState',
+    back:'back',
 }
 
 export const actionViews = {
@@ -92,6 +93,20 @@ function kidAppReducer(oldState, action) {
 
                 continue
 
+            case actionTypes.back:
+                // activities go directly home (not worth a stack history)
+                // everything else will wind up going to the previous,
+                // stopping at the home map, since the tree is 
+                // home > upToOneMap > moduleSelector > activity
+                if(state.view == actionViews.moduleSelector) {
+                    state.view = state.prevView.view
+                    state.viewSelected = state.prevView.viewSelected
+                } else {
+                    state.view = actionViews.map
+                    state.viewSelected = 'home'
+                }
+                continue
+
             case actionTypes.addMemoryPower:
                 let key = act.key || state.activity.key
                 let newMP = {...state.memoryPower, [key]:state.memoryPower[key]+act.power}
@@ -110,9 +125,10 @@ function kidAppReducer(oldState, action) {
                 continue
         }
     }
-    // all transitions update timestamp
+    // all transitions update these things
     state.timestamp = Date.now()
     state.version = '0.1.0'
+    state.prevView = {view: oldState.view || '', viewSelected: oldState.viewSelected || ''}
     console.log(oldState, action, state)
     return state
 }
@@ -173,6 +189,10 @@ export default function KidModeApp(props) {
     }
 
     return <DispatchContext.Provider value={dispatch}><StateContext.Provider value={state}>
+            {!(state.view == 'map' && state.viewSelected == 'home') && 
+            <div className='fa fa-3x fa-undo backButton' aria-hidden="true" 
+                onClick={() => dispatch({type:actionTypes.back})} />
+            }
             {content}
         </StateContext.Provider></DispatchContext.Provider>
 }

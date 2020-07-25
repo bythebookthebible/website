@@ -171,6 +171,15 @@
     background-color: #fff6;
     position: absolute;
     box-shadow: 0 0 12px 8px #fff6;
+    z-index: 10;
+}
+
+.backButton {
+    position: absolute;
+    top:2rem;
+    left:.5rem;
+    color: #0009;
+    z-index: 10;
 }
 
 .Footer {
