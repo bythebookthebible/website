@@ -118,7 +118,7 @@ export function SVGRendor(props) {
 export default function Activity(props) {
   // let dispatch = useContext(DispatchContext)
   let state = useContext(StateContext)
-  let [showSidebar, setShowSidebar] = useState(true);
+  let [showSidebar, setShowSidebar] = useState(false);
   let [showMemoryPrompt, setShowMemoryPrompt] = useState(props.showMemoryPrompt)
 
   // if(! state.resources) return null
@@ -139,7 +139,7 @@ let SidebarLayout = props => {
 
 return <div>
 <SVGRendor src={sidebarSVG} buttons={[
-  {id: 'sendVideo', dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'palace'}},
+  {id: 'castle', dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'palace'}},
   {id: 'repeat', dispatch: {type:actionTypes.nextActivity}},
   {id: 'verse', dispatch: {type:actionTypes.nextModule}},
   {id: 'activity', dispatch: {type:actionTypes.nextActivity}}
