@@ -197,7 +197,12 @@ function FullNav(props) {
 }
 
 function LightNav(props) {
-  return <Navbar collapseOnSelect expand="md" >
+  // return <div className='lightNav'>
+  //   <a href='/'><img src={logo} height="20rem"/></a>
+  //   <UserNavButton {...props}/>
+  // </div>
+
+  return <Navbar collapseOnSelect expand="sm" className='lightNav'>
     <Navbar.Brand href="/"><img src={logo} height="20rem" /></Navbar.Brand>
     <Nav>
       <UserNavButton {...props}/>
