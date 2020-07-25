@@ -138,7 +138,7 @@ function MemorizeAppBody(props) {
   let app = <h1></h1>
   switch(mode) {
     case AppModes.kids: app = <KidModeApp {...props} />; break
-    case AppModes.kids: app = <AdultModeApp {...props} />; break
+    case AppModes.adults: app = <AdultModeApp {...props} />; break
   }
   
   // insert buttons to change mode
