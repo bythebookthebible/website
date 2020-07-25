@@ -300,9 +300,8 @@ let styles = {
 export default {
   book: <ModuleSelctor verseDisplaySmall={2} verseDisplayLarge={2} style={styles['bookStyle']} />,
   // games: <ModuleSelctor background={gamesBackground} chapterBackground={gamesVerseBar} module='games' />,
-  //speed: <ModuleSelctor verseDisplaySmall={3} verseDisplayLarge={2} style={styles['speedStyle']} />,
-  //coloring
-  speed: <ModuleSelctor verseDisplaySmall={6} verseDisplayLarge={4} style={styles['coloringStyle']} />,
+  speed: <ModuleSelctor verseDisplaySmall={3} verseDisplayLarge={2} style={styles['speedStyle']} />,
+  coloring: <ModuleSelctor verseDisplaySmall={6} verseDisplayLarge={4} style={styles['coloringStyle']} />,
   craft: <ModuleSelctor verseDisplaySmall={6} verseDisplayLarge={4} style={styles['craftStyle']} />,
   dance: <ModuleSelctor verseDisplaySmall={6} verseDisplayLarge={4} style={styles['danceStyle']} />,
   karaoke: <ModuleSelctor verseDisplaySmall={6} verseDisplayLarge={3} style={styles['karaokeStyle']} />,
