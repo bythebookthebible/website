@@ -307,7 +307,7 @@ export default {
   karaoke: <ModuleSelctor verseDisplaySmall={6} verseDisplayLarge={3} style={styles['karaokeStyle']} />,
   watch: <ModuleSelctor verseDisplaySmall={6} verseDisplayLarge={3} style={styles['watchStyle']} />,
   echo: <ModuleSelctor verseDisplaySmall={5} verseDisplayLarge={2} style={styles['echoStyle']} />,
-  joschmo: <ModuleSelctor verseDisplaySmall={2} verseDisplayLarge={2} style={styles['joSchmoStyle']}  cornerIcon={blueHouseInside} />,
+  joSchmo: <ModuleSelctor verseDisplaySmall={2} verseDisplayLarge={2} style={styles['joSchmoStyle']}  cornerIcon={blueHouseInside} />,
   schmoment: <ModuleSelctor verseDisplaySmall={2} verseDisplayLarge={2} style={styles['schmomentStyle']} cornerIcon={pinkHouseInside} />,
   discussion: <ModuleSelctor verseDisplaySmall={2} verseDisplayLarge={2} style={styles['discussionStyle']} cornerIcon={yelllowHouseInside} />,
 }
