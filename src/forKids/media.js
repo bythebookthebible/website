@@ -5,7 +5,6 @@ import { DispatchContext, StateContext } from "./kidModeApp"
 
 import { useAuth, useFirestore, useCachedStorage } from "../hooks"
 import ProcessVideoMemoryPower from "./processVideoMemoryPower"
-import VideoMedia from "./VideoMedia"
 import PDFMedia from "./PDFMedia"
 import ColoringPageGenerator from "./coloringPageGenerator"
 import PopupBookGenerator from './popupBookGenerator'
@@ -13,9 +12,12 @@ import { kinds, resoucesForKinds } from "../util"
 
 // "Music Video" is no longer passde into media; I seperated the input, MV is now being passed in directly to the VideoMedia
 function SimpleVideo(props) {
-    let state = useContext(StateContext)
-    let src = state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0]
-    return <VideoMedia src={src} setShow={props.doneCallback}/>
+  let state = useContext(StateContext)
+  let src = useCachedStorage({
+    url: state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0], 
+    version: state.resources[state.activity.key].version
+  });
+  return src ? <ProcessVideoMemoryPower setShow={props.doneCallback} src={src} /> : null
 }
 
 function SimplePdf(props) {

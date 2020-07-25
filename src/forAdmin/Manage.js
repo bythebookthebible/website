@@ -10,7 +10,7 @@ import {
 
 import topImg  from '../images/R+C.svg'
 import {Login} from '../forms/Login'
-import { useFirestore } from '../hooks'
+import { useFirestore, withAuth } from '../hooks'
 import ManageCamps from './manageCamps'
 import ManageUsers from './manageUsers'
 import ManageVideos from './manageResources'
@@ -18,7 +18,9 @@ import ManageVideos from './manageResources'
 import {firebase, db, storage} from '../firebase'
 import './manage.scss'
 
-export function Manage(props) {
+export var Manage = withAuth(ManageRoot)
+
+function ManageRoot(props) {
     if (props.user && !props.user.claims.admin) {
         window.location = '/'
     }

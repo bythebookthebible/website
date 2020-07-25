@@ -110,7 +110,7 @@ function LoginForm(props) {
 
             await auth.createUserWithEmailAndPassword(email, password).catch(error)
             await firebase.auth().currentUser.updateProfile({displayName: name}).catch(error)
-            props.user && props.user.refreshClaims()
+            await firebase.auth().currentUser.getIdTokenResult(true)
             props.onSubmit && props.onSubmit()
         }
     }
@@ -143,7 +143,7 @@ function LoginForm(props) {
         submit()        
     }
     
-    let title = action=='signin' ? 'Sign In' : 'Create Account'
+    let title = 'Sign In / Create Account' // action=='signin' ? 'Sign In' : 'Create Account'
 
     return <Card {...props} className={'small-card '+(props.className||'')} >
         <Card.Title as='h3' className='mt-3 text-center'>

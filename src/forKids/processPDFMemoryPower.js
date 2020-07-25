@@ -12,7 +12,6 @@ import ProcessVideoMemoryPower from "./processVideoMemoryPower";
 // import $ from "jquery"
 import videoSplash from "../images/videoSplash.png";
 import { useAuth, useFirestore, useCachedStorage } from "../hooks";
-import VideoMedia from "./VideoMedia";
 import { DispatchContext, StateContext } from "./kidModeApp";
 
 

@@ -17,6 +17,7 @@
     "idb": "^5.0.2",
     "images": "latest",
     "jquery": "^3.4.1",
+    "lodash": "^4.17.19",
     "mdbreact": "^4.27.0",
     "node-sass": "^4.14.1",
     "popper.js": "^1.16.1",

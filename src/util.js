@@ -40,7 +40,7 @@ export const resoucesForKinds = {
   echo:['watch', 'karaoke', 'timestamps'],
   coloring:['coloring'],
   craft:['craft'],
-  book:['book'],
+  book:['popupBook'],
 }
 
 export function getKinds(moduleResource) {

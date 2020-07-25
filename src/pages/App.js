@@ -1,11 +1,11 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component, useState, useEffect, useRef } from "react";
 import "../styles/index.scss";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { firebase, db } from "../firebase.js";
 
 import logo from "../images/logo.svg";
-import map from "../images/maps/TestMap.svg";
+import finishSignup from "../images/FinishSignup.svg";
 
 import Curriculum from "../pages/Curriculum";
 import Home from "../pages/Home";
@@ -135,10 +135,10 @@ function MemorizeAppBody(props) {
   }, [mode])
   
   // choose app by mode
-  let app = null
+  let app = <h1></h1>
   switch(mode) {
     case AppModes.kids: app = <KidModeApp {...props} />; break
-    default: app = <AdultModeApp {...props} />; break
+    case AppModes.kids: app = <AdultModeApp {...props} />; break
   }
   
   // insert buttons to change mode
@@ -148,7 +148,11 @@ function MemorizeAppBody(props) {
       tests={[
         {
           test:user=>!(user.claims.expirationDate - Date.now() > 0 || user.claims.permanentAccess || user.claims.admin),
-          value:<Subscribe />
+          // value:<Subscribe />,
+          value:<div style={{textAlign:'center'}} >
+            <img src={finishSignup} style={{maxWidth:'600px', backgroundColor:'white'}} />
+            <div style={{marginTop:'-80px'}}><Login.LogInOutButton {...props} /></div>
+          </div>,
         },
       ]}
       default={app}
@@ -193,7 +197,12 @@ function FullNav(props) {
 }
 
 function LightNav(props) {
-  return <Navbar collapseOnSelect expand="md" >
+  // return <div className='lightNav'>
+  //   <a href='/'><img src={logo} height="20rem"/></a>
+  //   <UserNavButton {...props}/>
+  // </div>
+
+  return <Navbar collapseOnSelect expand="sm" className='lightNav'>
     <Navbar.Brand href="/"><img src={logo} height="20rem" /></Navbar.Brand>
     <Nav>
       <UserNavButton {...props}/>

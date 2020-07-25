@@ -33,8 +33,11 @@ export var withAuth = wrappedComponent => props => {
         }
     })
 
-    async function refreshClaims() {
-        let newClaims = user && (await user.getIdTokenResult()).claims
+    async function refresh() {
+        console.log('refreshing')
+        let user = firebase.auth().currentUser
+        setUser(firebase.auth().currentUser)
+        let newClaims = user && (await user.getIdTokenResult(true)).claims
         setClaims(newClaims)
     }
 
@@ -48,7 +51,7 @@ export var withAuth = wrappedComponent => props => {
         return ()=>abort=true
     }, [user])
 
-    return wrappedComponent({...props, 'user': user && claims && {...user, 'claims': claims}, refreshClaims:refreshClaims})
+    return wrappedComponent({...props, 'user': user && claims && {...user, 'claims': claims}, refreshUser:refresh})
 }
 
 export function useFirestore(collection, reduceFn=undefined, reduceInit={}) {
@@ -100,7 +103,16 @@ export function useFirestoreState(ref, onload) {
 
     // update function
     function updateData(newData) {
-        let d = Object.entries(diff(data, newData))
+        let d = diff(data, newData)
+        // TODO: less hacky fix to diff of mp wrongly being 0
+        if (d.memoryPower) {
+            d.memoryPower = Object.entries(d.memoryPower)
+                .filter(([k,v])=>v>0)
+                .reduce((obj, [k,v])=>{obj[k]=v; return obj}, {})
+            d.memoryPower = deepEqual(d.memoryPower, {}) ? undefined : d.memoryPower
+        }
+        
+        d = Object.entries(d)
             .filter(([k,v])=>v!=undefined)
             .reduce((obj, [k,v])=>{obj[k]=v; return obj}, {})
         console.log('updating firebase:', data, newData, d)
