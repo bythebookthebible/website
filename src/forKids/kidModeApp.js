@@ -2,8 +2,9 @@ import React, { Component, useState, useEffect, useRef, useReducer} from 'react'
 import Activity from './activity'
 
 import { media } from "./media";
-import { useAuth, useFirestore, useCachedStorage } from "../hooks"
+import { useAuth, useFirestore, useCachedStorage, useIdbState, useFirestoreState } from "../hooks"
 import { getKinds } from '../util'
+import { firebase } from '../firebase'
 import { keyFromScripture, scriptureFromKey, valueAfter, pathFilters } from "../util"
 import { Spinner } from 'react-bootstrap'
 import MemoryPowerView from './memoryPalaceView'
@@ -13,6 +14,9 @@ import AdultModeApp from "../forAdults/adultModeApp"
 
 import Maps from './maps'
 import ModuleSelector from './ModuleSelector'
+import deepEqual from 'deep-equal';
+import { Login } from '../forms/Login'
+import Subscribe from '../forms/Subscribe';
 
 let showMemoryPrompt;
 
@@ -102,10 +106,13 @@ function kidAppReducer(oldState, action) {
                 continue
 
             case actionTypes.loadState:
-                state = {...state, ...act.state}
+                state = mergeStates(state, act.state)
                 continue
         }
     }
+    // all transitions update timestamp
+    state.timestamp = Date.now()
+    state.version = '0.1.0'
     console.log(oldState, action, state)
     return state
 }
@@ -135,66 +142,159 @@ function getPathActivities(resources, path) {
         }, [])
 }
 
+const halfMemoryPower = 50
+const loadingState = {view:'loading'}
+
+// function LogIntoKidMode(props) {
+//     return <Login.AuthSwitch {...props}
+//         tests={[
+//             {
+//                 test:user=>!(user.claims.expirationDate - Date.now() > 0 || user.claims.permanentAccess || user.claims.admin), 
+//                 value:<Subscribe />
+//             },
+//         ]}
+//         default={<KidModeApp />}
+//     />
+// }
+
 export default function KidModeApp(props) {
-    let [state, dispatch] = useReducer(kidAppReducer, {view:'loading'})
-    console.log(state)
-
-    let halfMemoryPower = 50
-
-    let modules = useFirestore(
-        "memoryResources_02",
-        (cum, doc) => {
-            let d = doc.data();
-            let chapterVerse = `${d.chapter}:${d.startVerse}-${d.endVerse}`
-            cum[doc.id] = {...d, chapterVerse: chapterVerse, newResource: false}
-            return cum
-        }, {}
-    );
-
+    let [state, dispatch] = useCachedFirebaseReducer(kidAppReducer, loadingState, props.user)
+    
+    // set state to newView after freshly loaded
+    let lastState = useRef(state)
     useEffect(() => {
-        if(modules) {
-            console.log(modules)
-            dispatch([
-                {type:'newResources', resources:modules}, 
-                {type:'newView', view:'map', viewSelected:'home'}
-            ])
+        if(!lastState.current.resources && state.resources) {
+            dispatch({type:'newView', view:'map', viewSelected:'home'})
         }
-    }, [modules])
+        lastState.current = state
+    }, [state])
 
-    // let resources = useFirestore(
-    //     "memoryResources",
+    // let [state, dispatch] = useReducer(kidAppReducer, {view:'loading'})
+    // console.log(state)
+
+    // let firestoreModules = useFirestore(
+    //     "memoryResources_02",
     //     (cum, doc) => {
-    //       let d = doc.data();
-    //       let verses = `${d.startVerse}-${d.endVerse}`
-    //       let key = keyFromScripture(d.book, d.chapter, verses)
-    //       cum[key] = cum[key] || {}
-    //       cum[key][d.kind] = d
-    //       return cum
-    //     },
-    //     {}
+    //         let d = doc.data();
+    //         let chapterVerse = `${d.chapter}:${d.startVerse}-${d.endVerse}`
+    //         cum[doc.id] = {...d, chapterVerse: chapterVerse, newResource: false}
+    //         return cum
+    //     }, {}
     // );
-    // console.log(resources)
+
 
     // useEffect(() => {
-    //     if(resources) {
-    //         console.log(resources)
+    //     if(firestoreModules) {
+    //         console.log(firestoreModules)
     //         dispatch([
-    //             {type:'newResources', resources:resources}, 
+    //             {type:'newResources', resources:firestoreModules}, 
     //             {type:'newView', view:'map', viewSelected:'home'}
     //         ])
     //     }
-    // }, [resources])
+    // }, [firestoreModules])
 
-    // {console.log("resource:", state.resources)}
-    // console.log("resource spec:", state.resources && state.resources["18-001-00001-6"]["Music Video"]["book"])
-    let content = <div className='text-center pt-3'><Spinner animation="border" role="status" size="md" /><h1 className='d-inline-block'>Loading...</h1></div>
+    let content = <div className='text-center pt-3'>
+        <Spinner animation="border" role="status" size="md" />
+        <h1 className='d-inline-block'>Loading...</h1>
+    </div>
     
     if(state.view == 'map') content = Maps[state.viewSelected]
     if(state.view == 'moduleSelector') content = ModuleSelector[state.viewSelected]
     if(state.view == 'palace') content = <MemoryPowerView src={ReallyBadPalace} halfMemoryPower={halfMemoryPower} showMemoryPrompt={showMemoryPrompt} />
     if(state.view == 'activity') content = <Activity showMemoryPrompt={showMemoryPrompt} halfMemoryPower={halfMemoryPower} />
 
+    if(!content) {
+        content = <h1>Oops...</h1>
+        dispatch({type:'newView', view:'map', viewSelected:'home'})
+    }
+
     return <DispatchContext.Provider value={dispatch}><StateContext.Provider value={state}>
             {content}
         </StateContext.Provider></DispatchContext.Provider>
+}
+
+
+function useCachedFirebaseReducer(reducer, initialState, user) {
+    let [state, dispatch] = useReducer(reducer, initialState)
+
+    let firestoreModules = useFirestore("memoryResources_02")
+
+    // let [idbState, setIdbState] = useIdbState(`btbtbUserState_${uid}`, data => {
+    //     dispatch({type:actionTypes.loadState, state:data})
+    // })
+    let [firestoreState, setFirestoreState] = useFirestoreState(`userData/${user.uid}/`, data => {
+        dispatch({type:actionTypes.loadState, state:data})
+    })
+
+    // when fresh modules are loaded
+    useEffect(() => {
+        if(firestoreModules) {
+            // these resources are the master resources
+            dispatch({type:actionTypes.newResources, resources:firestoreModules})
+        }
+    }, [firestoreModules])
+
+    // whenever state updates (after dispatch has propogated)
+    useEffect(() => {
+        // // pass whole state to idb
+        // setIdbState(state)
+        // pass state without resources to firestore
+        let {resources, ...withoutResources} = state
+        if(shouldUpdateFirestoreState(firestoreState, withoutResources)) {
+            setFirestoreState(withoutResources)
+        }
+    }, [state])
+
+    return [state, dispatch]
+}
+
+function shouldUpdateFirestoreState(firestoreState, newState) {
+    // send every nth update to firebase
+    // will change to update on important state transitions
+    if(!firestoreState) return false
+    if(newState.view == actionViews.loadState) return false
+    
+    shouldUpdateFirestoreState.counter = (shouldUpdateFirestoreState.counter + 1) % 1
+    if(shouldUpdateFirestoreState.counter == 0) {
+        return true
+    }
+}
+shouldUpdateFirestoreState.counter = 0
+
+function mergeStates(internalState, externalState) {
+    // merge two copies of the state
+    if(!externalState) return internalState
+    if(!internalState) return externalState
+
+    var {resources, memoryPower, paths, ...viewExternal} = externalState
+    let resourcesExternal = resources, memoryPowerExternal = memoryPower, pathsExternal = paths
+
+    var {resources, memoryPower, paths, ...viewInternal} = internalState
+
+    // merge view
+    let view = {...viewExternal, ...viewInternal}
+
+    // // merge power, paths by the max value
+    memoryPower = memoryPower && memoryPowerExternal ? 
+        Object.keys(memoryPowerExternal).reduce((pow, key) => {
+            pow[key] = Math.max(pow[key] || 0, memoryPowerExternal[key] || 0)
+            return pow
+        }, memoryPower)
+        : memoryPower || memoryPowerExternal
+    // memoryPower = memoryPower || memoryPowerExternal
+
+    paths = paths && pathsExternal ?
+        Object.keys(pathsExternal).reduce((p, key) => {
+            p[key] = Math.max(p[key], pathsExternal[key]) || pathsExternal[key]
+            return p
+        }, paths)
+        : paths || pathsExternal
+    // paths = paths || pathsExternal
+
+    // prefer resources from the internal state
+    resources = resources || resourcesExternal
+
+    let state = {resources: resources, memoryPower: memoryPower, paths: paths, ...view}
+    // console.log('merging', internalState, externalState, state)
+    return state
 }

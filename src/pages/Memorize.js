@@ -71,21 +71,21 @@ let players = {
     "pdf": PDFMedia,
 }
 
-let defaultSelected = new Set(["39-007-00001-6", "39-007-0007-11", "39-007-0012-14", "39-007-0015-20", "39-007-0021-23", "39-007-0024-29"])
+let defaultSelected = new Set(["39-007-001-006", "39-007-007-011", "39-007-012-014", "39-007-015-020", "39-007-021-023", "39-007-024-029"])
 
-export default function Memorize(props) {
-    return <Login.AuthSwitch {...props}
-        tests={[
-            {
-                test:user=>!(user.claims.expirationDate - Date.now() > 0 || user.claims.permanentAccess || user.claims.admin), 
-                value:<Subscribe />
-            },
-        ]}
-        default={<MemorizePage />}
-    />
-}
+// export default function Memorize(props) {
+//     return <Login.AuthSwitch {...props}
+//         tests={[
+//             {
+//                 test:user=>!(user.claims.expirationDate - Date.now() > 0 || user.claims.permanentAccess || user.claims.admin), 
+//                 value:<Subscribe />
+//             },
+//         ]}
+//         default={<MemorizePage />}
+//     />
+// }
 
-function MemorizePage(props) {
+export default function MemorizePage(props) {
     // Initialize and load resources and selections
     let [scriptureSelected, setScriptureSelected] = useState(defaultSelected)
     // let [kindsSelected, setKindsSelected] = useState(new Set([kinds[0]]))
@@ -122,6 +122,7 @@ function MemorizePage(props) {
             let newUrlList = []
             for(let key of scriptureSelected) {
                 for(let kind of kindsSelected) {
+                    console.log('tmp', kind, resources, key, resources[key])
                     if(kind in resources[key]) {
                         newUrlList.push(resources[key][kind].url)
                     }

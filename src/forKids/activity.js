@@ -51,7 +51,7 @@ export function SVGRendor(props) {
             });
         }
         let MP = state.memoryPower[state.activity.key]
-        console.log("np:", MP)
+        // console.log("mp:", MP)
         let percentageHeight = MP / (MP + (props.halfMemoryPower || defaultHalfMemoryPower))
         // let exponent = Math.pow(MP / 0.8367278, 0.6455746)
         // let percentageWidth = 2.087596 + (0.0002291838 - 2.087596)/(1 + exponent)
