@@ -1,8 +1,8 @@
 import React, { useContext } from "react"
 import { Container, Row, Col } from "react-bootstrap"
 
-import { DispatchContext, StateContext } from "./kidModeApp"
-import { scriptureFromKey, getKinds, kinds } from '../util'
+import { DispatchContext, StateContext, actionTypes, actionViews } from "./kidModeApp"
+import { scriptureFromKey, getKinds, kinds, resoucesForKinds } from '../util'
 
 import defaultIcon from '../images/kidsPageSidebar/tree.png'
 
@@ -32,19 +32,33 @@ function ModuleSelctor(props) {
   let dispatch = useContext(DispatchContext)
   let state = useContext(StateContext);
 
-  let moduleFilter = props.moduleFilter || (key=>getKinds(state.resources[key]).includes(kinds.watch))
+  let moduleFilter = key => resoucesForKinds[state.viewSelected].every(kind => getKinds(state.resources[key]).includes(kind))
 
   // Make scripture grouped by Book, Chapter
   let scriptures = Object.keys(state.resources).filter(moduleFilter).reduce((cum, key) => {
     let s = scriptureFromKey(key)
     cum[s.book] = cum[s.book] || {}
     cum[s.book][s.chapter] = cum[s.book][s.chapter] || {}
-    cum[s.book][s.chapter][s.verses] = s
+    cum[s.book][s.chapter][s.verses] = {...s, key:key}
     return cum
   }, {})
 
-    return <div style={props.style['firstDiv']}>
+  console.log('scriptures', scriptures)
 
+  if(Object.keys(scriptures).length == 0) return <div style={{...props.style['firstDiv'], paddingTop:'20%'}}>
+    <div style={props.style['bookRow']}>
+      <div style={props.style['bookCol']}>
+        Comming Soon...
+        <br/>
+        <button className="btn btn-round btn-primary" 
+          onClick={()=>dispatch({type:'newView', view:'map', viewSelected:'home'})}>
+          Back to map!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  return <div style={props.style['firstDiv']}>
     <Container fluid style={props.style['container']}>
 
       <div style={props.style['secondDiv']}>
@@ -59,7 +73,15 @@ function ModuleSelctor(props) {
                 <Row style={props.style['verseRow']}>
                   {Object.keys(scriptures[book][chapter]).map(verses =>
                     //content
-                    <Col xs={props.verseDisplaySmall} sm={props.verseDisplaySmall} lg={props.verseDisplayLarge} style={props.style['verseCol']}><img src={defaultIcon} style={{width: '60px', height: '60px'}} /><br></br>{verses}</Col>
+                    <Col xs={props.verseDisplaySmall} sm={props.verseDisplaySmall} lg={props.verseDisplayLarge} style={props.style['verseCol']}
+                      onClick={()=>dispatch({
+                        type:actionTypes.newView, 
+                        view:actionViews.activity, 
+                        activity:{key:scriptures[book][chapter][verses].key, kind: state.viewSelected}
+                      })}>
+                      <img src={defaultIcon} style={{width: '60px', height: '60px'}} />
+                      <br></br>{verses}
+                    </Col>
                   )}
                 </Row>
               </>)

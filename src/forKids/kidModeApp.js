@@ -203,6 +203,11 @@ function KidModeApp(props) {
     if(state.view == 'palace') content = <MemoryPowerView src={ReallyBadPalace} halfMemoryPower={halfMemoryPower} showMemoryPrompt={showMemoryPrompt} />
     if(state.view == 'activity') content = <Activity showMemoryPrompt={showMemoryPrompt} halfMemoryPower={halfMemoryPower} />
 
+    if(!content) {
+        content = <h1>Oops...</h1>
+        dispatch({type:'newView', view:'map', viewSelected:'home'})
+    }
+
     return <DispatchContext.Provider value={dispatch}><StateContext.Provider value={state}>
             {content}
         </StateContext.Provider></DispatchContext.Provider>
