@@ -33,8 +33,11 @@ export var withAuth = wrappedComponent => props => {
         }
     })
 
-    async function refreshClaims() {
-        let newClaims = user && (await user.getIdTokenResult()).claims
+    async function refresh() {
+        console.log('refreshing')
+        let user = firebase.auth().currentUser
+        setUser(firebase.auth().currentUser)
+        let newClaims = user && (await user.getIdTokenResult(true)).claims
         setClaims(newClaims)
     }
 
@@ -48,7 +51,7 @@ export var withAuth = wrappedComponent => props => {
         return ()=>abort=true
     }, [user])
 
-    return wrappedComponent({...props, 'user': user && claims && {...user, 'claims': claims}, refreshClaims:refreshClaims})
+    return wrappedComponent({...props, 'user': user && claims && {...user, 'claims': claims}, refreshUser:refresh})
 }
 
 export function useFirestore(collection, reduceFn=undefined, reduceInit={}) {
