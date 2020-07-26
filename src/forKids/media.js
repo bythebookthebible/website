@@ -41,21 +41,21 @@ function Book(props) {
 }
 
 export const media = {
-  [kinds.watch]: SimpleVideo,
-  [kinds.karaoke]: SimpleVideo,
-  [kinds.dance]: SimpleVideo,
-  [kinds.joSchmo]: SimpleVideo,
+  [kinds.watch]: <SimpleVideo />,
+  [kinds.karaoke]: <SimpleVideo />,
+  [kinds.dance]: <SimpleVideo />,
+  [kinds.joSchmo]: <SimpleVideo />,
   
-  [kinds.craft]: SimplePdf,
-  [kinds.schmoment]: SimplePdf,
-  [kinds.discussion]: SimplePdf,
+  [kinds.craft]: <SimplePdf />,
+  [kinds.schmoment]: <SimplePdf />,
+  [kinds.discussion]: <SimplePdf />,
   
   // should be separated into different components, rather than included with simple video
-  [kinds.speed]: SimpleVideo,
-  [kinds.echo]: SimpleVideo,
+  [kinds.speed]: <SimpleVideo />,
+  [kinds.echo]: <SimpleVideo />,
 
-  [kinds.coloring]: Coloring,
-  [kinds.book]: Book,
+  [kinds.coloring]: <Coloring />,
+  [kinds.book]: <Book />,
 
   // Only in adult version
   // [kinds.music]: ,

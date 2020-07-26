@@ -3,7 +3,7 @@ import Activity from './activity'
 
 import { media } from "./media";
 import { useAuth, useFirestore, useCachedStorage, useIdbState, useFirestoreState } from "../hooks"
-import { getKinds } from '../util'
+import { getKidKinds } from '../util'
 import { firebase } from '../firebase'
 import { keyFromScripture, scriptureFromKey, valueAfter, pathFilters } from "../util"
 import { Spinner } from 'react-bootstrap'
@@ -67,7 +67,7 @@ function kidAppReducer(oldState, action) {
             case actionTypes.nextModule:
                 let keys = Object.keys(state.resources).filter(
                     key => {
-                        return getKinds(state.resources[key]).includes(state.activity.kind)
+                        return getKidKinds(state.resources[key]).includes(state.activity.kind)
                     }
                 )
                 
@@ -76,7 +76,7 @@ function kidAppReducer(oldState, action) {
 
             case actionTypes.nextActivity:
                 state.activity = {...state.activity, 
-                    kind: valueAfter(getKinds(state.resources[state.activity.key]), state.activity.kind)}
+                    kind: valueAfter(getKidKinds(state.resources[state.activity.key]), state.activity.kind)}
                 continue
 
             case actionTypes.nextInPath:
@@ -149,7 +149,7 @@ function getPathActivities(resources, path) {
 
     return Object.entries(resources).reduce(
         (acc,[key, res])=>{
-            return [...acc, ...getKinds(res).filter(filter).map(
+            return [...acc, ...getKidKinds(res).filter(filter).map(
                 r=>{
                     return {key:key, kind:r.kind}
                 }

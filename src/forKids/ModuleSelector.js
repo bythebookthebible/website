@@ -2,7 +2,7 @@ import React, { useContext } from "react"
 import { Container, Row, Col } from "react-bootstrap"
 
 import { DispatchContext, StateContext, actionTypes, actionViews } from "./kidModeApp"
-import { scriptureFromKey, getKinds, kinds, resoucesForKinds } from '../util'
+import { scriptureFromKey, getKidKinds, resoucesForKinds } from '../util'
 
 import defaultIcon from '../images/kidsPageSidebar/diamond.png'
 
@@ -32,7 +32,7 @@ function ModuleSelctor(props) {
   let dispatch = useContext(DispatchContext)
   let state = useContext(StateContext);
 
-  let moduleFilter = key => resoucesForKinds[state.viewSelected].every(kind => getKinds(state.resources[key]).includes(kind))
+  let moduleFilter = key => resoucesForKinds[state.viewSelected].every(kind => getKidKinds(state.resources[key]).includes(kind))
 
   // Make scripture grouped by Book, Chapter
   let scriptures = Object.keys(state.resources).filter(moduleFilter).reduce((cum, key) => {

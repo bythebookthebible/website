@@ -27,6 +27,21 @@ export const kinds = {
   book:'book',
 }
 
+export const kidModeKinds = {
+  watch:'watch',
+  speed:'speed',
+  schmoment:'schmoment',
+  joSchmo:'joSchmo',
+  music:'music',
+  karaoke:'karaoke',
+  discussion:'discussion',
+  dance:'dance',
+  echo:'echo',
+  coloring:'coloring',
+  craft:'craft',
+  book:'book',
+}
+
 export const resoucesForKinds = {
   watch:['watch'],
   teacherGuide:['teacherGuide'],
@@ -43,7 +58,13 @@ export const resoucesForKinds = {
   book:['popupBook'],
 }
 
-export function getKinds(moduleResource) {
+export function getKidKinds(moduleResource) {
+  return Object.keys(kidModeKinds).filter(
+    k=>resoucesForKinds[k].every(r=>moduleResource[r])
+  )
+}
+
+export function getAllKinds(moduleResource) {
   return Object.keys(kinds).filter(
     k=>resoucesForKinds[k].every(r=>moduleResource[r])
   )

@@ -25,6 +25,8 @@ export default function ProcessVideoMemeoryPower(props) {
     let dispatch = useContext(DispatchContext)
     let state = useContext(StateContext)
 
+    console.log('rendering processVideoMemoryPower', props.src)
+
     let timer = useRef(0)
     let player = useRef()
     let counter = 1;
@@ -35,6 +37,12 @@ export default function ProcessVideoMemeoryPower(props) {
     useEffect(() => {
         player.current.subscribeToStateChange(handleStateChange)
     }, [state.activity.key])
+
+    useEffect(()=>{
+        console.log('loading', props.src)
+        player.current.load(props.src)
+        player.current.seek(0)
+    }, [props.src])
 
     function handleStateChange(newState) {
         if (props.repeat.current) {
