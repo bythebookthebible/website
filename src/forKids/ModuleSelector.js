@@ -4,7 +4,7 @@ import { Container, Row, Col } from "react-bootstrap"
 import { DispatchContext, StateContext, actionTypes, actionViews } from "./kidModeApp"
 import { scriptureFromKey, getKinds, kinds, resoucesForKinds } from '../util'
 
-import defaultIcon from '../images/kidsPageSidebar/tree.png'
+import defaultIcon from '../images/kidsPageSidebar/diamond.png'
 
 import testTree from '../images/maps/TestTree.svg'
 

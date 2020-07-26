@@ -8,7 +8,6 @@ import { firebase } from '../firebase'
 import { keyFromScripture, scriptureFromKey, valueAfter, pathFilters } from "../util"
 import { Spinner } from 'react-bootstrap'
 import MemoryPowerView from './memoryPalaceView'
-import ReallyBadPalace from '../images/memoryPalace/ReallyBadPalace.svg'
 import MemorizedPrompt from './memorizedPrompt'
 import AdultModeApp from "../forAdults/adultModeApp"
 
@@ -180,7 +179,7 @@ export default function KidModeApp(props) {
     
     if(state.view == 'map') content = Maps[state.viewSelected]
     if(state.view == 'moduleSelector') content = ModuleSelector[state.viewSelected]
-    if(state.view == 'palace') content = <MemoryPowerView src={ReallyBadPalace} halfMemoryPower={halfMemoryPower} showMemoryPrompt={showMemoryPrompt} />
+    if(state.view == 'palace') content = <MemoryPowerView halfMemoryPower={halfMemoryPower} showMemoryPrompt={showMemoryPrompt} />
     if(state.view == 'activity') content = <Activity showMemoryPrompt={showMemoryPrompt} halfMemoryPower={halfMemoryPower} />
 
     if(!content) {

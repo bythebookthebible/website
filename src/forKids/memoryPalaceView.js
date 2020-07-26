@@ -4,6 +4,7 @@ import $ from "jquery";
 import { Button } from "react-bootstrap";
 import { DispatchContext, StateContext } from "./kidModeApp";
 import MemorizedPrompt from "./memorizedPrompt"
+import memoryPalace from '../images/memoryPalace/PalaceInside.svg'
 
 // @TODO: 1) fix code after actual imagine is used in place
 export default function MemoryPalaceView(props) {
@@ -15,15 +16,22 @@ export default function MemoryPalaceView(props) {
     return (
         <div>
             {<MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />}
+            <div style={{
+                backgroundColor:'red', height:'5rem', color:'white', 
+                fontSize:'4rem', fontFamily:'Loopiejuice-Regular',
+                textAlign:'center', position:'absolute', top:'10rem', right:0, left:0,
+            }}>
+                Coming Soon
+            </div>
             <ReactSVG 
-                src={props.src} 
+                src={memoryPalace}
                 afterInjection={(err, svg) => {
-                    // fix the i < 8 later (bc rn we only have 8 rectangles)
+                    // fix the i < 10 later (bc rn we only have 10 rectangles)
                     let MPArray = Object.values(state.memoryPower)
-                    for (let i = 0; i < 8; i++) {
+                    for (let i = 0; i < 10; i++) {
                         // this is to set an asymptote at half way mark
                         let percentageFilled = MPArray[i] / (MPArray[i] + (props.halfMemoryPower || defaultHalfMemoryPower))
-                        let glow = $('#glow_' + (i + 1)).children().css({'transform-origin': 'bottom', 'transform-box': 'fill-box', 'transform': 'scaleY(' + percentageFilled + ')'})
+                        let glow = $(svg).find(`#power_${i + 1}_`).css({'transform': 'scaleY(' + percentageFilled + ')'})
                     }
                 }}
             />
