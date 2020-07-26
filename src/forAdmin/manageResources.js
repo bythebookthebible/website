@@ -150,11 +150,26 @@ function FileUploader(props) {
   })
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
-  let icon = <i className="fa fa-plus-square-o" aria-hidden="true" />
+  let icon = <i className="far fa-plus" aria-hidden="true" style={{fontSize:'12px'}} />
   if (uploading) icon = <CircularProgressbar value={progress} strokeWidth={30} styles={buildStyles({trailColor: '#eee', pathColor:'#10fc'})} />
-  else if(props.resource[props.attribute]) icon = <i class="fa fa-file" aria-hidden="true" />
+  else if(props.resource[props.attribute]) {
+    console.log('hi', props.resource[props.attribute])
+    let fileType = props.resource[props.attribute][0].split('.').slice(-1)[0]
+    switch(fileType){
+      case 'svg': icon = <i class="far fa-file-image" aria-hidden="true" />; break
+      case 'png': icon = <i class="fas fa-file-image" aria-hidden="true" />; break
+      case 'pdf': icon = <i class="fas fa-file-pdf" aria-hidden="true" />; break
+      case 'mp3': icon = <i class="fas fa-file-audio" aria-hidden="true" />; break
+      case 'mp4': icon = <i class="fas fa-file-video" aria-hidden="true" />; break
+      default: {
+        console.log('unknown file type:', fileType)
+        icon = <i class="fas fa-file" aria-hidden="true" />
+        break
+      }
+    }
+  }
   
-  return <div onClick={() => {$(file.current).click()}} {...getRootProps()} style={{width:'25px'}} >
+  return <div onClick={() => {$(file.current).click()}} {...getRootProps()} style={{width:'25px', textAlign:'center'}} >
       <input ref={file} style={{display: 'none'}} {...getInputProps()} />
       {icon}
   </div>
