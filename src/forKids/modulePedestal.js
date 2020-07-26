@@ -16,7 +16,7 @@ export default function ModulePedestal(props) {
         <ReactSVG 
             src={props.src}
             afterInjection={(err, svg) => {
-                let MP = state.memoryPower[state.activity.key]
+                let MP = state.memoryPower[state.activity.key].power
                 let percentageFilled = MP / (MP + (props.halfMemoryPower || defaultHalfMemoryPower))
                 let glow = $('#glow').children().css({'transform-origin': 'bottom', 'transform-box': 'fill-box', 'transform': 'scaleY(' + percentageFilled + ')'})
             }}

@@ -108,13 +108,13 @@ function kidAppReducer(oldState, action) {
 
             case actionTypes.addMemoryPower:
                 let key = act.key || state.activity.key
-                let newMP = {...state.memoryPower, [key]:state.memoryPower[key]+act.power}
+                let newMP = {...state.memoryPower, [key]:{power: state.memoryPower[key].power+act.power}}
                 state.memoryPower = newMP
                 showMemoryPrompt = Object.values(newMP).filter(memorizedPromptCheck).length > 0
                 continue
 
             case actionTypes.newResources:
-                let defaultMemoryPower = Object.keys(act.resources).reduce((cum, key) => { cum[key] = 0; return cum }, {})
+                let defaultMemoryPower = Object.keys(act.resources).reduce((cum, key) => { cum[key] = {power: 0}; return cum }, {})
                 state = {...state, resources:act.resources,
                     memoryPower:{...defaultMemoryPower, ...state.memoryPower}}
                 continue
@@ -231,7 +231,7 @@ function useCachedFirebaseReducer(reducer, initialState, user) {
     return [state, dispatch]
 }
 
-const minFirestoreInterval = 3000
+const minFirestoreInterval = 30000
 shouldUpdateFirestoreState.lastTime = 0
 function shouldUpdateFirestoreState(firestoreState, newState) {
     // send every nth update to firebase
@@ -262,7 +262,7 @@ function mergeStates(internalState, externalState) {
     // // merge power, paths by the max value
     memoryPower = memoryPower && memoryPowerExternal ? 
         Object.keys(memoryPowerExternal).reduce((pow, key) => {
-            pow[key] = Math.max(pow[key] || 0, memoryPowerExternal[key] || 0)
+            pow[key].power = Math.max(pow[key].power || 0, memoryPowerExternal[key].power || 0)
             return pow
         }, memoryPower)
         : memoryPower || memoryPowerExternal

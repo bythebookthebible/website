@@ -107,7 +107,7 @@ export function useFirestoreState(ref, onload) {
         // TODO: less hacky fix to diff of mp wrongly being 0
         if (d.memoryPower) {
             d.memoryPower = Object.entries(d.memoryPower)
-                .filter(([k,v])=>v>0)
+                .filter(([k,v])=>v.power>0)
                 .reduce((obj, [k,v])=>{obj[k]=v; return obj}, {})
             d.memoryPower = deepEqual(d.memoryPower, {}) ? undefined : d.memoryPower
         }

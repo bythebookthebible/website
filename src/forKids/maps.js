@@ -31,7 +31,7 @@ let Map = props => <div>
         {id:'Jo_Schmo_House', dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'schmoHouses'}},
         {id:'Art_Gazebo',     dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'artGazebo'}},
         {id:'Dragon',         dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.speed}},
-        {id:'Game_Factory',   dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'test'}},
+        // {id:'Game_Factory',   dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.game}},
         {id:'Book_Tree',      dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.book}},
     ]}/>
 </div>

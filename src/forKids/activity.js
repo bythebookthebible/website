@@ -15,19 +15,9 @@ import ReallyBadPedestal from '../images/memoryPalace/ReallyBadPedestal.svg'
 // import AdultModeApp from "../forAdults/adultModeApp"
 // import MenuContainer from "../forAdults/menuContainer";
 import './colorPalette.css'
-import repeat from '../images/kidsPageSidebar/repeat.png';
-import tree from '../images/kidsPageSidebar/tree.png';
-import map from '../images/kidsPageSidebar/map.png';
-import deeper from '../images/kidsPageSidebar/deeper.png';
-import wider from '../images/kidsPageSidebar/wider.png';
-import test_cp from '../images/coloringPages/test_cp.svg';
-import diamond from '../images/kidsPageSidebar/diamond.png';
-import back from '../images/kidsPageSidebar/back.png';
 import { actionTypes, actionViews } from './kidModeApp';
 import { kinds } from '../util'
 import sidebarSVG from '../images/maps/ActivitySideBar1.svg';
-import testMap from '../images/maps/TestTree.svg';
-
 
 // @TODO: 1) some contents are not implemented by the media yet
 //        2) might want to add prev module and prev activity >> idea for later
@@ -51,7 +41,7 @@ export function SVGRendor(props) {
                 button.onClick && button.onClick()
             });
         }
-        let MP = state.memoryPower[state.activity.key]
+        let MP = state.memoryPower[state.activity.key].power
         let percentageHeight = MP / (MP + (props.halfMemoryPower || defaultHalfMemoryPower))
         let square;
         let percentageWidth;
