@@ -17,7 +17,8 @@ function SimpleVideo(props) {
     url: state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0], 
     version: state.resources[state.activity.key].version
   });
-  return src ? <ProcessVideoMemoryPower setShow={props.doneCallback} src={src} /> : null
+  return src ? <ProcessVideoMemoryPower setShow={props.doneCallback} src={src} repeat={props.repeat} resetRepeat={props.resetRepeat}/> : null
+  // repeat={props.repeat} resetRepeat={props.resetRepeat}
 }
 
 function SimplePdf(props) {

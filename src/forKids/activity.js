@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 import {
   Row,
   Col,
@@ -27,8 +27,7 @@ import { actionTypes, actionViews } from './kidModeApp';
 import { kinds } from '../util'
 import sidebarSVG from '../images/maps/ActivitySideBar1.svg';
 import testMap from '../images/maps/TestTree.svg';
-import open from '../images/kidsPageSidebar/open.png';
-import close from '../images/kidsPageSidebar/close.png';
+
 
 // @TODO: 1) some contents are not implemented by the media yet
 //        2) might want to add prev module and prev activity >> idea for later
@@ -88,20 +87,29 @@ export function SVGRendor(props) {
     }}/>
 }
 
-
 export default function Activity(props) {
   // let dispatch = useContext(DispatchContext)
   let state = useContext(StateContext)
   let [showSidebar, setShowSidebar] = useState(false);
   let [showMemoryPrompt, setShowMemoryPrompt] = useState(props.showMemoryPrompt)
-
   // if(! state.resources) return null
+  let repeatActivity = useRef(false)
 
+  function repeatHandler(props) {
+    repeatActivity.current = true
+  }
+  function resetRepeat(props) {
+    repeatActivity.current = false
+  }
+
+
+  // , repeat: repeatActivity, resetRepeat: resetRepeat
+ // repeatHandler: repeatHandler
   return <div>
     <MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />
-    <SidebarPopUp sidebarLayout={()=>SidebarLayout({halfMemoryPower:50})} setShow={()=>setShowSidebar(!showSidebar)} show={showSidebar} />
+    <SidebarPopUp sidebarLayout={()=>SidebarLayout({halfMemoryPower:50, repeatHandler: repeatHandler})} setShow={()=>setShowSidebar(!showSidebar)} show={showSidebar} />
     {media[state.activity.kind] ? 
-      <div onClick={() => setShowSidebar(false)}>{media[state.activity.kind]({doneCallback:()=>setShowSidebar(true)})}</div> :
+      <div onClick={() => setShowSidebar(false)}>{media[state.activity.kind]({doneCallback:()=>setShowSidebar(true), repeat: repeatActivity, resetRepeat: resetRepeat})}</div> :
       <div>Coming Soon!</div>
     }
   </div>
@@ -111,10 +119,11 @@ let SidebarLayout = props => {
   let dispatch = useContext(DispatchContext)
   let state = useContext(StateContext)
 
+    // 
 return <div>
 <SVGRendor src={sidebarSVG} buttons={[
   {id: 'castle', dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'palace'}},
-  {id: 'repeat', dispatch: {type:actionTypes.nextActivity}},
+  {id: 'repeat', onClick: props.repeatHandler},
   {id: 'verse', dispatch: {type:actionTypes.nextModule}},
   {id: 'activity', dispatch: {type:actionTypes.nextActivity}}
 ]} halfMemoryPower={props.halfMemoryPower} />

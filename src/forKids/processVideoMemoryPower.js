@@ -37,6 +37,11 @@ export default function ProcessVideoMemeoryPower(props) {
     }, [state.activity.key])
 
     function handleStateChange(newState) {
+        if (props.repeat.current) {
+            player.current.actions.seek('0')
+            props.resetRepeat()
+            console.log("Calleddddd")
+        }
         // for repeating videos
         if (state.activity.kind == 'Repetition Video') {
             processRepetitionVideo(newState)
