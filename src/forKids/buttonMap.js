@@ -9,6 +9,10 @@ export default function ButtonMap(props) {
 
     return <ReactSVG src={props.src} afterInjection={(err, svg) => {
         for (let button of props.buttons) {
+            // $("#" + button.id).hover(function() {
+                // $("#" + button.id).attr({ filter: 'url(#shadowHover)'})
+                // setAttribute({ filter: 'url(#shadowHover)'})
+            // });
             $("#" + button.id).click(() => {
                 button.dispatch && dispatch(button.dispatch)
                 button.onClick && button.onClick()

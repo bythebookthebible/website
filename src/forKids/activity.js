@@ -26,7 +26,9 @@ import back from '../images/kidsPageSidebar/back.png';
 import { actionTypes, actionViews } from './kidModeApp';
 import { kinds } from '../util'
 import sidebarSVG from '../images/maps/ActivitySideBar1.svg';
-import testMap from '../images/maps/TestTree.svg'
+import testMap from '../images/maps/TestTree.svg';
+import open from '../images/kidsPageSidebar/open.png';
+import close from '../images/kidsPageSidebar/close.png';
 
 // @TODO: 1) some contents are not implemented by the media yet
 //        2) might want to add prev module and prev activity >> idea for later
@@ -51,12 +53,7 @@ export function SVGRendor(props) {
             });
         }
         let MP = state.memoryPower[state.activity.key]
-        // console.log("mp:", MP)
         let percentageHeight = MP / (MP + (props.halfMemoryPower || defaultHalfMemoryPower))
-        // let exponent = Math.pow(MP / 0.8367278, 0.6455746)
-        // let percentageWidth = 2.087596 + (0.0002291838 - 2.087596)/(1 + exponent)
-
-        
         let square;
         let percentageWidth;
         if (MP <= 15) {
@@ -85,29 +82,6 @@ export function SVGRendor(props) {
         } else {
           percentageWidth= percentageHeight + 0.1
         }
-
-
-        // 30-85 smaller, 115 - bigger
-
-        // let percentageWidth = 1.017485 - 1.007568 / Math.pow(2, exponent)
-        // if (MP <= 25) {
-        //   percentageHeight = MP / (MP + (props.halfMemoryPower || defaultHalfMemoryPower))
-        //   percentageWidth = (percentageHeight + 0.39 > 1)? 1 : percentageHeight + 0.39
-         
-        // } else if (MP <= 65) {
-        //   percentageHeight = MP / (MP + (props.halfMemoryPower || defaultHalfMemoryPower))
-        //   percentageWidth = (percentageHeight + 0.39 > 1)? 1 : percentageHeight + 0.3
-        // } else if (MP <= 120) {
-        //   percentageHeight = MP / (MP + (props.halfMemoryPower || defaultHalfMemoryPower))
-        //   percentageWidth = percentageHeight + 0.22
-        // } else if (MP <= 180) {
-        //   percentageHeight = MP / (MP + (props.halfMemoryPower || defaultHalfMemoryPower))
-        //   percentageWidth = percentageHeight + 0.17
-        // } else {
-        //   percentageHeight = MP / (MP + (props.halfMemoryPower || defaultHalfMemoryPower))
-        //   percentageWidth = percentageHeight + 0.1
-        // }
-        // 0.69
 
         $('#power').children().css({'transform-origin': '46% 83.6%', 'transform': 'scale(' +  percentageWidth + ', '+ percentageHeight + ')'})
         
@@ -144,30 +118,24 @@ return <div>
   {id: 'verse', dispatch: {type:actionTypes.nextModule}},
   {id: 'activity', dispatch: {type:actionTypes.nextActivity}}
 ]} halfMemoryPower={props.halfMemoryPower} />
-    {/* <ButtonMap src={testMap} buttons={[
-        {id:'Palace', dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'home'}},
-        {id:'Branch1', dispatch: {type:actionTypes.newView, view:actionViews.activity, activity:{key:'39-007-001-010', kind: kinds.watch}}},
-        {id:'Branch2', dispatch: {type:actionTypes.newView, view:actionViews.activity, activity:{key:'39-007-007-011', kind: kinds.watch}}},
-        {id:'Branch3', dispatch: {type:actionTypes.newView, view:actionViews.activity, activity:{key:'39-007-012-014', kind: kinds.watch}}},
-        {id:'Branch4', dispatch: {type:actionTypes.newView, view:actionViews.activity, activity:{key:'39-007-015-020', kind: kinds.watch}}},
-        {id:'Branch5', dispatch: {type:actionTypes.newView, view:actionViews.activity, activity:{key:'39-007-021-023', kind: kinds.watch}}},
-        {id:'Branch6', dispatch: {type:actionTypes.newView, view:actionViews.activity, activity:{key:'39-007-024-029', kind: kinds.watch}}},
-    ]}/> */}
 </div>
 }
 
 function SidebarPopUp(props) {
+  let icon = <i class="fa fa-2x fa-chevron-right" aria-hidden="true"></i>
+  if (!props.show) {
+    icon = <i class="fa fa-2x fa-chevron-left" aria-hidden="true"></i>
+  }
   return <div>
     {/* <Row>
       <Col lg={9} xl={9}> */}
         <div className="sidemenu-kids" style={(props.show)? {marginLeft: '70%'} : {marginLeft: '100%'}}>
         {props.sidebarLayout()}
         </div>
-{/*           
-      </Col>
-    </Row> */}
-    <div style={{textAlign: 'left'}}>
-      <Button className='btnn-display' onClick={() => props.setShow()}><img src={diamond} style={{height: '50px', width: '60px'}}/>   Click Me   </Button>
+    <div style={{position: 'absolute', zIndex: '2', right: '10px'}} onClick={() => props.setShow()}>
+      {/* <Button style={{position: 'absolute', zIndex: '2', right: '0'}} onClick={() => props.setShow()}><img src={diamond} style={{height: '20px', width: '20px'}}/></Button> */}
+      {/* <img src={icon} style={{height: '20px', width: '20px'}}/> */}
+      {icon}
     </div>
   </div>
 }
