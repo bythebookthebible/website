@@ -25,7 +25,7 @@ export default function ProcessVideoMemeoryPower(props) {
     let dispatch = useContext(DispatchContext)
     let state = useContext(StateContext)
 
-    console.log('rendering processVideoMemoryPower', props.src)
+    console.log('rendering processVideoMemoryPower', props)
 
     let timer = useRef(0)
     let player = useRef()
@@ -34,23 +34,21 @@ export default function ProcessVideoMemeoryPower(props) {
     let loopCount = 3;
     let [arrTimestamps, setArrTimestamps] = useState(traverse(timestamps))
 
-    useEffect(() => {
-        player.current.subscribeToStateChange(handleStateChange)
-    }, [state.activity.key])
-
     useEffect(()=>{
-        console.log('loading', props.src)
+        player.current.subscribeToStateChange(handleStateChange)
+        
+        props.repeatHandler.current = ()=>{
+            player.current.seek(0)
+            player.current.play()
+        }
+
+        // load current src
         player.current.load(props.src)
         player.current.seek(0)
+
     }, [props.src])
 
     function handleStateChange(newState) {
-        if (props.repeat.current) {
-            player.current.actions.seek('0')
-            props.resetRepeat()
-            console.log("Calleddddd")
-        }
-        // for repeating videos
         if (state.activity.kind == 'Repetition Video') {
             processRepetitionVideo(newState)
         }
@@ -128,6 +126,3 @@ export default function ProcessVideoMemeoryPower(props) {
         </Player>
     </div>
 }  
-
-
-// props.src

@@ -77,110 +77,62 @@ export function SVGRendor(props) {
     }}/>
 }
 
+let halfMemoryPower=50
 export default function Activity(props) {
-  // let dispatch = useContext(DispatchContext)
+  let dispatch = useContext(DispatchContext)
   let state = useContext(StateContext)
   let [showSidebar, setShowSidebar] = useState(false);
   let [showMemoryPrompt, setShowMemoryPrompt] = useState(props.showMemoryPrompt)
   // if(! state.resources) return null
-  let repeatActivity = useRef(false)
+  let repeatHandler = useRef(()=>{})
+  // let repeatActivity = useRef(false)
 
-  function repeatHandler(props) {
-    repeatActivity.current = true
-  }
-  function resetRepeat(props) {
-    repeatActivity.current = false
-  }
+  // function repeatHandler(props) {
+  //   repeatActivity.current = true
+  // }
+  // function resetRepeat(props) {
+  //   repeatActivity.current = false
+  // }
 
+  function SidebarPopUp(props) {
+    let icon = <i class="fa fa-2x fa-chevron-right" aria-hidden="true"></i>
+    if (!props.show) {
+      icon = <i class="fa fa-2x fa-chevron-left" aria-hidden="true"></i>
+    }
+    
+    let sidebarLayout = <div>
+      <SVGRendor src={sidebarSVG} buttons={[
+        {id: 'castle', dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'palace'}},
+        {id: 'repeat', onClick: ()=>repeatHandler.current()},
+        {id: 'verse', dispatch: {type:actionTypes.nextModule}},
+        {id: 'activity', dispatch: {type:actionTypes.nextActivity}}
+      ]} halfMemoryPower={halfMemoryPower} />
+    </div>
+
+    return <div>
+      {/* <Row>
+        <Col lg={9} xl={9}> */}
+          <div className="sidemenu-kids" style={(props.show)? {marginLeft: '70%'} : {marginLeft: '100%'}}>
+          {sidebarLayout}
+          </div>
+      <div style={{position: 'absolute', zIndex: '2', right: '10px'}} onClick={() => props.setShow()}>
+        {/* <Button style={{position: 'absolute', zIndex: '2', right: '0'}} onClick={() => props.setShow()}><img src={diamond} style={{height: '20px', width: '20px'}}/></Button> */}
+        {/* <img src={icon} style={{height: '20px', width: '20px'}}/> */}
+        {icon}
+      </div>
+    </div>
+  }
 
   // , repeat: repeatActivity, resetRepeat: resetRepeat
- // repeatHandler: repeatHandler
+  // repeatHandler: repeatHandler
   return <div>
     <MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />
-    <SidebarPopUp sidebarLayout={()=>SidebarLayout({halfMemoryPower:50, repeatHandler: repeatHandler})} setShow={()=>setShowSidebar(!showSidebar)} show={showSidebar} />
+    <SidebarPopUp setShow={()=>setShowSidebar(!showSidebar)} show={showSidebar} />
     {media[state.activity.kind] ? 
-      <div onClick={() => setShowSidebar(false)}>{React.cloneElement(media[state.activity.kind], {doneCallback:()=>setShowSidebar(true)})}</div> :
+      <div onClick={() => setShowSidebar(false)}>
+        {React.cloneElement(media[state.activity.kind], {doneCallback:()=>setShowSidebar(true), repeatHandler: repeatHandler})}
+      </div> :
       <div>Coming Soon!</div>
     }
   </div>
 }
-
-let SidebarLayout = props => {
-  let dispatch = useContext(DispatchContext)
-  let state = useContext(StateContext)
-
-    // 
-return <div>
-<SVGRendor src={sidebarSVG} buttons={[
-  {id: 'castle', dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'palace'}},
-  {id: 'repeat', onClick: props.repeatHandler},
-  {id: 'verse', dispatch: {type:actionTypes.nextModule}},
-  {id: 'activity', dispatch: {type:actionTypes.nextActivity}}
-]} halfMemoryPower={props.halfMemoryPower} />
-</div>
-}
-
-function SidebarPopUp(props) {
-  let icon = <i class="fa fa-2x fa-chevron-right" aria-hidden="true"></i>
-  if (!props.show) {
-    icon = <i class="fa fa-2x fa-chevron-left" aria-hidden="true"></i>
-  }
-  return <div>
-    {/* <Row>
-      <Col lg={9} xl={9}> */}
-        <div className="sidemenu-kids" style={(props.show)? {marginLeft: '70%'} : {marginLeft: '100%'}}>
-        {props.sidebarLayout()}
-        </div>
-    <div style={{position: 'absolute', zIndex: '2', right: '10px'}} onClick={() => props.setShow()}>
-      {/* <Button style={{position: 'absolute', zIndex: '2', right: '0'}} onClick={() => props.setShow()}><img src={diamond} style={{height: '20px', width: '20px'}}/></Button> */}
-      {/* <img src={icon} style={{height: '20px', width: '20px'}}/> */}
-      {icon}
-    </div>
-  </div>
-}
-
-// function SidebarPopUp(props) {
-//     return <div>
-//         <Row>
-//         <Col lg={9} xl={9}>
-//             <div className="sidemenu-kids" style={(props.show)? {marginLeft: '70%'} : {marginLeft: '100%'}}>
-//                 <Button className="btnn" variant="primary" onClick={() => props.setShow()} ><img src={back} style={{height: '30px', width: '30px'}}/>   Close</Button>
-//                 {props.sidebarLayout()}
-//             </div>
-//         </Col> 
-//         </Row>
-//         <div style={{textAlign: 'left'}}>
-//             <Button className='btnn-display' onClick={() => props.setShow()}><img src={diamond} style={{height: '50px', width: '60px'}}/>   Click Me   </Button>
-//         </div>
-//     </div>
-// }
-
-// let SidebarLayout = props => {
-//   let dispatch = useContext(DispatchContext)
-//   let state = useContext(StateContext)
-
-//   return <div className='sidebar-layout'>
-//     <Button className="btnn" variant="primary" onClick={() => {}}><img src={repeat} style={{height: '30px', width: '30px'}}/>   Repeat</Button>
-//     <Button className="btnn" variant="primary" onClick={() => dispatch({type:actionTypes.nextModule})}><img src={wider} style={{height: '30px', width: '30px'}}/>   Go Wider!</Button>
-//     <Button className="btnn" variant="primary" onClick={() => dispatch({type:actionTypes.nextActivity})}><img src={deeper} style={{height: '30px', width: '30px'}}/>   Go Deeper!</Button>
-//     <Button className="btnn" variant="primary" onClick={() => dispatch({type:'newView', view:'map', viewSelected:'tree'})}><img src={tree} style={{height: '30px', width: '30px'}}/>   Back to Tree</Button>
-//     <Button className="btnn" variant="primary" onClick={() => dispatch({type:actionTypes.newView, view:actionViews.map, viewSelected:'palace'})}><img src={map} style={{height: '30px', width: '30px'}}/>   Back to Map</Button>
-//     <ModulePedestal src={ReallyBadPedestal} halfMemoryPower={props.halfMemoryPower} />
-//     </div>
-// }
-
-// function SidebarPopUp(props) {
-//     return <div>
-//         <Row>
-//         <Col lg={9} xl={9}>
-//             <div className="sidemenu-kids" style={(props.show)? {marginLeft: '70%'} : {marginLeft: '100%'}}>
-//                 <Button className="btnn" variant="primary" onClick={() => props.setShow()} ><img src={back} style={{height: '30px', width: '30px'}}/>   Close</Button>
-//                 {props.sidebarLayout()}
-//             </div>
-//         </Col> 
-//         </Row>
-//         <div style={{textAlign: 'left'}}>
-//             <Button className='btnn-display' onClick={() => props.setShow()}><img src={diamond} style={{height: '50px', width: '60px'}}/>   Click Me   </Button>
-//         </div>
-//     </div>
-// }

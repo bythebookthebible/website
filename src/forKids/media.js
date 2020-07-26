@@ -17,27 +17,26 @@ function SimpleVideo(props) {
     url: state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0], 
     version: state.resources[state.activity.key].version
   });
-  return src ? <ProcessVideoMemoryPower setShow={props.doneCallback} src={src} repeat={props.repeat} resetRepeat={props.resetRepeat}/> : null
-  // repeat={props.repeat} resetRepeat={props.resetRepeat}
+  return src ? <ProcessVideoMemoryPower {...props} setShow={props.doneCallback} src={src} /> : null
 }
 
 function SimplePdf(props) {
     let state = useContext(StateContext)
     let src = state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0]
-    return <PDFMedia src={src} />
+    return <PDFMedia {...props}  src={src} />
 }
 
 function Coloring(props) {
   let state = useContext(StateContext)
   let src = state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0]
-  return <ColoringPageGenerator onOpen={props.doneCallback} onClose={null} src={src} />
+  return <ColoringPageGenerator {...props}  onOpen={props.doneCallback} onClose={null} src={src} />
 }
 
 function Book(props) {
     let state = useContext(StateContext)
     console.log(resoucesForKinds[state.activity.kind])
     let src = state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0]
-    return <PopupBookGenerator openSidebar={props.doneCallback} closeSidebar={null} src={src} />
+    return <PopupBookGenerator {...props}  openSidebar={props.doneCallback} closeSidebar={null} src={src} />
 }
 
 export const media = {
