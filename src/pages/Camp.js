@@ -17,7 +17,7 @@ import venueIdea  from '../images/camp/venueIdea.png';
 import venuePending  from '../images/camp/venuePending.png';
 import venueConfirmed  from '../images/camp/venueConfirmed.png';
 
-import campVideo from '../videos/campPromo.mp4'
+var campVideo = 'https://firebasestorage.googleapis.com/v0/b/bythebookthebible.appspot.com/o/public%2FcampPromo.mp4?alt=media'
 
 var firebase = require('firebase');
 var db = firebase.firestore();
