@@ -2,6 +2,10 @@
 <!-- Generator: Adobe Illustrator 23.1.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 1100 825" style="enable-background:new 0 0 1100 825;" xml:space="preserve">
+<filter id='glow'>
+	<feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="white" result='shadow' />
+	<feBlend in="SourceGraphic" in2="shadow" mode="normal" />
+</filter>
 <style type="text/css">
 	.st0{fill:#547915;}
 	.st1{fill:#EBD852;}
