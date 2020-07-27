@@ -110,7 +110,7 @@ function FileUploader(props) {
     console.log(r)
 
     let fileType = files[0].name.split('.').slice(-1)
-    let value = `memory/${r.key}-${props.attribute}${props.suffix ? '-' + props.suffix : ''}.${fileType}`
+    let value = `memory/${r.book}/${String(r.chapter).padStart(3, '0')}/${r.key}-${props.attribute}${props.suffix ? '-' + props.suffix : ''}.${fileType}`
 
     // new db contents
     let dbKeys = ['book', 'chapter', 'startVerse', 'endVerse', 'title', 'icon', ...Object.values(resoucesForKinds).reduce((cum, arr)=>[...cum, ...arr],[])]
