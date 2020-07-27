@@ -48,7 +48,7 @@ function ModuleSelctor(props) {
   if(Object.keys(scriptures).length == 0) return <div style={{...props.style['firstDiv'], paddingTop:'20%'}}>
     <div style={props.style['bookRow']}>
       <div style={props.style['bookCol']}>
-        Comming Soon...
+        Coming Soon...
         <br/>
         <button className="btn btn-round btn-primary" 
           onClick={()=>dispatch({type:'newView', view:'map', viewSelected:'home'})}>
