@@ -43,10 +43,10 @@ export default function ManageVideos(props) {
         {attributeOptions.map(attr => <th className='rotate'><div><span>{attr}</span></div></th>)}
       </tr>
 
-      {modules && Object.keys(modules).map(mod => <ResourceTableRow attributeOptions={attributeOptions} module={modules[mod]} onChange={e => {
+      {modules && Object.keys(modules).map(mod => <ResourceTableRow attributeOptions={attributeOptions} module={modules[mod]} onChange={(key, value) => {
         // update state to match the updated form
         // data validation could go here too
-        modules[mod][e.target.name] = e.target.value
+        modules[mod][key] = value
         setModules(modules)
       }}/>)}
 
@@ -95,7 +95,7 @@ function ResourceTableRow(props) {
     <td>{`${p.book} ${p.chapterVerse}`}</td>
     <td>{p.title}</td>
 
-    {props.attributeOptions.map(attr => <td><FileUploader resource={p} attribute={attr} /></td>)}
+    {props.attributeOptions.map(attr => <td><FileUploader resource={p} attribute={attr} onChange={props.onChange} /></td>)}
   </tr>
 }
 
@@ -122,7 +122,7 @@ function FileUploader(props) {
       reader.onload = e=>{
         // update to database
         dbRecord = {...dbRecord, version: Date.now(), [props.attribute]:[reader.result]}
-        console.log(dbRecord)
+        props.onChange(props.attribute, reader.result)
         db.doc(`${memoryResources}/${r.key}`).set(dbRecord).catch(() => {console.log('Error Updating DB')})
       }
       reader.readAsText(files[0])
@@ -142,18 +142,16 @@ function FileUploader(props) {
 
       // update to database
       dbRecord = {...dbRecord, version: Date.now(), [props.attribute]:[value]}
-      console.log(dbRecord)
       db.doc(`${memoryResources}/${r.key}`).set(dbRecord).catch(() => {console.log('Error Updating DB')})
+      props.onChange(props.attribute, [value])
     }
-
 
   })
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
-
+  
   let icon = <i className="far fa-plus" aria-hidden="true" style={{fontSize:'12px'}} />
   if (uploading) icon = <CircularProgressbar value={progress} strokeWidth={30} styles={buildStyles({trailColor: '#eee', pathColor:'#10fc'})} />
   else if(props.resource[props.attribute]) {
-    console.log('hi', props.resource[props.attribute])
     let fileType = props.resource[props.attribute][0].split('.').slice(-1)[0]
     switch(fileType){
       case 'svg': icon = <i class="far fa-file-image" aria-hidden="true" />; break
@@ -161,8 +159,9 @@ function FileUploader(props) {
       case 'pdf': icon = <i class="fas fa-file-pdf" aria-hidden="true" />; break
       case 'mp3': icon = <i class="fas fa-file-audio" aria-hidden="true" />; break
       case 'mp4': icon = <i class="fas fa-file-video" aria-hidden="true" />; break
+      case 'mov': icon = <i class="fas fa-file-video" aria-hidden="true" />; break
       default: {
-        console.log('unknown file type:', fileType)
+        console.log('unknown file type:', fileType, props.resource[props.attribute])
         icon = <i class="fas fa-file" aria-hidden="true" />
         break
       }

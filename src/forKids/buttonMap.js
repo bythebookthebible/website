@@ -15,7 +15,6 @@ export default function ButtonMap(props) {
                 button.onClick && button.onClick()
             })
             .hover(
-                // ReactSVG seems to add "-1" to the end of the id. Hence #glow-1
                 e=>{$("#" + button.id).attr({ filter: 'url(#glow)'})},
                 e=>{$("#" + button.id).attr({ filter: ''})},
             )
