@@ -4,7 +4,7 @@ import "../../node_modules/video-react/dist/video-react.css"
 import { DispatchContext, StateContext } from "./kidModeApp"
 
 import { useAuth, useFirestore, useCachedStorage } from "../hooks"
-import ProcessVideoMemoryPower from "./processVideoMemoryPower"
+import { RepetitionMemoryVideo, MemeoryPowerVideo } from "./processVideoMemoryPower"
 import PopupBookGenerator from './popupBookGenerator'
 import { kinds, resoucesForKinds } from "../util"
 import ProcessPDFMemoryPower from "./processPDFMemoryPower"
@@ -17,7 +17,17 @@ function SimpleVideo(props) {
     url: state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0], 
     version: state.resources[state.activity.key].version
   });
-  return src ? <ProcessVideoMemoryPower {...props} setShow={props.doneCallback} src={src} /> : null
+  return src ? <MemeoryPowerVideo {...props} setShow={props.doneCallback} src={src} /> : ComingSoon
+}
+
+function RepetitionVideo(props) {
+  let state = useContext(StateContext)
+  let src = useCachedStorage({
+    url: state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0], 
+    version: state.resources[state.activity.key].version
+  });
+  let timestamps = state.resources[state.activity.key]['timestamps'][0]
+  return src ? <RepetitionMemoryVideo {...props} setShow={props.doneCallback} src={src} timestamps={timestamps} /> : ComingSoon
 }
 
 function SimplePdf(props) {
@@ -45,6 +55,8 @@ function Book(props) {
     return <PopupBookGenerator {...props}  openSidebar={props.doneCallback} closeSidebar={null} src={src} />
 }
 
+var ComingSoon = <h1 className='text-center mt-5'>Coming Soon!</h1>
+
 export const media = {
   [kinds.watch]: <SimpleVideo />,
   [kinds.karaoke]: <SimpleVideo />,
@@ -56,7 +68,7 @@ export const media = {
   [kinds.discussion]: <SimplePdf />,
   
   // should be separated into different components, rather than included with simple video
-  [kinds.speed]: <SimpleVideo />,
+  [kinds.speed]: <RepetitionVideo />,
   [kinds.echo]: <SimpleVideo />,
 
   [kinds.coloring]: <Coloring />,

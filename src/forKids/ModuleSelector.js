@@ -30,7 +30,7 @@ function ModuleSelctor(props) {
   let dispatch = useContext(DispatchContext)
   let state = useContext(StateContext);
 
-  let moduleFilter = key => resoucesForKinds[state.viewSelected].every(kind => getKidKinds(state.resources[key]).includes(kind))
+  let moduleFilter = key => getKidKinds(state.resources[key]).includes(state.viewSelected)
 
   // Make scripture grouped by Book, Chapter
   let scriptures = Object.keys(state.resources).filter(moduleFilter).reduce((cum, key) => {
