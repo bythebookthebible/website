@@ -4,7 +4,7 @@ import "../../node_modules/video-react/dist/video-react.css"
 import { DispatchContext, StateContext } from "./kidModeApp"
 
 import { useAuth, useFirestore, useCachedStorage } from "../hooks"
-import { RepetitionMemoryVideo, MemeoryPowerVideo } from "./processVideoMemoryPower"
+import { RepetitionMemoryVideo, MemeoryPowerVideo, EchoMemoryVideo } from "./processVideoMemoryPower"
 import PopupBookGenerator from './popupBookGenerator'
 import { kinds, resoucesForKinds } from "../util"
 import ProcessPDFMemoryPower from "./processPDFMemoryPower"
@@ -17,7 +17,7 @@ function SimpleVideo(props) {
     url: state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0], 
     version: state.resources[state.activity.key].version
   });
-  return src ? <MemeoryPowerVideo {...props} setShow={props.doneCallback} src={src} /> : ComingSoon
+  return src ? <MemeoryPowerVideo {...props} setShow={props.doneCallback} src={src} /> : null
 }
 
 function RepetitionVideo(props) {
@@ -27,7 +27,21 @@ function RepetitionVideo(props) {
     version: state.resources[state.activity.key].version
   });
   let timestamps = state.resources[state.activity.key]['timestamps'][0]
-  return src ? <RepetitionMemoryVideo {...props} setShow={props.doneCallback} src={src} timestamps={timestamps} /> : ComingSoon
+  return src ? <RepetitionMemoryVideo {...props} setShow={props.doneCallback} src={src} timestamps={timestamps} /> : null
+}
+
+function EchoVideo(props) {
+  let state = useContext(StateContext)
+  let watchSrc = useCachedStorage({
+    url: state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0], 
+    version: state.resources[state.activity.key].version
+  });
+  let echoSrc = useCachedStorage({
+    url: state.resources[state.activity.key][resoucesForKinds[state.activity.kind][1]][0], 
+    version: state.resources[state.activity.key].version
+  });
+  let timestamps = state.resources[state.activity.key]['timestamps'][0]
+  return watchSrc && echoSrc ? <EchoMemoryVideo {...props} setShow={props.doneCallback} watchSrc={watchSrc} echoSrc={echoSrc} timestamps={timestamps} /> : null
 }
 
 function SimplePdf(props) {
@@ -54,8 +68,6 @@ function Book(props) {
     let src = state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0]
     return <PopupBookGenerator {...props}  openSidebar={props.doneCallback} closeSidebar={null} src={src} />
 }
-
-var ComingSoon = <h1 className='text-center mt-5'>Coming Soon!</h1>
 
 export const media = {
   [kinds.watch]: <SimpleVideo />,

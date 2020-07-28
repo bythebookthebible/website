@@ -11,10 +11,11 @@ import "../../node_modules/video-react/dist/video-react.css"
 import videoSplash from "../images/videoSplash.png"
 import { DispatchContext, StateContext } from "./kidModeApp"
 
-export var MemeoryPowerVideo = React.forwardRef((props, player) => {
+export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
     let dispatch = useContext(DispatchContext)
 
-    console.log('rendering processVideoMemoryPower', props)
+    let intRef = useRef()
+    let player = extRef || intRef
 
     useEffect(()=>{
         player.current.subscribeToStateChange(updatePower)
@@ -28,7 +29,7 @@ export var MemeoryPowerVideo = React.forwardRef((props, player) => {
         player.current.load(props.src)
         player.current.seek(0)
 
-    }, [props.src])
+    }, [Boolean(player.current), props.src])
 
     let timer = useRef(0)
     function updatePower(playerState) {
@@ -95,11 +96,11 @@ export var RepetitionMemoryVideo = (props) => {
     }
 
     let arrTimestampsIndex = arrTimestamps.length - 1;
-    function processRepetitionVideo(newState) {
+    function processRepetitionVideo(playerState) {
         let arr = arrTimestamps[arrTimestampsIndex].split(' ')
         let start = arr[0]
         let stop = arr[1]
-        if (counter < loopCount && newState.currentTime >= stop) {
+        if (counter < loopCount && playerState.currentTime >= stop) {
             player.current.actions.seek(start)
             counter = counter + 1
             if (counter == loopCount) {
@@ -117,4 +118,37 @@ export var RepetitionMemoryVideo = (props) => {
     }, [props.src])
     
     return <MemeoryPowerVideo ref={player} {...props} />
+}
+
+export var EchoMemoryVideo = (props) => {
+    let player = useRef()
+    let timestamps = props.timestamps.split(' ').map(t=>{
+        let s = t.split(':')
+        return s.length == 1 ? Number(t) : Number(s[0])*60 + Number(s[1])
+    })
+
+    let count = useRef(0)
+    let index = useRef(0)
+
+    function processEcho(playerState) {
+        // count and index are staying 0...
+        console.log('echo:', count.current, index.current)
+        if(playerState.currentTime >= timestamps[index.current]) {
+            if(count.current >= 1) {
+                index.current++
+                count.current = 0
+            } else {
+                console.log('audio', playerState.audioTracks)
+                player.current.seek(timestamps[index.current-1] || 0)
+                player.current.play()
+                count.current++
+            }
+        }
+    }
+
+    useEffect(()=>{
+        player.current.subscribeToStateChange(processEcho)
+    }, [props.src])
+    
+    return <MemeoryPowerVideo ref={player} {...props} src={props.watchSrc} />
 }
