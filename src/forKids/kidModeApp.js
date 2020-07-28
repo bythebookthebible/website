@@ -1,21 +1,13 @@
 import React, { Component, useState, useEffect, useRef, useReducer} from 'react'
 import Activity from './activity'
-
-import { media } from "./media";
-import { useAuth, useFirestore, useCachedStorage, useIdbState, useFirestoreState } from "../hooks"
+import { useFirestore, useFirestoreState } from "../hooks"
 import { getKidKinds } from '../util'
-import { firebase } from '../firebase'
-import { keyFromScripture, scriptureFromKey, valueAfter, pathFilters } from "../util"
+import { valueAfter, pathFilters } from "../util"
 import { Spinner } from 'react-bootstrap'
 import MemoryPowerView from './memoryPalaceView'
-import MemorizedPrompt from './memorizedPrompt'
-import AdultModeApp from "../forAdults/adultModeApp"
 
 import Maps from './maps'
 import ModuleSelector from './ModuleSelector'
-import deepEqual from 'deep-equal';
-import { Login } from '../forms/Login'
-import Subscribe from '../forms/Subscribe';
 
 let showMemoryPrompt;
 

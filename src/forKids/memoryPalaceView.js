@@ -39,5 +39,3 @@ export default function MemoryPalaceView(props) {
         </div>
     )
 }
-
-// props.src, props.halfMemoryPower

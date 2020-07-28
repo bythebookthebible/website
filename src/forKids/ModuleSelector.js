@@ -6,8 +6,6 @@ import { scriptureFromKey, getKidKinds, resoucesForKinds } from '../util'
 
 import defaultIcon from '../images/kidsPageSidebar/diamond.png'
 
-import testTree from '../images/maps/TestTree.svg'
-
 import artVerseBar from '../images/maps/ArtVerseBar.svg'
 import blueHouseInside from '../images/maps/BlueHouseInside.svg'
 import bookVerseBar from '../images/maps/BookVerseBar.svg'
@@ -91,59 +89,6 @@ function ModuleSelctor(props) {
     </Container>
     <div style={props.style['img']}><img src={props.cornerIcon} /></div>
   </div>
-
-// return <div style={{minHeight:'90vh', position:'relative', backgroundColor:"#ffde1a4c"}}>
-
-// <Container fluid style={{paddingLeft: '0', paddingRight: '0', backgroundColor:"#ffde1a4c" }}>
-
-// {/* <div style={{backgroundOrigin: 'content-box', backgroundImage: "url(" + props.chapterBackground + ")", backgroundRepeat: 'none', backgroundAttachment: 'local'}}> */}
-//   {Object.keys(scriptures).map(book =>
-//     Object.keys(scriptures[book]).map(chapter => <>
-//       <Row style={{backgroundOrigin: 'content-box', backgroundImage: "url(" + bookVerseBar + ")", backgroundRepeat: 'none', backgroundAttachment: 'local', backgroundSize: 'cover'}}>
-//         <Col style={{ padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'white' }}>{`${book} ${chapter}`}</Col>
-//       </Row>
-//       <Row style={{ marginLeft: '30px', marginRight: '30px', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' }}>
-//         {Object.keys(scriptures[book][chapter]).map(verses =>
-//           //content
-//           <Col sm={props.scale} style={{ }}><img src={defaultIcon} style={{width: '60px', height: '60px'}} /><br></br>{verses}</Col>
-//         )}
-//       </Row>
-//     </>)
-//   )}
-// </Container>
-// </div>
-  // } 
-  // else if (props.module == 'dragon') {
-  //   return <div>
-
-  //   <Container fluid style={{...props.style, paddingLeft: '0', paddingRight: '0'}}>
-      
-  //   <div style={{marginTop: '-55px', marginBottom: '-70px',backgroundSize: 'cover, contain', backgroundImage: "url(" + props.background + ")", backgroundRepeat: 'no-repeat', backgroundAttachment: 'local'}}>
-  //     <div style={{padding: '70px', paddingBottom: '100px'}}>
-  //     {Object.keys(scriptures).map(book =>
-  //       Object.keys(scriptures[book]).map(chapter => <>
-  //         <Row style={{position:'relative', backgroundImage: "url(" + props.chapterBackground + ")", backgroundRepeat: 'no-repeat', right: '-50%'}}>
-  //           <Col style={{ padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'black' }}>{`${book} ${chapter}`}</Col>
-  //         </Row>
-  //         <Row style={{ marginLeft:'50%', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' }}>
-  //           {Object.keys(scriptures[book][chapter]).map(verses =>
-  //             //content
-  //             <Col sm={4} style={{ }}>
-  //               <div>
-  //                 <img src={defaultIcon} style={{width: '60px', height: '60px'}} /><br></br>{verses}
-  //               </div>
-  //             </Col>
-  //           )}
-
-  //         </Row>
-  //       </>)
-  //     )}
-  //     </div>
-  //     </div>
-  //   </Container>
-  // </div>
-  
-  // }
 }
 
 let styles = {
@@ -289,33 +234,6 @@ let styles = {
     verseCol: {},
     img: {position: 'fixed', right: '10px', bottom: '10px', zIndex: '2', width: '25%'}
   }
-
-  
-
-
-  //   return <div>
-
-  //   <Container fluid style={{...props.style, paddingLeft: '0', paddingRight: '0'}}>
-      
-  //   <div style={{marginTop: '-55px', marginBottom: '-70px',backgroundSize: 'cover, contain', backgroundImage: "url(" + props.background + ")", backgroundRepeat: 'no-repeat', backgroundAttachment: 'local'}}>
-  //     <div style={{padding: '70px', paddingBottom: '100px'}}>
-  //     {Object.keys(scriptures).map(book =>
-  //       Object.keys(scriptures[book]).map(chapter => <>
-  //         <Row style={{position:'relative', backgroundImage: "url(" + props.chapterBackground + ")", backgroundRepeat: 'no-repeat', right: '-50%'}}>
-  //           <Col style={{ padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'black' }}>{`${book} ${chapter}`}</Col>
-  //         </Row>
-  //         <Row style={{ marginLeft:'50%', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' }}>
-  //           {Object.keys(scriptures[book][chapter]).map(verses =>
-  //             //content
-  //             <Col sm={4} style={{ }}>
-  //               <div>
-  //                 <img src={defaultIcon} style={{width: '60px', height: '60px'}} /><br></br>{verses}
-  //               </div>
-  //             </Col>
-    
-  
-
-  
 }
 
 

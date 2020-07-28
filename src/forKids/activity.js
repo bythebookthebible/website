@@ -1,22 +1,9 @@
 import React, { useState, useContext, useRef } from "react";
-import {
-  Row,
-  Col,
-  Button,
-  Modal,
-} from "react-bootstrap";
 import { media } from "./media";
-import ButtonMap from './buttonMap';
-import { Player, MenuButton } from "video-react";
 import { DispatchContext, StateContext } from "./kidModeApp"
 import MemorizedPrompt from './memorizedPrompt'
-import ModulePedestal from "./modulePedestal"
-import ReallyBadPedestal from '../images/memoryPalace/ReallyBadPedestal.svg'
-// import AdultModeApp from "../forAdults/adultModeApp"
-// import MenuContainer from "../forAdults/menuContainer";
 import './colorPalette.css'
 import { actionTypes, actionViews } from './kidModeApp';
-import { kinds } from '../util'
 import sidebarSVG from '../images/maps/ActivitySideBar1.svg';
 
 // @TODO: 1) some contents are not implemented by the media yet

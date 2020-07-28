@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect, useRef, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { DispatchContext, StateContext } from "./kidModeApp";
 
 // the default is that everytime a pdf rendors, the user will get one point

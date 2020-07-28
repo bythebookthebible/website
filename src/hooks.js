@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import {openDB, deleteDB, wrap, unwrap} from 'idb'
 import deepEqual from 'deep-equal'
-import { diff, detailedDiff } from 'deep-object-diff'
+import { diff } from 'deep-object-diff'
 
 import {firebase, db, storage} from './firebase'
 

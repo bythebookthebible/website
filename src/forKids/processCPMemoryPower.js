@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import $ from 'jquery';
 import { ReactSVG } from 'react-svg';
-import test_cp from '../images/coloringPages/test_cp.svg';
 import ColorPalette from "./colorPalette";
 import { Row, Col, Button } from 'react-bootstrap';
 import { DispatchContext, StateContext } from "./kidModeApp";
