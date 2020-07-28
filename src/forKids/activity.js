@@ -125,7 +125,7 @@ export default function Activity(props) {
 
   // , repeat: repeatActivity, resetRepeat: resetRepeat
   // repeatHandler: repeatHandler
-  return <div>
+  return <>
     <MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />
     <SidebarPopUp setShow={()=>setShowSidebar(!showSidebar)} show={showSidebar} />
     {media[state.activity.kind] ? 
@@ -134,5 +134,5 @@ export default function Activity(props) {
       </div> :
       <div>Coming Soon!</div>
     }
-  </div>
+  </>
 }
