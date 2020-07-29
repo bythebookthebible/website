@@ -18,7 +18,7 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
     let player = extRef || intRef
 
     useEffect(()=>{
-        player.current.subscribeToStateChange(updatePower)
+        player.current.subscribeToStateChange(onStateChange)
         
         props.repeatHandler.current = ()=>{
             player.current.seek(0)
@@ -32,10 +32,16 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
     }, [Boolean(player.current), props.src])
 
     let timer = useRef(0)
-    function updatePower(playerState) {
-        if (playerState.currentTime + 2 >= playerState.duration && !playerState.paused) {
-            props.setShow()
-        }
+    function onStateChange(playerState) {
+        // update active status
+        if (playerState.currentTime + 1 >= playerState.duration && !playerState.paused)
+            props.isActive(false)
+        else if (playerState.paused)
+            props.isActive(false)
+        else
+            props.isActive(true)
+
+        // update memory power
         if (playerState.paused) {
             timer.current = playerState.currentTime
         } else if (Math.abs(playerState.currentTime - timer.current) >= 1.0) {

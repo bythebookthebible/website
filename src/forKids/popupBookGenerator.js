@@ -19,6 +19,7 @@ export default function PopupBookWithMemoryPower(props) {
 
     function onDocumentLoadSuccess({ numPages }) {
         setNumPages(numPages)
+        props.isActive(true)
     }
 
     let goToPrevView = () => {
@@ -29,17 +30,15 @@ export default function PopupBookWithMemoryPower(props) {
 
     let goToNextView = () => {
         console.log(pageNumber, 'of', numPages, completed)
-        let n = pageNumber
         if (pageNumber + 2 <= numPages) {
             setPageNumber(pageNumber + 2)
-            props.closeSidebar()
         }
         if (pageNumber + 3 >= numPages) { // second page of new spread is the end
             if (!completed) {
                 dispatch({type:'addMemoryPower', power: 1})
                 setCompleted(true)
             }
-            props.openSidebar()
+            props.isActive(false)
         }
     }
 
@@ -53,7 +52,6 @@ export default function PopupBookWithMemoryPower(props) {
  
     return (
         <div>  
-            <div onClick={()=>props.closeSidebar()}>
             <SizeMe
                 monitorHeight
                 refreshRate={32}
@@ -72,7 +70,6 @@ export default function PopupBookWithMemoryPower(props) {
                     </Container>
                 )}
             />
-            </div>
             <div className='pdf-page-display'>
                 <button className='pdf-btn' onClick={()=>goToPrevView()}><img src={right} style={{height: '30px', width: '30px'}}/></button>
                 Page {pageNumber} of {numPages}

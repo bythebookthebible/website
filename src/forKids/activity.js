@@ -115,11 +115,12 @@ export default function Activity(props) {
   return <>
     <MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />
     <SidebarPopUp setShow={()=>setShowSidebar(!showSidebar)} show={showSidebar} />
-    {media[state.activity.kind] ? 
-      <div onClick={() => setShowSidebar(false)}>
-        {React.cloneElement(media[state.activity.kind], {doneCallback:()=>setShowSidebar(true), repeatHandler: repeatHandler})}
-      </div> :
-      <div>Coming Soon!</div>
+    {
+      media[state.activity.kind] ?
+        React.cloneElement(media[state.activity.kind], {isActive:active=>{
+          if(!showSidebar == !active) setShowSidebar(!active)
+        }, repeatHandler: repeatHandler})
+      : <div>Coming Soon!</div>
     }
   </>
 }

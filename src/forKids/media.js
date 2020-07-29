@@ -17,7 +17,7 @@ function SimpleVideo(props) {
     url: state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0], 
     version: state.resources[state.activity.key].version
   });
-  return src ? <MemeoryPowerVideo {...props} setShow={props.doneCallback} src={src} /> : null
+  return src ? <MemeoryPowerVideo {...props} src={src} /> : null
 }
 
 function RepetitionVideo(props) {
@@ -27,7 +27,7 @@ function RepetitionVideo(props) {
     version: state.resources[state.activity.key].version
   });
   let timestamps = state.resources[state.activity.key]['timestamps'][0]
-  return src ? <RepetitionMemoryVideo {...props} setShow={props.doneCallback} src={src} timestamps={timestamps} /> : null
+  return src ? <RepetitionMemoryVideo {...props} src={src} timestamps={timestamps} /> : null
 }
 
 function EchoVideo(props) {
@@ -41,7 +41,7 @@ function EchoVideo(props) {
     version: state.resources[state.activity.key].version
   });
   let timestamps = state.resources[state.activity.key]['timestamps'][0]
-  return watchSrc && echoSrc ? <EchoMemoryVideo {...props} setShow={props.doneCallback} watchSrc={watchSrc} echoSrc={echoSrc} timestamps={timestamps} /> : null
+  return watchSrc && echoSrc ? <EchoMemoryVideo {...props} watchSrc={watchSrc} echoSrc={echoSrc} timestamps={timestamps} /> : null
 }
 
 function SimplePdf(props) {
@@ -59,7 +59,7 @@ function Coloring(props) {
     url: state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0], 
     version: state.resources[state.activity.key].version
   });
-  return <ProcessCPMemoryPower {...props} onOpen={props.doneCallback} onClose={()=>undefined} src={src} />
+  return <ProcessCPMemoryPower {...props} src={src} />
 }
 
 function Book(props) {
@@ -69,7 +69,7 @@ function Book(props) {
     url: state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0], 
     version: state.resources[state.activity.key].version
   });
-  return <PopupBookGenerator {...props}  openSidebar={props.doneCallback} closeSidebar={()=>undefined} src={src} />
+  return <PopupBookGenerator {...props}  src={src} />
 }
 
 export const media = {
