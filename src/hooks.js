@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import {openDB, deleteDB, wrap, unwrap} from 'idb'
 import deepEqual from 'deep-equal'
 import { diff } from 'deep-object-diff'
@@ -22,6 +22,15 @@ import {firebase, db, storage} from './firebase'
 //     return useClaims ? [user, claims] : user
 // }
 
+// this pattern is used enough I wanted to encapsulate it
+export function useAsyncEffect(fn=()=>undefined, deps=[]) {
+    let abort = useRef(false)
+    useEffect(() => {
+        fn(abort)
+        return ()=>abort.current=true
+    }, deps)
+}
+
 export var withAuth = wrappedComponent => props => {
     let [user, setUser] = useState(firebase.auth().currentUser)
     let [claims, setClaims] = useState(undefined)
@@ -41,14 +50,9 @@ export var withAuth = wrappedComponent => props => {
         setClaims(newClaims)
     }
 
-    useEffect(()=>{
-        let abort=false
-        async function updateClaims() {
-            let newClaims = user && (await user.getIdTokenResult()).claims
-            if(!abort) setClaims(newClaims)
-        }
-        updateClaims()
-        return ()=>abort=true
+    useAsyncEffect(async abort => {
+        let newClaims = user && (await user.getIdTokenResult()).claims
+        setClaims(newClaims)
     }, [user])
 
     return wrappedComponent({...props, 'user': user && claims && {...user, 'claims': claims}, refreshUser:refresh})
@@ -61,20 +65,13 @@ export function useFirestore(collection, reduceFn=undefined, reduceInit={}) {
     }
 
     // load list of video resources
-    useEffect(() => {
-        let abort = false
-        async function getResources() {
-            let snapshot = await db.collection(collection).get()
-            let resources = snapshot.docs.reduce(reduceFn, reduceInit)
+    useAsyncEffect(async abort => {
+        let snapshot = await db.collection(collection).get()
+        let resources = snapshot.docs.reduce(reduceFn, reduceInit)
 
-            if(!abort) {
-                setResources(resources) // Must set resources before setting scriptureSelected
-            }
-        }
-        getResources()
-        return () => abort = true;
+        if(!abort.current) setResources(resources)
     }, [])
-
+    
     return resources
 }
 
@@ -82,25 +79,20 @@ export function useFirestoreState(ref, onload) {
     let [data, setData] = useState(undefined)
 
     // initial fetch from firestore
-    useEffect(()=>{
-        let abort = false
-        async function getResources() {
-            let snapshot = await db.doc(ref).get()
-            let data = snapshot.data() || {} // create new object if not exist
-            console.log('data from firebase', data)
-            // .docs.reduce(
-            //     (cum, doc) => { cum[doc.id]=doc.data(); return cum }, {}
-            // )
+    useAsyncEffect(async abort => {
+        let snapshot = await db.doc(ref).get()
+        let data = snapshot.data() || {} // create new object if not exist
+        console.log('data from firebase', data)
+        // .docs.reduce(
+        //     (cum, doc) => { cum[doc.id]=doc.data(); return cum }, {}
+        // )
 
-            if(!abort) {
-                setData(data)
-                onload(data)
-            }
+        if(!abort.current) {
+            setData(data)
+            onload(data)
         }
-        getResources()
-        return () => abort = true;
     }, [])
-
+    
     // update function
     function updateData(newData) {
         let d = diff(data, newData)
@@ -131,16 +123,10 @@ export function useIdbState(ref, onload) {
     let [data, setData] = useState(undefined)
 
     // initial fetch from idb
-    useEffect(()=>{
-        let abort = false
-        async function getResources() {
-            // fetch from idb
-            onload(data)
-        }
-        getResources()
-        return () => abort = true;
+    useAsyncEffect(async abort => {
+        onload(data)
     }, [])
-
+    
     // update function
     function updateData(newData) {
         console.log(diff(data, newData))
@@ -161,47 +147,42 @@ const maxCacheSize = 300*1024*1024 // safari warned "lots of energy" at 500MB, a
 export function useCachedStorage(resource) {
     let [url, setUrl] = useState('')
     
-    useEffect(() => {
-        let abort = false
-        async function getVideoUrl(resource) {
-            console.log(caches, resource.url)
-            if(caches && resource.url) {
-                let cache = await caches.open(cacheName)
-                idb = await idb
-                
-                let meta = await idb.get(cacheMetaStore, resource.url)
-                let res = await cache.match(resource.url)
-                console.log('meta', meta)
-                // update cache if needed (old or missing) but don't await
-                if(!res || !(meta && meta.version && resource.version <= meta.version)) {
-                    preCacheStorage([resource])
-                }
+    useAsyncEffect(async abort => {
+        console.log(caches, resource.url)
+        if(caches && resource.url) {
+            let cache = await caches.open(cacheName)
+            idb = await idb
+            
+            let meta = await idb.get(cacheMetaStore, resource.url)
+            let res = await cache.match(resource.url)
+            console.log('meta', meta)
+            // update cache if needed (old or missing) but don't await
+            if(!res || !(meta && meta.version && resource.version <= meta.version)) {
+                preCacheStorage([resource])
+            }
 
-                // serve from cache if available
-                if(res) {
-                    console.log('using blob')
-                    let blob = await res.blob()
-                    if(!abort) setUrl(URL.createObjectURL(blob))
-                } else {
-                    console.log('using download url')
-                    const downloadUrl = await storage.ref(resource.url).getDownloadURL()
-                    if(!abort) setUrl(downloadUrl)
-                }
-
+            // serve from cache if available
+            if(res) {
+                console.log('using blob')
+                let blob = await res.blob()
+                if(!abort.current) setUrl(URL.createObjectURL(blob))
             } else {
-                if(resource.url) {
-                    const downloadUrl = await storage.ref(resource.url).getDownloadURL()
-                    if(!abort) setUrl(downloadUrl)
-                }
-                if(!caches) {
-                    console.warn('caching not supported')
-                }
+                console.log('using download url')
+                const downloadUrl = await storage.ref(resource.url).getDownloadURL()
+                if(!abort.current) setUrl(downloadUrl)
+            }
+
+        } else {
+            if(resource.url) {
+                const downloadUrl = await storage.ref(resource.url).getDownloadURL()
+                if(!abort.current) setUrl(downloadUrl)
+            }
+            if(!caches) {
+                console.warn('caching not supported')
             }
         }
-        getVideoUrl(resource)
-        return () => abort = true;
     }, [resource.url, resource.version])
-
+    
     return url
 }
 
