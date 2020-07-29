@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext, useState, useEffect } from "react"
 import { Container, Row, Col } from "react-bootstrap"
 
 import { DispatchContext, StateContext, actionTypes, actionViews } from "./kidModeApp"
@@ -24,6 +24,8 @@ import karaokeVerseBar from '../images/maps/KaraokeVerseBar.svg'
 import yelllowHouseInside from '../images/maps/YelllowHouseInside.svg'
 import colorVerseBar from '../images/maps/ColorVerseBar.svg'
 import pinkHouseInside from '../images/maps/PinkHouseInside.svg'
+import { storage } from "../firebase"
+import { useCachedStorage, useAsyncEffect } from "../hooks"
 
 function ModuleSelctor(props) {
   console.log("at least here")
@@ -77,7 +79,7 @@ function ModuleSelctor(props) {
                         view:actionViews.activity, 
                         activity:{key:scriptures[book][chapter][verses].key, kind: state.viewSelected}
                       })}>
-                      <img src={defaultIcon} style={{width: '60px', height: '60px'}} />
+                      <Icon module={scriptures[book][chapter][verses].key} />
                       <br></br>{verses}
                     </Col>
                   )}
@@ -89,6 +91,21 @@ function ModuleSelctor(props) {
     </Container>
     <div style={props.style['img']}><img src={props.cornerIcon} /></div>
   </div>
+}
+
+function Icon(props) {
+  let state = useContext(StateContext);
+  let [src, setSrc] = useState(defaultIcon)
+  
+  useAsyncEffect(async abort => {
+    let ref = state.resources[props.module].icon
+    if(ref) {
+      const downloadUrl = await storage.ref(ref[0]).getDownloadURL()
+      if(!abort.current) setSrc(downloadUrl)
+    }
+  }, [props.module])
+
+  return <img src={src} style={{width: '60px', height: '60px'}} />
 }
 
 let styles = {
