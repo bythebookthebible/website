@@ -11,14 +11,20 @@ import ProcessPDFMemoryPower from "./processPDFMemoryPower"
 import ProcessCPMemoryPower from "./processCPMemoryPower"
 
 // "Music Video" is no longer passde into media; I seperated the input, MV is now being passed in directly to the VideoMedia
-function SimpleVideo(props) {
+
+let withStateSrc = WrappedComponent => props => {
   let state = useContext(StateContext)
   let src = useCachedStorage({
     url: state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0], 
     version: state.resources[state.activity.key].version
   });
-  return src ? <MemeoryPowerVideo {...props} src={src} /> : null
+  return <WrappedComponent {...props} src={src} />
 }
+
+let SimpleVideo = withStateSrc(MemeoryPowerVideo)
+let SimplePdf = withStateSrc(ProcessPDFMemoryPower)
+let Coloring = withStateSrc(ProcessCPMemoryPower)
+let Book = withStateSrc(PopupBookGenerator)
 
 function RepetitionVideo(props) {
   let state = useContext(StateContext)
@@ -27,7 +33,7 @@ function RepetitionVideo(props) {
     version: state.resources[state.activity.key].version
   });
   let timestamps = state.resources[state.activity.key]['timestamps'][0]
-  return src ? <RepetitionMemoryVideo {...props} src={src} timestamps={timestamps} /> : null
+  return <RepetitionMemoryVideo {...props} src={src} timestamps={timestamps} />
 }
 
 function EchoVideo(props) {
@@ -42,34 +48,6 @@ function EchoVideo(props) {
   });
   let timestamps = state.resources[state.activity.key]['timestamps'][0]
   return watchSrc && echoSrc ? <EchoMemoryVideo {...props} watchSrc={watchSrc} echoSrc={echoSrc} timestamps={timestamps} /> : null
-}
-
-function SimplePdf(props) {
-  let state = useContext(StateContext)
-  let src = useCachedStorage({
-    url: state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0], 
-    version: state.resources[state.activity.key].version
-  });
-  return <ProcessPDFMemoryPower {...props} src={src} />
-}
-
-function Coloring(props) {
-  let state = useContext(StateContext)
-  let src = useCachedStorage({
-    url: state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0], 
-    version: state.resources[state.activity.key].version
-  });
-  return <ProcessCPMemoryPower {...props} src={src} />
-}
-
-function Book(props) {
-  let state = useContext(StateContext)
-  console.log(resoucesForKinds[state.activity.kind])
-  let src = useCachedStorage({
-    url: state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0], 
-    version: state.resources[state.activity.key].version
-  });
-  return <PopupBookGenerator {...props}  src={src} />
 }
 
 export const media = {
