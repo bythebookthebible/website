@@ -63,10 +63,13 @@ function Coloring(props) {
 }
 
 function Book(props) {
-    let state = useContext(StateContext)
-    console.log(resoucesForKinds[state.activity.kind])
-    let src = state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0]
-    return <PopupBookGenerator {...props}  openSidebar={props.doneCallback} closeSidebar={null} src={src} />
+  let state = useContext(StateContext)
+  console.log(resoucesForKinds[state.activity.kind])
+  let src = useCachedStorage({
+    url: state.resources[state.activity.key][resoucesForKinds[state.activity.kind][0]][0], 
+    version: state.resources[state.activity.key].version
+  });
+  return <PopupBookGenerator {...props}  openSidebar={props.doneCallback} closeSidebar={()=>undefined} src={src} />
 }
 
 export const media = {

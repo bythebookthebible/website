@@ -19,29 +19,27 @@ export default function PopupBookWithMemoryPower(props) {
 
     function onDocumentLoadSuccess({ numPages }) {
         setNumPages(numPages)
-        setCompleted(true)
     }
 
     let goToPrevView = () => {
-        props.closeSidebar()
         if (pageNumber - 2 > 0) {
             setPageNumber(pageNumber - 2)
-        }
-        if (pageNumber == 1) {
-            setCompleted(true)
         }
     }
 
     let goToNextView = () => {
+        console.log(pageNumber, 'of', numPages, completed)
+        let n = pageNumber
         if (pageNumber + 2 <= numPages) {
             setPageNumber(pageNumber + 2)
             props.closeSidebar()
-        } else { // last view page of document
-            props.openSidebar()
         }
-        if (pageNumber >= numPages - 1 && completed) {
-            dispatch({type:'addMemoryPower', power: 1})
-            setCompleted(false)
+        if (pageNumber + 3 >= numPages) { // second page of new spread is the end
+            if (!completed) {
+                dispatch({type:'addMemoryPower', power: 1})
+                setCompleted(true)
+            }
+            props.openSidebar()
         }
     }
 
