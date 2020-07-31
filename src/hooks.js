@@ -128,8 +128,8 @@ const maxCacheSize = 300*1024*1024 // safari warned "lots of energy" at 500MB, a
 
 // resource object with {url: "", version: ""}
 export function useCachedStorage(resource) {
-    let [url, setUrl] = useState('')
-    
+    let [url, setUrl] = useState(undefined)
+
     useAsyncEffect(async abort => {
         //console.log(caches, resource.url)
 
@@ -145,7 +145,7 @@ export function useCachedStorage(resource) {
             console.log('New RES:', res)
             console.log('meta', meta)
             // update cache if needed (old or missing) but don't await
-            if(!res || !(meta && meta.version && resource.version <= meta.version)) {
+            if((!res || !meta || !meta.version || resource.version > meta.version) && !abort) {
                 freshlyCached = preCacheStorage([resource])
                 console.log("precachestorage is called")
             }
@@ -154,17 +154,23 @@ export function useCachedStorage(resource) {
             if(res) {
                 let blob = res.file
                 console.log('using blob:', blob)
-                if(!abort.current) setUrl(URL.createObjectURL(blob))
+                setUrl(URL.createObjectURL(blob))
             } else {     
                 console.log('using download url')
-                const downloadUrl = await storage.ref(resource.url).getDownloadURL()
-                if(!abort.current) setUrl(downloadUrl)
+                const downloadUrl = await storage.ref(resource.url).getDownloadURL().catch(e=>{
+                    console.log('error getting download url:', e)
+                    setUrl(undefined)
+                })
+                setUrl(downloadUrl)
             }
 
         } else {
             if(resource.url) {
-                const downloadUrl = await storage.ref(resource.url).getDownloadURL()
-                if(!abort.current) setUrl(downloadUrl)
+                const downloadUrl = await storage.ref(resource.url).getDownloadURL().catch(e=>{
+                    console.log('error getting download url:', e)
+                    setUrl(undefined)
+                })
+                setUrl(downloadUrl)
             }
             if(!idb) {
                 console.warn('caching not supported')
@@ -173,7 +179,7 @@ export function useCachedStorage(resource) {
 
         // once the cached version exists, use it instead
         freshlyCached = await freshlyCached
-        if(freshlyCached && !abort.current) {
+        if(freshlyCached) {
             setUrl(freshlyCached[0])
             console.log('now using blob', freshlyCached[0])
         }
