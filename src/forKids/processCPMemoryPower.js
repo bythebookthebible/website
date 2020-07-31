@@ -22,13 +22,13 @@ export default function ProcessCPMemoryPower(props) {
             dispatch({type: 'addMemoryPower', power: 1})
             reset()
             setcounter(0)
-            props.onOpen()
+            props.isActive(false)
         }
     }
 
     return (
         <div>
-        <div onClick={() => props.onClose()}>
+        <div onClick={() => props.isActive(true)}>
             <Row>
             <Col sm={9} md={9}><ReactSVG 
                 src={props.src} 
