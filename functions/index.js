@@ -1,5 +1,5 @@
 // import {stripeSecretKey, stripeEndpointSecret} from './live_api_keys.js'
-const stripeKeys = require('./test_api_keys.js')
+const stripeKeys = require('./live_api_keys.js')
 
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 const functions = require('firebase-functions');
@@ -12,28 +12,61 @@ const stripe = require('stripe')(stripeKeys.stripeSecretKey);
 
 // user custom claims are: admin, permanentAccess, expirationDate, stripeId
 
+//// AVAILABLE INFO FROM admin.auth().listUsers()
+// {
+// customClaims: {...},
+// disabled: false,
+// displayName: "Name",
+// email: "test@example.com",
+// emailVerified: false,
+// metadata: {creationTime: "Sat, 25 Jul 2020 18:48:18 GMT", lastSignInTime: "Sat, 25 Jul 2020 19:04:08 GMT", lastRefreshTime: "Sat, 25 Jul 2020 19:04:08 GMT"},
+// passwordHash: "",
+// passwordSalt: "",
+// phoneNumber: null,
+// photoURL: null,
+// providerData: [{
+//     displayName: "Name", email: "test@example.com", phoneNumber: null, photoURL: null,
+//     providerId: "password", uid: "test@example.com", tenantId: null
+// }],
+// tokensValidAfterTime: "Sat, 25 Jul 2020 18:48:18 GMT",
+// uid: "",
+// }
+
 exports.getUsers = functions.https.onCall(async (data, context) => {
     let claims = (await admin.auth().getUser(context.auth.uid)).customClaims
-    console.log(claims)
-    if(!claims.admin) {
-        return new Error('Access Denied')
-    }
+    if(!claims.admin) return new Error('Access Denied')
 
-    usersResult = await admin.auth().listUsers()
-    console.log(usersResult)
-    return usersResult
+    let userData = (await admin.firestore().collection('userData').get())
+        .docs.reduce((cum, d)=>{cum[d.id]=d.data(); return cum}, {}) //.map(d=>{return {id:d.id, data:d.data()}})
+    let usersResult = await admin.auth().listUsers()
+    // return the filtered / merged list of data 
+    let combined = usersResult.users.map(u=>{return {
+        uid:u.uid,
+        displayName:u.displayName,
+        email:u.email,
+        emailVerified:u.emailVerified,
+        metadata:u.metadata,
+        customClaims:u.customClaims,
+        userData: userData[u.uid]}})
+    return combined
 })
 
 exports.setUser = functions.https.onCall(async (data, context) => {
     let claims = (await admin.auth().getUser(context.auth.uid)).customClaims
-    console.log(claims)
-    if(!claims.admin) {
-        return new Error('Access Denied')
-    }
+    if(!claims.admin) return new Error('Access Denied')
 
-    user = await admin.auth().getUser(data.uid)
+    let user = await admin.auth().getUser(data.uid)
     console.log('new claims:', {...user.customClaims, ...data.customClaims})
     await admin.auth().setCustomUserClaims(data.uid, {...user.customClaims, ...data.customClaims})
+})
+
+exports.deleteUser = functions.https.onCall(async (data, context) => {
+    let claims = (await admin.auth().getUser(context.auth.uid)).customClaims
+    if(!claims.admin) return new Error('Access Denied')
+
+    let user = await admin.auth().getUser(data)
+    console.log('deleting user', user)
+    await admin.auth().deleteUser(data)
 })
 
 exports.renewSubscription = functions.https.onRequest(async (request, response) => {

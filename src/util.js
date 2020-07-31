@@ -91,6 +91,11 @@ export const scriptureFromKey = key => {
   return {book: books[Number(r[0])], chapter: Number(r[1]), verses: `${Number(r[2])}-${Number(r[3])}`}
 }
 
+export function friendlyScriptureRef(key) {
+  let s = scriptureFromKey(key)
+  return `${s.book} ${s.chapter}:${s.verses}`
+}
+
 // this is a mathematically correct mod accounting for negative numbers
 // mod(n, m) returns i where 0 <= i < m, where n - i is divisible by m
 export function mod(n, m) {
