@@ -32,6 +32,10 @@ export default function MemoryPalaceView(props) {
                         // this is to set an asymptote at half way mark
                         let percentageFilled = MPArray[i].power / (MPArray[i].power + (props.halfMemoryPower || defaultHalfMemoryPower))
                         let glow = $(svg).find(`#power_${i + 1}_`).css({'transform': 'scaleY(' + percentageFilled + ')'})
+                        if(MPArray[i].status == 'memorized' || MPArray[i].status == 'applied') {
+                            console.log('jewel', i)
+                            $(svg).find(`#rock_${i + 1}_`).css({'display': 'none'})
+                        }
                     }
                 }}
             />

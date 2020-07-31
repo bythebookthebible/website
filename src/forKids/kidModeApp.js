@@ -255,6 +255,8 @@ function mergeStates(internalState, externalState) {
     memoryPower = memoryPower && memoryPowerExternal ? 
         Object.keys(memoryPowerExternal).reduce((pow, key) => {
             pow[key].power = Math.max(pow[key].power || 0, memoryPowerExternal[key].power || 0)
+            if(pow[key].status || memoryPowerExternal[key].status)
+                pow[key].status = pow[key].status || memoryPowerExternal[key].status
             return pow
         }, memoryPower)
         : memoryPower || memoryPowerExternal
