@@ -39,7 +39,7 @@ exports.getUsers = functions.https.onCall(async (data, context) => {
     let userData = (await admin.firestore().collection('userData').get())
         .docs.reduce((cum, d)=>{cum[d.id]=d.data(); return cum}, {}) //.map(d=>{return {id:d.id, data:d.data()}})
     let usersResult = await admin.auth().listUsers()
-    // return the filtered / merged list of data 
+    // return the filtered / merged list of data (dont send over password hash, etc)
     let combined = usersResult.users.map(u=>{return {
         uid:u.uid,
         displayName:u.displayName,
@@ -56,17 +56,21 @@ exports.setUser = functions.https.onCall(async (data, context) => {
     if(!claims.admin) return new Error('Access Denied')
 
     let user = await admin.auth().getUser(data.uid)
-    console.log('new claims:', {...user.customClaims, ...data.customClaims})
-    await admin.auth().setCustomUserClaims(data.uid, {...user.customClaims, ...data.customClaims})
-})
+    // delete if needed
+    if(data.delete) {
+        console.log('deleting user', user)
+        await admin.auth().deleteUser(data.uid)
 
-exports.deleteUser = functions.https.onCall(async (data, context) => {
-    let claims = (await admin.auth().getUser(context.auth.uid)).customClaims
-    if(!claims.admin) return new Error('Access Denied')
-
-    let user = await admin.auth().getUser(data)
-    console.log('deleting user', user)
-    await admin.auth().deleteUser(data)
+    } else {
+        // set claims
+        console.log('new claims:', {...user.customClaims, ...data.customClaims})
+        await admin.auth().setCustomUserClaims(data.uid, {...user.customClaims, ...data.customClaims})
+        
+        // set memory power
+        await admin.firestore().doc(`userData/${user.uid}`).set(data.userData)
+    
+        // general info is user-settable only?
+    }
 })
 
 exports.renewSubscription = functions.https.onRequest(async (request, response) => {

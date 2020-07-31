@@ -36,7 +36,14 @@ export default function ManageUsers(props) {
                 <th>uid</th>
                 <th>stripe uid</th>
             </tr>
-            {!users ? <Spinner animation="border"/> : users.map(user => <UserRow user={user} />)}
+            {!users ? <Spinner animation="border"/> : users.map(user => <UserRow key={user.uid} user={user} onChange={newUser=>{
+                if(newUser.delete) {
+                    setUsers(users.filter(u=>u.uid != user.uid))
+                } else {
+                    console.log('changing', users, users.map(u=>u.uid===newUser.uid ? newUser : u))
+                    setUsers(users.map(u=>u.uid===newUser.uid ? newUser : u))
+                }
+            }} />)}
         </tbody></table>
     </div>
 }
@@ -75,35 +82,41 @@ function UserRow(props) {
         return newUser
     }
 
-    let onFieldChange = ()=>setChanged(!deepEqual(getUpdated(), user))
+    let checkIfChanged = ()=>{
+        if(changed == deepEqual(getUpdated(), user))
+            setChanged(!changed)
+    }
 
     return <tr>
         <td className='p-2' style={{fontSize:'1.5rem'}} onClick={()=>{
             if(window.confirm(`Are you sure you want to delete "${user.displayName}" <${user.email}>? This action cannot be undone.`)) {
-                deleteUser(user.uid)
+                let deleteUser = {uid:user.uid, delete:true}
+                props.onChange(deleteUser)
+                setUser(deleteUser)
             }
         }}>&times;</td>
 
         <td style={{maxWidth:'200px'}} ><label>{user.email}</label></td>
         <td style={{maxWidth:'200px'}} ><label>{user.displayName}</label></td>
-        <td><UpdateMemoryPower powerRef={powerRef} user={user} onChange={onFieldChange} /></td>
+        <td><UpdateMemoryPower powerRef={powerRef} user={user} onChange={checkIfChanged} /></td>
 
-        <td><input type='date' ref={expirationRef} onBlur={onFieldChange} 
+        <td><input type='date' ref={expirationRef} onBlur={checkIfChanged} 
             defaultValue={new Date(claims.expirationDate).toISOString().split('T')[0]} /></td>
 
-        <td><input type='checkbox' ref={permanentAccessRef} defaultChecked={claims.permanentAccess} onChange={onFieldChange} /></td>
+        <td><input type='checkbox' ref={permanentAccessRef} defaultChecked={claims.permanentAccess} onChange={checkIfChanged} /></td>
 
-        <td><input type='checkbox' ref={adminRef} defaultChecked={claims.admin} onChange={onFieldChange} /></td>
+        <td><input type='checkbox' ref={adminRef} defaultChecked={claims.admin} onChange={checkIfChanged} /></td>
 
         <td style={{maxWidth:'50px'}} ><label>{user.uid}</label></td>
-        <td><input type='text' size={5} ref={stripeRef} onBlur={onFieldChange}
+        <td><input type='text' size={5} ref={stripeRef} onBlur={checkIfChanged}
             placeholder={claims.stripeId.substr(0,7)+'...'} /></td>
 
         <td>
-            {changed && <Button size='sm' onClick={e => {
+            {changed && <Button size='sm' onMouseUp={checkIfChanged} onMouseDown={e => {
                 let newUser = getUpdated()
                 console.log(newUser)
                 setUser(newUser)
+                props.onChange(newUser)
             }}>Update</Button>}
         </td>
     </tr>
@@ -142,7 +155,7 @@ function UpdateMemoryPower(props) {
                     <th>Power</th>
                     <th>Status</th>
                 </tr>
-                {Object.keys(power).map(module=><tr>
+                {Object.keys(power).sort().map(module=><tr>
                     <td>{friendlyScriptureRef(module)}</td>
                     <td>{power[module].power.toFixed(2)}</td>
                     <td>
