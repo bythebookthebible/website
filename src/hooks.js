@@ -133,6 +133,8 @@ export function useCachedStorage(resource) {
     useAsyncEffect(async abort => {
         //console.log(caches, resource.url)
 
+        let freshlyCached = undefined
+
         if(idb && resource.url) {
             // let cache = await caches.open(cacheName)
             idb = await idb
@@ -144,15 +146,14 @@ export function useCachedStorage(resource) {
             console.log('meta', meta)
             // update cache if needed (old or missing) but don't await
             if(!res || !(meta && meta.version && resource.version <= meta.version)) {
-                preCacheStorage([resource])
+                freshlyCached = preCacheStorage([resource])
                 console.log("precachestorage is called")
             }
 
             // serve from cache if available
             if(res) {
-                console.log('using blob')
                 let blob = res.file
-                console.log('making sure blob is here:', blob)
+                console.log('using blob:', blob)
                 if(!abort.current) setUrl(URL.createObjectURL(blob))
             } else {     
                 console.log('using download url')
@@ -169,6 +170,14 @@ export function useCachedStorage(resource) {
                 console.warn('caching not supported')
             }
         }
+
+        // once the cached version exists, use it instead
+        freshlyCached = await freshlyCached
+        if(freshlyCached && !abort.current) {
+            setUrl(freshlyCached[0])
+            console.log('now using blob', freshlyCached[0])
+        }
+
     }, [resource.url, resource.version])
     
     return url
@@ -195,6 +204,8 @@ export async function preCacheStorage(resources) {
     // let cache = await caches.open(cacheName)
     // idb = await idb
 
+    let blobUrls = []
+
     for(let r of resources) {
         let meta = await idb.count(cacheMetaStore, r.url).catch(e=>console.log(e))
 
@@ -212,14 +223,15 @@ export async function preCacheStorage(resources) {
             // credentials:'include',
         })
         let resBlob = await res.clone().blob()
-        console.log(r.url, downloadUrl, res)
-        console.log('clone:', res.clone())
-        console.log('res: ', resBlob)
+        // console.log(r.url, downloadUrl, res)
+        // console.log('clone:', res.clone())
+        // console.log('res: ', resBlob)
         // console.log('trying to reach into BLOB:', resCloned['PromiseValue'])
         // console.log('URL from blob:', URL.createObjectURL(resBlob))
         idb.put(cacheMetaStore, {...r, file: resBlob, accessDate: Date.now(), size: resBlob.size})
             .then(()=>console.log('freshly cached', r))
             .catch(e=>console.log('error in idb.put', e))
+        blobUrls.push(URL.createObjectURL(resBlob))
     }
 
     totalCacheSize = 0
@@ -234,4 +246,6 @@ export async function preCacheStorage(resources) {
         cursor = await cursor.continue()
     }
     console.log(totalCacheSize/1024/1024, 'MB cached')
+
+    return blobUrls
 }
