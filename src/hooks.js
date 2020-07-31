@@ -129,6 +129,7 @@ const maxCacheSize = 300*1024*1024 // safari warned "lots of energy" at 500MB, a
 // resource object with {url: "", version: ""}
 export function useCachedStorage(resource) {
     let [url, setUrl] = useState(undefined)
+    resource = resource || {}
 
     useAsyncEffect(async abort => {
         //console.log(caches, resource.url)

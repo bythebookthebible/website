@@ -18,7 +18,7 @@ import videoSplash from "../images/videoSplash.png"
 import { useAuth, useFirestore, useCachedStorage, withAuth } from '../hooks';
 
 import {firebase, db, storage} from '../firebase'
-import {books, kinds, keyFromScripture, scriptureFromKey, mod} from '../util'
+import {books, kinds, keyFromScripture, scriptureFromKey, mod, getAllKinds, resoucesForKinds} from '../util'
 
 import WhatItMeans  from '../images/memoryKinds/WhatItMeans.svg'
 import Watch        from '../images/memoryKinds/Watch.svg'
@@ -32,14 +32,14 @@ import Color        from '../images/memoryKinds/Color.svg'
 import Subscribe from '../forms/Subscribe';
 
 const kindsImages = {
-    "Music Video": Watch,
-    "Teachers Guide": WhatItMeans,
-    // "Speed Memory": SpeedMemory,
-    "Schmoment": Schmoment,
-    // "Music": Music,
-    "Dance Video": Dance,
-    "Coloring Pages": Color,
-    "Karaoke Video": Karaoke,
+    "watch": Watch,
+    // "teacherGuide": WhatItMeans,
+    // "speed": SpeedMemory,
+    "joSchmo": Schmoment,
+    // "music": Music,
+    "dance": Dance,
+    // "coloring": Color,
+    "karaoke": Karaoke,
 }
 
 // Media players for each kind of resource
@@ -91,14 +91,7 @@ export default function MemorizePage(props) {
     // let [kindsSelected, setKindsSelected] = useState(new Set([kinds[0]]))
     let [kindsSelected, setKindsSelected] = useState(new Set([Object.keys(kindsImages)[0]]))
 
-    let resources = useFirestore('memoryResources', (cum, doc) => {
-        let d = doc.data()
-        let verses = `${d.startVerse}-${d.endVerse}`
-        let key = keyFromScripture(d.book,d.chapter,verses)
-        cum[key] = cum[key] || {}
-        cum[key][d.kind] = d
-        return cum
-    }, {})
+    let resources = useFirestore('memoryResources_02')
     
     // Adjust view for access level
     
@@ -113,7 +106,6 @@ export default function MemorizePage(props) {
     
     // Choose correct resource to play
     let [index, setIndex] = useState(0)
-    let [selectedResources, setSelectedResources] = useState([])
     let [urlList, setUrlList] = useState([])
     
     // update list of urls matching selection
@@ -122,9 +114,9 @@ export default function MemorizePage(props) {
             let newUrlList = []
             for(let key of scriptureSelected) {
                 for(let kind of kindsSelected) {
-                    console.log('tmp', kind, resources, key, resources[key])
-                    if(kind in resources[key]) {
-                        newUrlList.push(resources[key][kind].url)
+                    if(getAllKinds(resources[key]).includes(kind)) {
+                        console.log('filtering url list', kind, key, resoucesForKinds[kind][0], resources[key][resoucesForKinds[kind][0]][0], resources[key].version)
+                        newUrlList.push({url:resources[key][resoucesForKinds[kind][0]][0], version:resources[key].version})
                     }
                 }
             }
@@ -134,12 +126,16 @@ export default function MemorizePage(props) {
     }, [resources, scriptureSelected, kindsSelected])
 
     // get video from cache if available
-    let keyUrl = urlList[mod(index, urlList.length)]
-    let url = useCachedStorage({url: keyUrl, version: '-1'})
+    let versionedUrl = urlList[mod(index, urlList.length)]
+    let url = useCachedStorage(versionedUrl)
+    console.log('urls', urlList, versionedUrl, url)
+
+    let keyUrl = versionedUrl && versionedUrl.url
 
     // Choose correct player for current url
     let fileKind = keyUrl && keyUrl.split('.').slice(-1)[0]
     let player = keyUrl ? players[fileKind] : MissingPlayer
+    if(!url) player = MissingPlayer
 
     // Memory format selector
     let memoryFormatSelector = <div className='text-center' style={{bottom:0, zIndex:1}}>
@@ -160,7 +156,7 @@ export default function MemorizePage(props) {
         {upgradeMsg}
         <div className={`container-xl py-5 memorize-controls ${showControls ? '' : 'hide'}`} onMouseMove={mouseMoving(setShowControls)}>
             {player && player({src: url, style: {position:'absolute', zIndex:1}})}
-            <ScriptureSelector key='scripture-selector' className='scripture-selector' selected={scriptureSelected} resources={resources} onChange={v => {setScriptureSelected(v)}} />
+            <ScriptureSelector key='scripture-selector' className='scripture-selector' kindsSelected={kindsSelected} selected={scriptureSelected} resources={resources} onChange={v => {setScriptureSelected(v)}} />
             {urlList.length > 1 && [
                 <i className="fa fa-4x fa-chevron-left player-control-prev" onClick={() => setIndex(index - 1) } />,
                 <i className="fa fa-4x fa-chevron-right player-control-next" onClick={() => setIndex(index + 1) }/>,
@@ -187,13 +183,15 @@ function ScriptureSelector(props) {
     if(!props.resources) return null
 
     // Make scripture grouped by Book, Chapter
-    let scriptures = Object.keys(props.resources).reduce((cum, key) => {
-        let s = scriptureFromKey(key)
-        cum[s.book] = cum[s.book] || {}
-        cum[s.book][s.chapter] = cum[s.book][s.chapter] || {}
-        cum[s.book][s.chapter][s.verses] = s
-        return cum
-    }, {})
+    let scriptures = Object.keys(props.resources)
+        .filter(key=>Array.from(props.kindsSelected).some(kind=>getAllKinds(props.resources[key]).includes(kind)))
+        .reduce((cum, key) => {
+            let s = scriptureFromKey(key)
+            cum[s.book] = cum[s.book] || {}
+            cum[s.book][s.chapter] = cum[s.book][s.chapter] || {}
+            cum[s.book][s.chapter][s.verses] = {...s, key:key}
+            return cum
+        }, {})
 
     let title = "Choose Scripture..."
     if(!show && selected.size > 0) {
