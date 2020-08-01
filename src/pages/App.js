@@ -4,7 +4,7 @@ import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { firebase, db } from "../firebase.js";
 
-import logo from "../images/logo.svg";
+import logo from "../images/logo.png";
 import finishSignup from "../images/FinishSignup.svg";
 
 import Curriculum from "../pages/Curriculum";
@@ -177,7 +177,7 @@ function Footer(props) {
 
 function FullNav(props) {
   return <Navbar collapseOnSelect expand="md">
-    <Navbar.Brand href="/"><img src={logo} height="30rem"/><div>By the Book</div></Navbar.Brand>
+    <Navbar.Brand href="/"><img src={logo} height="50rem"/></Navbar.Brand>
     <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
     <Navbar.Collapse  id="responsive-navbar-nav">
       <Nav className="mr-auto">
@@ -203,7 +203,7 @@ function LightNav(props) {
   // </div>
 
   return <Navbar collapseOnSelect expand="sm" className='lightNav'>
-    <Navbar.Brand href="/"><img src={logo} height="20rem" /></Navbar.Brand>
+    <Navbar.Brand href="/"><img src={logo} height="40rem"/></Navbar.Brand>
     <Nav>
       <UserNavButton {...props}/>
     </Nav>

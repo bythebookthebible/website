@@ -9,7 +9,7 @@ import {
 import "../../node_modules/video-react/dist/video-react.css"
 import {Row, Col, ToggleButton, ToggleButtonGroup, ButtonGroup, Dropdown, Container, Button} from 'react-bootstrap'
 import $ from "jquery"
-import logo from '../images/logo.svg';
+import logo from '../images/logo.png';
 import missing from '../images/missingContent.png';
 
 import {Login} from '../forms/Login.js'
