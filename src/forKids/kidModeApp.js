@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect, useRef, useReducer} from 'react'
 import Activity from './activity'
 import { useFirestore, useFirestoreState } from "../hooks"
-import { getKidKinds } from '../util'
+import { getKidKinds, scriptureFromKey } from '../util'
 import { valueAfter, pathFilters } from "../util"
 import { Spinner } from 'react-bootstrap'
 import MemoryPowerView from './memoryPalaceView'
@@ -23,6 +23,7 @@ export const actionTypes = {
     nextModule:'nextModule',
     nextActivity:'nextActivity',
     nextInPath:'nextInPath',
+    nextInPalace:'nextInPalace',
     addMemoryPower:'addMemoryPower',
     newResources:'newResources',
     loadState:'loadState',
@@ -53,6 +54,19 @@ function kidAppReducer(oldState, action) {
                 if(act.view === actionViews.activity) {
                     state.activity = act.activity
                 }
+
+                if(act.view === actionViews.palace && typeof act.viewSelected != 'object') {
+                    // view the first chapter of the given book, if not given both
+                    let chapters = Object.keys(state.resources).filter(
+                        key => scriptureFromKey(key).book === act.viewSelected
+                    ).reduce((cum, key) => {
+                        let s = scriptureFromKey(key)
+                        cum[s.chapter] = cum[s.chapter] || s.chapter
+                        return cum
+                    }, {})
+                    state.viewSelected = {book: act.viewSelected, chapter: Object.keys(chapters).sort()[0]}
+                }
+
                 state.path = act.path || state.path
                 continue
 
@@ -84,6 +98,18 @@ function kidAppReducer(oldState, action) {
 
                 continue
 
+            case actionTypes.nextInPalace:
+                let step = act.step || 1
+
+                let scriptures = Object.keys(state.resources).reduce((cum, key) => {
+                    let s = scriptureFromKey(key)
+                    cum[s.book + s.chapter] = cum[s.book + s.chapter] || {book:s.book, chapter:s.chapter}
+                    return cum
+                }, {})
+
+                state.viewSelected = valueAfter(Object.values(scriptures), state.viewSelected, step)
+                continue
+
             case actionTypes.back:
                 // activities go directly home (not worth a stack history)
                 // everything else will wind up going to the previous,
@@ -92,6 +118,9 @@ function kidAppReducer(oldState, action) {
                 if(state.view == actionViews.moduleSelector) {
                     state.view = state.prevView.view
                     state.viewSelected = state.prevView.viewSelected
+                } else if(state.view == actionViews.palace) {
+                    state.view = actionViews.map
+                    state.viewSelected = 'palace'
                 } else {
                     state.view = actionViews.map
                     state.viewSelected = 'home'

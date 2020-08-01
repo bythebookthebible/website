@@ -99,14 +99,15 @@ export function friendlyScriptureRef(key) {
 // this is a mathematically correct mod accounting for negative numbers
 // mod(n, m) returns i where 0 <= i < m, where n - i is divisible by m
 export function mod(n, m) {
-  return m >= 0 ? n % m : (n % m) + m
+  let tmp = n % m
+  return tmp >= 0 ? tmp : tmp + m
 }
 
 export function valueAfter(arr, val, n=1) {
   for(let i in arr) {
     i=Number(i) // apparently i is a string
     if(deepEqual(arr[i], val))
-      return arr[(i+n) % arr.length]
+      return arr[mod((i+n), arr.length)]
   }
   return arr[0]
 }
