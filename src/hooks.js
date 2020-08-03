@@ -15,30 +15,19 @@ export function useAsyncEffect(fn=()=>undefined, deps=[]) {
 }
 
 export var withAuth = wrappedComponent => props => {
-    let [user, setUser] = useState(firebase.auth().currentUser)
+    let user = firebase.auth().currentUser
     let [claims, setClaims] = useState(undefined)
 
-    firebase.auth().onAuthStateChanged(async (u) => {
-        if(!deepEqual(u, user)) {
-            // console.log('user diff', detailedDiff(u, user))
-            setUser(u)
-        }
-    })
+    firebase.auth().onAuthStateChanged(refresh)
 
     async function refresh() {
-        console.log('refreshing')
-        let user = firebase.auth().currentUser
-        setUser(firebase.auth().currentUser)
-        let newClaims = user && (await user.getIdTokenResult(true)).claims
-        setClaims(newClaims)
+        let u = firebase.auth().currentUser
+        let newClaims = u && (await u.getIdTokenResult(true)).claims
+        console.log('refreshing claims', deepEqual(claims, newClaims), claims, newClaims)
+        if(!deepEqual(claims, newClaims)) setClaims(newClaims)
     }
 
-    useAsyncEffect(async abort => {
-        let newClaims = user && (await user.getIdTokenResult()).claims
-        setClaims(newClaims)
-    }, [user])
-
-    return wrappedComponent({...props, 'user': user && claims && {...user, 'claims': claims}, refreshUser:refresh})
+    return wrappedComponent({...props, 'user': user && claims && {...user, 'claims': claims}, refreshUser: refresh})
 }
 
 export function useFirestore(collection, reduceFn=undefined, reduceInit={}) {

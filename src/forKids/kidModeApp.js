@@ -149,7 +149,7 @@ function kidAppReducer(oldState, action) {
     state.timestamp = Date.now()
     state.version = '0.1.0'
     state.prevView = {view: oldState.view || '', viewSelected: oldState.viewSelected || ''}
-    console.log(oldState, action, state)
+    // console.log(oldState, action, state)
     return state
 }
 

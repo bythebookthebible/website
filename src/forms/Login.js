@@ -39,7 +39,7 @@ function LoginButton(props) {
     return <>
         <button {...props} className="btn btn-round btn-primary" onClick={() => setShow(true)}>Login</button>
         <Modal onHide={() => setShow(false)} show={show} size="sm" aria-labelledby="authTitle" centered>
-            <LoginForm {...props} onCancel={()=>setShow(false)} onSubmit={()=>{window.location.reload()}}/>
+            <LoginForm {...props} onCancel={()=>setShow(false)} />
         </Modal>
     </>
 }
@@ -47,7 +47,6 @@ function LoginButton(props) {
 // requires withAuth
 function AuthSwitch(props) {
     let {user, tests, ...passThru} = props
-    console.log(user)
     if(!user) {
         return <LoginForm className='mt-5 mx-auto' user={user} {...passThru} />
     }
@@ -110,8 +109,7 @@ function LoginForm(props) {
 
             await auth.createUserWithEmailAndPassword(email, password).catch(error)
             await firebase.auth().currentUser.updateProfile({displayName: name}).catch(error)
-            await firebase.auth().currentUser.getIdTokenResult(true)
-            props.onSubmit && props.onSubmit()
+            window.location.reload()
         }
     }
 
