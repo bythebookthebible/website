@@ -148,11 +148,7 @@ function MemorizeAppBody(props) {
       tests={[
         {
           test:user=>!(user.claims.expirationDate - Date.now() > 0 || user.claims.permanentAccess || user.claims.admin),
-          // value:<Subscribe />,
-          value:<div style={{textAlign:'center'}} >
-            <img src={finishSignup} style={{maxWidth:'600px', backgroundColor:'white'}} />
-            <div style={{marginTop:'-80px'}}><Login.LogInOutButton {...props} /></div>
-          </div>,
+          value:<Subscribe />,
         },
       ]}
       default={app}

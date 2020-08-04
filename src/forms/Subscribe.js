@@ -32,25 +32,15 @@ export default function Subscribe(props) {
     let user = props.user
     console.log(user)
 
-    let userInfo = user ?
-        [
-            <label>{user.displayName}</label>,<br />,
-            <label>{user.email}</label>,<br />,
-        ] :
-        [
-            <input type='text' placeholder='Full Name' />,<br/>,
-            <input type='email' placeholder='email' />,<br/>,
-            <input type='password' placeholder='password' />,<br/>,
-            <a href='/login?to=/subscribe'>or login</a>,<br/>,
-        ]
-
     return <Card {...props} className={'small-card mx-auto mt-5 text-center '+(props.className||'')} >
-        <Card.Title as='h3' className='mt-3'>
-            Subscribe
-        </Card.Title>
-        <hr/>
-        <Card.Body as='form' onSubmit={e=>{e.preventDefault()}} >
+        <Card.Header>
+            <Card.Title as='h2' className='mt-2'>Congradulations!</Card.Title>
             <Card.Text>
+                You have been memorizing so much scripture in the last 30 days!
+            </Card.Text>
+        </Card.Header>
+        <Card.Body as='form' onSubmit={e=>{e.preventDefault()}} >
+            <Card.Text className='text-left mt-4'>
                 <input type='radio' name='plan' value='basic' defaultChecked/>
                 <label>$4.99 / month Basic Plan</label><br/>
                 <input type='radio' name='plan' value='6month'/>
@@ -60,11 +50,12 @@ export default function Subscribe(props) {
                 <input type='radio' name='plan' value='super'/>
                 <label>$19.99 / month Super Supporter</label><br/>
             </Card.Text>
+            {/* <Card.Text>
+                <label>{user.displayName}</label><br />
+                <label>{user.email}</label><br />
+            </Card.Text> */}
             <Card.Text>
-                {userInfo}
-            </Card.Text>
-            <Card.Text>
-                <button onClick={async () => {
+                <button className='btn btn-round btn-primary' onClick={async () => {
                     // Create account if needed
                     console.log($())
                     console.log($('input[name="plan"]:checked').val())
@@ -79,7 +70,7 @@ export default function Subscribe(props) {
                     const stripe = await stripePromise;
                     const error = await stripe.redirectToCheckout({sessionId: session.data.id});
                     console.error(error.message)
-                }}>Buy Now</button>
+                }}>Continue Memorizing</button>
             </Card.Text>
         </Card.Body>
     </Card>
