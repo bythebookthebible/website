@@ -76,7 +76,7 @@ export default function Activity(props) {
       <div className="sidemenu-kids" style={(props.show)? {marginLeft: '70%'} : {marginLeft: '100%'}}>
         {sidebarLayout}
       </div>
-      <div style={{position: 'absolute', zIndex: '2', right: '10px'}} onClick={() => props.setShow()}>
+      <div style={{position: 'absolute', zIndex: '2', right: '10px'}} onClick={() => setShowSidebar(!showSidebar)}>
         {icon}
       </div>
     </div>
@@ -86,11 +86,12 @@ export default function Activity(props) {
   // repeatHandler: repeatHandler
   return <>
     <MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />
-    <SidebarPopUp setShow={()=>setShowSidebar(!showSidebar)} show={showSidebar} />
+    <SidebarPopUp show={showSidebar} />
     {
       media[state.activity.kind] ?
         React.cloneElement(media[state.activity.kind], {isActive:active=>{
-          if(!showSidebar == !active) setShowSidebar(!active)
+          console.log('active', showSidebar, active, showSidebar == active)
+          setShowSidebar(!active)
         }, repeatHandler: repeatHandler})
       : <div>Coming Soon!</div>
     }

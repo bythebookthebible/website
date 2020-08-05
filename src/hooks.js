@@ -78,7 +78,7 @@ export function useFirestoreState(ref, onload) {
         }
         
         d = deepFilter(d, v=>v!=undefined)
-        console.log('updating firebase:', data, newData, d, diff(data, newData), detailedDiff(data, newData))
+        // console.log('updating firebase:', data, newData, d, diff(data, newData), detailedDiff(data, newData))
 
         if(d) {
             db.doc(`${ref}`).set(d, {merge: true})

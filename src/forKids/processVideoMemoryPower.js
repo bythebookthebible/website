@@ -34,10 +34,13 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
     let timer = useRef(0)
     function onStateChange(playerState) {
         // update active status
-        if(playerState.currentTime + 1 >= playerState.duration)
+        if(playerState.currentTime + 1 >= playerState.duration) {
             props.isActive(false)
-        if(playerState.paused != prevPaused.current)
+        }
+        if(playerState.paused != prevPaused.current){
+            console.log('pause transition', playerState.paused)
             props.isActive(!playerState.paused)
+        }
 
         prevPaused.current = playerState.paused
 
