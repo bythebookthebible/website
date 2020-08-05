@@ -31,13 +31,7 @@ export default function MemoryPalaceView(props) {
 
     return (
         <div>
-            {<MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />}
-            <div style={{
-                backgroundColor:'red', height:'10vw', color:'white', 
-                fontSize:'8vw', fontFamily:'Loopiejuice-Regular',
-                textAlign:'center', position:'absolute', top:'10vw', right:0, left:0,
-            }}>Coming Soon</div>
-            
+            {<MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />}            
             <ReactSVG 
                 src={memoryPalace}
                 afterInjection={(err, svg) => {
@@ -45,7 +39,7 @@ export default function MemoryPalaceView(props) {
                     for (let i = 0; i < 10; i++) {
                         if(i < modules.length) {
                             // fill up power
-                            $(svg).find(`#power_${i + 1}_`).css({'transform': 'scaleY(' + modules[i].fill + ')'})
+                            $(svg).find(`#power_${i + 1}_`).css({opacity:0, transform: 'scaleY(' + modules[i].fill + ')'})
                             // crack jewel
                             if(modules[i].status == 'memorized' || modules[i].status == 'applied') {
                                 $(svg).find(`#rock_${i + 1}_`).css({'display': 'none'})
@@ -54,6 +48,14 @@ export default function MemoryPalaceView(props) {
                             $(svg).find(`#module${i + 1}`).css({'display': 'none'})
                         }
                     }
+                    // refresh styling later for safari transform-origin bug
+                    setTimeout(()=>{
+                        for (let i = 0; i < 10; i++) {
+                            if(i < modules.length) {
+                                $(svg).find(`#power_${i + 1}_`).css({opacity:1})
+                            }
+                        }
+                    }, 0)
                 }}
             />
             <div style={{
