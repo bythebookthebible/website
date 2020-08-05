@@ -13,7 +13,7 @@ import { DispatchContext, StateContext } from "./kidModeApp"
 
 export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
     let dispatch = useContext(DispatchContext)
-
+    let prevPaused = useRef(true)
     let intRef = useRef()
     let player = extRef || intRef
 
@@ -34,12 +34,13 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
     let timer = useRef(0)
     function onStateChange(playerState) {
         // update active status
-        if (playerState.currentTime + 1 >= playerState.duration && !playerState.paused)
+        console.log(playerState.paused, prevPaused.current)
+        if(playerState.currentTime + 1 >= playerState.duration)
             props.isActive(false)
-        else if (playerState.paused)
-            props.isActive(false)
-        else
-            props.isActive(true)
+        if(playerState.paused != prevPaused.current)
+            props.isActive(!playerState.paused)
+
+        prevPaused.current = playerState.paused
 
         // update memory power
         if (playerState.paused) {
