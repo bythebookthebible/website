@@ -1,9 +1,10 @@
 import React, {useState, useEffect, useRef} from 'react'
 import {openDB, deleteDB, wrap, unwrap} from 'idb'
 import deepEqual from 'deep-equal'
-import { diff } from 'deep-object-diff'
+import { diff, detailedDiff } from 'deep-object-diff'
 
 import {firebase, db, storage} from './firebase'
+import _ from 'lodash'
 
 // this pattern is used enough I wanted to encapsulate it
 export function useAsyncEffect(fn=()=>undefined, deps=[]) {
@@ -76,10 +77,8 @@ export function useFirestoreState(ref, onload) {
             d.memoryPower = deepEqual(d.memoryPower, {}) ? undefined : d.memoryPower
         }
         
-        d = Object.entries(d)
-            .filter(([k,v])=>v!=undefined)
-            .reduce((obj, [k,v])=>{obj[k]=v; return obj}, {})
-        console.log('updating firebase:', data, newData, d)
+        d = deepFilter(d, v=>v!=undefined)
+        console.log('updating firebase:', data, newData, d, diff(data, newData), detailedDiff(data, newData))
 
         if(d) {
             db.doc(`${ref}`).set(d, {merge: true})
@@ -91,6 +90,23 @@ export function useFirestoreState(ref, onload) {
     }
 
     return [data, updateData]
+}
+
+function deepFilter(o, f) {
+    if(!_.isObject(o)) return f(o) ? o : {}
+
+    let _o = Object.entries(o)
+        .reduce((obj, [k,v]) => {
+            obj[k]=deepFilter(v, f); return obj
+        }, {})
+
+    return Object.entries(_o)
+        .filter(([k,v]) => {
+            return !_.isObject(v) || Object.keys(v).length > 0
+        })
+        .reduce((obj, [k,v]) => {
+            obj[k]=v; return obj
+        }, {})
 }
 
 export function useIdbState(ref, onload) {
