@@ -65,7 +65,7 @@ export var RepetitionMemoryVideo = (props) => {
     let player = useRef()
     
     let counter = 1;
-    let arrTimestamps = useMemo(()=>traverse(props.timestamps), props.timestamps)
+    let arrTimestamps = useMemo(()=>traverse(props.timestamps), [props.timestamps])
 
     function traverseHelper(left, right, arr) {
         let rightTimePair = "" + right[0] + " " + right[right.length - 1]

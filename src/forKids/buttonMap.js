@@ -7,6 +7,7 @@ import { DispatchContext } from "./kidModeApp"
 export default function ButtonMap(props) {
     let dispatch = useContext(DispatchContext)
 
+    // return <img src={props.src} />
     return <ReactSVG src={props.src} renumerateIRIElements={false}
         afterInjection={(err, svg) => {
         for (let button of props.buttons) {

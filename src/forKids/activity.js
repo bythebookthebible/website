@@ -8,18 +8,18 @@ import sidebarSVG from '../images/maps/ActivitySideBar1.svg';
 
 // @TODO: 1) some contents are not implemented by the media yet
 //        2) might want to add prev module and prev activity >> idea for later
-// 
-// note: i am filtering out some activities, passing only the implemented thru the media rn
 
 import { ReactSVG } from "react-svg";
 
 import $ from "jquery";
-
+import { kinds } from "../util";
 
 export function SVGRendor(props) {
     let dispatch = useContext(DispatchContext)
     let state = useContext(StateContext);
     let defaultHalfMemoryPower = 50.0
+
+    // console.log('powers', state.memoryPower[state.activity.key].power, props.initialMP)
 
     return <ReactSVG src={sidebarSVG} afterInjection={(err, svg) => {
         for (let button of props.buttons) {
@@ -28,43 +28,17 @@ export function SVGRendor(props) {
                 button.onClick && button.onClick()
             });
         }
-        let MP = state.memoryPower[state.activity.key].power
-        let percentageHeight = MP / (MP + (props.halfMemoryPower || defaultHalfMemoryPower))
-        let square;
+        let MP = (state.memoryPower[state.activity.key].power - (props.initialMP || 0))
+        let percentageHeight = MP*MP / (MP*MP + (props.halfMemoryPower || defaultHalfMemoryPower))
         let percentageWidth;
-        if (MP <= 15) {
-          percentageWidth= percentageHeight + 0.3
-        } else if (MP <= 15) {
-          percentageWidth= percentageHeight + 0.39
-        } else if (MP <= 25) {
-          square = -2.171550024 * Math.pow(percentageHeight, 2)
-          percentageWidth = square + 2.683222598 * percentageHeight + 0.0631248262 
-        } else if (MP <= 75) {
-          // smaller
-          square = -2.3 * Math.pow(percentageHeight, 2)
-          percentageWidth = square + 2.683222598 * percentageHeight + 0.0631248262 
-        } else if (MP <= 110) {
-          square = -2.171550024 * Math.pow(percentageHeight, 2)
-          percentageWidth = square + 2.683222598 * percentageHeight + 0.0631248262 
-        } else if (MP <= 132) {
-          // bigger
-          square = -2.1 * Math.pow(percentageHeight, 2)
-          percentageWidth = square + 2.683222598 * percentageHeight + 0.0631248262 
-        } else if (MP<= 210) {
-          square = -2.001550024 * Math.pow(percentageHeight, 2)
-          percentageWidth = square + 2.683222598 * percentageHeight + 0.0631248262 
-        } else if (MP<= 240) {
-          percentageWidth= percentageHeight + 0.14
-        } else {
-          percentageWidth= percentageHeight + 0.1
-        }
+        // match curve of cup
+        percentageWidth = Math.pow(Math.max(.01, percentageHeight), .3)
 
         $('#power').children().css({'transform-origin': '46% 83.6%', 'transform': 'scale(' +  percentageWidth + ', '+ percentageHeight + ')'})
         
     }}/>
 }
 
-let halfMemoryPower=50
 export default function Activity(props) {
   let dispatch = useContext(DispatchContext)
   let state = useContext(StateContext)
@@ -72,14 +46,16 @@ export default function Activity(props) {
   let [showMemoryPrompt, setShowMemoryPrompt] = useState(props.showMemoryPrompt)
   // if(! state.resources) return null
   let repeatHandler = useRef(()=>{})
-  // let repeatActivity = useRef(false)
+      
+  let [initialMP] = useState(state.memoryPower[state.activity.key].power)
 
-  // function repeatHandler(props) {
-  //   repeatActivity.current = true
-  // }
-  // function resetRepeat(props) {
-  //   repeatActivity.current = false
-  // }
+  let halfMemoryPower=0.7
+  if(state.activity.kind==kinds.watch ||
+    state.activity.kind==kinds.karaoke ||
+    state.activity.kind==kinds.dance ||
+    state.activity.kind==kinds.echo ||
+    state.activity.kind==kinds.joSchmo) halfMemoryPower = 7
+  else if(state.activity.kind==kinds.speed) halfMemoryPower = 70
 
   function SidebarPopUp(props) {
     let icon = <i class="fa fa-2x fa-chevron-right" aria-hidden="true"></i>
@@ -88,7 +64,7 @@ export default function Activity(props) {
     }
     
     let sidebarLayout = <div>
-      <SVGRendor src={sidebarSVG} buttons={[
+      <SVGRendor initialMP={initialMP} key={state.activity.key + '' + state.activity.kind} src={sidebarSVG} buttons={[
         {id: 'castle', dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'palace'}},
         {id: 'repeat', onClick: ()=>repeatHandler.current()},
         {id: 'verse', dispatch: {type:actionTypes.nextModule}},
@@ -97,14 +73,10 @@ export default function Activity(props) {
     </div>
 
     return <div>
-      {/* <Row>
-        <Col lg={9} xl={9}> */}
-          <div className="sidemenu-kids" style={(props.show)? {marginLeft: '70%'} : {marginLeft: '100%'}}>
-          {sidebarLayout}
-          </div>
+      <div className="sidemenu-kids" style={(props.show)? {marginLeft: '70%'} : {marginLeft: '100%'}}>
+        {sidebarLayout}
+      </div>
       <div style={{position: 'absolute', zIndex: '2', right: '10px'}} onClick={() => props.setShow()}>
-        {/* <Button style={{position: 'absolute', zIndex: '2', right: '0'}} onClick={() => props.setShow()}><img src={diamond} style={{height: '20px', width: '20px'}}/></Button> */}
-        {/* <img src={icon} style={{height: '20px', width: '20px'}}/> */}
         {icon}
       </div>
     </div>

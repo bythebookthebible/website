@@ -81,8 +81,10 @@ export function useFirestoreState(ref, onload) {
             .reduce((obj, [k,v])=>{obj[k]=v; return obj}, {})
         console.log('updating firebase:', data, newData, d)
 
-        db.doc(`${ref}`).set(d, {merge: true})
-        setData(newData)
+        if(d) {
+            db.doc(`${ref}`).set(d, {merge: true})
+            setData(newData)
+        }
         // go through the changed values, and upload to fb
         // update data state
         // do not update if not loaded yet
