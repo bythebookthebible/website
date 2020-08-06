@@ -85,6 +85,7 @@ exports.renewSubscription = functions.https.onRequest(async (request, response) 
         console.error(`Webhook Error: ${err.message}`)
         return response.status(400).send(`Webhook Error: ${err.message}`);
     }
+    console.log(event)
 
     // Accepts the customer.subscription.updated event
     if (event.type === 'customer.subscription.updated') {
@@ -95,11 +96,15 @@ exports.renewSubscription = functions.https.onRequest(async (request, response) 
         // let doc = await admin.firestore().doc(`checkoutSessions/${subscription.id}`).get()
         // let uid = doc.data().uid
         let uid = stripeCustomer.metadata.firebaseId
-        console.log(`uid: ${uid}`)
-
-        let claims = (await admin.auth().getUser(uid)).customClaims
-        claims.expirationDate = subscription.current_period_end * 1000; // convert to ms
-        await admin.auth().setCustomUserClaims(uid, {...claims})
+        if(uid) {
+            console.log(`uid: ${uid}`)
+    
+            let claims = (await admin.auth().getUser(uid)).customClaims
+            claims.expirationDate = subscription.current_period_end * 1000; // convert to ms
+            await admin.auth().setCustomUserClaims(uid, {...claims})
+        } else {
+            console.warn(`invalid uid: ${uid}`)
+        }
 
         // await admin.firestore().doc(`checkoutSessions/${session}`).delete()
     }
