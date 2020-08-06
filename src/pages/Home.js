@@ -14,11 +14,11 @@ export default function Home() {
             <div className='display-1'>Memorize a Book<br />of the Bible</div>
             <h2>Our mission is to create a Biblically literate generation by giving families a fun way to memorize books of the Bible.</h2>
 
-            <Row className="flex-centered">
+            {/* <Row className="flex-centered">
                 <Col xs={12} md={{span: "auto", order: 2}}><a href={buyLink} className="display-4 btn btn-round btn-primary">Get&nbsp;Started</a></Col>
                 <Col xs={5} md={{span: "auto", order: 1}}><a href={giftLink} className="btn btn-round btn-primary">Give as a Gift</a></Col>
                 <Col xs={5} md={{span: "auto", order: 3}}><a href={redeemLink} className="btn btn-round btn-primary">Redeem my Gift</a></Col>
-            </Row>
+            </Row> */}
 
             <Row>
                 <Col xs={12} sm={12} lg={{span: 6, order: 2}}><ReactPlayer url={marketingVideo} width="100%" height="auto" controls /></Col>

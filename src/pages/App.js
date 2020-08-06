@@ -185,7 +185,7 @@ function FullNav(props) {
         <Nav.Link href={internLink}>Internship</Nav.Link>
       </Nav>
       <Nav>
-        <Nav.Link href={signInLink} className="btn btn-round btn-primary mx-auto">Thinkific Login</Nav.Link>
+        {/* <Nav.Link href={signInLink} className="btn btn-round btn-primary mx-auto">Thinkific Login</Nav.Link> */}
         {/* <UserNavButton className="btn btn-round btn-primary mx-auto" {...props}/> */}
       </Nav>
     </Navbar.Collapse>
