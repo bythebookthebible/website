@@ -6,6 +6,8 @@ import { diff, detailedDiff } from 'deep-object-diff'
 import {firebase, db, storage} from './firebase'
 import _ from 'lodash'
 
+var userDataMigration = firebase.functions().httpsCallable('userDataMigration');
+
 // this pattern is used enough I wanted to encapsulate it
 export function useAsyncEffect(fn=()=>undefined, deps=[]) {
     let abort = useRef(false)
@@ -20,6 +22,15 @@ export var withAuth = wrappedComponent => props => {
     let [claims, setClaims] = useState(undefined)
 
     firebase.auth().onAuthStateChanged(refresh)
+
+    useAsyncEffect(()=>{
+        if(user) userDataMigration()
+            .then(changed=>{
+                console.log('migration', changed.data)
+                if(changed.data) window.location.reload() // get new user info
+            })
+            .catch(e=>console.log('migration', e))
+    }, [user && user.uid])
 
     async function refresh() {
         let u = firebase.auth().currentUser

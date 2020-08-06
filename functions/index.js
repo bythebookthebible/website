@@ -103,7 +103,23 @@ exports.renewSubscription = functions.https.onRequest(async (request, response) 
             claims.expirationDate = subscription.current_period_end * 1000; // convert to ms
             await admin.auth().setCustomUserClaims(uid, {...claims})
         } else {
-            console.warn(`invalid uid: ${uid}`)
+            console.log(`no firebase uid: ${uid}, looking by email`)
+            try{
+                await admin.auth().getUserByEmail(stripeCustomer.email)
+                    .catch(console.log(`no firebase account for : ${stripeCustomer.email}`))
+                    .then(async user => {
+                        console.log(`found user uid: ${user.uid}`)
+                        // update stripe
+                        await strip.customerse.update(stripeCustomer.id, {metadata: {firebaseId: user.uid}})
+
+                        // fulfil purchase
+                        let claims = user.customClaims
+                        claims.expirationDate = subscription.current_period_end * 1000; // convert to ms
+                        await admin.auth().setCustomUserClaims(user.uid, {...claims})
+                    })
+            } catch {
+                console.log('Error setting claims for email')
+            }
         }
 
         // await admin.firestore().doc(`checkoutSessions/${session}`).delete()
@@ -156,6 +172,43 @@ exports.initAccess = functions.auth.user().onCreate(async user => {
     freeDate.setDate(freeDate.getDate() + 30); // 30 days free
 
     await admin.auth().setCustomUserClaims(user.uid, {stripeId: stripeId, expirationDate: freeDate.valueOf()});
+});
+
+// returns true if user info needed to change
+exports.userDataMigration = functions.https.onCall(async (data, context) => {
+    let changesRequired = false
+    if(!context.auth.uid) return changesRequired
+    
+    let user = context.auth.token
+    // check if user matches a stripe customer obj and pair them
+    let stripeId
+    stripeMatches = (await stripe.customers.list({email: user.email, limit: 3})).data
+    console.log('matches ', stripeMatches)
+
+    if(stripeMatches.length == 1) {
+        stripeId = stripeMatches[0].id
+        if(!stripeMatches[0].metadata.firebaseId || stripeMatches[0].metadata.firebaseId != context.auth.uid) {
+            // give customer metadata firebase uid to fulfill subscription
+            await stripe.customers.update(stripeId, {metadata: {firebaseId: context.auth.uid}})
+            changesRequired = true
+        }
+    } else if(stripeMatches.length == 0) {
+        // After Migration, just create new stripe customer
+        customer = await stripe.customers.create({email: user.email, metadata: {firebaseId: context.auth.uid}})
+        stripeId = customer.id
+        changesRequired = true
+    } else {
+        console.error('customer with duplicate emails in stripe')
+    }
+
+    // Set a default 30 day trial
+    let claims = (await admin.auth().getUser(context.auth.uid)).customClaims
+    if(!claims.stripeId || claims.stripeId != stripeId) {
+        await admin.auth().setCustomUserClaims(context.auth.uid, {...claims, stripeId: stripeId});
+        changesRequired = true
+    }
+
+    return changesRequired
 });
 
 // CAMP FORM ENDPOINTS

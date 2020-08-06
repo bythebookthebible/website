@@ -14,11 +14,11 @@ export default function ManageUsers(props) {
     let [users, setUsers] = useState(null)
     // console.log(users)
 
-    useAsyncEffect(abort => {
+    useEffect(() => {
         getUsers()
             .then(res => {
                 console.log(res.data)
-                if(!abort.current) setUsers(res.data)
+                setUsers(res.data)
             })
             .catch(e => console.error(e))
     }, [props.user])
