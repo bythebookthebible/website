@@ -70,8 +70,8 @@ function NotFound(props) {
 
 var Page = props=> {
   let {nav, footer, theme, path, children, ...passThru} = props
-  nav = nav === undefined ? <FullNav /> : nav
-  footer = footer === undefined ? <Footer /> : footer
+  nav = nav === undefined ? <LightNav /> : nav
+  footer = footer === undefined ? null : footer
   theme = theme === undefined ? "plain-theme" : theme
 
   return <Route path={path} {...passThru}>

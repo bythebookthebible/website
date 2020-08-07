@@ -109,7 +109,7 @@ function UserRow(props) {
 
         <td style={{maxWidth:'50px'}} ><label>{user.uid}</label></td>
         <td><input type='text' size={5} ref={stripeRef} onBlur={checkIfChanged}
-            placeholder={claims.stripeId.substr(0,7)+'...'} /></td>
+            placeholder={claims.stripeId ? claims.stripeId.substr(0,7)+'...' : ''} /></td>
 
         <td>
             {changed && <Button size='sm' onMouseUp={checkIfChanged} onMouseDown={e => {
