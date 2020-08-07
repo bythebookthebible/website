@@ -44,7 +44,10 @@ $embed-responsive-aspect-ratios: (
 }
 
 .body {
-    flex: 1 1 auto
+    flex: 1 1 auto;
+    position: absolute;
+    top:0; left: 0; right: 0; bottom: 0;
+    overflow: auto;
 }
 
 .navbar, .Footer {

@@ -21,10 +21,7 @@ import AdultModeApp from "../pages/Memorize";
 // import AdultModeApp from "../forAdults/adultModeApp";
 import { withAuth } from '../hooks';
 
-var memorizeLink =
-  "https://memorize.bythebookthebible.com/courses/take/matthew-5-6-7-sermon-on-the-mount";
-var signInLink = "https://memorize.bythebookthebible.com/users/sign_in";
-var buyLink = "https://memorize.bythebookthebible.com";
+var mainLink = "https://bythebookthebible.com";
 var internLink =
   "https://memorize.bythebookthebible.com/courses/summer-2020-internship";
 
@@ -48,31 +45,17 @@ export default class App extends Component {
   }
 
   render() {
-    return (
-      <Router>
-        <div className="App">
-          {/* <div className="construction">This site is currently under construction.</div> */}
-
-          <Switch>
-            <Page path="/ourStory" ><OurStory /></Page>
-            <Page path="/testimonials" ><Testimonials /></Page>
-            <Page path="/features" ><Curriculum /></Page>
-            <Page path="/camp" ><Camp /></Page>
-            <Page path="/manage" ><Manage /></Page>
-            <Page path="/subscribe" ><Subscribe /></Page>
-            <Page path="/account" ><AccountSettings /></Page>
-            <Page path="/termsOfService" ><Login.TermsOfService /></Page>
-            <Page path="/privacy" ><Login.PrivacyPolicy /></Page>
-            <MemorizeApp path="/memorize"></MemorizeApp>
-            {/* <Page path="/memorize" theme="colorful-theme" nav={<LightNav />} footer={null} ><Memorize /></Page>
-            <Page path="/kidMemorize"><KidModeApp /></Page>
-            <Page path="/adultMemorize"><AdultModeApp /></Page> */}
-            <Page exact path="/" ><Home /></Page>
-            <Page path="" ><NotFound /></Page>
-          </Switch>
-        </div>
-      </Router>
-    );
+    return <Router as='div' className="App">
+      <Switch>
+        <Page path="/manage" ><Manage /></Page>
+        <Page path="/subscribe" ><Subscribe /></Page>
+        <Page path="/account" ><AccountSettings /></Page>
+        <Page path="/termsOfService" ><Login.TermsOfService /></Page>
+        <Page path="/privacy" ><Login.PrivacyPolicy /></Page>
+        <MemorizeApp exact path="/"></MemorizeApp>
+        <Page path="" ><NotFound /></Page>
+      </Switch>
+    </Router>
   }
 }
 
@@ -173,16 +156,16 @@ function Footer(props) {
 
 function FullNav(props) {
   return <Navbar collapseOnSelect expand="md">
-    <Navbar.Brand href="/"><img src={logo} height="50rem"/></Navbar.Brand>
+    <Navbar.Brand href={mainLink}><img src={logo} height="50rem"/></Navbar.Brand>
     <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
     <Navbar.Collapse  id="responsive-navbar-nav">
       <Nav className="mr-auto">
         <Nav.Link href="/memorize">Memorize (Beta)</Nav.Link>
-        <Nav.Link href="/camp">Camp</Nav.Link>
+        {/* <Nav.Link href="/camp">Camp</Nav.Link>
         <Nav.Link href="/features">Features</Nav.Link>
         <Nav.Link href="/testimonials">Testimonials</Nav.Link>
         <Nav.Link href="/ourStory">Our&nbsp;Story</Nav.Link>
-        <Nav.Link href={internLink}>Internship</Nav.Link>
+        <Nav.Link href={internLink}>Internship</Nav.Link> */}
       </Nav>
       <Nav>
         {/* <Nav.Link href={signInLink} className="btn btn-round btn-primary mx-auto">Thinkific Login</Nav.Link> */}
@@ -199,7 +182,7 @@ function LightNav(props) {
   // </div>
 
   return <Navbar collapseOnSelect expand="sm" className='lightNav'>
-    <Navbar.Brand href="/"><img src={logo} height="40rem"/></Navbar.Brand>
+    <Navbar.Brand href={mainLink}><img src={logo} height="40rem"/></Navbar.Brand>
     <Nav>
       <UserNavButton {...props}/>
     </Nav>
