@@ -25,14 +25,14 @@ let Test = props => <div>
 
 let Map = props => <div>
     <ButtonMap src={mainMap} buttons={[
-        {id:'Memory_Palace',  dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'palace'}},
+        {id:'castle',  dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'palace'}},
         {id:'City_Center',    dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'townSquare'}},
         // {id:'Water_Well',     dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.echo}},
-        {id:'Jo_Schmo_House', dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'schmoHouses'}},
-        {id:'Art_Gazebo',     dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'artGazebo'}},
-        {id:'Dragon',         dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.speed}},
+        {id:'Jo_Schmo_s_House', dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'schmoHouses'}},
+        {id:'Gazeebo',     dispatch: {type:actionTypes.newView, view:actionViews.map, viewSelected:'artGazebo'}},
+        {id:'Dragon_s_Lair',         dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.speed}},
         // {id:'Game_Factory',   dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.game}},
-        {id:'Book_Tree',      dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.book}},
+        {id:'Tree',      dispatch: {type:actionTypes.newView, view:actionViews.moduleSelector, viewSelected:kinds.book}},
     ]}/>
 </div>
 
