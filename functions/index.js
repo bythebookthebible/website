@@ -153,7 +153,16 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
     return session
 })
 
-exports.initAccess = functions.auth.user().onCreate(async user => {
+exports.initUser = functions.https.onCall(async (data, context) => {
+    if(!context.auth) return '[Error] no user'
+    let user = (await admin.auth().getUser(context.auth.uid))
+    
+    await initAccess(user)
+})
+
+exports.initAccess = functions.auth.user().onCreate(initAccess);
+
+async function initAccess(user) {
     // FOR MIGRATION, check if user matches a stripe customer obj and pair them
     let stripeId
     stripeMatches = (await stripe.customers.list({email: user.email, limit: 3})).data
@@ -176,7 +185,7 @@ exports.initAccess = functions.auth.user().onCreate(async user => {
     freeDate.setDate(freeDate.getDate() + 30); // 30 days free
 
     await admin.auth().setCustomUserClaims(user.uid, {stripeId: stripeId, expirationDate: freeDate.valueOf()});
-});
+}
 
 // returns true if user info needed to change
 exports.userDataMigration = functions.https.onCall(async (data, context) => {

@@ -10,6 +10,7 @@ const tosUrl = '/termsOfService'
 const privacyPolicyUrl = '/privacy'
 
 var userDataMigration = firebase.functions().httpsCallable('userDataMigration');
+var initUser = firebase.functions().httpsCallable('initUser');
 
 export var Login = {
     LoginButton: LoginButton,
@@ -111,7 +112,7 @@ function LoginForm(props) {
 
             await auth.createUserWithEmailAndPassword(email, password).catch(error)
             await firebase.auth().currentUser.updateProfile({displayName: name}).catch(error)
-            window.location.reload()
+            await initUser().then(setTimeout(()=>window.location.reload(), 100))
         }
     }
 
