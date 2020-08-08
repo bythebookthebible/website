@@ -100,7 +100,8 @@ exports.renewSubscription = functions.https.onRequest(async (request, response) 
             console.log(`uid: ${uid}`)
     
             let claims = (await admin.auth().getUser(uid)).customClaims
-            claims.expirationDate = subscription.current_period_end * 1000; // convert to ms
+            // convert to ms and add two days of buffer
+            claims.expirationDate = Math.max(claims.expirationDate, subscription.current_period_end * 1000 + 2 * 24 * 3600 * 1000)
             await admin.auth().setCustomUserClaims(uid, {...claims})
         } else {
             console.log(`no firebase uid: ${uid}, looking by email`)
@@ -114,7 +115,8 @@ exports.renewSubscription = functions.https.onRequest(async (request, response) 
 
                         // fulfil purchase
                         let claims = user.customClaims
-                        claims.expirationDate = subscription.current_period_end * 1000; // convert to ms
+                        // convert to ms and add two days of buffer
+                        claims.expirationDate = Math.max(claims.expirationDate, subscription.current_period_end * 1000 + 2 * 24 * 3600 * 1000)
                         await admin.auth().setCustomUserClaims(user.uid, {...claims})
                     })
             } catch {
@@ -157,7 +159,9 @@ exports.initAccess = functions.auth.user().onCreate(async user => {
     stripeMatches = (await stripe.customers.list({email: user.email, limit: 3})).data
     console.log('matches ', stripeMatches)
 
-    if(stripeMatches.length === 1 && !stripeMatches[0].metadata.firebaseId) {
+    if(stripeMatches.length >= 1) {
+        if(stripeMatches.length > 1) console.warn('customer with duplicate emails in stripe')
+        
         stripeId = stripeMatches[0].id
         // give customer metadata firebase uid to fulfill subscription
         await stripe.customers.update(stripeId, {metadata: {firebaseId: user.uid}})
@@ -185,20 +189,20 @@ exports.userDataMigration = functions.https.onCall(async (data, context) => {
     stripeMatches = (await stripe.customers.list({email: user.email, limit: 3})).data
     console.log('matches ', stripeMatches)
 
-    if(stripeMatches.length == 1) {
+    if(stripeMatches.length >= 1) {
+        if(stripeMatches.length > 1) console.warn('customer with duplicate emails in stripe')
+
         stripeId = stripeMatches[0].id
         if(!stripeMatches[0].metadata.firebaseId || stripeMatches[0].metadata.firebaseId != context.auth.uid) {
             // give customer metadata firebase uid to fulfill subscription
             await stripe.customers.update(stripeId, {metadata: {firebaseId: context.auth.uid}})
             changesRequired = true
         }
-    } else if(stripeMatches.length == 0) {
+    } else {
         // After Migration, just create new stripe customer
         customer = await stripe.customers.create({email: user.email, metadata: {firebaseId: context.auth.uid}})
         stripeId = customer.id
         changesRequired = true
-    } else {
-        console.error('customer with duplicate emails in stripe')
     }
 
     // Set a default 30 day trial

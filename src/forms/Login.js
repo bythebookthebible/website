@@ -9,6 +9,8 @@ var auth = firebase.auth()
 const tosUrl = '/termsOfService'
 const privacyPolicyUrl = '/privacy'
 
+var userDataMigration = firebase.functions().httpsCallable('userDataMigration');
+
 export var Login = {
     LoginButton: LoginButton,
     LogInOutButton: LogInOutButton,
@@ -125,6 +127,13 @@ function LoginForm(props) {
                 setShowResetPassword(true)
                 error(e)
             })
+
+        userDataMigration()
+            .then(changed=>{
+                console.log('migration', changed.data)
+            })
+            .catch(e=>console.log('migration', e))
+
     }
 
     let submitForm = e=>{
