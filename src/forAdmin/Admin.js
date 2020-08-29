@@ -34,8 +34,8 @@ function AdminContainer(props) {
   const dispatch = useDispatch()
 
   return <div className='container-xl' style={{marginTop:'5rem'}}>
-    <i class="fas fa-long-arrow-alt-left" 
-      style={{position:'absolute', top:'3rem', left:'1.6rem', fontSize:'3rem', color:'var(--primary)', lineHeight:'.6'}}
+    <i class="fas fa-reply fa-flip-vertical" 
+      style={{position:'absolute', top:'3rem', left:'1.5rem', fontSize:'2.4rem', color:'var(--primary)', lineHeight:'.8'}}
       onClick={() => dispatch(setView(adminViews.adminRoot))} />
     {props.children}
   </div>

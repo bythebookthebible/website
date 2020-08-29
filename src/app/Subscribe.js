@@ -1,9 +1,9 @@
-import React, { Component, useState} from 'react'
+import React from 'react'
 import {loadStripe} from '@stripe/stripe-js'
 import $ from "jquery"
 import { Card } from 'react-bootstrap';
 
-import {firebase, db, storage} from '../firebase'
+import {firebase} from '../firebase'
 
 const createSession = firebase.functions().httpsCallable('createCheckoutSession');
 

@@ -59,12 +59,14 @@ export const resoucesForKinds = {
 }
 
 export function getKidKinds(moduleResource) {
+  if(!moduleResource) return []
   return Object.keys(kidModeKinds).filter(
     k=>resoucesForKinds[k].every(r=>moduleResource[r])
   )
 }
 
 export function getAllKinds(moduleResource) {
+  if(!moduleResource) return []
   return Object.keys(kinds).filter(
     k=>resoucesForKinds[k].every(r=>moduleResource[r])
   )

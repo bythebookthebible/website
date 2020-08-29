@@ -2,14 +2,15 @@ import React from "react";
 import "../styles/index.scss";
 import { Navbar, Nav, Spinner } from "react-bootstrap";
 // import { firebase, db } from "../firebase.js";
-
 import logo from "../images/logo.png";
 import { Login } from "../components/Login";
 import { UserNavButton } from "../components/User";
-import Admin from "../forAdmin/Admin";
 import Subscribe from "./Subscribe";
+import Admin from "../forAdmin/Admin";
+import Focused from '../focusedMode/Focused'
 import KidModeApp from "../forKids/kidModeApp";
-import AdultModeApp from "../pages/Memorize";
+
+// import AdultModeApp from "../pages/Memorize";
 // import AdultModeApp from "../forAdults/adultModeApp";
 // import { withAuth } from '../hooks';
 import { useSelector, useDispatch } from "react-redux";
@@ -29,7 +30,7 @@ function ModeSwitch(props) {
   // what to render for each mode, and the name for it's tab / button
   const componentsByMode = {
     [modes.playful]: {name: 'Playful mode', content: <KidModeApp />},
-    [modes.focused]: {name: 'Focused mode', content: <AdultModeApp />},
+    [modes.focused]: {name: 'Focused mode', content: <Focused />},
     [modes.teacher]: {name: 'Teacher mode', content: <h1>Teacher mode coming soon!</h1>},
   }
   if (profile.isLoaded && profile.token.claims.admin)

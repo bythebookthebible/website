@@ -3,6 +3,7 @@ import { createReducer, combineReducers, createAction } from '@reduxjs/toolkit'
 import { firebaseReducer } from 'react-redux-firebase'
 import { firestoreReducer } from 'redux-firestore'
 import adminReducer from '../forAdmin/adminReducer'
+import focusedReducer from '../focusedMode/focusedReducer'
 
 export const modes = {
   playful: 'PLAYFUL_MODE',
@@ -31,7 +32,7 @@ export default combineReducers({
     // LOAD_POWER
   }),
   // playfulMode:
-  // focusedMode:
   // teacherMode:
   admin: adminReducer,
+  focused: focusedReducer,
 })
