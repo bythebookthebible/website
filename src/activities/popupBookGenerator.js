@@ -1,5 +1,4 @@
-import React, { useState, useContext } from "react";
-import { DispatchContext, StateContext } from "./kidModeApp";
+import React, { useState } from "react";
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 import KeyHandler, { KEYPRESS } from 'react-key-handler';
 import { Document, Page, pdfjs } from "react-pdf";
@@ -7,12 +6,14 @@ import { Row, Col, Container } from 'react-bootstrap';
 import { SizeMe } from 'react-sizeme';
 import right from '../images/kidsPageSidebar/right.png';
 import left from '../images/kidsPageSidebar/left.png';
+import { useDispatch } from 'react-redux';
+import { addPower } from '../app/rootReducer';
+
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 export default function PopupBookWithMemoryPower(props) {
-    let dispatch = useContext(DispatchContext)
-    let state = useContext(StateContext)
-
+    let dispatch = useDispatch()
+    
     let [numPages, setNumPages] = useState(null)
     let [pageNumber, setPageNumber] = useState(1)
     let [completed, setCompleted] = useState(false)
@@ -35,7 +36,7 @@ export default function PopupBookWithMemoryPower(props) {
         }
         if (pageNumber + 3 >= numPages) { // second page of new spread is the end
             if (!completed) {
-                dispatch({type:'addMemoryPower', power: 1})
+                dispatch(addPower({module: props.activity.module, power: 1}))
                 setCompleted(true)
             }
             props.isActive(false)

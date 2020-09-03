@@ -1,12 +1,11 @@
-import React, { useContext, useState, useEffect } from "react"
+import React, { useState } from "react"
 import { Container, Row, Col } from "react-bootstrap"
 
-import { DispatchContext, StateContext, actionTypes, actionViews } from "./kidModeApp"
-import { scriptureFromKey, getKidKinds, resoucesForKinds } from '../util'
+import { scriptureFromKey, getKidKinds } from '../util'
 
 import defaultIcon from '../images/kidsPageSidebar/diamond.png'
 
-import artVerseBar from '../images/maps/ArtVerseBar.svg'
+// import artVerseBar from '../images/maps/ArtVerseBar.svg'
 import blueHouseInside from '../images/maps/BlueHouseInside.svg'
 import bookVerseBar from '../images/maps/BookVerseBar.svg'
 import colorBackground from '../images/maps/ColorBackground.svg'
@@ -18,45 +17,49 @@ import dragonVerseBar from '../images/maps/DragonVerseBar.svg'
 import echoBackground from '../images/maps/EchoBackground.svg'
 import echoVerseBar from '../images/maps/EchoVerseBar.svg'
 import stageBackground from '../images/maps/StageBackground.svg'
-import stageVerseBar from '../images/maps/StageVerseBar.svg'
+// import stageVerseBar from '../images/maps/StageVerseBar.svg'
 import karaokeBackground from '../images/maps/KaraokeBackground.svg'
 import karaokeVerseBar from '../images/maps/KaraokeVerseBar.svg'
 import yelllowHouseInside from '../images/maps/YelllowHouseInside.svg'
 import colorVerseBar from '../images/maps/ColorVerseBar.svg'
 import pinkHouseInside from '../images/maps/PinkHouseInside.svg'
 import { storage } from "../firebase"
-import { useCachedStorage, useAsyncEffect } from "../hooks"
+import { useAsyncEffect, useMemoryResources } from "../hooks"
+import { useDispatch, useSelector } from "react-redux"
+import { newView, playfulViews } from "./playfulReducer"
+import { useFirestoreConnect } from "react-redux-firebase"
 
 function ModuleSelctor(props) {
-  console.log("at least here")
-  let dispatch = useContext(DispatchContext)
-  let state = useContext(StateContext);
-
-  let moduleFilter = key => getKidKinds(state.resources[key]).includes(state.viewSelected)
+  let dispatch = useDispatch()
+  let resources = useMemoryResources()
+  let viewSelected = useSelector(state => state.playful.viewSelected)
 
   // Make scripture grouped by Book, Chapter
-  let scriptures = Object.keys(state.resources).filter(moduleFilter).reduce((cum, key) => {
-    let s = scriptureFromKey(key)
-    cum[s.book] = cum[s.book] || {}
-    cum[s.book][s.chapter] = cum[s.book][s.chapter] || {}
-    cum[s.book][s.chapter][s.verses] = {...s, key:key}
-    return cum
+  let scriptures = Object.keys(resources)
+    .filter(key => getKidKinds(resources[key]).includes(viewSelected))
+    .reduce((cum, key) => {
+      let s = scriptureFromKey(key)
+      cum[s.book] = cum[s.book] || {}
+      cum[s.book][s.chapter] = cum[s.book][s.chapter] || {}
+      cum[s.book][s.chapter][s.verses] = {...s, key:key}
+      return cum
   }, {})
 
   console.log('scriptures', scriptures)
 
-  if(Object.keys(scriptures).length == 0) return <div style={{...props.style['firstDiv'], paddingTop:'20%'}}>
-    <div style={props.style['bookRow']}>
-      <div style={props.style['bookCol']}>
-        Coming Soon...
-        <br/>
-        <button className="btn btn-round btn-primary" 
-          onClick={()=>dispatch({type:'newView', view:'map', viewSelected:'home'})}>
-          Back to map!
-        </button>
+  if(Object.keys(scriptures).length == 0)
+    return <div style={{...props.style['firstDiv'], paddingTop:'20%'}}>
+      <div style={props.style['bookRow']}>
+        <div style={props.style['bookCol']}>
+          Coming Soon...
+          <br/>
+          <button className="btn btn-round btn-primary" 
+            onClick={()=>dispatch(newView({view:playfulViews.default}))}>
+            Back to map!
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
   return <div style={props.style['firstDiv']}>
     <Container fluid style={props.style['container']}>
@@ -74,11 +77,10 @@ function ModuleSelctor(props) {
                   {Object.keys(scriptures[book][chapter]).map(verses =>
                     //content
                     <Col xs={props.verseDisplaySmall} sm={props.verseDisplaySmall} lg={props.verseDisplayLarge} style={props.style['verseCol']}
-                      onClick={()=>dispatch({
-                        type:actionTypes.newView, 
-                        view:actionViews.activity, 
-                        activity:{key:scriptures[book][chapter][verses].key, kind: state.viewSelected}
-                      })}>
+                      onClick={()=>dispatch(newView({
+                        view:playfulViews.activity,
+                        viewSelected:{module:scriptures[book][chapter][verses].key, activity: viewSelected}
+                      }))}>
                       <Icon module={scriptures[book][chapter][verses].key} />
                       <br></br>{verses}
                     </Col>
@@ -94,16 +96,15 @@ function ModuleSelctor(props) {
 }
 
 function Icon(props) {
-  let state = useContext(StateContext);
+  let iconRef = useMemoryResources(resources => resources[props.module].icon)
   let [src, setSrc] = useState(defaultIcon)
   
   useAsyncEffect(async abort => {
-    let ref = state.resources[props.module].icon
-    if(ref) {
-      const downloadUrl = await storage.ref(ref[0]).getDownloadURL()
+    if(iconRef) {
+      const downloadUrl = await storage.ref(iconRef[0]).getDownloadURL()
       if(!abort.current) setSrc(downloadUrl)
     }
-  }, [props.module])
+  }, [iconRef])
 
   return <img src={src} style={{width: '60px', height: '60px'}} />
 }
@@ -120,18 +121,6 @@ let styles = {
     verseCol: {},
     img: {position: 'absolute'}
   },
-  // fix with actual dragon background
-  // speedStyle: {
-  //   firstDiv: {position:'relative', backgroundColor:"#ffde1a4c"},
-  //   container: {paddingLeft: '0', paddingRight: '0', backgroundColor:"#ffde1a4c" },
-  //   secondDiv: {backgroundSize: 'contain, cover', backgroundImage: "url(" + dragonBackground + ")", backgroundRepeat: 'no-repeat', backgroundAttachment: 'local', backgroudSize: 'cover'},
-  //   thirdDiv: {},
-  //   bookRow: {backgroundImage: "url(" + dragonVerseBar + ")", backgroundRepeat: 'no-repeat', backgroundAttachment: 'local', backgroundSize: 'cover', paddingTop: '100px'},
-  //   bookCol: {  padding: '5%', fontSize: '1.4rem', fontWeight: 'bold', color: 'white', textAlign: 'center' },
-  //   verseRow: { marginBottom:'-100px', marginLeft: '30px', marginRight: '30px', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'auto' },
-  //   verseCol: {color: 'white'}
-  // },
-
   speedStyle: {
     firstDiv: {position:'relative', backgroundColor:"#ffde1a4c"},
     container: {paddingLeft: '0', paddingRight: '0', backgroundColor:"#ffde1a4c" },

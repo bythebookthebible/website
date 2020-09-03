@@ -1,13 +1,15 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import $ from 'jquery';
 import { ReactSVG } from 'react-svg';
 import { Row, Col, Button } from 'react-bootstrap';
-import { DispatchContext, StateContext } from "./kidModeApp";
 import done from '../images/kidsPageSidebar/done.png';
 import './colorPalette.css';
+import { useDispatch } from 'react-redux';
+import { addPower } from '../app/rootReducer';
 
 export default function ProcessCPMemoryPower(props) {
-    let dispatch = useContext(DispatchContext)
+    let dispatch = useDispatch()
+    
     let [fillColors, setFillColors] = useState([])
     let [currentColor, setCurrentColor] = useState('white')
     let [counter, setcounter] = useState(0)
@@ -19,7 +21,7 @@ export default function ProcessCPMemoryPower(props) {
 
     let onSubmit = () => {
         if (drawn) {
-            dispatch({type: 'addMemoryPower', power: 1})
+            dispatch(addPower({module: props.activity.module, power: 1}))
             reset()
             setcounter(0)
             props.isActive(false)

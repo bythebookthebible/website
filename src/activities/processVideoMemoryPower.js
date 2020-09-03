@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useContext, useState, useMemo } from "react"
+import React, { useEffect, useRef, useMemo } from "react"
 import {
   Player,
   ControlBar,
@@ -9,10 +9,11 @@ import {
 import "../../node_modules/video-react/dist/video-react.css"
 
 import videoSplash from "../images/videoSplash.png"
-import { DispatchContext, StateContext } from "./kidModeApp"
+import { addPower } from "../app/rootReducer"
+import { useDispatch } from 'react-redux';
 
 export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
-    let dispatch = useContext(DispatchContext)
+    let dispatch = useDispatch()
     let prevPaused = useRef(true)
     let intRef = useRef()
     let player = extRef || intRef
@@ -47,9 +48,9 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
         // update memory power
         if (playerState.paused) {
             timer.current = playerState.currentTime
-        } else if (Math.abs(playerState.currentTime - timer.current) >= 1.0) {
+        } else if (Math.abs(playerState.currentTime - timer.current) >= 5) {
             timer.current = playerState.currentTime
-            dispatch({type:'addMemoryPower', power: 0.1})
+            dispatch(addPower({module: props.activity.module, power: 0.5}))
         }
     }
 

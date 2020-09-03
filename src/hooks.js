@@ -2,9 +2,16 @@ import React, {useState, useEffect, useRef} from 'react'
 import {openDB, deleteDB, wrap, unwrap} from 'idb'
 import deepEqual from 'deep-equal'
 import { diff, detailedDiff } from 'deep-object-diff'
+import _ from 'lodash'
 
 import {firebase, db, storage} from './firebase'
-import _ from 'lodash'
+import { useSelector } from 'react-redux'
+import { useFirestoreConnect } from 'react-redux-firebase'
+
+export function useMemoryResources(selector = resources=>resources) {
+    useFirestoreConnect([{collection:'memoryResources_02', storeAs:'memoryResources'}])
+    return useSelector(state => selector(state.firebase.data.memoryResources))
+}
 
 // this pattern is used enough I wanted to encapsulate it
 export function useAsyncEffect(fn=()=>undefined, deps=[]) {

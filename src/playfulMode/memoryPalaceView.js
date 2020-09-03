@@ -5,7 +5,6 @@ import { Button } from "react-bootstrap";
 import { DispatchContext, StateContext, actionTypes } from "./kidModeApp";
 import MemorizedPrompt from "./memorizedPrompt"
 import memoryPalace from '../images/memoryPalace/PalaceInside.svg'
-import { Book } from "epubjs";
 import { scriptureFromKey } from "../util";
 
 let halfFullPower = 50.0

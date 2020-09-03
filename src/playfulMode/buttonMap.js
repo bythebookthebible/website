@@ -2,10 +2,10 @@ import React, { useContext } from "react";
 import { ReactSVG } from "react-svg";
 
 import $ from "jquery";
-import { DispatchContext } from "./kidModeApp"
+import { useDispatch } from "react-redux";
 
 export default function ButtonMap(props) {
-    let dispatch = useContext(DispatchContext)
+    let dispatch = useDispatch()
 
     // return <img src={props.src} />
     return <ReactSVG src={props.src} renumerateIRIElements={false}

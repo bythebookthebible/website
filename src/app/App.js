@@ -3,12 +3,12 @@ import "../styles/index.scss";
 import { Navbar, Nav, Spinner } from "react-bootstrap";
 // import { firebase, db } from "../firebase.js";
 import logo from "../images/logo.png";
-import { Login } from "../components/Login";
-import { UserNavButton } from "../components/User";
+import { Login } from "../common/Login";
+import { UserNavButton } from "../common/User";
 import Subscribe from "./Subscribe";
 import Admin from "../forAdmin/Admin";
 import Focused from '../focusedMode/Focused'
-import KidModeApp from "../forKids/kidModeApp";
+import Playful from "../playfulMode/Playful";
 
 // import AdultModeApp from "../pages/Memorize";
 // import AdultModeApp from "../forAdults/adultModeApp";
@@ -29,7 +29,7 @@ function ModeSwitch(props) {
 
   // what to render for each mode, and the name for it's tab / button
   const componentsByMode = {
-    [modes.playful]: {name: 'Playful mode', content: <KidModeApp />},
+    [modes.playful]: {name: 'Playful mode', content: <Playful />},
     [modes.focused]: {name: 'Focused mode', content: <Focused />},
     [modes.teacher]: {name: 'Teacher mode', content: <h1>Teacher mode coming soon!</h1>},
   }
