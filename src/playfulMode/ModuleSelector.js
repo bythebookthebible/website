@@ -79,7 +79,7 @@ function ModuleSelctor(props) {
                     <Col xs={props.verseDisplaySmall} sm={props.verseDisplaySmall} lg={props.verseDisplayLarge} style={props.style['verseCol']}
                       onClick={()=>dispatch(newView({
                         view:playfulViews.activity,
-                        viewSelected:{module:scriptures[book][chapter][verses].key, activity: viewSelected}
+                        viewSelected:{module:scriptures[book][chapter][verses].key, kind: viewSelected}
                       }))}>
                       <Icon module={scriptures[book][chapter][verses].key} />
                       <br></br>{verses}

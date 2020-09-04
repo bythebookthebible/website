@@ -6,9 +6,17 @@ import done from '../images/kidsPageSidebar/done.png';
 import './colorPalette.css';
 import { useDispatch } from 'react-redux';
 import { addPower } from '../app/rootReducer';
+import { useMemoryResources, useCachedStorage } from "../hooks";
+import { resoucesForKinds } from "../util";
 
 export default function ProcessCPMemoryPower(props) {
+    let {activity, isActive, onRepeat} = props
     let dispatch = useDispatch()
+    
+    let resources = useMemoryResources()
+    let url = resources && resources[activity.module][resoucesForKinds[activity.kind][0]][0]
+    let version = resources && resources[activity.module].version
+    let src = useCachedStorage({url, version});
     
     let [fillColors, setFillColors] = useState([])
     let [currentColor, setCurrentColor] = useState('white')
@@ -21,19 +29,19 @@ export default function ProcessCPMemoryPower(props) {
 
     let onSubmit = () => {
         if (drawn) {
-            dispatch(addPower({module: props.activity.module, power: 1}))
+            dispatch(addPower({module: activity.module, power: 1}))
             reset()
             setcounter(0)
-            props.isActive(false)
         }
+        isActive(false)
     }
 
     return (
         <div>
-        <div onClick={() => props.isActive(true)}>
+        <div onClick={() => isActive(true)}>
             <Row>
             <Col sm={9} md={9}><ReactSVG 
-                src={props.src} 
+                src={src} 
                 afterInjection={(err, svg)=>{
                    if (counter == 0) {
                         for (let i = 0; i < ($(svg).children()).length; i++) {
@@ -66,7 +74,7 @@ export default function ProcessCPMemoryPower(props) {
             <Col sm={3} md={3}><ColorPalette changeColor={setCurrentColor} currentColor={currentColor} /></Col>
             </Row>
             </div>
-            <div className='btnn-submit-container'><Button className="btnn-submit" variant="primary" onClick={()=>onSubmit()} ><img src={done} style={{height: '30px', width: '30px'}} />   Done</Button></div>
+            <div className='btnn-submit-container'><Button className="btnn-submit" variant="primary" onClick={()=>onSubmit()} ><i className="far fa-check-circle" aria-hidden="true" />Done</Button></div>
         </div>
     )
 }

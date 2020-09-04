@@ -8,11 +8,19 @@ import right from '../images/kidsPageSidebar/right.png';
 import left from '../images/kidsPageSidebar/left.png';
 import { useDispatch } from 'react-redux';
 import { addPower } from '../app/rootReducer';
+import { useMemoryResources, useCachedStorage } from "../hooks";
+import { resoucesForKinds } from "../util";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 export default function PopupBookWithMemoryPower(props) {
+    let {activity, isActive, onRepeat} = props
     let dispatch = useDispatch()
+    
+    let resources = useMemoryResources()
+    let url = resources && resources[activity.module][resoucesForKinds[activity.kind][0]][0]
+    let version = resources && resources[activity.module].version
+    let src = useCachedStorage({url, version});
     
     let [numPages, setNumPages] = useState(null)
     let [pageNumber, setPageNumber] = useState(1)
@@ -20,7 +28,7 @@ export default function PopupBookWithMemoryPower(props) {
 
     function onDocumentLoadSuccess({ numPages }) {
         setNumPages(numPages)
-        props.isActive(true)
+        isActive(true)
     }
 
     let goToPrevView = () => {
@@ -36,10 +44,10 @@ export default function PopupBookWithMemoryPower(props) {
         }
         if (pageNumber + 3 >= numPages) { // second page of new spread is the end
             if (!completed) {
-                dispatch(addPower({module: props.activity.module, power: 1}))
+                dispatch(addPower({module: activity.module, power: 1}))
                 setCompleted(true)
             }
-            props.isActive(false)
+            isActive(false)
         }
     }
 
@@ -60,7 +68,7 @@ export default function PopupBookWithMemoryPower(props) {
                 render={({ size }) => (
                     <Container>
                     <Document
-                        file={props.src}
+                        file={src}
                         onLoadSuccess={onDocumentLoadSuccess}
                     >
                         <Row>

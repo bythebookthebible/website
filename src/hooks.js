@@ -10,7 +10,8 @@ import { useFirestoreConnect } from 'react-redux-firebase'
 
 export function useMemoryResources(selector = resources=>resources) {
     useFirestoreConnect([{collection:'memoryResources_02', storeAs:'memoryResources'}])
-    return useSelector(state => selector(state.firebase.data.memoryResources))
+    let resources = useSelector(state => selector(state.firestore.data.memoryResources))
+    return resources
 }
 
 // this pattern is used enough I wanted to encapsulate it

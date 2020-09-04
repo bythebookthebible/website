@@ -11,51 +11,62 @@ import "../../node_modules/video-react/dist/video-react.css"
 import videoSplash from "../images/videoSplash.png"
 import { addPower } from "../app/rootReducer"
 import { useDispatch } from 'react-redux';
+import { useMemoryResources, useCachedStorage } from "../hooks"
+import { resoucesForKinds } from "../util"
 
 export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
+    let {activity, isActive, onRepeat} = props
     let dispatch = useDispatch()
-    let prevPaused = useRef(true)
+    
+    let resources = useMemoryResources()
+    let url = resources && resources[activity.module][resoucesForKinds[activity.kind][0]][0]
+    let version = resources && resources[activity.module].version
+    let src = useCachedStorage({url, version});
+
     let intRef = useRef()
     let player = extRef || intRef
 
+    // on load src
     useEffect(()=>{
         player.current.subscribeToStateChange(onStateChange)
         
-        props.repeatHandler.current = ()=>{
+        onRepeat.current = ()=>{
             player.current.seek(0)
             player.current.play()
         }
 
         // load current src
-        player.current.load(props.src)
+        player.current.load(src)
         player.current.seek(0)
 
-    }, [Boolean(player.current), props.src])
+    }, [Boolean(player.current), src])
 
-    let timer = useRef(0)
+    let prevPaused = useRef(true)
+    let totalTime = useRef(0)
+    let lastTime = useRef(0)
     function onStateChange(playerState) {
         // update active status
         if(playerState.currentTime + 1 >= playerState.duration) {
-            props.isActive(false)
+            isActive(false)
         }
         if(playerState.paused != prevPaused.current){
             console.log('pause transition', playerState.paused)
-            props.isActive(!playerState.paused)
+            isActive(!playerState.paused)
         }
-
-        prevPaused.current = playerState.paused
 
         // update memory power
         if (playerState.paused) {
-            timer.current = playerState.currentTime
-        } else if (Math.abs(playerState.currentTime - timer.current) >= 5) {
-            timer.current = playerState.currentTime
-            dispatch(addPower({module: props.activity.module, power: 0.5}))
+            lastTime.current = playerState.currentTime
+        } else if (Math.abs(playerState.currentTime - lastTime.current) >= 5) {
+            lastTime.current = playerState.currentTime
+            dispatch(addPower({module: activity.module, power: 0.5}))
         }
+        
+        prevPaused.current = playerState.paused
     }
 
-    return <Player ref={player} playsInline className="player" poster={videoSplash} key={props.src}>
-        <source src={props.src} />
+    return <Player ref={player} playsInline className="player" poster={videoSplash} key={src}>
+        <source src={src} />
         <BigPlayButton position="center" />
         <ControlBar>
             <PlaybackRateMenuButton rates={[2.0, 1.5, 1.0, 0.7, 0.5]} order={7.1} />
@@ -66,10 +77,15 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
 
 const loopCount = 3;
 export var RepetitionMemoryVideo = (props) => {
+    let {activity} = props
+    
+    let resources = useMemoryResources()
+    let timestamps = resources && resources[activity.module][resoucesForKinds[activity.kind][1]][0]
+
     let player = useRef()
     
     let counter = 1;
-    let arrTimestamps = useMemo(()=>traverse(props.timestamps), [props.timestamps])
+    let arrTimestamps = useMemo(()=>traverse(timestamps), [timestamps])
 
     function traverseHelper(left, right, arr) {
         let rightTimePair = "" + right[0] + " " + right[right.length - 1]
@@ -125,14 +141,18 @@ export var RepetitionMemoryVideo = (props) => {
 
     useEffect(()=>{
         player.current.subscribeToStateChange(processRepetitionVideo)
-    }, [props.src])
+    }, [Boolean(player.current), activity])
     
     return <MemeoryPowerVideo ref={player} {...props} />
 }
 
 export var EchoMemoryVideo = (props) => {
+    let {activity} = props
     let player = useRef()
-    let timestamps = props.timestamps.split(' ').map(t=>{
+    let resources = useMemoryResources()
+    
+    let timestamps = resources && resources[activity.module][resoucesForKinds[activity.kind][1]][0]
+    timestamps = timestamps.split(' ').map(t=>{
         let s = t.split(':')
         return s.length == 1 ? Number(t) : Number(s[0])*60 + Number(s[1])
     })

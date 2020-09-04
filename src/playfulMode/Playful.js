@@ -1,7 +1,7 @@
 import React from 'react'
 import Activity from './activity'
 import { Spinner } from 'react-bootstrap'
-// import MemoryPowerView from './memoryPalaceView'
+import MemoryPalaceView from './memoryPalaceView'
 
 import Maps from './maps'
 import ModuleSelector from './ModuleSelector'
@@ -16,8 +16,6 @@ export default function Playful(props) {
   let view = useSelector(state => state.playful.view)
   let viewSelected = useSelector(state => state.playful.viewSelected)
 
-  let showMemoryPrompt = false // useSelector(state => Object.values(state.power).filter(p => p.power > 100).length > 0)
-
   let content = <div className='text-center pt-3'>
     <Spinner animation="border" role="status" size="md" />
     <h1 className='d-inline-block'>Loading...</h1>
@@ -26,8 +24,8 @@ export default function Playful(props) {
   if(view == 'map') content = Maps[viewSelected]
   if(resources) {
     if(view == 'moduleSelector') content = ModuleSelector[viewSelected]
-    // if(view == 'palace') content = <MemoryPowerView showMemoryPrompt={showMemoryPrompt} />
-    if(view == 'activity') content = <Activity showMemoryPrompt={showMemoryPrompt} />
+    if(view == 'palace') content = <MemoryPalaceView />
+    if(view == 'activity') content = <Activity />
   }
 
   if(!content) {

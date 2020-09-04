@@ -27,8 +27,9 @@ export default combineReducers({
   power: createReducer({}, {
     [addPower]: (state, action) => {
       // let module = action.payload.module || state.activity.module
-      let module = action.payload.module
-      state[module].power = state[module].power + action.payload.power || action.payload.power
+      let {module, power} = action.payload
+      state[module] = state[module] || {power: 0, status: 'learning'}
+      state[module].power = state[module].power + power
     },
     // LOAD_POWER
   }),

@@ -6,22 +6,28 @@ import { DispatchContext, StateContext, actionTypes } from "./kidModeApp";
 import MemorizedPrompt from "./memorizedPrompt"
 import memoryPalace from '../images/memoryPalace/PalaceInside.svg'
 import { scriptureFromKey } from "../util";
+import { useDispatch, useSelector } from "react-redux";
+import { useMemoryResources } from "../hooks";
+import { nextInPalace, playfulViews, newView } from "./playfulReducer";
 
 let halfFullPower = 50.0
 // @TODO: 1) fix code after actual imagine is used in place
 export default function MemoryPalaceView(props) {
-    let [showMemoryPrompt, setShowMemoryPrompt] = useState(props.showMemoryPrompt)
-    let dispatch = useContext(DispatchContext)
-    let state = useContext(StateContext)
+    let dispatch = useDispatch()
+    let resources = useMemoryResources()
+    let viewSelected = useSelector(state => state.playful.viewSelected)
+    let power = useSelector(state => state.power)
+    // let [showMemoryPrompt, setShowMemoryPrompt] = useState(props.showMemoryPrompt)
 
-    let book = state.viewSelected.book
-    let chapter = state.viewSelected.chapter
+    let book = viewSelected.book
+    let chapter = viewSelected.chapter
 
-    let modules = Object.keys(state.resources).filter(key=>{
+    let modules = Object.keys(resources).filter(key=>{
         let s = scriptureFromKey(key)
         return s.book == book && s.chapter == chapter
     }).map(key => {
-        let p = state.memoryPower[key]
+        let p = power[key]
+        p = p || {power:0, status: 'learning'}
         // fill has a horizontal asymptote of 1 and is 1/2 when p.power is halfFullPower
         return {fill: p.power / (p.power + halfFullPower), status:p.status, key:key}
     }, {})
@@ -30,7 +36,7 @@ export default function MemoryPalaceView(props) {
 
     return (
         <div>
-            {<MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />}            
+            {/* {<MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />}             */}
             <ReactSVG 
                 src={memoryPalace}
                 afterInjection={(err, svg) => {
@@ -64,12 +70,12 @@ export default function MemoryPalaceView(props) {
 
             <i className="fa fa-4x fa-chevron-left" style={{
                     color:'white', position:'absolute', top:'60vw', left:0,
-                }} onClick={() => dispatch({type:actionTypes.nextInPalace, step:-1})} />
+                }} onClick={() => dispatch(nextInPalace(-1))} />
             <i className="fa fa-4x fa-chevron-right" style={{
                     color:'white', position:'absolute', top:'60vw', right:0,
-                }} onClick={() => dispatch({type:actionTypes.nextInPalace})} />
+                }} onClick={() => dispatch(nextInPalace())} />
 
-            <Button className="btn-round" variant="primary" onClick={() => dispatch({type:'newView', view:'map', viewSelected:'home'})}>Back to Map</Button>
+            <Button className="btn-round" variant="primary" onClick={() => dispatch(newView({view:playfulViews.default}))}>Back to Map</Button>
         </div>
     )
 }

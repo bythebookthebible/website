@@ -15,6 +15,7 @@ import Playful from "../playfulMode/Playful";
 // import { withAuth } from '../hooks';
 import { useSelector, useDispatch } from "react-redux";
 import { modes, setMode } from "./rootReducer";
+import { useMemoryResources } from "../hooks";
 
 var mainLink = "https://bythebookthebible.com";
 
@@ -26,6 +27,7 @@ function ModeSwitch(props) {
   const mode = useSelector(state => state.mode)
   const profile = useSelector(state => state.firebase.profile)
   const dispatch = useDispatch()
+  const resources = useMemoryResources()
 
   // what to render for each mode, and the name for it's tab / button
   const componentsByMode = {
@@ -37,7 +39,7 @@ function ModeSwitch(props) {
     componentsByMode[modes.admin] = {name: 'Admin', content: <Admin />}
 
   if(componentsByMode[mode]) {
-    let modeButtons = Object.entries(componentsByMode).filter(([k,v])=>k!=mode)
+    const modeButtons = Object.entries(componentsByMode).filter(([k,v])=>k!=mode)
       .map(([k,v])=>{return {content: v.name, onClick: () => dispatch(setMode(k))}})
 
     return <>

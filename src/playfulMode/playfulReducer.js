@@ -12,7 +12,7 @@ const back = createAction('playful/back')
 
 const createThunkWithResources = type => createAsyncThunk(type, (arg, thunk) => {
   let resources = thunk.getState().firestore.data.memoryResources
-  return resources
+  return {resources, arg}
 })
 const nextModule = createThunkWithResources('playful/nextModule')
 const nextActivity = createThunkWithResources('playful/nextActivity')
@@ -121,15 +121,15 @@ const playfulReducer = createReducer(
       return state
     },
     [nextModule.fulfilled]: (state, action) => {
-      let resources = action.payload
+      let {resources} = action.payload
       let modules = Object.keys(resources).filter(
         module => getKidKinds(resources[module]).includes(state.viewSelected.kind)
       )
-      state.viewSelected.module = valueAfter(action.payload.modules, state.viewSelected.module)
+      state.viewSelected.module = valueAfter(modules, state.viewSelected.module)
       return state
     },
     [nextActivity.fulfilled]: (state, action) => {
-      let resources = action.payload
+      let {resources} = action.payload
       let activities = getKidKinds(resources[state.viewSelected.module])
       state.viewSelected.kind = valueAfter(activities, state.viewSelected.kind)      
       return state
@@ -151,13 +151,15 @@ const playfulReducer = createReducer(
       return state
     },
     [nextInPalace.fulfilled]: (state, action) => {
-      let scriptures = Object.keys(action.payload).reduce((cum, key) => {
+      let {resources, arg:n} = action.payload
+
+      let scriptures = Object.keys(resources).reduce((cum, key) => {
         let s = scriptureFromKey(key)
         cum[s.book + s.chapter] = cum[s.book + s.chapter] || {book:s.book, chapter:s.chapter}
         return cum
       }, {})
 
-      state.viewSelected = valueAfter(Object.values(scriptures), state.viewSelected)
+      state.viewSelected = valueAfter(Object.values(scriptures), state.viewSelected, n || 1)
       return state
     },
 })

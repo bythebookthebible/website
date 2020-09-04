@@ -45,22 +45,22 @@ export default function Activity(props) {
   let initialMP = useSelector(state => state.power[activity.module] ? state.power[activity.module].power : 0)
 
   let [showSidebar, setShowSidebar] = useState(false);
-  let [showMemoryPrompt, setShowMemoryPrompt] = useState(props.showMemoryPrompt)
-  let repeatHandler = useRef(()=>{})
+  // let [showMemoryPrompt, setShowMemoryPrompt] = useState(props.showMemoryPrompt)
+  let onRepeat = useRef(()=>{})
 
   let halfMemoryPower = 7
   if(activity.kind==kinds.speed) halfMemoryPower = 70
 
   function SidebarPopUp(props) {
-    let icon = <i class="fa fa-2x fa-chevron-right" aria-hidden="true"></i>
+    let icon = <i className="fa fa-2x fa-chevron-right" aria-hidden="true" />
     if (!props.show) {
-      icon = <i class="fa fa-2x fa-chevron-left" aria-hidden="true"></i>
+      icon = <i className="fa fa-2x fa-chevron-left" aria-hidden="true" />
     }
 
     let sidebarLayout = <div>
       <SVGRendor initialMP={initialMP} key={activity.module + '' + activity.kind} src={sidebarSVG} buttons={[
         {id: 'castle', dispatch: newView({view:playfulViews.map, viewSelected:'palace'})},
-        {id: 'repeat', onClick: ()=>repeatHandler.current()},
+        {id: 'repeat', onClick: ()=>onRepeat.current()},
         {id: 'verse', dispatch: nextModule()},
         {id: 'activity', dispatch: nextActivity()}
       ]} halfMemoryPower={halfMemoryPower} />
@@ -77,16 +77,20 @@ export default function Activity(props) {
   }
 
   // , repeat: repeatActivity, resetRepeat: resetRepeat
-  // repeatHandler: repeatHandler
+  // onRepeat: onRepeat
   return <>
-    <MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />
+    {/* <MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} /> */}
     <SidebarPopUp show={showSidebar} />
     {
       media[activity.kind] ?
-        React.cloneElement(media[activity.kind], {isActive:active=>{
-          console.log('active', showSidebar, active, showSidebar == active)
-          setShowSidebar(!active)
-        }, repeatHandler, activity})
+        React.cloneElement(media[activity.kind], {
+          isActive:active=>{
+            console.log('active', showSidebar, active, showSidebar == active)
+            setShowSidebar(!active)
+          }, 
+          onRepeat, 
+          activity
+        })
       : <div>Coming Soon!</div>
     }
   </>
