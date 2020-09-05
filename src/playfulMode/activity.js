@@ -16,7 +16,8 @@ import { newView, playfulViews, nextModule, nextActivity } from "./playfulReduce
 export function SVGRendor(props) {
     let dispatch = useDispatch()
     let MP = useSelector(state => {
-      let p = state.power[state.playful.viewSelected.module]
+      let p = state.firebase.profile.power &&
+        state.firebase.profile.power[state.playful.viewSelected.module]
       return p ? p.power : 0
     })
     let defaultHalfMemoryPower = 50.0
@@ -42,7 +43,12 @@ export function SVGRendor(props) {
 
 export default function Activity(props) {
   let activity = useSelector(state => state.playful.viewSelected)
-  let initialMP = useSelector(state => state.power[activity.module] ? state.power[activity.module].power : 0)
+  let initialMP = useSelector(state => {
+    let p = state.firebase.profile.power &&
+      state.firebase.profile.power[state.playful.viewSelected.module]
+    return p ? p.power : 0
+  })
+
 
   let [showSidebar, setShowSidebar] = useState(false);
   // let [showMemoryPrompt, setShowMemoryPrompt] = useState(props.showMemoryPrompt)

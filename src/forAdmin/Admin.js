@@ -4,7 +4,7 @@ import ManageUsers from './manageUsers'
 import ManageVideos from './manageResources'
 import { useSelector, useDispatch } from 'react-redux';
 
-import { modes, setMode } from "../app/rootReducer";
+import { modes, setMode } from "../app/createRootReducer";
 import { adminViews, setView } from './adminReducer'
 
 import {Row, Col} from 'react-bootstrap'

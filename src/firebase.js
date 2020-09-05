@@ -21,5 +21,6 @@ firebase = firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore()
 var storage = firebase.storage()
 var functions = firebase.functions()
+var auth = firebase.auth()
 
-export { firebase, db, storage, functions }
+export { firebase, db, storage, functions, auth }

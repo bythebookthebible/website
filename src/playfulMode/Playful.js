@@ -6,9 +6,9 @@ import MemoryPalaceView from './memoryPalaceView'
 import Maps from './maps'
 import ModuleSelector from './ModuleSelector'
 import { useDispatch, useSelector } from 'react-redux'
-import { useFirestoreConnect } from 'react-redux-firebase'
 import { playfulViews, back, newView } from './playfulReducer'
 import { useMemoryResources } from '../hooks'
+import mapIcon from '../images/nav/MapIcon.png'
 
 export default function Playful(props) {
   let dispatch = useDispatch()
@@ -35,9 +35,14 @@ export default function Playful(props) {
     }, 1000);
   }
 
+  let PlayfulNav = <div className='secondaryNav backButton' style={{display:'flex'}}>
+    <div className='fas fa-reply fa-flip-vertical' aria-hidden="true" style={{fontSize:'2rem'}}
+      onClick={() => dispatch(back())} />
+    <img src={mapIcon} style={{height:'2rem'}} onClick={() => dispatch(newView({view:playfulViews.default}))} />
+  </div>
+
   return <>
-    <div className='fas fa-3x fa-reply fa-flip-vertical backButton' aria-hidden="true" 
-        onClick={() => dispatch(back())} />
+    {PlayfulNav}
     {content}
   </>
 }

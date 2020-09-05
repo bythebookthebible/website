@@ -5,7 +5,7 @@ import { Row, Col, Button } from 'react-bootstrap';
 import done from '../images/kidsPageSidebar/done.png';
 import './colorPalette.css';
 import { useDispatch } from 'react-redux';
-import { addPower } from '../app/rootReducer';
+import { addPower } from '../app/createRootReducer';
 import { useMemoryResources, useCachedStorage } from "../hooks";
 import { resoucesForKinds } from "../util";
 
@@ -29,7 +29,7 @@ export default function ProcessCPMemoryPower(props) {
 
     let onSubmit = () => {
         if (drawn) {
-            dispatch(addPower({module: activity.module, power: 1}))
+            dispatch(addPower(activity.module, 1))
             reset()
             setcounter(0)
         }

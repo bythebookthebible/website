@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { addPower } from "../app/rootReducer";
+import { addPower } from "../app/createRootReducer";
 import { useDispatch } from "react-redux";
 import { useMemoryResources, useCachedStorage } from "../hooks";
 import { resoucesForKinds } from "../util";
@@ -16,7 +16,7 @@ export default function ProcessPDFMemoryPower(props) {
   let src = useCachedStorage({url, version});
 
   useEffect(() => {
-    dispatch(addPower({module: activity.module, power: 1}))
+    dispatch(addPower(activity.module, 1))
   }, [activity])
 
   return <>

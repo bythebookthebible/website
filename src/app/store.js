@@ -1,12 +1,20 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
 import { getFirebase, actionTypes as rrfActionTypes } from 'react-redux-firebase'
+import { auth } from '../firebase'
 import { constants as rfConstants } from 'redux-firestore'
+import {persistStore, persistReducer} from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
 
-import rootReducer from './rootReducer'
+import rootReducer from './createRootReducer'
 
-const extraArgument = {
-  getFirebase
-}
+// const persistedReducer = persistReducer({
+//   key: 'btbtb/firebase',
+//   whitelist: ['firestore'],
+//   throttle: 1000,
+//   stateReconciler: autoMergeLevel2,
+//   version: -1,
+//   storage,
+// }, rootReducer)
 
 const middleware = [
   ...getDefaultMiddleware({
@@ -23,19 +31,34 @@ const middleware = [
       ignoredPaths: ['firebase', 'firestore']
     },
     thunk: {
-      extraArgument
+      extraArgument: getFirebase
     }
   })
 ]
 
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: rootReducer(),
   middleware
 })
 
+export const persistor = persistStore(store)
+
+// hot reloading
 if (process.env.NODE_ENV === 'development' && module.hot) {
-  module.hot.accept('./rootReducer', () => {
-    const newRootReducer = require('./rootReducer').default
+  module.hot.accept('./createRootReducer', () => {
+    const newRootReducer = require('./createRootReducer').default()
+    // const newPersistedReducer = persistReducer({key: 'btbtb/firebase', storage}, newRootReducer)
     store.replaceReducer(newRootReducer)
   })
 }
+
+// replace persistor location on auth uid change
+let uid = auth.currentUser && auth.currentUser.uid
+auth.onAuthStateChanged(() => {
+  let newUid = auth.currentUser && auth.currentUser.uid
+  if(uid !== newUid) {
+    uid = newUid
+    const newRootReducer = require('./createRootReducer').default(uid)
+    store.replaceReducer(newRootReducer)
+  }
+})

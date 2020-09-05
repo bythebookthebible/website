@@ -9,7 +9,7 @@ import {
 import "../../node_modules/video-react/dist/video-react.css"
 
 import videoSplash from "../images/videoSplash.png"
-import { addPower } from "../app/rootReducer"
+import { addPower } from "../app/createRootReducer"
 import { useDispatch } from 'react-redux';
 import { useMemoryResources, useCachedStorage } from "../hooks"
 import { resoucesForKinds } from "../util"
@@ -59,7 +59,7 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
             lastTime.current = playerState.currentTime
         } else if (Math.abs(playerState.currentTime - lastTime.current) >= 5) {
             lastTime.current = playerState.currentTime
-            dispatch(addPower({module: activity.module, power: 0.5}))
+            dispatch(addPower(activity.module, .5))
         }
         
         prevPaused.current = playerState.paused

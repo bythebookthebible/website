@@ -47,10 +47,10 @@ let ArtGazebo = props => <div>
 
 let Palace = props => <div>
     <ButtonMap src={palaceDoors} buttons={[
-        {id:'Psalms_Proverbs', dispatch: newView({view:playfulViews.palace, viewSelected:'Psalm'})},
-        {id:'Matthew', dispatch: newView({view:playfulViews.palace, viewSelected:'Proverbs'})},
-        {id:'James', dispatch: newView({view:playfulViews.palace, viewSelected:'James'})},
-        {id:'Ephesians', dispatch: newView({view:playfulViews.palace, viewSelected:'Ephesians'})},
+        {id:'Psalms_Proverbs', dispatch: newView({view:playfulViews.palace, viewSelected:'Psalm 1'})},
+        {id:'Matthew', dispatch: newView({view:playfulViews.palace, viewSelected:'Matthew 5'})},
+        {id:'James', dispatch: newView({view:playfulViews.palace, viewSelected:'James 1'})},
+        {id:'Ephesians', dispatch: newView({view:playfulViews.palace, viewSelected:'Ephesians 6'})},
     ]}/>
 </div>
 

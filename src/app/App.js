@@ -14,7 +14,7 @@ import Playful from "../playfulMode/Playful";
 // import AdultModeApp from "../forAdults/adultModeApp";
 // import { withAuth } from '../hooks';
 import { useSelector, useDispatch } from "react-redux";
-import { modes, setMode } from "./rootReducer";
+import { modes, setMode } from "./createRootReducer";
 import { useMemoryResources } from "../hooks";
 
 var mainLink = "https://bythebookthebible.com";
@@ -54,10 +54,12 @@ function ModeSwitch(props) {
 }
 
 function AuthSwitch(props) {
+  // const rehydrated = useSelector(state => state._persist.rehydrated)
   const auth = useSelector(state => state.firebase.auth)
   const profile = useSelector(state => state.firebase.profile)
 
   // login / loading / error cases
+  // if(!rehydrated) return <Loading /> // loading last state
   if(!auth.isLoaded) return <Loading /> // loading auth
   if(auth.isEmpty) return <Login.LoginFrom /> // not logged in
   if(!profile.isLoaded) return <Loading /> // loading profile (and claims)

@@ -7,7 +7,7 @@ import { SizeMe } from 'react-sizeme';
 import right from '../images/kidsPageSidebar/right.png';
 import left from '../images/kidsPageSidebar/left.png';
 import { useDispatch } from 'react-redux';
-import { addPower } from '../app/rootReducer';
+import { addPower } from '../app/createRootReducer';
 import { useMemoryResources, useCachedStorage } from "../hooks";
 import { resoucesForKinds } from "../util";
 
@@ -44,7 +44,7 @@ export default function PopupBookWithMemoryPower(props) {
         }
         if (pageNumber + 3 >= numPages) { // second page of new spread is the end
             if (!completed) {
-                dispatch(addPower({module: activity.module, power: 1}))
+                dispatch(addPower(activity.module, 1))
                 setCompleted(true)
             }
             isActive(false)

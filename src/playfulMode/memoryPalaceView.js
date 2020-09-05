@@ -2,7 +2,6 @@ import React, { useContext, useState } from "react";
 import { ReactSVG } from "react-svg";
 import $ from "jquery";
 import { Button } from "react-bootstrap";
-import { DispatchContext, StateContext, actionTypes } from "./kidModeApp";
 import MemorizedPrompt from "./memorizedPrompt"
 import memoryPalace from '../images/memoryPalace/PalaceInside.svg'
 import { scriptureFromKey } from "../util";
@@ -16,7 +15,7 @@ export default function MemoryPalaceView(props) {
     let dispatch = useDispatch()
     let resources = useMemoryResources()
     let viewSelected = useSelector(state => state.playful.viewSelected)
-    let power = useSelector(state => state.power)
+    let power = useSelector(state => state.firebase.profile.power || {})
     // let [showMemoryPrompt, setShowMemoryPrompt] = useState(props.showMemoryPrompt)
 
     let book = viewSelected.book
