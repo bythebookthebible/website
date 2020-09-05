@@ -3,7 +3,7 @@ import { Container, Row, Col } from "react-bootstrap"
 
 import { scriptureFromKey, getKidKinds } from '../util'
 
-import defaultIcon from '../images/kidsPageSidebar/diamond.png'
+import defaultIcon from '../images/diamond.png'
 
 // import artVerseBar from '../images/maps/ArtVerseBar.svg'
 import blueHouseInside from '../images/maps/BlueHouseInside.svg'
@@ -24,10 +24,9 @@ import yelllowHouseInside from '../images/maps/YelllowHouseInside.svg'
 import colorVerseBar from '../images/maps/ColorVerseBar.svg'
 import pinkHouseInside from '../images/maps/PinkHouseInside.svg'
 import { storage } from "../firebase"
-import { useAsyncEffect, useMemoryResources } from "../hooks"
+import { useAsyncEffect, useMemoryResources } from "../common/hooks"
 import { useDispatch, useSelector } from "react-redux"
 import { newView, playfulViews } from "./playfulReducer"
-import { useFirestoreConnect } from "react-redux-firebase"
 
 function ModuleSelctor(props) {
   let dispatch = useDispatch()

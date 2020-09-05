@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { media } from "../activities/media";
 import MemorizedPrompt from './memorizedPrompt'
 import sidebarSVG from '../images/maps/ActivitySideBar1.svg';

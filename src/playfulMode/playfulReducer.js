@@ -1,6 +1,5 @@
-import { createReducer, combineReducers, createAction, createAsyncThunk } from '@reduxjs/toolkit'
+import { createReducer, createAction, createAsyncThunk } from '@reduxjs/toolkit'
 
-import maps from './maps'
 import { valueAfter, getKidKinds, pathFilters, scriptureFromKey } from '../util'
 
 const newView = createAction('playful/newView')

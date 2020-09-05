@@ -12,7 +12,7 @@ import logo from '../images/innerBlueLogo.png';
 import missing from '../images/missingContent.png';
 
 import videoSplash from "../images/videoSplash.png"
-import { useCachedStorage } from '../hooks';
+import { useCachedStorage } from '../common/hooks';
 
 import {keyFromScripture, scriptureFromKey, mod, getAllKinds, resoucesForKinds} from '../util'
 

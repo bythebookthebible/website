@@ -1,9 +1,8 @@
-import React, { Component, useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {Button, Spinner, Modal} from 'react-bootstrap'
 
-import { useFirestore, useAsyncEffect } from '../hooks'
-import { scriptureFromKey, friendlyScriptureRef } from '../util'
-import {firebase, db, storage} from '../firebase'
+import { friendlyScriptureRef } from '../util'
+import {firebase} from '../firebase'
 import deepEqual from 'deep-equal';
 
 var getUsers = firebase.functions().httpsCallable('getUsers');

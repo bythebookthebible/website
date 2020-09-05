@@ -11,7 +11,7 @@ import "../../node_modules/video-react/dist/video-react.css"
 import videoSplash from "../images/videoSplash.png"
 import { addPower } from "../app/createRootReducer"
 import { useDispatch } from 'react-redux';
-import { useMemoryResources, useCachedStorage } from "../hooks"
+import { useMemoryResources, useCachedStorage } from "../common/hooks"
 import { resoucesForKinds } from "../util"
 
 export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {

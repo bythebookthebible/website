@@ -7,7 +7,7 @@ import Maps from './maps'
 import ModuleSelector from './ModuleSelector'
 import { useDispatch, useSelector } from 'react-redux'
 import { playfulViews, back, newView } from './playfulReducer'
-import { useMemoryResources } from '../hooks'
+import { useMemoryResources } from '../common/hooks'
 import mapIcon from '../images/nav/MapIcon.png'
 
 export default function Playful(props) {

@@ -1,10 +1,10 @@
 import React, {useState, useEffect, useRef} from 'react'
-import {openDB, deleteDB, wrap, unwrap} from 'idb'
+import {openDB, deleteDB} from 'idb'
 import deepEqual from 'deep-equal'
 import { diff, detailedDiff } from 'deep-object-diff'
 import _ from 'lodash'
 
-import {firebase, db, storage} from './firebase'
+import {firebase, db, storage} from '../firebase'
 import { useSelector } from 'react-redux'
 import { useFirestoreConnect } from 'react-redux-firebase'
 
@@ -245,11 +245,7 @@ export async function preCacheStorage(resources) {
             // credentials:'include',
         })
         let resBlob = await res.clone().blob()
-        // console.log(r.url, downloadUrl, res)
-        // console.log('clone:', res.clone())
-        // console.log('res: ', resBlob)
-        // console.log('trying to reach into BLOB:', resCloned['PromiseValue'])
-        // console.log('URL from blob:', URL.createObjectURL(resBlob))
+
         idb.put(cacheMetaStore, {...r, file: resBlob, accessDate: Date.now(), size: resBlob.size})
             .then(()=>console.log('freshly cached', r))
             .catch(e=>console.log('error in idb.put', e))

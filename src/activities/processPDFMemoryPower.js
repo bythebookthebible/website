@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { addPower } from "../app/createRootReducer";
 import { useDispatch } from "react-redux";
-import { useMemoryResources, useCachedStorage } from "../hooks";
+import { useMemoryResources, useCachedStorage } from "../common/hooks";
 import { resoucesForKinds } from "../util";
 
 // the default is that everytime a pdf rendors, the user will get one point

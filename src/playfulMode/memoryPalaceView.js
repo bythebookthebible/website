@@ -6,7 +6,7 @@ import MemorizedPrompt from "./memorizedPrompt"
 import memoryPalace from '../images/memoryPalace/PalaceInside.svg'
 import { scriptureFromKey } from "../util";
 import { useDispatch, useSelector } from "react-redux";
-import { useMemoryResources } from "../hooks";
+import { useMemoryResources } from "../common/hooks";
 import { nextInPalace, playfulViews, newView } from "./playfulReducer";
 
 let halfFullPower = 50.0

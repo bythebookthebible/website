@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import $ from 'jquery';
 import { ReactSVG } from 'react-svg';
 import { Row, Col, Button } from 'react-bootstrap';
-import done from '../images/kidsPageSidebar/done.png';
-import './colorPalette.css';
+import './colorPalette.scss';
 import { useDispatch } from 'react-redux';
 import { addPower } from '../app/createRootReducer';
-import { useMemoryResources, useCachedStorage } from "../hooks";
+import { useMemoryResources, useCachedStorage } from "../common/hooks";
 import { resoucesForKinds } from "../util";
 
 export default function ProcessCPMemoryPower(props) {

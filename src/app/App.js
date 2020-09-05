@@ -10,12 +10,9 @@ import Admin from "../forAdmin/Admin";
 import Focused from '../focusedMode/Focused'
 import Playful from "../playfulMode/Playful";
 
-// import AdultModeApp from "../pages/Memorize";
-// import AdultModeApp from "../forAdults/adultModeApp";
-// import { withAuth } from '../hooks';
 import { useSelector, useDispatch } from "react-redux";
 import { modes, setMode } from "./createRootReducer";
-import { useMemoryResources } from "../hooks";
+import { useMemoryResources } from "../common/hooks";
 
 var mainLink = "https://bythebookthebible.com";
 

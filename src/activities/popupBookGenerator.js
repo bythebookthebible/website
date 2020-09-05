@@ -4,11 +4,9 @@ import KeyHandler, { KEYPRESS } from 'react-key-handler';
 import { Document, Page, pdfjs } from "react-pdf";
 import { Row, Col, Container } from 'react-bootstrap';
 import { SizeMe } from 'react-sizeme';
-import right from '../images/kidsPageSidebar/right.png';
-import left from '../images/kidsPageSidebar/left.png';
 import { useDispatch } from 'react-redux';
 import { addPower } from '../app/createRootReducer';
-import { useMemoryResources, useCachedStorage } from "../hooks";
+import { useMemoryResources, useCachedStorage } from "../common/hooks";
 import { resoucesForKinds } from "../util";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -80,9 +78,9 @@ export default function PopupBookWithMemoryPower(props) {
                 )}
             />
             <div className='pdf-page-display'>
-                <button className='pdf-btn' onClick={()=>goToPrevView()}><img src={right} style={{height: '30px', width: '30px'}}/></button>
+                <button className='pdf-btn' onClick={()=>goToPrevView()}><i class="fas fa-caret-left" style={{fontSize: '2rem'}}/></button>
                 Page {pageNumber} of {numPages}
-                <button className='pdf-btn' onClick={()=>goToNextView()}><img src={left} style={{height: '30px', width: '30px'}}/></button>
+                <button className='pdf-btn' onClick={()=>goToNextView()}><i class="fas fa-caret-right" style={{fontSize: '2rem'}}/></button>
             </div>    
             <KeyboardEventHandler handleKeys={['all']} onKeyEvent={(key) => keyHandler(key)} />
             <KeyHandler

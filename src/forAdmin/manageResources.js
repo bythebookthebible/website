@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import {Row, Col, ProgressBar, Spinner, Button} from 'react-bootstrap'
 import $ from 'jquery'
 import {useDropzone} from 'react-dropzone'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar'
 
-import { useFirestore } from '../hooks'
+import { useFirestore } from '../common/hooks'
 import {books, kinds, resoucesForKinds, keyFromScripture} from '../util'
-import {firebase, db, storage} from '../firebase'
+import {firebase, db} from '../firebase'
 
 const defaultVideoData = {
   book: books[0],
