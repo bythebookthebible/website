@@ -3,12 +3,12 @@ import Activity from './activity'
 import { Spinner } from 'react-bootstrap'
 import MemoryPalaceView from './memoryPalaceView'
 
-import Maps from './maps'
-import ModuleSelector from './ModuleSelector'
+import Maps from './maps/maps'
+import ModuleSelector from './moduleSelector/ModuleSelector'
 import { useDispatch, useSelector } from 'react-redux'
 import { playfulViews, back, newView } from './playfulReducer'
 import { useMemoryResources } from '../common/hooks'
-import mapIcon from '../images/nav/MapIcon.png'
+import mapIcon from './images/MapIcon.png'
 
 export default function Playful(props) {
   let dispatch = useDispatch()

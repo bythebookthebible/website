@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { media } from "../activities/media";
 import MemorizedPrompt from './memorizedPrompt'
-import sidebarSVG from '../images/maps/ActivitySideBar1.svg';
+import sidebarSVG from './images/ActivitySideBar.svg';
 
 // @TODO: 1) some contents are not implemented by the media yet
 //        2) might want to add prev module and prev activity >> idea for later

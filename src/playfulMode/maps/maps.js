@@ -1,13 +1,13 @@
 import React from 'react'
-import ButtonMap from './buttonMap'
-import { kinds } from '../util'
-import { newView, playfulViews } from './playfulReducer'
+import ButtonMap from '../buttonMap'
+import { kinds } from '../../util'
+import { newView, playfulViews } from '../playfulReducer'
 
-import artMap from '../images/maps/ArtMap.svg'
-import mainMap from '../images/maps/MainMap.svg'
-import palaceDoors from '../images/maps/palaceDoors.svg'
-import schmoMap from '../images/maps/SchmoMap.svg'
-import townSquareMap from '../images/maps/TownSquareMap.svg'
+import artMap from './images/ArtMap.svg'
+import mainMap from './images/MainMap.svg'
+import palaceDoors from './images/palaceDoors.svg'
+import schmoMap from './images/SchmoMap.svg'
+import townSquareMap from './images/TownSquareMap.svg'
 
 let Home = props => <div>
     <ButtonMap src={mainMap} buttons={[

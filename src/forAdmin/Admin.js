@@ -8,7 +8,7 @@ import { modes, setMode } from "../app/createRootReducer";
 import { adminViews, setView } from './adminReducer'
 
 import {Row, Col} from 'react-bootstrap'
-import topImg  from '../images/R+C.svg'
+import topImg  from './images/R+C.svg'
 
 import './admin.scss'
 

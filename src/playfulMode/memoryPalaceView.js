@@ -3,7 +3,7 @@ import { ReactSVG } from "react-svg";
 import $ from "jquery";
 import { Button } from "react-bootstrap";
 import MemorizedPrompt from "./memorizedPrompt"
-import memoryPalace from '../images/memoryPalace/PalaceInside.svg'
+import memoryPalace from './images/PalaceInside.svg'
 import { scriptureFromKey } from "../util";
 import { useDispatch, useSelector } from "react-redux";
 import { useMemoryResources } from "../common/hooks";

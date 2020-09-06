@@ -1,32 +1,32 @@
 import React, { useState } from "react"
 import { Container, Row, Col } from "react-bootstrap"
 
-import { scriptureFromKey, getKidKinds } from '../util'
+import { scriptureFromKey, getKidKinds } from '../../util'
 
-import defaultIcon from '../images/diamond.png'
+import defaultIcon from './images/defaultIcon.png'
 
-// import artVerseBar from '../images/maps/ArtVerseBar.svg'
-import blueHouseInside from '../images/maps/BlueHouseInside.svg'
-import bookVerseBar from '../images/maps/BookVerseBar.svg'
-import colorBackground from '../images/maps/ColorBackground.svg'
-import craftBackground from '../images/maps/CraftBackground.svg'
-import danceBackground from '../images/maps/DanceBackground.svg'
-import danceVerseBar from '../images/maps/DanceVerseBar.svg'
-import dragonBackground from '../images/maps/DragonBackground.svg'
-import dragonVerseBar from '../images/maps/DragonVerseBar.svg'
-import echoBackground from '../images/maps/EchoBackground.svg'
-import echoVerseBar from '../images/maps/EchoVerseBar.svg'
-import stageBackground from '../images/maps/StageBackground.svg'
-// import stageVerseBar from '../images/maps/StageVerseBar.svg'
-import karaokeBackground from '../images/maps/KaraokeBackground.svg'
-import karaokeVerseBar from '../images/maps/KaraokeVerseBar.svg'
-import yelllowHouseInside from '../images/maps/YelllowHouseInside.svg'
-import colorVerseBar from '../images/maps/ColorVerseBar.svg'
-import pinkHouseInside from '../images/maps/PinkHouseInside.svg'
-import { storage } from "../firebase"
-import { useAsyncEffect, useMemoryResources } from "../common/hooks"
+// import artVerseBar from './images/ArtVerseBar.svg'
+import blueHouseInside from './images/BlueHouseInside.svg'
+import bookVerseBar from './images/BookVerseBar.svg'
+import colorBackground from './images/ColorBackground.svg'
+import craftBackground from './images/CraftBackground.svg'
+import danceBackground from './images/DanceBackground.svg'
+import danceVerseBar from './images/DanceVerseBar.svg'
+import dragonBackground from './images/DragonBackground.svg'
+import dragonVerseBar from './images/DragonVerseBar.svg'
+import echoBackground from './images/EchoBackground.svg'
+import echoVerseBar from './images/EchoVerseBar.svg'
+import stageBackground from './images/StageBackground.svg'
+// import stageVerseBar from './images/StageVerseBar.svg'
+import karaokeBackground from './images/KaraokeBackground.svg'
+import karaokeVerseBar from './images/KaraokeVerseBar.svg'
+import yelllowHouseInside from './images/YelllowHouseInside.svg'
+import colorVerseBar from './images/ColorVerseBar.svg'
+import pinkHouseInside from './images/PinkHouseInside.svg'
+import { storage } from "../../firebase"
+import { useAsyncEffect, useMemoryResources } from "../../common/hooks"
 import { useDispatch, useSelector } from "react-redux"
-import { newView, playfulViews } from "./playfulReducer"
+import { newView, playfulViews } from "../playfulReducer"
 
 function ModuleSelctor(props) {
   let dispatch = useDispatch()

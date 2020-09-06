@@ -9,22 +9,22 @@ import {
 import "../../node_modules/video-react/dist/video-react.css"
 import {Row, Col, Container, Button} from 'react-bootstrap'
 import logo from '../images/innerBlueLogo.png';
-import missing from '../images/missingContent.png';
+import missing from './images/missingContent.png';
 
-import videoSplash from "../images/videoSplash.png"
+import videoSplash from "../activities/videoSplash.png"
 import { useCachedStorage } from '../common/hooks';
 
 import {keyFromScripture, scriptureFromKey, mod, getAllKinds, resoucesForKinds} from '../util'
 
-// import WhatItMeans  from '../images/memoryKinds/WhatItMeans.svg'
-import Watch        from '../images/memoryKinds/Watch.svg'
-// import SpeedMemory  from '../images/memoryKinds/SpeedMemory.svg'
-import Schmoment    from '../images/memoryKinds/Schmoment.svg'
-// import Music        from '../images/memoryKinds/Music.svg'
-import Karaoke      from '../images/memoryKinds/Karaoke.svg'
-// import FamilyChat   from '../images/memoryKinds/FamilyChat.svg'
-import Dance        from '../images/memoryKinds/Dance.svg'
-// import Color        from '../images/memoryKinds/Color.svg'
+// import WhatItMeans  from './images/memoryKinds/WhatItMeans.svg'
+import Watch        from './images/memoryKinds/Watch.svg'
+// import SpeedMemory  from './images/memoryKinds/SpeedMemory.svg'
+import Schmoment    from './images/memoryKinds/Schmoment.svg'
+// import Music        from './images/memoryKinds/Music.svg'
+import Karaoke      from './images/memoryKinds/Karaoke.svg'
+// import FamilyChat   from './images/memoryKinds/FamilyChat.svg'
+import Dance        from './images/memoryKinds/Dance.svg'
+// import Color        from './images/memoryKinds/Color.svg'
 import { useSelector, useDispatch } from 'react-redux';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import { updateFilter, nextIndex, prevIndex } from './focusedReducer';

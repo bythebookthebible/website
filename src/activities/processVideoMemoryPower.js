@@ -8,7 +8,7 @@ import {
 } from "video-react"
 import "../../node_modules/video-react/dist/video-react.css"
 
-import videoSplash from "../images/videoSplash.png"
+import videoSplash from "./videoSplash.png"
 import { addPower } from "../app/createRootReducer"
 import { useDispatch } from 'react-redux';
 import { useMemoryResources, useCachedStorage } from "../common/hooks"
