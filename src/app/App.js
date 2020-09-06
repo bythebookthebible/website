@@ -1,6 +1,7 @@
 import React from "react";
 import "../styles/index.scss";
-import { Navbar, Nav, Spinner } from "react-bootstrap";
+import { Navbar, Nav } from "react-bootstrap";
+import {LoadingPage} from '../common/components'
 // import { firebase, db } from "../firebase.js";
 import logo from "../images/logo.png";
 import { Login } from "../common/Login";
@@ -56,10 +57,10 @@ function AuthSwitch(props) {
   const profile = useSelector(state => state.firebase.profile)
 
   // login / loading / error cases
-  // if(!rehydrated) return <Loading /> // loading last state
-  if(!auth.isLoaded) return <Loading /> // loading auth
+  // if(!rehydrated) return <LoadingPage /> // loading last state
+  if(!auth.isLoaded) return <LoadingPage /> // loading auth
   if(auth.isEmpty) return <Login.LoginFrom /> // not logged in
-  if(!profile.isLoaded) return <Loading /> // loading profile (and claims)
+  if(!profile.isLoaded) return <LoadingPage /> // loading profile (and claims)
   if(profile.isEmpty) {
     console.error('empty profile / no claims') // logged in but no profile (should not happen)
     return <ErrorMsg />
@@ -83,8 +84,6 @@ const ErrorMsg = props =>
       or email <a href='mailto:rose@bythebookthebible.com'>rose@bythebookthebible.com</a>
     </h3>
   </div>
-
-const Loading = props => <Spinner animation="border" role="status" size="md" />
 
 const LightNav = props => {
   return <Navbar collapseOnSelect expand="sm" className='lightNav'>
