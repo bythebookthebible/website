@@ -1,14 +1,17 @@
-import React from "react"
+import React, { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import $ from 'jquery'
+import './adventurePath.scss'
 
 import { valueAfter, getModulesForPath, getPathActivities } from '../../util'
 import { useMemoryResources } from "../../common/hooks"
-import { useDispatch, useSelector } from "react-redux"
 import { newView, playfulViews } from "../playfulReducer"
 
 import JamesBackground from './images/JamesPathBackground.png'
 import JamesCurrent from './images/rocketShip.svg'
 import JamesMarker from './images/sparklestone.svg'
 import popupBubble from './images/speechBubble.svg'
+import { AbsoluteCentered } from "../../common/components"
 
 export default function AdventurePath(props) {
   let dispatch = useDispatch()
@@ -36,16 +39,25 @@ export default function AdventurePath(props) {
     nextIndex = 0
   }
 
-  return <div className='adventurePath' style={{height:'100%', backgroundSize:'cover', backgroundImage:`url(${JamesBackground})`}}>
+  // scroll to be centered on next item
+  useEffect(() => {
+    setTimeout(() => 
+      nextIndex && $('.body').animate({scrollLeft: 3+nextIndex*16*6 - window.innerWidth/2}, 1200)
+    , 500)
+  }, [nextIndex])
+
+  return <div className='adventurePath' style={{backgroundImage:`url(${JamesBackground})`, width:`${activities.length*6}rem`}}>
     {activities.map((a, i) => {
       let onClick = () => dispatch(newView({view:playfulViews.activity, viewSelected:a}))
 
-      return <div key={`${a.module}-${a.kind}`} style={{position:'absolute', top:'50%', marginTop:'-3rem', height:'6rem', left:`${6*i+2}rem`}}>
-        <img src={JamesMarker} style={{height:`${a.index==0?9:6}rem`}}
-          onClick={i > nextIndex ?  () => null : onClick} />
-        {i == nextIndex && 
-          <img src={JamesCurrent} style={{height:'4rem'}} onClick={onClick} />
-        }
+      return <div className='steppingSpot' key={`${a.module}-${a.kind}`}
+      style={{left:`${6*i+3}rem`}}>
+        <AbsoluteCentered style={{height:`${a.index==0?9:6}rem`}}>
+          <img src={JamesMarker} onClick={i > nextIndex ?  () => null : onClick} />
+        </AbsoluteCentered>
+        {i == nextIndex && <AbsoluteCentered style={{height:'5rem'}}>
+            <img src={JamesCurrent} onClick={onClick} />
+        </AbsoluteCentered>}
       </div>
     })}
   </div>

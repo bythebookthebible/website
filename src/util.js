@@ -42,6 +42,10 @@ export const kidModeKinds = {
 }
 
 export const resoucesForKinds = {
+  intro:['intro'],
+  princessRead:['princessRead'],
+  blooper:['blooper'],
+
   watch:['watch'],
   teacherGuide:['teacherGuide'],
   speed:['watch', 'timestamps'],
@@ -84,10 +88,8 @@ export function getModulesForPath(resources, path) {
 }
 
 const pathActivities = [
-  'watch', 'speed', 'schmoment', 'joSchmo',
-  'music', 'karaoke', 'discussion', 'dance',
-  // 'echo', 
-  'coloring', 'craft', 'book',
+  'intro', 'watch', 'joSchmo', 'echo', 'coloring', 
+  'dance', 'princessRead', 'speed', 'blooper', 'karaoke'
 ]
 
 // return array of activity kinds for module given resources

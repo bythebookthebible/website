@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { media } from "../activities/media";
 import MemorizedPrompt from './memorizedPrompt'
-import sidebar from './images/ActivitySideBar.svg';
-import sidebarAlt from './images/ActivitySideBarAlt.svg';
+import { ReactComponent as sidebar } from './images/ActivitySideBar.svg';
 
 import $ from "jquery";
 import { kinds } from "../util";
@@ -25,33 +24,25 @@ function Sidebar(props) {
     // if current activity has index for path, then use alternate sidebar
     let activity = useSelector(state => state.playful.viewSelected)
 
-    if(activity.index !== undefined)
-      return <SVGButtons src={sidebarAlt}
-        buttons={[
-          {id: 'MemoryPalace', dispatch: newView({view:playfulViews.map, viewSelected:'palace'})},
-          {id: 'PlayAgain', onClick: ()=>props.onRepeat.current()},
-          {id: 'NextVerse', dispatch: nextModule},
-          {id: 'NextActivity', dispatch: nextActivity},
-          {id: 'Continue', dispatch: ()=>pathFinished(activity)},
-        ]}
-        extra={() => $('#MemoryPower').children().css({
-          'transform-origin': '46% 83.6%',
-          'transform': 'scale(' +  percentageWidth + ', '+ percentageHeight + ')'
-        })}
-      />
-    else
-      return <SVGButtons src={sidebar}
-        buttons={[
-          {id: 'castle', dispatch: newView({view:playfulViews.map, viewSelected:'palace'})},
-          {id: 'repeat', onClick: ()=>props.onRepeat.current()},
-          {id: 'verse', dispatch: nextModule},
-          {id: 'activity', dispatch: nextActivity}
-        ]}
-        extra={() => $('#power').children().css({
-          'transform-origin': '46% 83.6%',
-          'transform': 'scale(' +  percentageWidth + ', '+ percentageHeight + ')'
-        })}
-      />
+    let buttons = [
+        {id: 'MemoryPalace', dispatch: newView({view:playfulViews.map, viewSelected:'palace'})},
+        {id: 'PlayAgain', onClick: ()=>props.onRepeat.current()},
+        {id: 'NextVerse', dispatch: nextModule},
+        {id: 'NextActivity', dispatch: nextActivity},
+    ]
+    // reroute Continue button if on adventure path
+    if(activity.index !== undefined) {
+      buttons.push({id: 'Continue', dispatch: ()=>pathFinished(activity)})
+    } else {
+      buttons.push({id: 'Continue', dispatch: nextModule})
+    }
+
+    return <SVGButtons svg={sidebar} width={.3} buttons={buttons}
+      extra={() => $('#power').children().css({
+        'transform-origin': '46% 83.6%',
+        'transform': 'scale(' +  percentageWidth + ', '+ percentageHeight + ')'
+      })}
+    />
 
 }
 
@@ -82,7 +73,7 @@ export default function Activity(props) {
     return <div>
       <div className="sidemenu-kids" onClick={() => setShowSidebar(true)}
         style={{marginLeft: props.show ? '70%' : '97%', transition: 'marginLeft .5s'}}>
-        <Sidebar initialMP={initialMP} key={activityKey} onRepeat={onRepeat}/>
+        <Sidebar initialMP={initialMP} key={activityKey} onRepeat={onRepeat} />
       </div>
       <div style={{position: 'absolute', zIndex: '2', right: '5px'}} onClick={() => setShowSidebar(!showSidebar)}>
         {icon}
