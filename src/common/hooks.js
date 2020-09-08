@@ -154,25 +154,21 @@ export function useCachedStorage(resource) {
         if(idb && resource.url) {
             // let cache = await caches.open(cacheName)
             idb = await idb
-            console.log('IDB after await:', idb)
             
             let meta = await idb.get(cacheMetaStore, resource.url)
             let res = await idb.transaction(cacheMetaStore).objectStore(cacheMetaStore).get(resource.url)
-            console.log('New RES:', res)
-            console.log('meta', meta)
             // update cache if needed (old or missing) but don't await
             if((!res || !meta || !meta.version || resource.version > meta.version) && !abort) {
                 freshlyCached = preCacheStorage([resource])
-                console.log("precachestorage is called")
             }
 
             // serve from cache if available
             if(res) {
                 let blob = res.file
-                console.log('using blob:', blob)
+                // console.log('using blob:', blob)
                 setUrl(URL.createObjectURL(blob))
             } else {     
-                console.log('using download url')
+                // console.log('using download url')
                 const downloadUrl = await storage.ref(resource.url).getDownloadURL().catch(e=>{
                     console.log('error getting download url:', e)
                     setUrl(undefined)
@@ -197,7 +193,7 @@ export function useCachedStorage(resource) {
         freshlyCached = await freshlyCached
         if(freshlyCached) {
             setUrl(freshlyCached[0])
-            console.log('now using blob', freshlyCached[0])
+            // console.log('now using blob', freshlyCached[0])
         }
 
     }, [resource.url, resource.version])
@@ -247,7 +243,7 @@ export async function preCacheStorage(resources) {
         let resBlob = await res.clone().blob()
 
         idb.put(cacheMetaStore, {...r, file: resBlob, accessDate: Date.now(), size: resBlob.size})
-            .then(()=>console.log('freshly cached', r))
+            // .then(()=>console.log('freshly cached', r))
             .catch(e=>console.log('error in idb.put', e))
         blobUrls.push(URL.createObjectURL(resBlob))
     }

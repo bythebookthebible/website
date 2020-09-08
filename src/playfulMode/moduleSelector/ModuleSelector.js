@@ -44,8 +44,6 @@ function ModuleSelctor(props) {
       return cum
   }, {})
 
-  console.log('scriptures', scriptures)
-
   if(Object.keys(scriptures).length == 0)
     return <div style={{...props.style['firstDiv'], paddingTop:'20%'}}>
       <div style={props.style['bookRow']}>
@@ -68,14 +66,14 @@ function ModuleSelctor(props) {
         <div style={props.style['thirdDiv']}>
           {/* <div style={{backgroundOrigin: 'content-box', backgroundImage: "url(" + props.chapterBackground + ")", backgroundRepeat: 'none', backgroundAttachment: 'local'}}> */}
             {Object.keys(scriptures).map(book =>
-              Object.keys(scriptures[book]).map(chapter => <>
+              Object.keys(scriptures[book]).map(chapter => <React.Fragment key={`${book} ${chapter}`}>
                 <Row style={props.style['bookRow']}>
                   <Col style={props.style['bookCol']}>{`${book} ${chapter}`}</Col>
                 </Row>
                 <Row style={props.style['verseRow']}>
                   {Object.keys(scriptures[book][chapter]).map(verses =>
                     //content
-                    <Col xs={props.verseDisplaySmall} sm={props.verseDisplaySmall} lg={props.verseDisplayLarge} style={props.style['verseCol']}
+                    <Col key={`${book} ${chapter} ${verses}`}  xs={props.verseDisplaySmall} sm={props.verseDisplaySmall} lg={props.verseDisplayLarge} style={props.style['verseCol']}
                       onClick={()=>dispatch(newView({
                         view:playfulViews.activity,
                         viewSelected:{module:scriptures[book][chapter][verses].key, kind: viewSelected}
@@ -85,7 +83,7 @@ function ModuleSelctor(props) {
                     </Col>
                   )}
                 </Row>
-              </>)
+              </React.Fragment>)
             )}
         </div>
       </div>

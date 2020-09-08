@@ -1,75 +1,48 @@
 import { createReducer, createAction, createAsyncThunk } from '@reduxjs/toolkit'
 
-import { valueAfter, getKidKinds, pathFilters, scriptureFromKey } from '../util'
+import { valueAfter, getKidKinds, pathFilters, scriptureFromKey, kidModeKinds, getPathActivities } from '../util'
 
-const newView = createAction('playful/newView')
-const updateFilter = createAction('playful/updateFilter')
-// const addMemoryPower = createAction('playful/addMemoryPower')
-const newResources = createAction('playful/newResources')
-const back = createAction('playful/back')
-// const loadState = createAction('playful/loadState')
+// ACTION CREATORS
+export const newView = createAction('playful/newView')
+export const updateFilter = createAction('playful/updateFilter')
+// export const addMemoryPower = createAction('playful/addMemoryPower')
+export const newResources = createAction('playful/newResources')
+export const back = createAction('playful/back')
+// export const loadState = createAction('playful/loadState')
 
 const createThunkWithResources = type => createAsyncThunk(type, (arg, thunk) => {
   let resources = thunk.getState().firestore.data.memoryResources
   return {resources, arg}
 })
-const nextModule = createThunkWithResources('playful/nextModule')
-const nextActivity = createThunkWithResources('playful/nextActivity')
-const nextInPalace = createThunkWithResources('playful/nextInPalace')
-const nextInPath = createThunkWithResources('playful/nextInPath')
+export const nextModule = createThunkWithResources('playful/nextModule')
+export const nextActivity = createThunkWithResources('playful/nextActivity')
+export const nextInPalace = createThunkWithResources('playful/nextInPalace')
 
-export {
-  updateFilter, 
-  newView, 
-  newResources, 
-  back,
-  nextModule,
-  nextActivity,
-  nextInPalace,
-  nextInPath,
+export function pathFinished(activity) {
+  return async (dispatch, getState, getFirebase) => {
+    let {path, module, index} = activity
+    let profile = getState().firebase.profile
+    let p = profile.paths && profile.paths[path]
+    console.log(p, activity)
+
+    if(!p || module > p.module || (module == p.module && index > p.index)) {
+      await getFirebase().updateProfile({paths:{
+        [path]:{module, index}
+      }})
+    }
+    dispatch(newView({view:playfulViews.adventurePath, viewSelected:path}))
+  }
 }
 
+// Values for state.view
 export const playfulViews = {
   default:'default',
   map:'map',
   moduleSelector:'moduleSelector',
+  adventurePath:'adventurePath',
   palace:'palace',
   activity:'activity',
 }
-
-
-function getPathActivities(resources, path) {
-  let filter
-  if(Object.keys(pathFilters).includes(path)) {
-    filter = pathFilters[path]
-  } else {
-    let p = path.split('')
-    let chapter = parseInt(p[p.length-1])
-    if(chapter) {
-      let book = p.slice(0,p.length-1).join(' ');
-      filter = r=>(r.book==book && r.chapter == chapter)
-    } else {
-      filter = r=>(r.book==path)
-    }
-  }
-
-  return Object.entries(resources).reduce(
-    (acc,[key, res])=>{
-      return [...acc, ...getKidKinds(res).filter(filter).map(
-        r=>{
-          return {key:key, kind:r.kind}
-        }
-      )]
-    }, [])
-}
-
-    // case actionTypes.loadState:
-    //     state = mergeStates(state, act.state)
-    //     continue
-
-    // state.timestamp = Date.now()
-    // state.version = '0.1.0'
-    // state.history = {view: oldState.view || '', viewSelected: oldState.viewSelected || ''}
 
 const defaultView = playfulViews.map
 const defaultViewSelected = 'home'
@@ -87,11 +60,10 @@ const playfulReducer = createReducer(
   },
   {
     [newView]: (state, action) => {
-      // view state
       state.view = action.payload.view
       state.viewSelected = action.payload.viewSelected
 
-      // view history tracking
+      // history tracking
       state.history.past.push(state.history.present)
       state.history.present = action.payload
 
@@ -131,22 +103,6 @@ const playfulReducer = createReducer(
       let {resources} = action.payload
       let activities = getKidKinds(resources[state.viewSelected.module])
       state.viewSelected.kind = valueAfter(activities, state.viewSelected.kind)      
-      return state
-    },
-    [nextInPath.fulfilled]: (state, action) => {
-        // SHOULD REDO PATH STATE
-        let path = action.payload.path || state.path
-        state.path = path
-        state.paths[path] = state.paths[path] || -1
-        // create path object if missing
-
-        let activities = getPathActivities(state.resources, path)
-        let pathIndex = action.payload.index || state.paths[path]+1
-        pathIndex = Math.min(pathIndex, activities.length-1)
-
-        state.viewSelected = activities[pathIndex]
-        state.paths[path] = pathIndex
-
       return state
     },
     [nextInPalace.fulfilled]: (state, action) => {

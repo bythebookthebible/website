@@ -15,7 +15,10 @@ export function UserNavButton(props) {
 
     return <NavDropdown title={auth.displayName} as={NavLink}>
         {/* <NavDropdown.Item href='/account' >My Account</NavDropdown.Item> */}
-        {buttons && buttons.map(b => <NavDropdown.Item {...otherProps} onClick={b.onClick} >{b.content}</NavDropdown.Item>)}
+        {buttons && buttons.map(b => <NavDropdown.Item {...otherProps} onClick={b.onClick} key={b.key} >
+            {b.content}
+        </NavDropdown.Item>)}
+
         <NavDropdown.Item {...otherProps} onClick={() => {
             firebase.auth().signOut().catch(function(e) {
                     console.log('Signout error: ', e);

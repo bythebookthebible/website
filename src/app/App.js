@@ -38,7 +38,7 @@ function ModeSwitch(props) {
 
   if(componentsByMode[mode]) {
     const modeButtons = Object.entries(componentsByMode).filter(([k,v])=>k!=mode)
-      .map(([k,v])=>{return {content: v.name, onClick: () => dispatch(setMode(k))}})
+      .map(([k,v])=>{return {content: v.name, key: v.name, onClick: () => dispatch(setMode(k))}})
 
     return <>
       <LightNav buttons={modeButtons} />

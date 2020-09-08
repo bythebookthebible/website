@@ -71,13 +71,30 @@ export function getAllKinds(moduleResource) {
   )
 }
 
-// paths not in this list are of the form
-// 'Book': r=>(r.book=='Book'),
-// or
-// 'Book Ch': r=>(r.book=='Book' && r.chapter == parseInt(Ch)),
-export const pathFilters = {
-  'Armor of God': r=>(r.book=='Ephesians' && r.chapter==6),
-  'Sermon on the Mount': r=>(r.book=='Matthew' && 5<=r.chapter && r.chapter<=7),
+// Adventure Path helpers
+// return array of modules for path given resources
+export function getModulesForPath(resources, path) {
+  let b = path.split(' ')
+  // TODO: accomidate book names with a space
+  let book = b[0], chapter = b[1]
+  return Object.keys(resources).filter(module => {
+    let s = scriptureFromKey(module)
+    return (!book || s.book === book) && (!chapter || s.chapter === chapter)
+  })
+}
+
+const pathActivities = [
+  'watch', 'speed', 'schmoment', 'joSchmo',
+  'music', 'karaoke', 'discussion', 'dance',
+  // 'echo', 
+  'coloring', 'craft', 'book',
+]
+
+// return array of activity kinds for module given resources
+export function getPathActivities(resources, module) {
+  return pathActivities.filter(
+    k=>resoucesForKinds[k].every(r=>resources[module][r])
+  )
 }
 
 // convert between scripture references and a string key
@@ -104,11 +121,14 @@ export function mod(n, m) {
   return tmp >= 0 ? tmp : tmp + m
 }
 
-export function valueAfter(arr, val, n=1) {
+export function valueAfter(arr, val, n=1, returnIndex=false) {
   for(let i in arr) {
     i=Number(i) // apparently i is a string
-    if(deepEqual(arr[i], val))
-      return arr[mod((i+n), arr.length)]
+    if(deepEqual(arr[i], val)) {
+      i = mod((i+n), arr.length)
+      if(returnIndex) return i
+      return arr[i]
+    }
   }
   return arr[0]
 }

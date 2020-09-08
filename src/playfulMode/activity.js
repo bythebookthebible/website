@@ -1,53 +1,69 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { media } from "../activities/media";
 import MemorizedPrompt from './memorizedPrompt'
-import sidebarSVG from './images/ActivitySideBar.svg';
-
-// @TODO: 1) some contents are not implemented by the media yet
-//        2) might want to add prev module and prev activity >> idea for later
-
-import { ReactSVG } from "react-svg";
+import sidebar from './images/ActivitySideBar.svg';
+import sidebarAlt from './images/ActivitySideBarAlt.svg';
 
 import $ from "jquery";
 import { kinds } from "../util";
-import { useDispatch, useSelector } from "react-redux";
-import { newView, playfulViews, nextModule, nextActivity } from "./playfulReducer";
+import { useSelector } from "react-redux";
+import { newView, playfulViews, nextModule, nextActivity, pathFinished } from "./playfulReducer";
+import SVGButtons from "./SVGButtons";
 
-export function SVGRendor(props) {
-    let dispatch = useDispatch()
+function Sidebar(props) {
     let MP = useSelector(state => {
       let p = state.firebase.profile.power &&
         state.firebase.profile.power[state.playful.viewSelected.module]
       return p ? p.power : 0
     })
-    let defaultHalfMemoryPower = 50.0
+    MP -= props.initialMP
 
-    // console.log('powers', state.memoryPower[state.activity.key].power, props.initialMP)
+    // fill and match curve of cup
+    let percentageHeight = MP*MP / (MP*MP + (props.halfMemoryPower))
+    let percentageWidth = Math.pow(Math.max(.01, percentageHeight), .3)
 
-    return <ReactSVG src={sidebarSVG} afterInjection={(err, svg) => {
-        for (let button of props.buttons) {
-            $("#" + button.id).click(() => {
-                button.dispatch && dispatch(button.dispatch)
-                button.onClick && button.onClick()
-            });
-        }
-        let percentageHeight = MP*MP / (MP*MP + (props.halfMemoryPower || defaultHalfMemoryPower))
-        let percentageWidth;
-        // match curve of cup
-        percentageWidth = Math.pow(Math.max(.01, percentageHeight), .3)
+    // if current activity has index for path, then use alternate sidebar
+    let activity = useSelector(state => state.playful.viewSelected)
 
-        $('#power').children().css({'transform-origin': '46% 83.6%', 'transform': 'scale(' +  percentageWidth + ', '+ percentageHeight + ')'})
-        
-    }}/>
+    if(activity.index !== undefined)
+      return <SVGButtons src={sidebarAlt}
+        buttons={[
+          {id: 'MemoryPalace', dispatch: newView({view:playfulViews.map, viewSelected:'palace'})},
+          {id: 'PlayAgain', onClick: ()=>props.onRepeat.current()},
+          {id: 'NextVerse', dispatch: nextModule},
+          {id: 'NextActivity', dispatch: nextActivity},
+          {id: 'Continue', dispatch: ()=>pathFinished(activity)},
+        ]}
+        extra={() => $('#MemoryPower').children().css({
+          'transform-origin': '46% 83.6%',
+          'transform': 'scale(' +  percentageWidth + ', '+ percentageHeight + ')'
+        })}
+      />
+    else
+      return <SVGButtons src={sidebar}
+        buttons={[
+          {id: 'castle', dispatch: newView({view:playfulViews.map, viewSelected:'palace'})},
+          {id: 'repeat', onClick: ()=>props.onRepeat.current()},
+          {id: 'verse', dispatch: nextModule},
+          {id: 'activity', dispatch: nextActivity}
+        ]}
+        extra={() => $('#power').children().css({
+          'transform-origin': '46% 83.6%',
+          'transform': 'scale(' +  percentageWidth + ', '+ percentageHeight + ')'
+        })}
+      />
+
 }
 
 export default function Activity(props) {
   let activity = useSelector(state => state.playful.viewSelected)
-  let initialMP = useSelector(state => {
+  let activityKey = activity.module + ' ' + activity.kind
+  let MP = useSelector(state => {
     let p = state.firebase.profile.power &&
       state.firebase.profile.power[state.playful.viewSelected.module]
     return p ? p.power : 0
   })
+  let initialMP = useRef(MP).current
 
 
   let [showSidebar, setShowSidebar] = useState(false);
@@ -63,20 +79,12 @@ export default function Activity(props) {
       icon = <i className="fa fa-2x fa-chevron-left" aria-hidden="true" />
     }
 
-    let sidebarLayout = <div>
-      <SVGRendor initialMP={initialMP} key={activity.module + '' + activity.kind} src={sidebarSVG} buttons={[
-        {id: 'castle', dispatch: newView({view:playfulViews.map, viewSelected:'palace'})},
-        {id: 'repeat', onClick: ()=>onRepeat.current()},
-        {id: 'verse', dispatch: nextModule()},
-        {id: 'activity', dispatch: nextActivity()}
-      ]} halfMemoryPower={halfMemoryPower} />
-    </div>
-
     return <div>
-      <div className="sidemenu-kids" style={(props.show)? {marginLeft: '70%'} : {marginLeft: '100%'}}>
-        {sidebarLayout}
+      <div className="sidemenu-kids" onClick={() => setShowSidebar(true)}
+        style={{marginLeft: props.show ? '70%' : '97%', transition: 'marginLeft .5s'}}>
+        <Sidebar initialMP={initialMP} key={activityKey} onRepeat={onRepeat}/>
       </div>
-      <div style={{position: 'absolute', zIndex: '2', right: '10px'}} onClick={() => setShowSidebar(!showSidebar)}>
+      <div style={{position: 'absolute', zIndex: '2', right: '5px'}} onClick={() => setShowSidebar(!showSidebar)}>
         {icon}
       </div>
     </div>

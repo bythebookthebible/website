@@ -1,6 +1,6 @@
 import React from 'react'
 import Activity from './activity'
-import { Spinner } from 'react-bootstrap'
+import { Spinner } from '../common/components'
 import MemoryPalaceView from './memoryPalaceView'
 
 import Maps from './maps/maps'
@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { playfulViews, back, newView } from './playfulReducer'
 import { useMemoryResources } from '../common/hooks'
 import mapIcon from './images/MapIcon.png'
+import AdventurePath from './adventurePath/adventurePath'
 
 export default function Playful(props) {
   let dispatch = useDispatch()
@@ -21,11 +22,12 @@ export default function Playful(props) {
     <h1 className='d-inline-block'>Loading...</h1>
   </div>
   
-  if(view == 'map') content = Maps[viewSelected]
+  if(view == playfulViews.map) content = Maps[viewSelected]
   if(resources) {
-    if(view == 'moduleSelector') content = ModuleSelector[viewSelected]
-    if(view == 'palace') content = <MemoryPalaceView />
-    if(view == 'activity') content = <Activity />
+    if(view == playfulViews.moduleSelector) content = ModuleSelector[viewSelected]
+    if(view == playfulViews.palace) content = <MemoryPalaceView />
+    if(view == playfulViews.adventurePath) content = <AdventurePath />
+    if(view == playfulViews.activity) content = <Activity />
   }
 
   if(!content) {
