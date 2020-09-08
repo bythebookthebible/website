@@ -3,40 +3,45 @@ import { ReactSVG } from "react-svg";
 
 import $ from "jquery";
 import { useDispatch } from "react-redux";
-import { SizeMe } from "react-sizeme";
-import { isNumber } from "lodash";
+import {useDebounce} from '../common/hooks'
 
 export default function SVGButtons(props) {
     let dispatch = useDispatch()
-    let width = props.width || 1
+    let {glowSize, buttons, extra, svg:SVG, width, height} = props
+    width = width || 1
+    height = height || 1
+    glowSize = glowSize || 10
+
+    // for matching inner svg shape to containing shape
     width = width > 1 ? width : window.innerWidth * width
-    let height = props.height || 1
     height = height > 1 ? height : window.innerHeight * height
 
+    // for debounding hover glow
+    let debounce = useDebounce(300)
+
     useEffect(() => {
-        for (let button of props.buttons) {
+        for (let button of buttons) {
             $("#" + button.id).click(() => {
                 if(typeof button.dispatch === "function") dispatch(button.dispatch())
                 else if(button.dispatch) dispatch(button.dispatch)
                 if(button.onClick) button.onClick()
             })
             .hover(
-                e=>{$("#" + button.id).attr({ filter: 'url(#glow)'})},
-                e=>{$("#" + button.id).attr({ filter: ''})},
+                e=>debounce(()=>$("#" + button.id).attr({ filter: 'url(#glow)'})),
+                e=>debounce(()=>$("#" + button.id).attr({ filter: ''})),
             )
         }
-        props.extra && props.extra()
-    }, [props.svg])
+        extra && extra()
+    }, [SVG])
 
-    return <svg {...props} style={{position:'absolute', overflow:'visible', width:'100%', height:'100%', ...props.style}}
-    viewBox={`0 0 ${width} ${height}`}>
+    return <svg style={{position:'absolute', overflow:'visible', width:'100%', height:'100%', ...props.style}} viewBox={`0 0 ${width} ${height}`}>
         <defs>
             <filter id="glow">
                 <feDropShadow dx="0" dy="0" stdDeviation="10" floodColor="white" result="shadow" />
-                <feBlend in="SourceGraphic" in2="shadow" mode="normal"></feBlend>
+                <feBlend in="SourceGraphic" in2="shadow" mode="normal" />
             </filter>
         </defs>
-        <props.svg x={0} y={0} width={width} height={height} style={{overflow:'visible'}} />
+        <SVG x={0} y={0} width={width} height={height} style={{overflow:'visible'}} />
     </svg>
 }
 

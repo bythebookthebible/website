@@ -29,9 +29,9 @@ function ModeSwitch(props) {
 
   // what to render for each mode, and the name for it's tab / button
   const componentsByMode = {
-    [modes.playful]: {name: 'Playful mode', content: <Playful />},
-    [modes.focused]: {name: 'Focused mode', content: <Focused />},
-    [modes.teacher]: {name: 'Teacher mode', content: <h1>Teacher mode coming soon!</h1>},
+    [modes.playful]: {name: 'Adventure mode', content: <Playful />},
+    [modes.focused]: {name: 'Navigator mode', content: <Focused />},
+    // [modes.teacher]: {name: 'Teacher mode', content: <h1>Teacher mode coming soon!</h1>},
   }
   if (profile.isLoaded && profile.token.claims.admin)
     componentsByMode[modes.admin] = {name: 'Admin', content: <Admin />}
@@ -47,6 +47,7 @@ function ModeSwitch(props) {
       </div>
     </>
   } else {
+    dispatch(setMode(modes.playful))
     return <ErrorMsg />
   }
 }

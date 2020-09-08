@@ -23,6 +23,23 @@ export function useAsyncEffect(fn=()=>undefined, deps=[]) {
     }, deps)
 }
 
+export function useDebounce(ms) {
+    let cooldownTimeout = useRef()
+    let nextActions = useRef([])
+    return fn => {
+        if(!cooldownTimeout.current) {
+            cooldownTimeout.current = setTimeout(() => {
+                nextActions.current.forEach(f => f())
+                nextActions.current = []
+                cooldownTimeout.current = undefined
+            }, ms)
+            fn()
+        } else {
+            nextActions.current.push(fn)
+        }
+    }
+}
+
 export var withAuth = wrappedComponent => props => {
     let user = firebase.auth().currentUser
     let [claims, setClaims] = useState(undefined)
