@@ -1,18 +1,23 @@
-import React from "react";
+import React, { Suspense } from "react";
 import "../styles/index.scss";
 import { Navbar, Nav } from "react-bootstrap";
 import {LoadingPage} from '../common/components'
 import logo from "../images/logo.png";
-import Login from "../common/Login";
 import { UserNavButton } from "../common/User";
-import Subscribe from "./Subscribe";
-import Admin from "../forAdmin/Admin";
-import Focused from '../focusedMode/Focused'
-import Playful from "../playfulMode/Playful";
 
 import { useSelector, useDispatch } from "react-redux";
 import { modes, setMode } from "./createRootReducer";
 import { useMemoryResources } from "../common/hooks";
+
+import Login from "../common/Login";
+import Subscribe from "./Subscribe";
+// import Admin from "../forAdmin/Admin";
+// import Focused from '../focusedMode/Focused'
+// import Playful from "../playfulMode/Playful";
+
+const Playful = React.lazy(()=>import('../playfulMode/Playful'))
+const Focused = React.lazy(()=>import('../focusedMode/Focused'))
+const Admin = React.lazy(()=>import('../forAdmin/Admin'))
 
 var mainLink = "https://bythebookthebible.com";
 
@@ -24,7 +29,6 @@ function ModeSwitch(props) {
   const mode = useSelector(state => state.mode)
   const profile = useSelector(state => state.firebase.profile)
   const dispatch = useDispatch()
-  const resources = useMemoryResources()
 
   // what to render for each mode, and the name for it's tab / button
   const componentsByMode = {
@@ -35,20 +39,17 @@ function ModeSwitch(props) {
   if (profile.isLoaded && profile.token.claims.admin)
     componentsByMode[modes.admin] = {name: 'Admin', content: <Admin />}
 
-  if(componentsByMode[mode]) {
-    const modeButtons = Object.entries(componentsByMode).filter(([k,v])=>k!=mode)
-      .map(([k,v])=>{return {content: v.name, key: v.name, onClick: () => dispatch(setMode(k))}})
+  const modeButtons = Object.entries(componentsByMode).filter(([k,v])=>k!=mode)
+    .map(([k,v])=>{return {content: v.name, key: v.name, onClick: () => dispatch(setMode(k))}})
 
-    return <>
-      <LightNav buttons={modeButtons} />
-      <div className={"body colorful-theme"}>
-        {componentsByMode[mode].content}
-      </div>
-    </>
-  } else {
-    dispatch(setMode(modes.playful))
-    return <ErrorMsg />
-  }
+  return <>
+    <LightNav buttons={modeButtons} />
+    <div className={"body colorful-theme"}>
+      <Suspense fallback={<LoadingPage />}>
+        {componentsByMode[mode] && componentsByMode[mode].content}
+      </Suspense>
+    </div>
+  </>
 }
 
 function AuthSwitch(props) {

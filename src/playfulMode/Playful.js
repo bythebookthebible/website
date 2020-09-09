@@ -17,10 +17,7 @@ export default function Playful(props) {
   let view = useSelector(state => state.playful.view)
   let viewSelected = useSelector(state => state.playful.viewSelected)
 
-  let content = <div className='text-center pt-3'>
-    <Spinner animation="border" role="status" size="md" />
-    <h1 className='d-inline-block'>Loading...</h1>
-  </div>
+  let content = <Spinner />
   
   if(view == playfulViews.map) content = Maps[viewSelected]
   if(resources) {
@@ -37,7 +34,7 @@ export default function Playful(props) {
     }, 1000);
   }
 
-  let PlayfulNav = <div className='secondaryNav backButton' style={{display:'flex'}}>
+  let PlayfulNav = <div className='secondaryNav' style={{display:'flex'}}>
     <div className='fas fa-reply fa-flip-vertical' aria-hidden="true" style={{fontSize:'2rem'}}
       onClick={() => dispatch(back())} />
     <img src={mapIcon} style={{height:'2rem'}} onClick={() => dispatch(newView({view:playfulViews.default}))} />
