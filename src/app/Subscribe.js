@@ -4,6 +4,7 @@ import $ from "jquery"
 import { Card } from 'react-bootstrap';
 
 import {firebase} from '../firebase'
+import { PlayfulPlainContainer } from '../common/components';
 
 const createSession = firebase.functions().httpsCallable('createCheckoutSession');
 
@@ -29,6 +30,12 @@ const plans = {
 // //////////////////////////////////////////
 
 export default function Subscribe(props) {
+    return <PlayfulPlainContainer>
+        <SubscribeForm />
+    </PlayfulPlainContainer>
+}
+
+function SubscribeForm(props) {
     let user = props.user
     console.log(user)
 
@@ -71,6 +78,11 @@ export default function Subscribe(props) {
                     const error = await stripe.redirectToCheckout({sessionId: session.data.id});
                     console.error(error.message)
                 }}>Continue Memorizing</button>
+            </Card.Text>
+            <Card.Text>
+                <b>
+                    If you just created your account, you have a 30 day free trial. Refresh and you are good to Go!
+                </b>
             </Card.Text>
         </Card.Body>
     </Card>

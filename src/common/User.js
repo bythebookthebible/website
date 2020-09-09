@@ -1,5 +1,4 @@
 import React from 'react';
-import {Login} from './Login'
 import {NavDropdown, NavLink} from 'react-bootstrap'
 
 import { firebase } from '../firebase'
@@ -10,8 +9,8 @@ export function UserNavButton(props) {
 
     let auth = useSelector(state => state.firebase.auth)
 
-    if(!auth.isLoaded) return null
-    if(auth.isEmpty) return <Login.LoginButton {...otherProps} />
+    // !auth.isLoaded check should not be needed. If not logged in, should be on the login page
+    if(auth.isEmpty) return null
 
     return <NavDropdown title={auth.displayName} as={NavLink}>
         {/* <NavDropdown.Item href='/account' >My Account</NavDropdown.Item> */}

@@ -17,7 +17,7 @@ export default function SVGButtons(props) {
     height = height > 1 ? height : window.innerHeight * height
 
     // for debounding hover glow
-    let debounce = useDebounce(300)
+    let debounce = useDebounce(200)
 
     useEffect(() => {
         for (let button of buttons) {

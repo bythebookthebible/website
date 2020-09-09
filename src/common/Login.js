@@ -1,10 +1,9 @@
 import React, { useState, useRef} from 'react';
-import { Modal, Card } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import $ from 'jquery'
 
-import {firebase} from '../firebase'
-var auth = firebase.auth()
-// var firebaseui = require('firebaseui');
+import {firebase, auth} from '../firebase'
+import { PlayfulPlainContainer, AbsoluteCentered } from './components';
 
 const tosUrl = '/terms.html'
 const privacyPolicyUrl = '/privacy.html'
@@ -12,51 +11,10 @@ const privacyPolicyUrl = '/privacy.html'
 var userDataMigration = firebase.functions().httpsCallable('userDataMigration');
 var initUser = firebase.functions().httpsCallable('initUser');
 
-export var Login = {
-    LoginButton: LoginButton,
-    LogInOutButton: LogInOutButton,
-    LoginFrom: LoginForm,
-    AuthSwitch: AuthSwitch,
-}
-
-export default LoginForm
-
-function LogInOutButton(props) {
-    let user = props.user
-
-    if(user) {
-        return <div className="btn btn-round btn-primary" onClick={() => {
-                auth.signOut().then(function(user) {
-                    }).catch(function(e) {
-                        console.log('Signout error: ', e);
-                    });
-            }}>Logout</div>
-    } else {
-        return <LoginButton className="btn-secondary" />
-    }
-}
-
-function LoginButton(props) {
-    const [show, setShow] = useState(false);
-
-    return <>
-        <button {...props} className="btn btn-round btn-primary" onClick={() => setShow(true)}>Login</button>
-        <Modal onHide={() => setShow(false)} show={show} size="sm" aria-labelledby="authTitle" centered>
-            <LoginForm {...props} onCancel={()=>setShow(false)} />
-        </Modal>
-    </>
-}
-
-// requires withAuth
-function AuthSwitch(props) {
-    let {user, tests, ...passThru} = props
-    if(!user) {
-        return <LoginForm className='mt-5 mx-auto' user={user} {...passThru} />
-    }
-    for(let {test, value} of tests) {
-        if(test(user)) return React.cloneElement(value, {user, ...passThru})
-    }
-    return React.cloneElement(props.default || props.children, {user, ...passThru})
+export default function Login(props) {
+    return <PlayfulPlainContainer>
+        <LoginForm />
+    </PlayfulPlainContainer>
 }
 
 function validEmail(email) {

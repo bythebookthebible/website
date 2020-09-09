@@ -2,9 +2,8 @@ import React from "react";
 import "../styles/index.scss";
 import { Navbar, Nav } from "react-bootstrap";
 import {LoadingPage} from '../common/components'
-// import { firebase, db } from "../firebase.js";
 import logo from "../images/logo.png";
-import { Login } from "../common/Login";
+import Login from "../common/Login";
 import { UserNavButton } from "../common/User";
 import Subscribe from "./Subscribe";
 import Admin from "../forAdmin/Admin";
@@ -60,7 +59,7 @@ function AuthSwitch(props) {
   // login / loading / error cases
   // if(!rehydrated) return <LoadingPage /> // loading last state
   if(!auth.isLoaded) return <LoadingPage /> // loading auth
-  if(auth.isEmpty) return <Login.LoginFrom /> // not logged in
+  if(auth.isEmpty) return <Login /> // not logged in
   if(!profile.isLoaded) return <LoadingPage /> // loading profile (and claims)
   if(profile.isEmpty) {
     console.error('empty profile / no claims') // logged in but no profile (should not happen)
@@ -76,15 +75,14 @@ function AuthSwitch(props) {
   return <Subscribe />
 }
 
-const ErrorMsg = props =>
-  <div className='text-center p-5'>
-    <img src='https://www.biblestudytools.com/Content/Images/file-not-found.jpg' className='mw-100' />
-    <h3>
-      Oops, we broke something...<br />
-      Try <a href='/'>refreshing the page</a>
-      or email <a href='mailto:rose@bythebookthebible.com'>rose@bythebookthebible.com</a>
-    </h3>
-  </div>
+const ErrorMsg = props => <div className='text-center p-5'>
+  <img src='https://www.biblestudytools.com/Content/Images/file-not-found.jpg' className='mw-100' />
+  <h3>
+    Oops, we broke something...<br />
+    Try <a href='/'>refreshing the page</a>
+    or email <a href='mailto:rose@bythebookthebible.com'>rose@bythebookthebible.com</a>
+  </h3>
+</div>
 
 const LightNav = props => {
   return <Navbar collapseOnSelect expand="sm" className='lightNav'>

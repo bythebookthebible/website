@@ -51,7 +51,7 @@ export default function AdventurePath(props) {
       let onClick = () => dispatch(newView({view:playfulViews.activity, viewSelected:a}))
 
       return <div className='steppingSpot' key={`${a.module}-${a.kind}`}
-      style={{left:`${6*i+3}rem`}}>
+      style={{left:`${6*i+3}rem`}} disabled={i > nextIndex} >
         <AbsoluteCentered style={{height:`${a.index==0?9:6}rem`}}>
           <img src={JamesMarker} onClick={i > nextIndex ?  () => null : onClick} />
         </AbsoluteCentered>
