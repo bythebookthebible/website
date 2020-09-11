@@ -10,7 +10,8 @@ export default function SVGButtons(props) {
     let {glowSize, buttons, extra, svg:SVG, width, height} = props
     width = width || 1
     height = height || 1
-    glowSize = glowSize || 10
+    glowSize = glowSize || 20
+    buttons = buttons || []
 
     // for matching inner svg shape to containing shape
     width = width > 1 ? width : window.innerWidth * width
@@ -32,12 +33,12 @@ export default function SVGButtons(props) {
             )
         }
         extra && extra()
-    }, [SVG])
+    }, [buttons, extra])
 
     return <svg style={{position:'absolute', overflow:'visible', width:'100%', height:'100%', ...props.style}} viewBox={`0 0 ${width} ${height}`}>
         <defs>
             <filter id="glow">
-                <feDropShadow dx="0" dy="0" stdDeviation="10" floodColor="white" result="shadow" />
+                <feDropShadow dx="0" dy="0" stdDeviation={glowSize} floodColor="white" result="shadow" />
                 <feBlend in="SourceGraphic" in2="shadow" mode="normal" />
             </filter>
         </defs>
