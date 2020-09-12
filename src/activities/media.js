@@ -12,6 +12,9 @@ export const media = {
   [kinds.karaoke]: <MemeoryPowerVideo />,
   [kinds.dance]: <MemeoryPowerVideo />,
   [kinds.joSchmo]: <MemeoryPowerVideo />,
+  [kinds.intro]: <MemeoryPowerVideo />,
+  [kinds.princessRead]: <MemeoryPowerVideo />,
+  [kinds.blooper]: <MemeoryPowerVideo />,
   
   [kinds.craft]: <MemoryPowerPDF />,
   [kinds.schmoment]: <MemoryPowerPDF />,
