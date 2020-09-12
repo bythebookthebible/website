@@ -11,6 +11,7 @@ export const books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy'
 '1 Peter', '2 Peter', '1 John', '2 John', '3 John', 'Jude', 'Revelation']
 
 export const kinds = {
+  intro:'intro',
   watch:'watch',
   teacherGuide:'teacherGuide',
   speed:'speed',
@@ -24,6 +25,8 @@ export const kinds = {
   coloring:'coloring',
   craft:'craft',
   book:'book',
+  princessRead:'princessRead',
+  blooper:'blooper',
 }
 
 export const kidModeKinds = {
@@ -43,9 +46,6 @@ export const kidModeKinds = {
 
 export const resoucesForKinds = {
   intro:['intro'],
-  princessRead:['princessRead'],
-  blooper:['blooper'],
-
   watch:['watch'],
   teacherGuide:['teacherGuide'],
   speed:['watch', 'timestamps'],
@@ -59,6 +59,8 @@ export const resoucesForKinds = {
   coloring:['coloring'],
   craft:['craft'],
   book:['popupBook'],
+  princessRead:['princessRead'],
+  blooper:['blooper'],
 }
 
 export function getKidKinds(moduleResource) {

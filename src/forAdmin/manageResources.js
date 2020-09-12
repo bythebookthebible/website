@@ -3,9 +3,10 @@ import $ from 'jquery'
 import {useDropzone} from 'react-dropzone'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar'
 
-import { useFirestore } from '../common/hooks'
+import { useMemoryResources } from '../common/hooks'
 import {books, kinds, resoucesForKinds, keyFromScripture} from '../util'
-import {firebase, db} from '../firebase'
+// import {firebase, db} from '../firebase'
+import { useFirestore, useFirebase } from 'react-redux-firebase'
 
 const defaultVideoData = {
   book: books[0],
@@ -17,37 +18,48 @@ const defaultVideoData = {
 const memoryResources = 'memoryResources_02'
 
 export default function ManageVideos(props) {
-  let [modules, setModules] = useState({})
-  let dbModules = useFirestore(
-    memoryResources,
-    (cum, doc) => {
-      let d = doc.data();
-      let chapterVerse = `${d.chapter}:${d.startVerse}-${d.endVerse}`
-      cum[doc.id] = {...d, key:doc.id, chapterVerse: chapterVerse}
-      return cum
-    }, {}
-  );
+  let resources = useMemoryResources()
+  let firestore = useFirestore()
 
-  console.log(modules)
+  let attributeOptions = ['lock', 'icon', ...Object.values(resoucesForKinds).reduce((cum, arr)=>new Set([...cum, ...arr]).values(),[])]
 
-  useEffect(() => { setModules(dbModules) }, [dbModules])
+  let onAddModule = event => {
+    let title = $('#title').val()
+    let book = $('#book').val()
+    let chapterVerse = $('#chapterVerse').val()
+    let [chapter] = chapterVerse.split(':').slice(0)
+    let [verses] = chapterVerse.split(':').slice(-1)
+    let [startVerse, endVerse] = verses.split('-')
+    let key = keyFromScripture(book, chapter, verses)
 
-  let attributeOptions = ['icon', ...Object.values(resoucesForKinds).reduce((cum, arr)=>new Set([...cum, ...arr]).values(),[])]
+    let module = {
+      book: book,
+      chapter: Number(chapter),
+      startVerse: Number(startVerse),
+      endVerse: Number(endVerse),
+      title: title,
+      version: Date.now(),
+      lock: true,
+    }
+
+    firestore.doc(`${memoryResources}/${key}`).set(module)
+  }
 
   return <div className='container-xl form'>
     <table><tbody>
+      {/* Headers */}
       <tr>
         <th>Scripture</th>
         <th>Title</th>
-        {attributeOptions.map(attr => <th className='rotate'><div><span>{attr}</span></div></th>)}
+        {attributeOptions.map(attr => 
+          <th className='rotate'><div><span>{attr}</span></div></th>
+        )}
       </tr>
 
-      {modules && Object.keys(modules).map(mod => <ResourceTableRow attributeOptions={attributeOptions} module={modules[mod]} onChange={(key, value) => {
-        // update state to match the updated form
-        // data validation could go here too
-        modules[mod][key] = value
-        setModules(modules)
-      }}/>)}
+      {/* Rows by module */}
+      {resources && Object.entries(resources).map(([module, resource]) => 
+        <ResourceTableRow attributeOptions={attributeOptions} resource={resource} module={module} />
+      )}
 
     </tbody></table>
     
@@ -58,98 +70,97 @@ export default function ManageVideos(props) {
     <input type='text' id='chapterVerse' pattern={'\\d+:\\d+-\\d+'} size={5} defaultValue='1:1-10' />
     <input type='text' id='title' pattern={'[A-Za-z ]+'} size={10} defaultValue='Title' />
     
-    <button onClick={function(event) {
-      let title = $('#title').val()
-      let book = $('#book').val()
-      let chapterVerse = $('#chapterVerse').val()
-      let [chapter] = chapterVerse.split(':').slice(0)
-      let [verses] = chapterVerse.split(':').slice(-1)
-      let [startVerse, endVerse] = verses.split('-')
-      let key = keyFromScripture(book, chapter, verses)
+    <button onClick={onAddModule} >Add Module</button>
 
-      let dbRecord = {
-        book: book,
-        chapter: Number(chapter),
-        startVerse: Number(startVerse),
-        endVerse: Number(endVerse),
-        title: title,
-        version: Date.now(),            
-      }
+    <div style={{height: '2rem'}} />
 
-      let newModule = {
-        ...dbRecord,
-        key: key,
-        chapterVerse: chapterVerse,
-      }
-
-      setModules({...modules, [key]:newModule})
-      // not adding to db until there is at least one content for this module
-    }} >Add Module</button>
   </div>
 }
 
 function ResourceTableRow(props) {
-  let p = props.module
+  let r = props.resource
+  let m = props.module
   return <tr>
-    <td>{`${p.book} ${p.chapterVerse}`}</td>
-    <td>{p.title}</td>
+    <td>{`${r.book} ${r.chapter}:${r.startVerse}-${r.endVerse}`}</td>
+    <td>{r.title}</td>
 
-    {props.attributeOptions.map(attr => <td><FileUploader resource={p} attribute={attr} onChange={props.onChange} /></td>)}
+    {props.attributeOptions.map(attr => 
+      <td><Uploader resource={r} module={m} attribute={attr} /></td>
+    )}
   </tr>
 }
 
-function FileUploader(props) {
+function Uploader(props) {
+  let firebase = useFirebase()
+  let firestore = useFirestore()
+
   let file = useRef()
   let [uploading, setUploading] = useState(false)
   let [progress, setProgress] = useState(0)
   
   
   let onDrop = useCallback(async files => {
-    let r = props.resource
-    console.log(r)
+    // TODO: HANDLE MULTIPLE FILES POSSIBLY
 
-    let fileType = files[0].name.split('.').slice(-1)
-    let value = `memory/${r.book}/${String(r.chapter).padStart(3, '0')}/${r.key}-${props.attribute}${props.suffix ? '-' + props.suffix : ''}.${fileType}`
-
-    // new db contents
-    let dbKeys = ['book', 'chapter', 'startVerse', 'endVerse', 'title', 'icon', ...Object.values(resoucesForKinds).reduce((cum, arr)=>[...cum, ...arr],[])]
-    let dbRecord = Object.keys(r).filter(k=>dbKeys.includes(k)).reduce((cum, key)=>{return {...cum, [key]:r[key]}},{})
+    if(props.attribute == 'lock')
+      return
 
     if(props.attribute == 'timestamps') {
-      // timestamp special case: read file into text
+      // upload text of file to firestore
       let reader = new FileReader()
-      reader.onload = e=>{
-        // update to database
-        dbRecord = {...dbRecord, version: Date.now(), [props.attribute]:[reader.result]}
-        props.onChange(props.attribute, reader.result)
-        db.doc(`${memoryResources}/${r.key}`).set(dbRecord).catch(() => {console.log('Error Updating DB')})
+      reader.onload = e => {
+        firestore.doc(`${memoryResources}/${props.module}`)
+          .update({version: Date.now(), [props.attribute]:[reader.result]})
+          .catch(console.error)
       }
       reader.readAsText(files[0])
-
-    } else {
-      // upload to storage
-      let ref = firebase.storage().ref(value)
-      let uploadTask = ref.put(files[0])
-      setUploading(true)
-      uploadTask.on('state_changed', (snapshot) => {
-        setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
-        if(snapshot.bytesTransferred == snapshot.totalBytes) {
-          setUploading(false)
-        }
-      })
-      uploadTask.then(() => {console.log('Uploaded File')})
-
-      // update to database
-      dbRecord = {...dbRecord, version: Date.now(), [props.attribute]:[value]}
-      db.doc(`${memoryResources}/${r.key}`).set(dbRecord).catch(() => {console.log('Error Updating DB')})
-      props.onChange(props.attribute, [value])
+      return
     }
 
+    else {
+      // rename file for storage
+      let r = props.resource
+      let fileType = files[0].name.split('.').slice(-1)
+      let fileName = `memory/${r.book}/${String(r.chapter).padStart(3, '0')}/${props.module}-${props.attribute}${props.suffix ? '-' + props.suffix : ''}.${fileType}`
+
+      // upload and track progress
+      setUploading(true)
+      let uploadTracker = firebase.storage().ref(fileName).put(files[0])
+      uploadTracker.on('state_changed', snapshot => {
+          setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+        })
+      uploadTracker.then(() => {setUploading(false)})
+      uploadTracker.catch(console.error)
+
+
+      // upload to firestore
+      firestore.doc(`${memoryResources}/${props.module}`)
+        .update({version: Date.now(), [props.attribute]:[fileName]})
+        .catch(console.error)
+    }
   })
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
+
+  // make icon match type
+  // default icon is '+' if no content
+  let icon = <i className="fas fa-plus" aria-hidden="true" style={{fontSize:'10px', textAlign:'center'}} />
   
-  let icon = <i className="far fa-plus" aria-hidden="true" style={{fontSize:'12px'}} />
-  if (uploading) icon = <CircularProgressbar value={progress} strokeWidth={30} styles={buildStyles({trailColor: '#eee', pathColor:'#10fc'})} />
+  // if uploading, icon is progressbar
+  if (uploading) icon =
+    <CircularProgressbar value={progress} strokeWidth={30} styles={buildStyles({trailColor: '#eee', pathColor:'#10fc'})} />
+
+  // timestamps icon is determined by the attribute, since it is not a file
+  else if(props.attribute == 'timestamps' && props.resource[props.attribute]) icon = 
+    <i class="fas fa-file-alt" aria-hidden="true" />
+
+  // if attribute is 'lock', icon is instead a checkbox
+  else if(props.attribute == 'lock') icon = 
+    <input type='checkbox' defaultChecked={!!props.resource[props.attribute]} onChange={e => {
+      firestore.doc(`${memoryResources}/${props.module}`)
+        .update({version: Date.now(), [props.attribute]:[e.target.checked]})
+        .catch(console.error)
+    }} />
+
+  // if something is uploaded (file) then match file type
   else if(props.resource[props.attribute]) {
     let fileType = props.resource[props.attribute][0].split('.').slice(-1)[0]
     switch(fileType){
@@ -166,9 +177,16 @@ function FileUploader(props) {
       }
     }
   }
-  
-  return <div onClick={() => {$(file.current).click()}} {...getRootProps()} style={{width:'25px', textAlign:'center'}} >
-      <input ref={file} style={{display: 'none'}} {...getInputProps()} />
+
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
+  const onClick = () => {
+    if(props.attribute !== 'lock') {
+      $(file.current).click()
+    }
+  }
+
+  return <div {...getRootProps()} onClick={onClick} style={{width:'25px', textAlign:'center'}} >
       {icon}
+      <input ref={file} style={{display: 'none'}} {...getInputProps()} />
   </div>
 }

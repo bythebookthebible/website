@@ -37,7 +37,7 @@ function Sidebar(props) {
       buttons.push({id: 'Continue', dispatch: nextModule})
     }
 
-    return <SVGButtons svg={sidebar} width={.3} buttons={buttons}
+    return <SVGButtons svg={sidebar} width={.3} buttons={buttons} glowSize={5}
       extra={() => $('#power').children().css({
         'transform-origin': '46% 83.6%',
         'transform': 'scale(' +  percentageWidth + ', '+ percentageHeight + ')'
