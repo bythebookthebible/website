@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Activity from './activity'
 import { Spinner } from '../common/components'
 import MemoryPalaceView from './memoryPalaceView'
@@ -34,14 +34,33 @@ export default function Playful(props) {
     }, 1000);
   }
 
-  let PlayfulNav = <div className='secondaryNav' style={{display:'flex'}}>
-    <div className='fas fa-reply fa-flip-vertical' aria-hidden="true" style={{fontSize:'2rem'}}
-      onClick={() => dispatch(back())} />
-    <img src={mapIcon} style={{height:'2rem'}} onClick={() => dispatch(newView({view:playfulViews.default}))} />
-  </div>
+  let navButtons = [
+    {
+      key:'mainMap', 
+      content: <img className='mx-1 mt-1' src={mapIcon} style={{height:'2rem'}} />, 
+      onClick: () => dispatch(newView({view:playfulViews.default})),
+    },
+    {
+      key:'back', 
+      content: <i className='fas fa-reply fa-flip-vertical mx-2 mt-1'  aria-hidden="true" style={{fontSize:'2rem', color:'var(--primary)'}} />, 
+      onClick: () => dispatch(back()),
+    },
+  ]
+  
+  useEffect(() => {
+    let setNavButtons = props.setNavButtons.current
+    setNavButtons({owner:'PlayfulMode', navButtons})
+    return () => {
+      setNavButtons({owner:'PlayfulMode', navButtons:[]})
+    }
+  }, [])
 
-  return <>
-    {PlayfulNav}
-    {content}
-  </>
+
+  // let PlayfulNav = <div className='secondaryNav' style={{display:'flex'}}>
+  //   <div className='fas fa-reply fa-flip-vertical' aria-hidden="true" style={{fontSize:'2rem'}}
+  //     onClick={() => dispatch(back())} />
+  //   <img src={mapIcon} style={{height:'2rem'}} onClick={() => dispatch(newView({view:playfulViews.default}))} />
+  // </div>
+
+  return content
 }

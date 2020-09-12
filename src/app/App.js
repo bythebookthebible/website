@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useRef, useEffect, useState, useCallback } from "react";
 import "../styles/index.scss";
 import { Navbar, Nav } from "react-bootstrap";
 import {LoadingPage} from '../common/components'
@@ -21,9 +21,16 @@ const Admin = React.lazy(()=>import('../forAdmin/Admin'))
 
 var mainLink = "https://bythebookthebible.com";
 
-export default (props) => <AuthSwitch>
-    <ModeSwitch />
-</AuthSwitch>
+export default function App(props) {
+  let setNavButtons = useRef(()=>null)
+
+  return <>
+    <LightNav {...{setNavButtons}} />
+    <AuthSwitch>
+      <ModeSwitch {...{setNavButtons}} />
+    </AuthSwitch>
+  </>
+}
 
 function ModeSwitch(props) {
   const mode = useSelector(state => state.mode)
@@ -32,24 +39,31 @@ function ModeSwitch(props) {
 
   // what to render for each mode, and the name for it's tab / button
   const componentsByMode = {
-    [modes.playful]: {name: 'Adventure mode', content: <Playful />},
+    [modes.playful]: {name: 'Adventure mode', content: <Playful setNavButtons={props.setNavButtons} />},
     [modes.focused]: {name: 'Navigator mode', content: <Focused />},
     // [modes.teacher]: {name: 'Teacher mode', content: <h1>Teacher mode coming soon!</h1>},
   }
   if (profile.isLoaded && profile.token.claims.admin)
     componentsByMode[modes.admin] = {name: 'Admin', content: <Admin />}
 
-  const modeButtons = Object.entries(componentsByMode).filter(([k,v])=>k!=mode)
+  // add buttons to navigate between modes while mode switch is in scope
+  let userButtons = Object.entries(componentsByMode)
+    .filter(([k,v])=>k!=mode)
     .map(([k,v])=>{return {content: v.name, key: v.name, onClick: () => dispatch(setMode(k))}})
+  
+  useEffect(() => {
+    let setNavButtons = props.setNavButtons.current
+    setNavButtons({owner:'ModeSwitch', userButtons})
+    return () => {
+      setNavButtons({owner:'ModeSwitch', userButtons:[]})
+    }
+  }, [userButtons])
 
-  return <>
-    <LightNav buttons={modeButtons} />
-    <div className={"body colorful-theme"}>
-      <Suspense fallback={<LoadingPage />}>
-        {componentsByMode[mode] && componentsByMode[mode].content}
-      </Suspense>
-    </div>
-  </>
+  return <div className={"body colorful-theme"}>
+    <Suspense fallback={<LoadingPage />}>
+      {componentsByMode[mode] && componentsByMode[mode].content}
+    </Suspense>
+  </div>
 }
 
 function AuthSwitch(props) {
@@ -86,10 +100,38 @@ const ErrorMsg = props => <div className='text-center p-5'>
 </div>
 
 const LightNav = props => {
+  // need a ref to allow multiple updates in one cycle,
+  // and a state to ensure rerendering
+  let [buttons, setButtons] = useState({})
+  let buttonsByOwner = useRef({})
+
+  // set button tracking factory
+  let setNavButtons = useCallback(b => {
+    buttonsByOwner.current = {...buttonsByOwner.current, [b.owner]:{user:b.userButtons, nav:b.navButtons}}
+    console.log(b, buttonsByOwner.current)
+    setButtons(buttonsByOwner.current)
+  }, [])
+
+  if(props.setNavButtons)
+    props.setNavButtons.current = setNavButtons
+
+  // get both sets of buttons for top-level nav buttons, and dropdown items under the user button
+  let {userButtons, navButtons} = Object.values(buttons).reduce((cum, cur) => {
+    cum.userButtons = cum.userButtons.concat(cur.user || [])
+    cum.navButtons = cum.navButtons.concat(cur.nav || [])
+    return cum
+  }, {userButtons:[], navButtons:[]})
+  
   return <Navbar collapseOnSelect expand="sm" className='lightNav'>
     <Navbar.Brand href={mainLink}><img src={logo} height="40rem"/></Navbar.Brand>
-    <Nav>
-      <UserNavButton {...props}/>
+    <Nav>      
+      {navButtons.map(b => 
+        <Nav.Item onClick={b.onClick} key={b.key} >
+            {b.content}
+        </Nav.Item>
+      )}
+
+      <UserNavButton buttons={userButtons} />
     </Nav>
   </Navbar>
 }
