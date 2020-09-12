@@ -11,6 +11,7 @@ import JamesBackground from './images/JamesPathBackground.png'
 import JamesCurrent from './images/rocketShip.svg'
 import JamesMarker from './images/sparklestone.svg'
 import popupBubble from './images/speechBubble.svg'
+import lock from '../images/Lock.svg'
 import { AbsoluteCentered } from "../../common/components"
 
 export default function AdventurePath(props) {
@@ -48,16 +49,26 @@ export default function AdventurePath(props) {
 
   return <div className='adventurePath' style={{backgroundImage:`url(${JamesBackground})`, width:`${activities.length*6}rem`}}>
     {activities.map((a, i) => {
-      let onClick = () => dispatch(newView({view:playfulViews.activity, viewSelected:a}))
-
+      // click dispatches activity conditioned on 
+      
+      let locked = !!resources[a.module].lock
+      let clickable = i <= nextIndex && !locked
+      let onClick = !clickable ? () => null : () => dispatch(newView({view:playfulViews.activity, viewSelected:a}))
+      
       return <div className='steppingSpot' key={`${a.module}-${a.kind}`}
-      style={{left:`${6*i+3}rem`}} disabled={i > nextIndex} >
+      style={{left:`${6*i+3}rem`}} disabled={!clickable} >
+        {/* Star */}
         <AbsoluteCentered style={{height:`${a.index==0?9:6}rem`}}>
-          <img src={JamesMarker} onClick={i > nextIndex ?  () => null : onClick} />
+          <img src={JamesMarker} onClick={onClick} />
         </AbsoluteCentered>
+        {/* Rocket */}
         {i == nextIndex && <AbsoluteCentered style={{height:'5rem'}}>
             <img src={JamesCurrent} onClick={onClick} />
         </AbsoluteCentered>}
+        {/* Lock */}
+        {locked && <AbsoluteCentered style={{height:'5rem'}}>
+            <img src={lock} />
+        </AbsoluteCentered>}        
       </div>
     })}
   </div>

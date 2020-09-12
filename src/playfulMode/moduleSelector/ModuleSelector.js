@@ -4,6 +4,7 @@ import { Container, Row, Col } from "react-bootstrap"
 import { scriptureFromKey, getKidKinds } from '../../util'
 
 import defaultIcon from './images/defaultIcon.png'
+import lock from '../images/Lock.svg'
 
 // import artVerseBar from './images/ArtVerseBar.svg'
 import blueHouseInside from './images/BlueHouseInside.svg'
@@ -27,6 +28,7 @@ import { storage } from "../../firebase"
 import { useAsyncEffect, useMemoryResources } from "../../common/hooks"
 import { useDispatch, useSelector } from "react-redux"
 import { newView, playfulViews } from "../playfulReducer"
+import { AbsoluteCentered } from "../../common/components"
 
 function ModuleSelctor(props) {
   let dispatch = useDispatch()
@@ -71,17 +73,20 @@ function ModuleSelctor(props) {
                   <Col style={props.style['bookCol']}>{`${book} ${chapter}`}</Col>
                 </Row>
                 <Row style={props.style['verseRow']}>
-                  {Object.keys(scriptures[book][chapter]).map(verses =>
+                  {Object.keys(scriptures[book][chapter]).map(verses => {
                     //content
-                    <Col key={`${book} ${chapter} ${verses}`}  xs={props.verseDisplaySmall} sm={props.verseDisplaySmall} lg={props.verseDisplayLarge} style={props.style['verseCol']}
-                      onClick={()=>dispatch(newView({
+                    let locked = !!resources[scriptures[book][chapter][verses].key].lock
+
+                    return <Col key={`${book} ${chapter} ${verses}`}  xs={props.verseDisplaySmall} sm={props.verseDisplaySmall} lg={props.verseDisplayLarge} style={{position:'relative', ...props.style['verseCol']}}
+                      onClick={()=>!locked && dispatch(newView({
                         view:playfulViews.activity,
                         viewSelected:{module:scriptures[book][chapter][verses].key, kind: viewSelected}
                       }))}>
                       <Icon module={scriptures[book][chapter][verses].key} />
+                      {locked && <AbsoluteCentered><img src={lock} /></AbsoluteCentered>}
                       <br></br>{verses}
                     </Col>
-                  )}
+                  })}
                 </Row>
               </React.Fragment>)
             )}
