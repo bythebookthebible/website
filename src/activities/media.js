@@ -21,7 +21,7 @@ export const media = {
   [kinds.discussion]: <MemoryPowerPDF />,
   
   // should be separated into different components, rather than included with simple video
-  [kinds.speed]: <RepetitionMemoryVideo />,
+  [kinds.speed]: <MemeoryPowerVideo />,
   [kinds.echo]: <MemeoryPowerVideo />,
 
   [kinds.coloring]: <MemoryPowerColoring />,
