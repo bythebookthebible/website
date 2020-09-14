@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { media } from "../activities/media";
 import MemorizedPrompt from './memorizedPrompt'
 import { ReactComponent as sidebar } from './images/ActivitySideBar.svg';
@@ -73,28 +73,28 @@ export default function Activity(props) {
   let halfMemoryPower = 7
   if(activity.kind==kinds.speed) halfMemoryPower = 70
 
-  function SidebarPopUp(props) {
-    let icon = props.show ?
-      <i className="fa fa-2x fa-chevron-right" />
-      : <i className="fa fa-2x fa-chevron-left" />
+  let openSidebarIcon = showSidebar ?
+    <i className="fa fa-2x fa-chevron-right" />
+    : <i className="fa fa-2x fa-chevron-left" />
 
-    return <div>
-      <div className="sidemenu-kids" onClick={() => setShowSidebar(true)}
-        style={{marginLeft: props.show ? '70%' : '97%', transition: 'marginLeft .5s'}}>
-        <Sidebar key={activityKey} {...{initialMP, onRepeat, halfMemoryPower}}/>
-      </div>
-      <div style={{position: 'absolute', zIndex: '2', right: '5px'}} onClick={() => setShowSidebar(!showSidebar)}>
-        {icon}
-      </div>
-    </div>
-  }
+  let SidebarPopUp = [
+    <div className="sidemenu-kids" onClick={() => setShowSidebar(true)}
+      style={{marginLeft: showSidebar ? '70%' : '97%', transition: 'margin-left .3s'}}>
+      <Sidebar key={activityKey} {...{initialMP, onRepeat, halfMemoryPower}}/>
+    </div>,
+    <div className="fa fa-2x fa-chevron-right"
+      style={{position: 'absolute', zIndex: '2', right: '5px', transform: showSidebar ? '' : 'scaleX(-1)', transition: 'transform .15s'}}
+      onClick={() => setShowSidebar(!showSidebar)} />
+  ]
 
   // , repeat: repeatActivity, resetRepeat: resetRepeat
   // onRepeat: onRepeat
   return <>
     {/* <MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} /> */}
-    <SidebarPopUp show={showSidebar} />
-    <MemoryChalice {...{halfMemoryPower}}/>
+    {SidebarPopUp}
+    <MemoryChalice {...{activityKey, halfMemoryPower, style:{
+      bottom:'1%', width: '20%', zIndex:'1', right: showSidebar ? '5%' : '1%', transition: 'right .3s'
+    }}}/>
     {
       media[activity.kind] ?
         React.cloneElement(media[activity.kind], {
@@ -110,21 +110,24 @@ export default function Activity(props) {
 }
 
 function MemoryChalice(props) {
-  let MP = useSelector(state => {
+  let power = useSelector(state => {
     let p = state.firebase.profile.power &&
       state.firebase.profile.power[state.playful.viewSelected.module]
     return p ? p.power : 0
   })
-  let initialMP = useRef(MP).current
-  MP -= initialMP
+  let initialMP = useRef(power)
+  useEffect(()=>{
+    initialMP.current = power
+  }, [props.activityKey])
+  let MP = power - initialMP.current
 
-  console.log(MP, initialMP, props.halfMemoryPower)
+  console.log(MP, initialMP.current, props.halfMemoryPower)
 
   // fill and match curve of cup
   let fractionHeight = MP*MP / (MP*MP + (props.halfMemoryPower))
   let fractionWidth = Math.pow(Math.max(.01, fractionHeight), .2)
 
-  return <svg style={{position:'absolute', overflow:'visible', bottom:'1%', right:'1%', width: '20%', zIndex:'1', ...props.style}} viewBox='0 0 100 100' >
+  return <svg style={{position:'absolute', overflow:'visible', ...props.style}} viewBox='0 0 100 100' >
         <defs>
             <style>{`
             #MemoryPower {
@@ -135,6 +138,6 @@ function MemoryChalice(props) {
             }
             `}</style>
         </defs>
-        <Chalice  x='0' y='0' width='100' height='100' style={{overflow:'hidden'}} />
+        <Chalice style={{overflow:'visible'}} />
     </svg>
 }

@@ -376,12 +376,10 @@
       gradientTransform="matrix(-0.6, 0, 0, 0.4, 770.7, 613.8)" xlink:href="#radial-gradient-5" />s
   </defs>
   <title>MemoryChalice</title>
-  <g id="Layer_14" data-name="Layer 14">
+  <!-- <g id="Layer_14" data-name="Layer 14">
     <path class="cls-11"
       d="M199.5,359.29c-92.12,0-176.22,162.85-199.5,281V759.13a527.35,527.35,0,0,0,46.12,136H329a520.58,520.58,0,0,0,44.62-111.64V601.66C347,489.62,281.91,359.29,199.5,359.29Z" />
-    <path class="cls-12"
-      d="M373.58,201.44c-61.08-39.64-131.81-62.29-207.2-62.29A374.75,374.75,0,0,0,0,178.22V836.15H373.58Z" />
-  </g>
+  </g> -->
   <g id="Chalis">
     <ellipse class="cls-30" cx="195.13" cy="813.63" rx="20.24" ry="2.9" />
     <path class="cls-31"
