@@ -156,7 +156,7 @@ function Uploader(props) {
   else if(props.attribute == 'lock') icon = 
     <input type='checkbox' defaultChecked={!!props.resource[props.attribute]} onChange={e => {
       firestore.doc(`${memoryResources}/${props.module}`)
-        .update({version: Date.now(), [props.attribute]:[e.target.checked]})
+        .update({version: Date.now(), [props.attribute]:e.target.checked})
         .catch(console.error)
     }} />
 
