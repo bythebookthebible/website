@@ -1,7 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { media } from "../activities/media";
 import MemorizedPrompt from './memorizedPrompt'
 import { ReactComponent as sidebar } from './images/ActivitySideBar.svg';
+import { ReactComponent as Chalice } from './images/MemoryChalice.svg';
 
 import $ from "jquery";
 import { kinds } from "../util";
@@ -18,8 +19,8 @@ function Sidebar(props) {
     MP -= props.initialMP
 
     // fill and match curve of cup
-    let percentageHeight = MP*MP / (MP*MP + (props.halfMemoryPower))
-    let percentageWidth = Math.pow(Math.max(.01, percentageHeight), .3)
+    let fractionHeight = MP*MP / (MP*MP + (props.halfMemoryPower))
+    let fractionWidth = Math.pow(Math.max(.01, fractionHeight), .3)
 
     // if current activity has index for path, then use alternate sidebar
     let activity = useSelector(state => state.playful.viewSelected)
@@ -37,11 +38,18 @@ function Sidebar(props) {
       buttons.push({id: 'Continue', dispatch: nextModule})
     }
 
+    let resizePower = useCallback(() => {
+        // $('#MemoryPower')
+        // .css({
+        //   transition: 'transform 2s linear',
+        //   transformOrigin: '59% 90%',
+        //   transformBox:'fill-box',
+        //   transform: 'scale(' +  fractionWidth + ', '+ fractionHeight + ')'
+        // })
+      }, [fractionHeight, fractionWidth])
+
     return <SVGButtons svg={sidebar} width={.3} buttons={buttons} glowSize={5}
-      extra={() => $('#power').children().css({
-        'transform-origin': '46% 83.6%',
-        'transform': 'scale(' +  percentageWidth + ', '+ percentageHeight + ')'
-      })}
+      extra={resizePower}
     />
 
 }
@@ -49,12 +57,13 @@ function Sidebar(props) {
 export default function Activity(props) {
   let activity = useSelector(state => state.playful.viewSelected)
   let activityKey = activity.module + ' ' + activity.kind
-  let MP = useSelector(state => {
-    let p = state.firebase.profile.power &&
-      state.firebase.profile.power[state.playful.viewSelected.module]
-    return p ? p.power : 0
-  })
-  let initialMP = useRef(MP).current
+  // let MP = useSelector(state => {
+  //   let p = state.firebase.profile.power &&
+  //     state.firebase.profile.power[state.playful.viewSelected.module]
+  //   return p ? p.power : 0
+  // })
+  // let initialMP = useRef(MP).current
+  let initialMP = 0
 
 
   let [showSidebar, setShowSidebar] = useState(false);
@@ -65,15 +74,14 @@ export default function Activity(props) {
   if(activity.kind==kinds.speed) halfMemoryPower = 70
 
   function SidebarPopUp(props) {
-    let icon = <i className="fa fa-2x fa-chevron-right" aria-hidden="true" />
-    if (!props.show) {
-      icon = <i className="fa fa-2x fa-chevron-left" aria-hidden="true" />
-    }
+    let icon = props.show ?
+      <i className="fa fa-2x fa-chevron-right" />
+      : <i className="fa fa-2x fa-chevron-left" />
 
     return <div>
       <div className="sidemenu-kids" onClick={() => setShowSidebar(true)}
         style={{marginLeft: props.show ? '70%' : '97%', transition: 'marginLeft .5s'}}>
-        <Sidebar initialMP={initialMP} key={activityKey} onRepeat={onRepeat} />
+        <Sidebar key={activityKey} {...{initialMP, onRepeat, halfMemoryPower}}/>
       </div>
       <div style={{position: 'absolute', zIndex: '2', right: '5px'}} onClick={() => setShowSidebar(!showSidebar)}>
         {icon}
@@ -86,11 +94,11 @@ export default function Activity(props) {
   return <>
     {/* <MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} /> */}
     <SidebarPopUp show={showSidebar} />
+    <MemoryChalice {...{halfMemoryPower}}/>
     {
       media[activity.kind] ?
         React.cloneElement(media[activity.kind], {
           isActive:active=>{
-            console.log('active', showSidebar, active, showSidebar == active)
             setShowSidebar(!active)
           }, 
           onRepeat, 
@@ -99,4 +107,34 @@ export default function Activity(props) {
       : <div>Coming Soon!</div>
     }
   </>
+}
+
+function MemoryChalice(props) {
+  let MP = useSelector(state => {
+    let p = state.firebase.profile.power &&
+      state.firebase.profile.power[state.playful.viewSelected.module]
+    return p ? p.power : 0
+  })
+  let initialMP = useRef(MP).current
+  MP -= initialMP
+
+  console.log(MP, initialMP, props.halfMemoryPower)
+
+  // fill and match curve of cup
+  let fractionHeight = MP*MP / (MP*MP + (props.halfMemoryPower))
+  let fractionWidth = Math.pow(Math.max(.01, fractionHeight), .2)
+
+  return <svg style={{position:'absolute', overflow:'visible', bottom:'1%', right:'1%', width: '20%', zIndex:'1', ...props.style}} viewBox='0 0 100 100' >
+        <defs>
+            <style>{`
+            #MemoryPower {
+              transition: transform 10s linear;
+              transform-origin: 59% 90%;
+              transform-box: fill-box;
+              transform: scale(${fractionWidth}, ${fractionHeight});
+            }
+            `}</style>
+        </defs>
+        <Chalice  x='0' y='0' width='100' height='100' style={{overflow:'hidden'}} />
+    </svg>
 }
