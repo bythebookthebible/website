@@ -1,20 +1,4 @@
-$blue: #28B7FF;
-$pink: #FF4BBD;
-$yellow: #FFFF00;
-$darkYellow: #F1E935;
-$gold: #F1E935;
-$darkBlue: #0064A0;
-
-@font-face {
-    font-family: "Loopiejuice-Regular";
-    src: url("Loopiejuice.ttf");
-}
-
-$font-family-sans-serif: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-$font-family-fun: "Loopiejuice-Regular";
-// $font-family-serif: Georgia, "Times New Roman", Times, serif !default;
-// $font-family-monospace: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
-$font-family-base: $font-family-sans-serif !default;
+@import '../common/common';
 
 $enable-responsive-font-sizes: true;
 
@@ -28,41 +12,6 @@ $embed-responsive-aspect-ratios: (
     (9 16),
     (9 21)
 );
-
-.yellow { background-color: $yellow}
-.blue { background-color: $blue }
-.pink { background-color: $pink }
-
-.App {
-    line-height: 1.1;
-    -webkit-font-smoothing: antialiased;
-    font-size: 1.2rem;
-    min-height: 100vh;
-
-    display: flex;
-    flex-direction: column;
-}
-
-.body {
-    flex: 1 1 auto;
-    position: absolute;
-    top:0; left: 0; right: 0; bottom: 0;
-    overflow: auto;
-}
-
-.navbar, .Footer {
-    flex: 0 1 auto
-}
-
-.row {
-    justify-content: center;
-}
-
-.flex-centered {
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
 
 // Animate Bounce
 .bounce:hover {
@@ -98,9 +47,6 @@ $embed-responsive-aspect-ratios: (
         transform: scale(1, 1);
     }
 }
-
-@import "special";
-@import "themes";
 
 // Import parts of Bootstrap to extend theme
 @import "../../node_modules/bootstrap/scss/bootstrap";

@@ -1,4 +1,28 @@
-.admin, .modal {
+@import '../common/common';
+
+// FORMS
+input,
+textarea {
+  margin: 10px;
+}
+
+input:invalid:not(:focus),
+#warnInvalid {
+  /* color:red; */
+  background-color: rgba(255, 0, 0, 0.25);
+  border: 2px inset red;
+}
+
+.progress {
+  width: 100px;
+  height: 8px;
+}
+
+.form {
+  background-color: white;
+}
+
+.admin {
   th, td {
     padding-left: .5em;
     &:not(.rotate) {

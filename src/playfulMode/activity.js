@@ -11,17 +11,6 @@ import { newView, playfulViews, nextModule, nextActivity, pathFinished } from ".
 import SVGButtons from "./SVGButtons";
 
 function Sidebar(props) {
-    let MP = useSelector(state => {
-      let p = state.firebase.profile.power &&
-        state.firebase.profile.power[state.playful.viewSelected.module]
-      return p ? p.power : 0
-    })
-    MP -= props.initialMP
-
-    // fill and match curve of cup
-    let fractionHeight = MP*MP / (MP*MP + (props.halfMemoryPower))
-    let fractionWidth = Math.pow(Math.max(.01, fractionHeight), .3)
-
     // if current activity has index for path, then use alternate sidebar
     let activity = useSelector(state => state.playful.viewSelected)
 
@@ -38,33 +27,13 @@ function Sidebar(props) {
       buttons.push({id: 'Continue', dispatch: nextModule})
     }
 
-    let resizePower = useCallback(() => {
-        // $('#MemoryPower')
-        // .css({
-        //   transition: 'transform 2s linear',
-        //   transformOrigin: '59% 90%',
-        //   transformBox:'fill-box',
-        //   transform: 'scale(' +  fractionWidth + ', '+ fractionHeight + ')'
-        // })
-      }, [fractionHeight, fractionWidth])
-
-    return <SVGButtons svg={sidebar} width={.3} buttons={buttons} glowSize={5}
-      extra={resizePower}
-    />
+    return <SVGButtons svg={sidebar} width={.3} buttons={buttons} glowSize={5} />
 
 }
 
 export default function Activity(props) {
   let activity = useSelector(state => state.playful.viewSelected)
   let activityKey = activity.module + ' ' + activity.kind
-  // let MP = useSelector(state => {
-  //   let p = state.firebase.profile.power &&
-  //     state.firebase.profile.power[state.playful.viewSelected.module]
-  //   return p ? p.power : 0
-  // })
-  // let initialMP = useRef(MP).current
-  let initialMP = 0
-
 
   let [showSidebar, setShowSidebar] = useState(false);
   // let [showMemoryPrompt, setShowMemoryPrompt] = useState(props.showMemoryPrompt)
@@ -73,14 +42,10 @@ export default function Activity(props) {
   let halfMemoryPower = 7
   if(activity.kind==kinds.speed) halfMemoryPower = 70
 
-  let openSidebarIcon = showSidebar ?
-    <i className="fa fa-2x fa-chevron-right" />
-    : <i className="fa fa-2x fa-chevron-left" />
-
   let SidebarPopUp = [
     <div className="sidemenu-kids" onClick={() => setShowSidebar(true)}
       style={{marginLeft: showSidebar ? '70%' : '97%', transition: 'margin-left .3s'}}>
-      <Sidebar key={activityKey} {...{initialMP, onRepeat, halfMemoryPower}}/>
+      <Sidebar key={activityKey} {...{onRepeat, halfMemoryPower}}/>
     </div>,
     <div className="fa fa-2x fa-chevron-right"
       style={{position: 'absolute', zIndex: '2', right: '5px', transform: showSidebar ? '' : 'scaleX(-1)', transition: 'transform .15s'}}

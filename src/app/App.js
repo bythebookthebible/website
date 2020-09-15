@@ -1,5 +1,6 @@
 import React, { Suspense, useRef, useEffect, useState, useCallback } from "react";
-import "../styles/index.scss";
+import "./index.scss";
+import "./app.scss";
 import { Navbar, Nav } from "react-bootstrap";
 import {LoadingPage} from '../common/components'
 import logo from "../images/logo.png";

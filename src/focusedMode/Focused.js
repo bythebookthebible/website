@@ -10,6 +10,7 @@ import "../../node_modules/video-react/dist/video-react.css"
 import {Row, Col, Container, Button} from 'react-bootstrap'
 import logo from '../images/innerBlueLogo.png';
 import missing from './images/missingContent.png';
+import "./focused.scss";
 
 import videoSplash from "../activities/videoSplash.png"
 import { useCachedStorage } from '../common/hooks';
