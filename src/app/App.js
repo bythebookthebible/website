@@ -123,7 +123,7 @@ const LightNav = props => {
     return cum
   }, {userButtons:[], navButtons:[]})
   
-  return <Navbar collapseOnSelect expand="sm" className='lightNav'>
+  return <Navbar collapseOnSelect className='lightNav'>
     <Navbar.Brand href={mainLink}><img src={logo} height="40rem"/></Navbar.Brand>
     <Nav>      
       {navButtons.map(b => 

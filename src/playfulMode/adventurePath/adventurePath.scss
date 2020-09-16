@@ -15,5 +15,14 @@
     &:hover:not([disabled]) {
       filter: drop-shadow(0 0 10px #fffb);
     }
+    .major {
+      height: 9rem;
+    }
+    .minor {
+      height: 4rem;
+    }
+    .current, .lock {
+      height: 5rem;
+    }
   }
 }

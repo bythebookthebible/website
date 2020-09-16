@@ -58,16 +58,16 @@ export default function AdventurePath(props) {
       return <div className='steppingSpot' key={`${a.module}-${a.kind}`}
       style={{left:`${6*i+3}rem`}} disabled={!clickable} >
         {/* Star */}
-        <AbsoluteCentered style={{height:`${a.index==0?9:6}rem`}}>
-          <img src={JamesMarker} onClick={onClick} />
+        <AbsoluteCentered>
+          <img src={JamesMarker} className={a.index==0?'major':'minor'} onClick={onClick} />
         </AbsoluteCentered>
         {/* Rocket */}
-        {i == nextIndex && <AbsoluteCentered style={{height:'5rem'}}>
-            <img src={JamesCurrent} onClick={onClick} />
+        {i == nextIndex && <AbsoluteCentered>
+            <img src={JamesCurrent} className='current' onClick={onClick} />
         </AbsoluteCentered>}
         {/* Lock */}
-        {locked && <AbsoluteCentered style={{height:'5rem'}}>
-            <img src={lock} />
+        {locked && <AbsoluteCentered>
+            <img src={lock} className='lock' />
         </AbsoluteCentered>}        
       </div>
     })}

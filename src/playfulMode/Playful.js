@@ -21,7 +21,7 @@ export default function Playful(props) {
   
   if(view == playfulViews.map) content = Maps[viewSelected]
   if(resources) {
-    if(view == playfulViews.moduleSelector) content = ModuleSelector[viewSelected]
+    if(view == playfulViews.moduleSelector) content = <ModuleSelector />
     if(view == playfulViews.palace) content = <MemoryPalaceView />
     if(view == playfulViews.adventurePath) content = <AdventurePath />
     if(view == playfulViews.activity) content = <Activity />
