@@ -35,7 +35,7 @@ export default function SVGButtons(props) {
         extra && extra()
     }, [buttons, extra])
 
-    return <svg style={{position:'absolute', overflow:'visible', width:'100%', height:'100%', ...props.style}} viewBox={`0 0 ${width} ${height}`}>
+    return <svg {...props} style={{position:'absolute', overflow:'visible', width:'100%', height:'100%', ...props.style}} viewBox={`0 0 ${width} ${height}`}>
         <defs>
             <filter id="glow">
                 <feDropShadow dx="0" dy="0" stdDeviation={glowSize} floodColor="white" result="shadow" />

@@ -1,0 +1,32 @@
+.memoryPalace {
+  .power {
+    // opacity: 0;
+    transform-origin: 50% 88%;
+    transform-box: fill-box;
+  }
+
+  .module {
+    .jewel {
+      display: none;
+    }
+
+    &.hide {
+      display: none;
+    }
+
+    &.memorized,
+    &.applied-pending, &.applied  {
+      .rock {
+        display: none;
+      }
+      .jewel {
+        display: inherit;
+      }
+    }
+
+    &.memorized-pending, &.memorized,
+    &.applied-pending, &.applied  {
+      filter: url(#glow)
+    }
+  }
+}

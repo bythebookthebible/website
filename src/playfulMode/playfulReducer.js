@@ -34,6 +34,24 @@ export function pathFinished(activity) {
   }
 }
 
+export function activateJewel(module) {
+  return async (dispatch, getState, getFirebase) => {
+    let status = getState().firebase.profile.power[module]?.status
+    
+    if(status === 'memorized-pending') {
+      getFirebase().updateProfile({power:{
+        [module]:{status:'memorized'}
+      }})
+    }
+
+    if(status === 'applied-pending') {
+      getFirebase().updateProfile({power:{
+        [module]:{status:'memorized'}
+      }})
+    }
+  }
+}
+
 // Values for state.view
 export const playfulViews = {
   default:'default',
@@ -110,7 +128,7 @@ const playfulReducer = createReducer(
 
       let scriptures = Object.keys(resources).reduce((cum, key) => {
         let s = scriptureFromKey(key)
-        cum[s.book + s.chapter] = cum[s.book + s.chapter] || {book:s.book, chapter:s.chapter}
+        cum[s.book + s.chapter] = cum[s.book + s.chapter] || {book:s.book, chapter:String(s.chapter)}
         return cum
       }, {})
 

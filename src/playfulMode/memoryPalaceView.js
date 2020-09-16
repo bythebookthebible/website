@@ -4,13 +4,14 @@ import $ from "jquery";
 import { Button } from "react-bootstrap";
 import MemorizedPrompt from "./memorizedPrompt"
 import { ReactComponent as memoryPalace } from './images/PalaceInside.svg'
-import { scriptureFromKey } from "../util";
+import { scriptureFromKey, kinds } from "../util";
 import { useDispatch, useSelector } from "react-redux";
 import { useMemoryResources } from "../common/hooks";
 import SVGBButtons from './SVGButtons'
-import { nextInPalace } from "./playfulReducer";
+import { nextInPalace, activateJewel, newView, playfulViews } from "./playfulReducer";
+import { useFirebase } from "react-redux-firebase";
 
-let halfFullPower = 50.0
+let halfFullPower = 100.0
 // @TODO: 1) fix code after actual imagine is used in place
 export default function MemoryPalaceView(props) {
     let dispatch = useDispatch()
@@ -36,31 +37,33 @@ export default function MemoryPalaceView(props) {
 
     return <>
         {/* {<MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />}             */}
-        <SVGBButtons svg={memoryPalace} deps={[`${book}-${chapter}`]} extra={()=>{
-            // i < 10 bc rn we only have 11 rectangles
+        <SVGBButtons svg={memoryPalace} deps={[`${book}-${chapter}`]} className='memoryPalace' extra={()=>{
+            // i < 11 bc rn we only have 11 rectangles
             for (let i = 0; i < 11; i++) {
                 if(i < modules.length) {
                     // fill up power
-                    $(`#power_${i + 1}`).css({
-                        opacity:0, 
-                        transformOrigin: '50% 88%',
-                        transformBox:'fill-box',
+                    let m = $(`#module_${i + 1}`)
+                        .addClass(modules[i].status)
+                        .removeClass('hide')
+                    m.find('.rock, .jewel').click(() => {
+                        dispatch(activateJewel(modules[i].key))
+                    })
+                    m.find('.pedistal').click(() => {
+                        dispatch(newView({view: playfulViews.activity, viewSelected: {module:modules[i].key, kind: kinds.watch}}))
+                    })
+                    m.find('.power').css({
+                        opacity: 0,
                         transform: 'scaleY(' + modules[i].fill + ')',
                     })
-                    // crack jewel
-                    if(modules[i].status == 'memorized' || modules[i].status == 'applied') {
-                        $(`#rock_${i + 1}`).css({'display': 'none'})
-                    }
-                    $(`#module_${i + 1}`).css({'display': 'inherit'})
                 } else {
-                    $(`#module_${i + 1}`).css({'display': 'none'})
+                    $(`#module_${i + 1}`).addClass('hide')
                 }
             }
-            // refresh styling later for safari transform-origin bug
+            // refresh styling later for transform-origin bug
             setTimeout(()=>{
                 for (let i = 0; i < 11; i++) {
                     if(i < modules.length) {
-                        $(`#power_${i + 1}`).css({opacity:1})
+                        $(`.power`).css({opacity:1})
                     }
                 }
             }, 0)

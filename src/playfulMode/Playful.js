@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import Activity from './activity'
 import { Spinner } from '../common/components'
 import MemoryPalaceView from './memoryPalaceView'
+import './playful.scss'
 
 import Maps from './maps/maps'
 import ModuleSelector from './moduleSelector/ModuleSelector'
