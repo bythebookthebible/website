@@ -36,7 +36,7 @@ exports.getUsers = functions.https.onCall(async (data, context) => {
     let claims = (await admin.auth().getUser(context.auth.uid)).customClaims
     if(!claims.admin) return new Error('Access Denied')
 
-    let userData = (await admin.firestore().collection('userData').get())
+    let userData = (await admin.firestore().collection('users').get())
         .docs.reduce((cum, d)=>{cum[d.id]=d.data(); return cum}, {}) //.map(d=>{return {id:d.id, data:d.data()}})
     let usersResult = await admin.auth().listUsers()
     // return the filtered / merged list of data (dont send over password hash, etc)
@@ -67,7 +67,7 @@ exports.setUser = functions.https.onCall(async (data, context) => {
         await admin.auth().setCustomUserClaims(data.uid, {...user.customClaims, ...data.customClaims})
         
         // set memory power
-        await admin.firestore().doc(`userData/${user.uid}`).set(data.userData)
+        await admin.firestore().doc(`users/${user.uid}`).set(data.userData)
     
         // general info is user-settable only?
     }

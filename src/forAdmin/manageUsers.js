@@ -7,7 +7,6 @@ import deepEqual from 'deep-equal';
 
 var getUsers = firebase.functions().httpsCallable('getUsers');
 var setUser = firebase.functions().httpsCallable('setUser');
-var deleteUser = firebase.functions().httpsCallable('deleteUser');
 
 export default function ManageUsers(props) {
     let [users, setUsers] = useState(null)
@@ -122,7 +121,7 @@ function UserRow(props) {
 }
 
 function UpdateMemoryPower(props) {
-    let initialPower = props.user.userData && props.user.userData.memoryPower
+    let initialPower = props.user.userData && props.user.userData.power
     let [power, setPower] = useState(initialPower)
     let [show, setShow] = useState(false)
     
