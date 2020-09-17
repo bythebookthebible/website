@@ -74,7 +74,7 @@ function UserRow(props) {
             customClaims: customClaims
         }
 
-        if(powerRef.current) newUser.userData = {...newUser.userData, memoryPower: powerRef.current}
+        if(powerRef.current) newUser.userData = {...newUser.userData, power: powerRef.current}
 
         console.log(user, newUser)
         return newUser
@@ -163,8 +163,8 @@ function UpdateMemoryPower(props) {
                             setPower(newPower)
                         }}>
                             <option value={'learning'}>Learning</option>
-                            <option value={'memorized'}>Memorized</option>
-                            <option value={'applied'}>Applied</option>
+                            <option value={'memorized-pending'}>Memorized</option>
+                            <option value={'applied-pending'}>Applied</option>
                         </select>
                     </td>
                 </tr>)}

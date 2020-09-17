@@ -43,8 +43,8 @@ export default function MemoryPalaceView(props) {
                 if(i < modules.length) {
                     // fill up power
                     let m = $(`#module_${i + 1}`)
+                        .removeClass('hide memorized memorized-pending applied applied-pending')
                         .addClass(modules[i].status)
-                        .removeClass('hide')
                     m.find('.rock, .jewel').click(() => {
                         dispatch(activateJewel(modules[i].key))
                     })
