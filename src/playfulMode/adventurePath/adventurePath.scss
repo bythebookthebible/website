@@ -7,11 +7,14 @@
   .steppingSpot {
     position: absolute;
     top: 50%;
+
     & > * {
       position: absolute;
-      top:0;
-      left:0;
+      top: 50%;
+      left: 50%;
+      transform: translateY(-50%) translateX(-50%)
     }
+
     &:hover:not([disabled]) {
       filter: drop-shadow(0 0 10px #fffb);
     }
@@ -23,6 +26,15 @@
     }
     .current, .lock {
       height: 5rem;
+    }
+    .current {
+      animation: slideIn 1s ease;
+    }
+    
+    @keyframes slideIn {
+      // using -50% and -150% because it is centered with transform
+      from {transform: translateX(-150%) translateY(-50%)}
+      to {transform: translateX(-50%) translateY(-50%)}
     }
   }
 }

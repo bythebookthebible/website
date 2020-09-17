@@ -159,12 +159,17 @@ function UpdateMemoryPower(props) {
                     <td>
                         <select defaultValue={power[module].status} onChange={e=>{
                             let newPower = {...power}
-                            newPower[module] = {...power[module], status:e.target.value}
+                            let status = e.target.value
+                            if(status === 'memorized') status = 'memorized-pending'
+                            if(status === 'applied') status = 'applied-pending'
+                            newPower[module] = {...power[module], status}
                             setPower(newPower)
                         }}>
                             <option value={'learning'}>Learning</option>
-                            <option value={'memorized-pending'}>Memorized</option>
-                            <option value={'applied-pending'}>Applied</option>
+                            <option value={'memorized'}>Memorized</option>
+                            <option value={'memorized-pending'}>Memorized (pending)</option>
+                            <option value={'applied'}>Applied</option>
+                            <option value={'applied-pending'}>Applied  (pending)</option>
                         </select>
                     </td>
                 </tr>)}
