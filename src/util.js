@@ -27,7 +27,11 @@ export const kinds = {
   book:'book',
   princessRead:'princessRead',
   blooper:'blooper',
+  review:'review',
+  smash:'smash',
+  speedyWeedy:'speedyWeedy',
 }
+// Also add kinds to resourcesForKinds and to media.js
 
 export const kidModeKinds = {
   watch:'watch',
@@ -63,6 +67,9 @@ export const resoucesForKinds = {
   book:['popupBook'],
   princessRead:['princessRead'],
   blooper:['blooper'],
+  review:['review'],
+  smash:['smash'],
+  speedyWeedy:['speedyWeedy'],
 }
 
 export function getKidKinds(moduleResource) {
@@ -93,7 +100,8 @@ export function getModulesForPath(resources, path) {
 
 const pathActivities = [
   'intro', 'watch', 'joSchmo', 'echo', 'coloring', 
-  'dance', 'princessRead', 'speed', 'blooper', 'karaoke'
+  'dance', 'princessRead', 'speed', 'blooper', 'karaoke', 
+  'review', 'smash', 'speedyWeedy',
 ]
 
 // return array of activity kinds for module given resources
