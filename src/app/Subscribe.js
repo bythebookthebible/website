@@ -41,7 +41,7 @@ function SubscribeForm(props) {
 
     return <Card {...props} className={'small-card mx-auto mt-5 text-center '+(props.className||'')} >
         <Card.Header>
-            <Card.Title as='h2' className='mt-2'>Congradulations!</Card.Title>
+            <Card.Title as='h2' className='mt-2'>Congratulations!</Card.Title>
             <Card.Text>
                 You have been memorizing so much scripture in the last 30 days!
             </Card.Text>

@@ -39,6 +39,15 @@
   }
 }
 
+.memoryChalice {
+  position: absolute;
+  overflow: visible;
+  bottom: 1%;
+  width: 20%;
+  max-height: 30%;
+  z-index:1;
+  transition: right .3s;
+}
 .playfulBackground {
   background-color: black; 
   width: 100; 

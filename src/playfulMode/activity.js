@@ -57,9 +57,10 @@ export default function Activity(props) {
   return <>
     {/* <MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} /> */}
     {SidebarPopUp}
-    <MemoryChalice {...{activityKey, halfMemoryPower, style:{
-      bottom:'1%', width: '20%', zIndex:'1', right: showSidebar ? '5%' : '1%', transition: 'right .3s'
-    }}}/>
+    <MemoryChalice {...{activityKey, halfMemoryPower, 
+    style:{
+      right: showSidebar ? '5%' : '1%'
+    }}} />
     {
       media[activity.kind] ?
         React.cloneElement(media[activity.kind], {
@@ -75,6 +76,7 @@ export default function Activity(props) {
 }
 
 function MemoryChalice(props) {
+  let {activityKey, halfMemoryPower, ..._props} = props
   let power = useSelector(state => {
     let p = state.firebase.profile.power &&
       state.firebase.profile.power[state.playful.viewSelected.module]
@@ -83,26 +85,26 @@ function MemoryChalice(props) {
   let initialMP = useRef(power)
   useEffect(()=>{
     initialMP.current = power
-  }, [props.activityKey])
+  }, [activityKey])
   let MP = power - initialMP.current
 
-  console.log(MP, initialMP.current, props.halfMemoryPower)
+  console.log(MP, initialMP.current, halfMemoryPower)
 
   // fill and match curve of cup
-  let fractionHeight = MP*MP / (MP*MP + (props.halfMemoryPower))
+  let fractionHeight = MP*MP / (MP*MP + (halfMemoryPower))
   let fractionWidth = Math.pow(Math.max(.01, fractionHeight), .2)
 
-  return <svg style={{position:'absolute', overflow:'visible', ...props.style}} viewBox='0 0 100 100' >
-        <defs>
-            <style>{`
-            #MemoryPower {
-              transition: transform 10s linear;
-              transform-origin: 59% 90%;
-              transform-box: fill-box;
-              transform: scale(${fractionWidth}, ${fractionHeight});
-            }
-            `}</style>
-        </defs>
-        <Chalice style={{overflow:'visible'}} />
-    </svg>
+  return <svg className='memoryChalice' {..._props} viewBox='0 0 100 100' >
+    <defs>
+        <style>{`
+        #MemoryPower {
+          transition: transform 10s linear;
+          transform-origin: 59% 90%;
+          transform-box: fill-box;
+          transform: scale(${fractionWidth}, ${fractionHeight});
+        }
+        `}</style>
+    </defs>
+    <Chalice style={{overflow:'visible'}} />
+  </svg>
 }
