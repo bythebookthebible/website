@@ -22,15 +22,17 @@ export default function SVGButtons(props) {
 
     useEffect(() => {
         for (let button of buttons) {
-            $("#" + button.id).click(() => {
+            let b = $("#" + button.id)
+            b.click(() => {
                 if(typeof button.dispatch === "function") dispatch(button.dispatch())
                 else if(button.dispatch) dispatch(button.dispatch)
                 if(button.onClick) button.onClick()
             })
-            .hover(
+            b.hover(
                 e=>debounce(()=>$("#" + button.id).attr({ filter: 'url(#glow)'})),
                 e=>debounce(()=>$("#" + button.id).attr({ filter: ''})),
             )
+            b.css("cursor", "pointer")
         }
         extra && extra()
     }, [buttons, extra])

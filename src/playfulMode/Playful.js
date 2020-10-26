@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import Activity from './activity'
-import { Spinner } from '../common/components'
+import { Spinner, AbsoluteCentered} from '../common/components'
 import MemoryPalaceView from './memoryPalaceView'
 import './playful.scss'
 
@@ -11,6 +11,7 @@ import { playfulViews, back, newView } from './playfulReducer'
 import { useMemoryResources } from '../common/hooks'
 import mapIcon from './images/MapIcon.png'
 import AdventurePath from './adventurePath/adventurePath'
+import sizeMe, { SizeMe } from 'react-sizeme'
 
 export default function Playful(props) {
   let dispatch = useDispatch()
@@ -63,5 +64,35 @@ export default function Playful(props) {
   //   <img src={mapIcon} style={{height:'2rem'}} onClick={() => dispatch(newView({view:playfulViews.default}))} />
   // </div>
 
-  return content
+  return <PlayfulFrame>
+    {content}
+  </PlayfulFrame>
 }
+
+function PlayfulFrame(props) {
+  // return <SizeMe monitorHeight>
+  //   {({size}) => {
+  //     console.log(size)
+  //     let aspectratio=1.5
+  //     let width = Math.min(size.width, size.height * aspectratio)
+  //     let height = Math.min(size.height, size.width / aspectratio)
+  //     return <div className="playfulBackground">
+  //       <AbsoluteCentered>
+  //         <div style={{height:height, width:width}}>
+  //           {props.children}
+  //         </div>
+  //       </AbsoluteCentered>
+  //     </div>  
+  //   }}
+  // </SizeMe>
+
+  // return <SizeMe>{({ size }) => {
+    return <div className="playfulBackground">
+      <div>
+        {props.children}
+      </div>
+    </div>
+  // }} </SizeMe>
+}
+
+

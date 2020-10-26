@@ -47,11 +47,12 @@
   .verseItem {
     text-align: center;
     margin-left: 1rem;
-    min-width: 5rem;
-    max-width: 5rem;
+    min-width: 9rem;
+    max-width: 9rem;
+    cursor: pointer;
 
-    > img {
-      width: 4rem;
+    > svg {
+      width: 8rem;
       height: 4rem;
     }
   }
