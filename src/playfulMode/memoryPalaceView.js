@@ -4,7 +4,7 @@ import $ from "jquery";
 import { Button } from "react-bootstrap";
 import MemorizedPrompt from "./memorizedPrompt"
 import { ReactComponent as memoryPalace } from './images/PalaceInside.svg'
-import { scriptureFromKey, kinds } from "../util";
+import { scriptureFromKey, kinds, keyFromScripture } from "../util";
 import { useDispatch, useSelector } from "react-redux";
 import { useMemoryResources } from "../common/hooks";
 import SVGBButtons from './SVGButtons'
@@ -32,8 +32,10 @@ export default function MemoryPalaceView(props) {
         // fill has a horizontal asymptote of 1 and is 1/2 when p.power is halfFullPower
         return {fill: p.power / (p.power + halfFullPower), status:p.status, key:key}
     }, {})
+    let key = keyFromScripture(book, chapter)
+    let chapterStatus = power[key] ? power[key].status : 'learning'
 
-    console.log('palace', book, chapter, modules)
+    console.log('palace', book, chapter, modules, chapterStatus)
 
     return <>
         {/* {<MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />}             */}
@@ -59,6 +61,8 @@ export default function MemoryPalaceView(props) {
                     $(`#module_${i + 1}`).addClass('hide')
                 }
             }
+            $('.backgroundJewel').removeClass('learning memorized memorized-pending applied applied-pending')
+            $('.backgroundJewel').addClass(chapterStatus)
             // refresh styling later for transform-origin bug
             setTimeout(()=>{
                 for (let i = 0; i < 11; i++) {

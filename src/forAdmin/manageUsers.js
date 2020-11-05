@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
-import {Button, Spinner, Modal} from 'react-bootstrap'
+import {Button, Modal} from 'react-bootstrap'
+import { Spinner } from '../common/components'
 
 import { friendlyScriptureRef } from '../util'
 import {firebase} from '../firebase'
 import deepEqual from 'deep-equal';
+import { useMemoryResources } from '../common/hooks';
 
 var getUsers = firebase.functions().httpsCallable('getUsers');
 var setUser = firebase.functions().httpsCallable('setUser');
@@ -120,15 +122,35 @@ function UserRow(props) {
     </tr>
 }
 
+
 function UpdateMemoryPower(props) {
-    let initialPower = props.user.userData && props.user.userData.power
+    let initialPower = (props.user.userData && props.user.userData.power) || {}
+    let resources = useMemoryResources()
     let [power, setPower] = useState(initialPower)
     let [show, setShow] = useState(false)
-    
-    // default power value
+
     useEffect(()=>{
         props.powerRef.current = power
     }, [power])
+
+    let defaultPower = {power:0, status: 'learning'}
+    
+    if(!props.user || !resources) return <Spinner />
+
+    // default power value
+    let modules = resources && Object.keys(resources).reduce((m, key) => {
+        // power for key (generate if doesnt exist)
+        let p = initialPower[key]
+        p = p || defaultPower
+        m[key] = p
+
+        // power for key's chapter (generate if doesnt exist)
+        let s = key.split('-')
+        let chapterKey = `${s[0]}-${s[1]}`
+        m[chapterKey] = resources[chapterKey] || defaultPower
+
+        return m
+    }, {})
 
     let cancel = ()=>{
         setPower(initialPower)
@@ -142,7 +164,7 @@ function UpdateMemoryPower(props) {
 
     return <>
     <Button size='sm' onClick={()=>setShow(true)} disabled={!power}>{power ? 'Edit Power' : 'No Power'}</Button>
-    {power && <Modal onHide={change} show={show} >
+    {<Modal onHide={change} show={show} >
         <Modal.Header>
             <Modal.Title><h2 className='m2'>Memory Power for<br />{props.user.displayName}</h2></Modal.Title>
         </Modal.Header>
@@ -153,16 +175,17 @@ function UpdateMemoryPower(props) {
                     <th>Power</th>
                     <th>Status</th>
                 </tr>
-                {Object.keys(power).sort().map(module=><tr>
+                {Object.keys(modules).sort().map(module=><tr>
                     <td>{friendlyScriptureRef(module)}</td>
-                    <td>{power[module].power.toFixed(2)}</td>
+                    <td>{modules[module].power.toFixed(2)}</td>
                     <td>
-                        <select defaultValue={power[module].status} onChange={e=>{
+                        <select defaultValue={modules[module].status} onChange={e=>{
                             let newPower = {...power}
                             let status = e.target.value
                             if(status === 'memorized') status = 'memorized-pending'
                             if(status === 'applied') status = 'applied-pending'
-                            newPower[module] = {...power[module], status}
+                            newPower[module] = power[module] || defaultPower
+                            newPower[module].status = status
                             setPower(newPower)
                         }}>
                             <option value={'learning'}>Learning</option>

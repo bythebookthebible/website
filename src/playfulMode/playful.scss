@@ -37,6 +37,22 @@
       filter: url(#glow)
     }
   }
+
+  @keyframes jewelDropdown {
+    from {transform: scale(3) translate(-1335px, -1100px)}
+    to {transform: scale(3) translate(-1335px, -340px)}
+  }
+
+  .backgroundJewel {
+    transform-origin: center;
+    transform: scale(3) translate(-1335px, -340px);
+    &.memorized-pending, &.applied-pending {
+      animation: jewelDropdown 7s ease-out;
+    }
+    &.learning {
+      display: none;
+    }
+  }
 }
 
 .memoryChalice {
