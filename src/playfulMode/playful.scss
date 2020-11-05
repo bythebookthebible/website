@@ -40,12 +40,12 @@
 
   @keyframes jewelDropdown {
     from {transform: scale(3) translate(-1335px, -1100px)}
-    to {transform: scale(3) translate(-1335px, -340px)}
+    to {transform: scale(3) translate(-1335px, -320px)}
   }
 
   .backgroundJewel {
     transform-origin: center;
-    transform: scale(3) translate(-1335px, -340px);
+    transform: scale(3) translate(-1335px, -320px);
     &.memorized-pending, &.applied-pending {
       animation: jewelDropdown 7s ease-out;
     }
@@ -72,4 +72,20 @@
     background-color: white;
   }
   
+}
+.sidemenu-kids {
+  top: 0px;
+  height: 100%;
+  width: 30%;
+  position: fixed;
+  background: #28B7FF;
+  overflow: hidden;
+  transition: 0.5s;
+  z-index: 2;
+  overflow-y: scroll;
+  padding-top: 10px;
+}
+.modulePedestal {
+  width: 800px;
+  height: 100px;
 }

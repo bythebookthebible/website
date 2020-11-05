@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo } from "react"
+import React, { useEffect, useRef, useMemo, useState } from "react"
 import {
   Player,
   ControlBar,
@@ -7,6 +7,7 @@ import {
   BigPlayButton,
 } from "video-react"
 import "../../node_modules/video-react/dist/video-react.css"
+import './video.scss'
 
 import videoSplash from "./videoSplash.png"
 import { addPower } from "../app/createRootReducer"
@@ -17,6 +18,8 @@ import { resoucesForKinds } from "../util"
 export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
     let {activity, isActive, onRepeat} = props
     let dispatch = useDispatch()
+    let [repeat, setRepeat] = useState(false)
+    console.log(repeat, setRepeat)
     
     let resources = useMemoryResources()
     let url = resources && resources[activity.module][resoucesForKinds[activity.kind][0]][0]
@@ -61,6 +64,12 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
             lastTime.current = playerState.currentTime
             dispatch(addPower(activity.module, .5))
         }
+
+        // looping
+        if(repeat && playerState.ended) {
+            player.current.seek(0)
+            player.current.play()
+        }
         
         prevPaused.current = playerState.paused
     }
@@ -72,6 +81,7 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
             <PlaybackRateMenuButton rates={[2.0, 1.5, 1.0, 0.7, 0.5]} order={7.1} />
             <VolumeMenuButton order={7.1} vertical />
         </ControlBar>
+        <div className={'playerControl' + (repeat ? ' repeat' : '')} onClick={()=>setRepeat(!repeat)} />
     </Player>
 })
 
