@@ -29,10 +29,12 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
     let intRef = useRef()
     let player = extRef || intRef
 
-    // on load src
     useEffect(()=>{
         player.current.subscribeToStateChange(onStateChange)
-        
+    }, [Boolean(player.current), src, repeat])
+    
+    // on load src
+    useEffect(()=>{
         onRepeat.current = ()=>{
             player.current.seek(0)
             player.current.play()
@@ -48,13 +50,24 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
     let totalTime = useRef(0)
     let lastTime = useRef(0)
     function onStateChange(playerState) {
-        // update active status
-        if(playerState.currentTime + 1 >= playerState.duration) {
-            isActive(false)
-        }
-        if(playerState.paused != prevPaused.current){
-            console.log('pause transition', playerState.paused)
-            isActive(!playerState.paused)
+        // console.log(repeat, player.current)
+        if(repeat) {
+            // looping
+            if(playerState.ended) {
+                player.current.seek(0)
+                player.current.play()
+            }
+
+        } else {
+            // update active status
+            if(playerState.ended) {
+                isActive(false)
+            }
+            if(playerState.paused != prevPaused.current){
+                console.log('pause transition', playerState.paused)
+                isActive(!playerState.paused)
+                prevPaused.current = playerState.paused
+            }
         }
 
         // update memory power
@@ -64,14 +77,7 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
             lastTime.current = playerState.currentTime
             dispatch(addPower(activity.module, .5))
         }
-
-        // looping
-        if(repeat && playerState.ended) {
-            player.current.seek(0)
-            player.current.play()
-        }
         
-        prevPaused.current = playerState.paused
     }
 
     return <Player ref={player} playsInline className="player" poster={videoSplash} key={src}>
@@ -81,7 +87,10 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
             <PlaybackRateMenuButton rates={[2.0, 1.5, 1.0, 0.7, 0.5]} order={7.1} />
             <VolumeMenuButton order={7.1} vertical />
         </ControlBar>
-        <div className={'playerControl' + (repeat ? ' repeat' : '')} onClick={()=>setRepeat(!repeat)} />
+        <div className={'playerControl' + (repeat ? ' repeat' : '')} onClick={()=>{
+            console.log(repeat)
+            setRepeat(!repeat)
+        }} />
     </Player>
 })
 
