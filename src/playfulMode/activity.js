@@ -16,7 +16,7 @@ function Sidebar(props) {
 
     let buttons = [
         {id: 'MemoryPalace', dispatch: newView({view:playfulViews.map, viewSelected:'palace'})},
-        {id: 'PlayAgain', onClick: ()=>props.onRepeat.current()},
+        // {id: 'PlayAgain', onClick: ()=>props.onRepeat.current()},
         {id: 'NextVerse', dispatch: nextModule},
         {id: 'NextActivity', dispatch: nextActivity},
     ]
