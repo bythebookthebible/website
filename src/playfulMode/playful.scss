@@ -11,6 +11,7 @@
     }
     .jewel {
       display: none;
+      pointer-events: none; // because the glow covers a bunch
     }
 
     &.hide {
@@ -45,6 +46,7 @@
 
   .backgroundJewel {
     transform-origin: center;
+    pointer-events: none; // because the glow covers a bunch
     transform: scale(3) translate(-1335px, -320px);
     &.memorized-pending, &.applied-pending {
       animation: jewelDropdown 7s ease-out;
