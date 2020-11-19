@@ -55,6 +55,7 @@ function UserRow(props) {
     let user = _.cloneDeep(props.user)
     let claims = user.customClaims
     let [changed, setChanged] = useState(false)
+    console.log(`update user row for ${user.displayName}`)
 
     let defaultDateStr = new Date(claims.expirationDate).toISOString().split('T')[0]
     let datePhase = claims.expirationDate - new Date(defaultDateStr).valueOf()
@@ -117,9 +118,9 @@ function UserRow(props) {
             {changed && <Button size='sm' onMouseDown={e => {
                 let newUser = getUpdated()
                 console.log(newUser)
-                let u = setUser(newUser)
                 props.onChange('newUser', newUser)
-                checkIfChanged()
+                setUser(newUser)
+                setChanged(false)
             }}>Update</Button>}
         </td>
     </tr>
@@ -149,6 +150,7 @@ function MemoryPowerEditor(props) {
 
         return m
     }, {})
+    console.log(`ALL power for ${props.displayName}`, allPower)
 
     // submit / cancel modal
     let cancel = ()=>{
