@@ -35,7 +35,8 @@ export default function AdventurePath(props) {
   let nextIndex
   if(progress) {
     let lastActivity = {path, module:progress.module, index:progress.index, kind:getPathActivities(resources, progress.module)[progress.index]}
-    nextIndex = valueAfter(activities, lastActivity, 1, true)
+    let validActivities = activities.filter(a => a.module < progress.module || (a.module == progress.module && a.index <= progress.index + 1))
+    nextIndex = validActivities.length
   } else {
     nextIndex = 0
   }

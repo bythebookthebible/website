@@ -27,7 +27,11 @@ export const kinds = {
   book:'book',
   princessRead:'princessRead',
   blooper:'blooper',
+  review:'review',
+  smash:'smash',
+  speedyWeedy:'speedyWeedy',
 }
+// Also add kinds to resourcesForKinds and to media.js
 
 export const kidModeKinds = {
   watch:'watch',
@@ -63,6 +67,9 @@ export const resoucesForKinds = {
   book:['popupBook'],
   princessRead:['princessRead'],
   blooper:['blooper'],
+  review:['review'],
+  smash:['smash'],
+  speedyWeedy:['speedyWeedy'],
 }
 
 export function getKidKinds(moduleResource) {
@@ -93,7 +100,8 @@ export function getModulesForPath(resources, path) {
 
 const pathActivities = [
   'intro', 'watch', 'joSchmo', 'echo', 'coloring', 
-  'dance', 'princessRead', 'speed', 'blooper', 'karaoke'
+  'dance', 'princessRead', 'speed', 'blooper', 'karaoke', 
+  'review', 'smash', 'speedyWeedy',
 ]
 
 // return array of activity kinds for module given resources
@@ -103,21 +111,39 @@ export function getPathActivities(resources, module) {
   )
 }
 
-// convert between scripture references and a string key
-// used for tracking scripture selected
 export const keyFromScripture = (book, chapter, verses) => {
-  let [startVerse, endVerse] = verses.split('-')
-  return `${String(books.indexOf(book)).padStart(2,'0')}-${String(chapter).padStart(3,'0')}-${String(startVerse).padStart(3,'0')}-${String(endVerse).padStart(3,'0')}`
+  if(chapter) {
+    if(verses) {
+      // all exist
+      let [startVerse, endVerse] = verses.split('-')
+      return `${String(books.indexOf(book)).padStart(2,'0')}-${String(chapter).padStart(3,'0')}-${String(startVerse).padStart(3,'0')}-${String(endVerse).padStart(3,'0')}`
+    }
+    // book, chap, no verses
+    return `${String(books.indexOf(book)).padStart(2,'0')}-${String(chapter).padStart(3,'0')}`
+  }
+  // only book
+  return `${String(books.indexOf(book)).padStart(2,'0')}`
 }
 
 export const scriptureFromKey = key => {
   let r = key.split('-')
-  return {book: books[Number(r[0])], chapter: Number(r[1]), verses: `${Number(r[2])}-${Number(r[3])}`}
+  if(r.length == 4) {
+    return {book: books[Number(r[0])], chapter: Number(r[1]), verses: `${Number(r[2])}-${Number(r[3])}`}
+  }
+  if(r.length == 2) {
+    return {book: books[Number(r[0])], chapter: Number(r[1])}
+  }
+  if(r.length == 1) {
+    return {book: books[Number(r[0])]}
+  }
 }
 
 export function friendlyScriptureRef(key) {
   let s = scriptureFromKey(key)
-  return `${s.book} ${s.chapter}:${s.verses}`
+  let ref = s.book
+  if(s.chapter) ref += ' ' + s.chapter
+  if(s.verses) ref += ':' + s.verses
+  return ref
 }
 
 // this is a mathematically correct mod accounting for negative numbers

@@ -11,6 +11,7 @@
     }
     .jewel {
       display: none;
+      pointer-events: none; // because the glow covers a bunch
     }
 
     &.hide {
@@ -37,8 +38,34 @@
       filter: url(#glow)
     }
   }
+
+  @keyframes jewelDropdown {
+    from {transform: scale(3) translate(-1335px, -1100px)}
+    to {transform: scale(3) translate(-1335px, -320px)}
+  }
+
+  .backgroundJewel {
+    transform-origin: center;
+    pointer-events: none; // because the glow covers a bunch
+    transform: scale(3) translate(-1335px, -320px);
+    &.memorized-pending, &.applied-pending {
+      animation: jewelDropdown 7s ease-out;
+    }
+    &.learning {
+      display: none;
+    }
+  }
 }
 
+.memoryChalice {
+  position: absolute;
+  overflow: visible;
+  bottom: 1%;
+  width: 20%;
+  max-height: 30%;
+  z-index:2;
+  transition: right .3s;
+}
 .playfulBackground {
   background-color: black; 
   width: 100; 
@@ -47,4 +74,20 @@
     background-color: white;
   }
   
+}
+.sidemenu-kids {
+  top: 0px;
+  height: 100%;
+  width: 30%;
+  position: fixed;
+  background: #28B7FF;
+  overflow: hidden;
+  transition: 0.5s;
+  z-index: 2;
+  overflow-y: scroll;
+  padding-top: 10px;
+}
+.modulePedestal {
+  width: 800px;
+  height: 100px;
 }

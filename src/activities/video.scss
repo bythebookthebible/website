@@ -1,0 +1,20 @@
+.playerControl {
+  background-image: url(images/loopLight.svg);
+  &:hover, &.repeat {
+    background-image: url(images/loopDark.svg);
+  }
+  &.repeat {
+    width: 4rem;
+    height: 4rem;
+    top: .5rem;
+    right: 2.5rem;
+  }
+  position: absolute;
+  top: 1rem;
+  right: 3rem;
+  width: 3rem;
+  height: 3rem;
+  z-index: 1;
+  transition: all .1s;
+  cursor: pointer;
+}
