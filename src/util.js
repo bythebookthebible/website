@@ -30,22 +30,33 @@ export const kinds = {
   review:'review',
   smash:'smash',
   speedyWeedy:'speedyWeedy',
+  kidRecite: 'kidRecite',
+  kidSchmo: 'kidSchmo',
 }
 // Also add kinds to resourcesForKinds and to media.js
 
 export const kidModeKinds = {
-  watch:'watch',
-  speed:'speed',
-  schmoment:'schmoment',
-  joSchmo:'joSchmo',
-  // music:'music',
-  karaoke:'karaoke',
-  discussion:'discussion',
-  dance:'dance',
-  echo:'echo',
-  coloring:'coloring',
-  craft:'craft',
-  book:'book',
+  intro: 'intro',
+  watch: 'watch',
+  teacherGuide: 'teacherGuide',
+  speed: 'speed',
+  schmoment: 'schmoment',
+  joSchmo: 'joSchmo',
+  music: 'music',
+  karaoke: 'karaoke',
+  discussion: 'discussion',
+  dance: 'dance',
+  echo: 'echo',
+  coloring: 'coloring',
+  craft: 'craft',
+  book: 'book',
+  princessRead: 'princessRead',
+  blooper: 'blooper',
+  review: 'review',
+  smash: 'smash',
+  speedyWeedy: 'speedyWeedy',
+  kidRecite: 'kidRecite',
+  kidSchmo: 'kidSchmo',
 }
 
 export const resoucesForKinds = {
@@ -70,6 +81,8 @@ export const resoucesForKinds = {
   review:['review'],
   smash:['smash'],
   speedyWeedy:['speedyWeedy'],
+  kidRecite: ['kidRecite'],
+  kidSchmo: ['kidSchmo'],
 }
 
 export function getKidKinds(moduleResource) {
@@ -99,9 +112,23 @@ export function getModulesForPath(resources, path) {
 }
 
 const pathActivities = [
-  'intro', 'watch', 'joSchmo', 'echo', 'coloring', 
-  'dance', 'princessRead', 'speed', 'blooper', 'karaoke', 
-  'review', 'smash', 'speedyWeedy',
+  kinds.intro,
+  kinds.speed,
+  kinds.joSchmo,
+  kinds.schmoment, 
+  kinds.kidSchmo,
+  kinds.dance,
+  kinds.coloring,
+  kinds.watch,
+  kinds.kidRecite,
+  kinds.blooper,
+  kinds.speedyWeedy,
+  kinds.princessRead,
+  kinds.review,
+  kinds.echo,
+  kinds.book,
+  kinds.karaoke,
+  kinds.smash,
 ]
 
 // return array of activity kinds for module given resources

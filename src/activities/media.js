@@ -18,6 +18,8 @@ export const media = {
   [kinds.review]: <MemeoryPowerVideo />,
   [kinds.smash]: <MemeoryPowerVideo />,
   [kinds.speedyWeedy]: <MemeoryPowerVideo />,
+  [kinds.kidSchmo]: <MemeoryPowerVideo />, 
+  [kinds.kidRecite]: <MemeoryPowerVideo />,
   
   [kinds.craft]: <MemoryPowerPDF />,
   [kinds.schmoment]: <MemoryPowerPDF />,
