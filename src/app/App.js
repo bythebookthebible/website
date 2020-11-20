@@ -3,7 +3,6 @@ import "./index.scss";
 import "./app.scss";
 import { Navbar, Nav } from "react-bootstrap";
 import {LoadingPage} from '../common/components'
-import logo from "../images/logo.png";
 import { UserNavButton } from "../common/User";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -19,8 +18,6 @@ import Subscribe from "./Subscribe";
 const Playful = React.lazy(()=>import('../playfulMode/Playful'))
 const Focused = React.lazy(()=>import('../focusedMode/Focused'))
 const Admin = React.lazy(()=>import('../forAdmin/Admin'))
-
-var mainLink = "https://bythebookthebible.com";
 
 export default function App(props) {
   let setNavButtons = useRef(()=>null)
@@ -124,7 +121,7 @@ const LightNav = props => {
   }, {userButtons:[], navButtons:[]})
   
   return <Navbar collapseOnSelect className='lightNav'>
-    <Navbar.Brand href={mainLink}><img src={logo} height="40rem"/></Navbar.Brand>
+
     <Nav>      
       {navButtons.map(b => 
         <Nav.Item onClick={b.onClick} key={b.key} >
