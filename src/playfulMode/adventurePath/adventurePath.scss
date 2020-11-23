@@ -14,9 +14,10 @@
       left: 50%;
       transform: translateY(-50%) translateX(-50%)
     }
-
+    
     &:hover:not([disabled]) {
       filter: drop-shadow(0 0 10px #fffb);
+      cursor: pointer;
     }
     .major {
       height: 9rem;
@@ -29,8 +30,24 @@
     }
     .current {
       animation: slideIn 1s ease;
+      animation: glowRocket 2s ease-in-out 1s infinite;
     }
     
+    @keyframes glowRocket {
+      0% {
+        transform: translateY(-50%) translateX(-50%) scale(.8);
+        filter: drop-shadow(0 0 10px #fff2);
+      }
+      50% {
+        transform: translateY(-50%) translateX(-50%) scale(1);
+        filter: drop-shadow(0 0 10px #fff8);
+      }
+      100% {
+        transform: translateY(-50%) translateX(-50%) scale(.8);
+        filter: drop-shadow(0 0 10px #fff2);
+      }
+    }
+
     @keyframes slideIn {
       // using -50% and -150% because it is centered with transform
       from {transform: translateX(-150%) translateY(-50%)}

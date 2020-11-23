@@ -13,6 +13,10 @@
       display: none;
       pointer-events: none; // because the glow covers a bunch
     }
+    .rock, .jewel {
+      transform-origin: 50% 50%;
+      transform-box: fill-box;
+    }
 
     &.hide {
       display: none;
@@ -21,6 +25,7 @@
     &.memorized-pending {
       .rock, .jewel {
         cursor: pointer;
+        animation: glowRock 2s ease-in-out 1s infinite;
       }
     }
     &.memorized,
@@ -39,11 +44,6 @@
     }
   }
 
-  @keyframes jewelDropdown {
-    from {transform: scale(3) translate(-1335px, -1100px)}
-    to {transform: scale(3) translate(-1335px, -320px)}
-  }
-
   .backgroundJewel {
     transform-origin: center;
     pointer-events: none; // because the glow covers a bunch
@@ -54,6 +54,17 @@
     &.learning {
       display: none;
     }
+  }
+
+  @keyframes jewelDropdown {
+    from {transform: scale(3) translate(-1335px, -1100px)}
+    to {transform: scale(3) translate(-1335px, -320px)}
+  }
+
+  @keyframes glowRock {
+    0% {transform: scale(1)}
+    50% {transform: scale(1.2)}
+    100% {transform: scale(1)}
   }
 }
 
