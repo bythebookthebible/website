@@ -29,23 +29,21 @@
       height: 5rem;
     }
     .current {
-      animation: slideIn 1s ease;
-      animation: glowRocket 2s ease-in-out 1s infinite;
+      animation: slideIn 1.5s ease 1.5s,
+        glowRocket 2s ease-in-out 1.5s infinite,
+        bobRocket 2s ease-in-out 3s infinite;
     }
     
     @keyframes glowRocket {
-      0% {
-        transform: translateY(-50%) translateX(-50%) scale(.8);
-        filter: drop-shadow(0 0 10px #fff2);
-      }
-      50% {
-        transform: translateY(-50%) translateX(-50%) scale(1);
-        filter: drop-shadow(0 0 10px #fff8);
-      }
-      100% {
-        transform: translateY(-50%) translateX(-50%) scale(.8);
-        filter: drop-shadow(0 0 10px #fff2);
-      }
+      0% {filter: drop-shadow(0 0 10px #fff2);}
+      50% {filter: drop-shadow(0 0 10px #fffa);}
+      100% {filter: drop-shadow(0 0 10px #fff2);}
+    }
+
+    @keyframes bobRocket {
+      0% {transform: translate3d(-50%, -50%, 0) scale3d(1, 1, 1);}
+      50% {transform: translate3d(-50%, -50%, 0) scale3d(.8, .8, 1);}
+      100% {transform: translate3d(-50%, -50%, 0) scale3d(1, 1, 1);}
     }
 
     @keyframes slideIn {
