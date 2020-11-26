@@ -19,7 +19,6 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
     let {activity, isActive, onRepeat} = props
     let dispatch = useDispatch()
     let [repeat, setRepeat] = useState(false)
-    console.log(repeat, setRepeat)
     
     let resources = useMemoryResources()
     let url = resources && resources[activity.module][resoucesForKinds[activity.kind][0]][0]
@@ -46,28 +45,20 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
 
     }, [Boolean(player.current), src])
 
-    let prevPaused = useRef(true)
-    let totalTime = useRef(0)
+    let prevState = useRef({})
     let lastTime = useRef(0)
     function onStateChange(playerState) {
-        // console.log(repeat, player.current)
-        if(repeat) {
-            // looping
-            if(playerState.ended) {
+        if (playerState.ended && playerState.hasStarted) {
+            if(repeat) {
                 player.current.seek(0)
                 player.current.play()
-            }
-
-        } else {
-            // update active status
-            if(playerState.ended) {
+                
+            } else {
                 isActive(false)
             }
-            if(playerState.paused != prevPaused.current){
-                console.log('pause transition', playerState.paused)
-                isActive(!playerState.paused)
-                prevPaused.current = playerState.paused
-            }
+
+        } else if (prevState.current.ended && prevState.current.hasStarted) {
+            isActive(true)
         }
 
         // update memory power
@@ -77,7 +68,9 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
             lastTime.current = playerState.currentTime
             dispatch(addPower(activity.module, .5))
         }
-        
+
+        // update prevState
+        prevState.current = playerState
     }
 
     return <Player ref={player} playsInline className="player" poster={videoSplash} key={src}>
@@ -88,7 +81,6 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
             <VolumeMenuButton order={7.1} vertical />
         </ControlBar>
         <div className={'playerControl' + (repeat ? ' repeat' : '')} onClick={()=>{
-            console.log(repeat)
             setRepeat(!repeat)
         }} />
     </Player>
