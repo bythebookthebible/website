@@ -7,15 +7,10 @@ import {useDebounce} from '../common/hooks'
 
 export default function SVGButtons(props) {
     let dispatch = useDispatch()
-    let {glowSize, buttons, extra, svg:SVG, width, height} = props
-    width = width || 1
-    height = height || 1
+    let {glowSize, buttons, extra, svg:SVG, aspectRatio, ...otherProps} = props
+    aspectRatio = aspectRatio || 1.5
     glowSize = glowSize || 20
     buttons = buttons || []
-
-    // for matching inner svg shape to containing shape
-    width = width > 1 ? width : window.innerWidth * width
-    height = height > 1 ? height : window.innerHeight * height
 
     // for debounding hover glow
     let debounce = useDebounce(200)
@@ -37,14 +32,14 @@ export default function SVGButtons(props) {
         extra && extra()
     }, [buttons, extra])
 
-    return <svg {...props} style={{position:'absolute', overflow:'visible', width:'100%', height:'100%', ...props.style}} viewBox={`0 0 ${width} ${height}`}>
+    return <svg {...otherProps} style={{position:'absolute', width:'100%', height:'100%', ...props.style}} viewBox={`0 0 ${aspectRatio} 1`}>
         <defs>
             <filter id="glow">
                 <feDropShadow dx="0" dy="0" stdDeviation={glowSize} floodColor="white" result="shadow" />
                 <feBlend in="SourceGraphic" in2="shadow" mode="normal" />
             </filter>
         </defs>
-        <SVG x={0} y={0} width={width} height={height} style={{overflow:'visible'}} />
+        <SVG x={0} y={0} width={aspectRatio} height={1} style={{overflow:'hidden'}} />
     </svg>
 }
 

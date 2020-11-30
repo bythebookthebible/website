@@ -75,34 +75,51 @@
 .memoryChalice {
   position: absolute;
   overflow: visible;
+  pointer-events: none;
   bottom: 1%;
   width: 20%;
   max-height: 30%;
   z-index:2;
   transition: right .3s;
 }
+
 .playfulBackground {
   background-color: black; 
-  width: 100; 
+  width: 100%;
   height: 100%;
-  > * {
-    background-color: white;
-  }
-  
+  position: absolute;
 }
+.playfulFrame {
+  position: absolute;
+  background-color: white;
+  border: 5px solid gold;
+  overflow: hidden;
+  
+  &.adventurePath {
+    overflow: scroll;
+  }
+}
+
 .sidemenu-kids {
   top: 0px;
+  position: absolute;
   height: 100%;
   width: 30%;
-  position: fixed;
+  right: 0;
   background: #28B7FF;
   overflow: hidden;
-  transition: 0.5s;
+  transition: 0.3s;
   z-index: 2;
-  overflow-y: scroll;
   padding-top: 10px;
 }
 .modulePedestal {
   width: 800px;
   height: 100px;
+}
+.activityContent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }

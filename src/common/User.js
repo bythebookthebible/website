@@ -12,7 +12,9 @@ export function UserNavButton(props) {
     // !auth.isLoaded check should not be needed. If not logged in, should be on the login page
     if(auth.isEmpty) return null
 
-    return <NavDropdown title={auth.displayName} as={NavLink}>
+    return <NavDropdown title={<i className="fas fa-user" 
+        style={{fontSize: "1.5rem", color: "var(--primary)"}} />}
+        as={NavLink}>
         {/* <NavDropdown.Item href='/account' >My Account</NavDropdown.Item> */}
         {buttons && buttons.map(b => 
             <NavDropdown.Item {...otherProps} onClick={b.onClick} key={b.key} >

@@ -43,7 +43,7 @@ export function PlayfulPlainContainer(props) {
   let op = props.opacity || .7
   let blur = props.blur || 5
 
-  let background = <svg style={{position:'absolute', overflow:'visible', width:'100%', height:'100%', ...props.style}} viewBox={`0 0 ${width} ${height}`}>
+  let background = <svg style={{position:'absolute', overflow:'hidden', width:'100%', height:'100%', ...props.style}} viewBox={`0 0 ${width} ${height}`}>
     <defs>
       <filter id="blur">
         <feGaussianBlur stdDeviation={blur} result="blur" />
@@ -51,7 +51,7 @@ export function PlayfulPlainContainer(props) {
         values={`${op} 0 0 0 ${1-op}   0 ${op} 0 0 ${1-op}   0 0 ${op} 0 ${1-op}   0 0 0 1 0`} />
       </filter>
     </defs>
-    <Background x={0} y={0} width={width} height={height} style={{overflow:'visible'}} filter="url(#blur)" />
+    <Background x={0} y={0} width={width} height={height} style={{overflow:'hidden'}} filter="url(#blur)" />
   </svg>
 
   return <>

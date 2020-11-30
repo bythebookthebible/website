@@ -45,21 +45,21 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
 
     }, [Boolean(player.current), src])
 
-    let prevState = useRef({})
+    let prevActive = useRef()
     let lastTime = useRef(0)
     function onStateChange(playerState) {
-        if (playerState.ended && playerState.hasStarted) {
-            if(repeat) {
+        console.log(playerState)
+        // update active state
+        let active = repeat || !(playerState.ended && playerState.hasStarted)
+        if (repeat && playerState.ended && playerState.hasStarted) {
                 player.current.seek(0)
                 player.current.play()
-                
-            } else {
-                isActive(false)
-            }
-
-        } else if (prevState.current.ended && prevState.current.hasStarted) {
-            isActive(true)
         }
+
+        if(prevActive.current != active) {
+            isActive(active)
+        }
+        prevActive.current = active
 
         // update memory power
         if (playerState.paused) {
@@ -68,9 +68,6 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
             lastTime.current = playerState.currentTime
             dispatch(addPower(activity.module, .5))
         }
-
-        // update prevState
-        prevState.current = playerState
     }
 
     return <Player ref={player} playsInline className="player" poster={videoSplash} key={src}>

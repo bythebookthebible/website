@@ -44,7 +44,7 @@ export default function AdventurePath(props) {
   // scroll to be centered on next item
   useEffect(() => {
     setTimeout(() => 
-      nextIndex && $('.body').animate({scrollLeft: 3+nextIndex*16*6 - window.innerWidth/2}, 1200)
+      nextIndex && $('.playfulFrame').animate({scrollLeft: 3+nextIndex*16*6 - window.innerWidth/2}, 1200)
     , 500)
   }, [nextIndex])
 

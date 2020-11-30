@@ -1,10 +1,9 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { media } from "../activities/media";
-import MemorizedPrompt from './memorizedPrompt'
 import { ReactComponent as sidebar } from './images/ActivitySideBar.svg';
 import { ReactComponent as Chalice } from './images/MemoryChalice.svg';
+import {useTransition, animated, config as reactSpringConfig} from 'react-spring'
 
-import $ from "jquery";
 import { kinds } from "../util";
 import { useSelector } from "react-redux";
 import { newView, playfulViews, nextModule, nextActivity, pathFinished } from "./playfulReducer";
@@ -27,7 +26,7 @@ function Sidebar(props) {
       buttons.push({id: 'Continue', dispatch: nextModule})
     }
 
-    return <SVGButtons svg={sidebar} width={.3} buttons={buttons} glowSize={5} />
+    return <SVGButtons svg={sidebar} buttons={buttons} aspectRatio={.45} glowSize={5} />
 
 }
 
@@ -42,15 +41,25 @@ export default function Activity(props) {
   let halfMemoryPower = 7
   if(activity.kind==kinds.speed) halfMemoryPower = 70
 
-  let SidebarPopUp = [
-    <div className="sidemenu-kids" onClick={() => setShowSidebar(true)}
-      style={{marginLeft: showSidebar ? '70%' : '97%', transition: 'margin-left .3s'}}>
-      <Sidebar key={activityKey} {...{onRepeat, halfMemoryPower}}/>
-    </div>,
+  // animate sidebar to slide in
+  const transitions = useTransition(showSidebar, null, {
+    from: { position: 'absolute', transform: 'translate3d(100%,0,0)' },
+    enter: { transform: 'translate3d(0,0,0)' },
+    leave: { transform: 'translate3d(100%,0,0)' },
+    config: reactSpringConfig.gentle,
+  })
+
+  let SidebarPopUp = <>
+    {transitions.map( ({ item, key, props }) =>
+      item && <animated.div key={key} style={props} className="sidemenu-kids" onClick={() => setShowSidebar(true)}>
+        <Sidebar key={activityKey} {...{onRepeat, halfMemoryPower}}/>
+      </animated.div>
+    )}
+
     <div className="fa fa-2x fa-chevron-right"
       style={{position: 'absolute', zIndex: '2', right: '5px', transform: showSidebar ? '' : 'scaleX(-1)', transition: 'transform .15s'}}
       onClick={() => setShowSidebar(!showSidebar)} />
-  ]
+  </>
 
   // , repeat: repeatActivity, resetRepeat: resetRepeat
   // onRepeat: onRepeat
@@ -61,17 +70,19 @@ export default function Activity(props) {
     style:{
       right: showSidebar ? '5%' : '1%'
     }}} />
-    {
-      media[activity.kind] ?
-        React.cloneElement(media[activity.kind], {
-          isActive:active=>{
-            setShowSidebar(!active)
-          }, 
-          onRepeat, 
-          activity
-        })
-      : <div>Coming Soon!</div>
-    }
+    <div className='activityContent'>
+      {
+        media[activity.kind] ?
+          React.cloneElement(media[activity.kind], {
+            isActive:active=>{
+              setShowSidebar(!active)
+            }, 
+            onRepeat, 
+            activity
+          })
+        : <div>Coming Soon!</div>
+      }
+    </div>
   </>
 }
 
