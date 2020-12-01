@@ -39,7 +39,7 @@ export default function MemoryPalaceView(props) {
 
     return <>
         {/* {<MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />}             */}
-        <SVGBButtons svg={memoryPalace} deps={[`${book}-${chapter}`]} className='memoryPalace' extra={()=>{
+        <SVGBButtons svg={memoryPalace} deps={[`${book}-${chapter}`]} glowSize={50} className='memoryPalace' extra={()=>{
             // i < 11 bc rn we only have 11 rectangles
             for (let i = 0; i < 11; i++) {
                 if(i < modules.length) {
