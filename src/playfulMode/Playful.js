@@ -57,6 +57,12 @@ export default function Playful(props) {
     }
   }, [])
 
+  // emulate landscape lock
+  useEffect(() => {
+    if("orientation" in window.screen)
+      window.screen.orientation.lock('landscape')
+  }, [])
+
   return <PlayfulFrame>
     {content}
   </PlayfulFrame>

@@ -46,7 +46,6 @@ export default function Activity(props) {
     from: { position: 'absolute', transform: 'translate3d(100%,0,0)' },
     enter: { transform: 'translate3d(0,0,0)' },
     leave: { transform: 'translate3d(100%,0,0)' },
-    config: reactSpringConfig.gentle,
   })
 
   let SidebarPopUp = <>
@@ -61,10 +60,7 @@ export default function Activity(props) {
       onClick={() => setShowSidebar(!showSidebar)} />
   </>
 
-  // , repeat: repeatActivity, resetRepeat: resetRepeat
-  // onRepeat: onRepeat
   return <>
-    {/* <MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} /> */}
     {SidebarPopUp}
     <MemoryChalice {...{activityKey, halfMemoryPower, 
     style:{
