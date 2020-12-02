@@ -12,8 +12,9 @@ import './video.scss'
 import videoSplash from "./videoSplash.png"
 import { addPower } from "../app/createRootReducer"
 import { useDispatch } from 'react-redux';
-import { useMemoryResources, useCachedStorage } from "../common/hooks"
+import { useMemoryResources, useCachedStorage, useAsyncEffect } from "../common/hooks"
 import { resoucesForKinds } from "../util"
+import { storage } from "../firebase"
 
 export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
     let {activity, isActive, onRepeat} = props
@@ -28,7 +29,22 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
     let intRef = useRef()
     let player = extRef || intRef
 
-    useEffect(()=>{
+    // icon for splash
+    let splashRef = useMemoryResources(resources => resources[activity.module].icon)
+    let [splashSrc, setSplashSrc] = useState(videoSplash)
+
+    useAsyncEffect(async abort => {
+        if (splashRef) {
+            const downloadUrl = await storage.ref(splashRef[0]).getDownloadURL()
+            setSplashSrc(downloadUrl)
+        } else {
+            setSplashSrc(videoSplash)
+        }
+    }, [splashRef])
+
+    console.log(splashRef, splashSrc)
+
+    useEffect(() => {
         player.current.subscribeToStateChange(onStateChange)
     }, [Boolean(player.current), src, repeat])
     
@@ -70,7 +86,7 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
         }
     }
 
-    return <Player ref={player} playsInline className="player" poster={videoSplash} key={src}>
+    return <Player ref={player} playsInline className="player" poster={splashSrc} key={src}>
         <source src={src} />
         <BigPlayButton position="center" />
         <ControlBar>
