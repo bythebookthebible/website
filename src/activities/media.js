@@ -1,39 +1,44 @@
 import React from "react"
 import "../../node_modules/video-react/dist/video-react.css"
 
-import { RepetitionMemoryVideo, MemeoryPowerVideo, EchoMemoryVideo } from "./processVideoMemoryPower"
+import { MemeoryPowerVideo as Video, EchoMemoryVideo, RepetitionMemoryVideo } from "./processVideoMemoryPower"
 import PopupBookGenerator from './popupBookGenerator'
 import { kinds } from "../util"
 import MemoryPowerPDF from "./processPDFMemoryPower"
 import MemoryPowerColoring from "./processCPMemoryPower"
 
 export const media = {
-  [kinds.watch]: <MemeoryPowerVideo />,
-  [kinds.karaoke]: <MemeoryPowerVideo />,
-  [kinds.dance]: <MemeoryPowerVideo />,
-  [kinds.joSchmo]: <MemeoryPowerVideo />,
-  [kinds.intro]: <MemeoryPowerVideo />,
-  [kinds.princessRead]: <MemeoryPowerVideo />,
-  [kinds.blooper]: <MemeoryPowerVideo />,
-  [kinds.review]: <MemeoryPowerVideo />,
-  [kinds.smash]: <MemeoryPowerVideo />,
-  [kinds.speedyWeedy]: <MemeoryPowerVideo />,
-  [kinds.kidSchmo]: <MemeoryPowerVideo />, 
-  [kinds.kidRecite]: <MemeoryPowerVideo />,
-  
-  [kinds.craft]: <MemoryPowerPDF />,
-  [kinds.schmoment]: <MemoryPowerPDF />,
-  [kinds.discussion]: <MemoryPowerPDF />,
-  [kinds.bookmarks]: <MemoryPowerPDF />,
-  
-  // should be separated into different components, rather than included with simple video
-  [kinds.speed]: <MemeoryPowerVideo />,
-  [kinds.echo]: <MemeoryPowerVideo />,
+  [kinds.dragon]: <Video />,
+  [kinds.echo]: <Video />,
+  [kinds.schmash]: <Video />,
+  [kinds.color]: <MemoryPowerColoring />,
+  [kinds.activity]: <Video />,
 
-  [kinds.coloring]: <MemoryPowerColoring />,
+  [kinds.karaoke]: <Video />,
+  [kinds.dance]: <Video />,
+  [kinds.speedyZoom]: <Video />,
+  [kinds.blooper]: <Video />,
+
+  [kinds.watch]: <Video />,
+
+  [kinds.discussion]: <MemoryPowerPDF />,
+  [kinds.mySchmo]: <MemoryPowerPDF />, 
+  [kinds.colorPrint]: <MemoryPowerPDF />,
+  [kinds.bookmark]: <MemoryPowerPDF />,
+  [kinds.game]: <Video />,
+  [kinds.notebook]: <MemoryPowerPDF />,
+
+  [kinds.kidRecite]: <Video />,
+  [kinds.intro]: <Video />,
+  [kinds.joSchmo]: <Video />,
+  [kinds.roSchmo]: <Video />,
+
+  [kinds.music]: <Video />,
+  [kinds.princess]: <Video />,
   [kinds.book]: <PopupBookGenerator />,
+
+  [kinds.review]: <Video />,
 
   // Only in adult version
   // [kinds.music]: ,
-  // [kinds.teacherGuide]: ,
-};
+}

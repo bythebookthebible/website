@@ -1,15 +1,11 @@
-import React, { useContext, useState } from "react";
-import { ReactSVG } from "react-svg";
+import React from "react";
 import $ from "jquery";
-import { Button } from "react-bootstrap";
-import MemorizedPrompt from "./memorizedPrompt"
 import { ReactComponent as memoryPalace } from './images/PalaceInside.svg'
 import { scriptureFromKey, kinds, keyFromScripture } from "../util";
 import { useDispatch, useSelector } from "react-redux";
 import { useMemoryResources } from "../common/hooks";
 import SVGBButtons from './SVGButtons'
 import { nextInPalace, activateJewel, newView, playfulViews } from "./playfulReducer";
-import { useFirebase } from "react-redux-firebase";
 
 let halfFullPower = 100.0
 // @TODO: 1) fix code after actual imagine is used in place
