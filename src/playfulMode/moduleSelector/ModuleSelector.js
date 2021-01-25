@@ -30,7 +30,7 @@ export default function ModuleSelctor(props) {
   }, {})
 
   if(Object.keys(scriptures).length == 0)
-    return <div className={`moduleSelector comingSoon ${viewSelected}`} >
+    return <div className={`moduleSelector ${viewSelected}`} >
     <Container fluid className=''>
       <Row className='bookTitle'>
         <Col>Coming Soon...</Col>
@@ -100,7 +100,8 @@ function Icon(props) {
       </g>
     </g>
     <g id="BlueFrame">
-      <path class="cls-4" d="M382.39,198.44q-80.38-4-166.95-4.58c-72.26-.39-141.52,1.31-207.52,4.58,2.74-28.58,4.5-59.91,4.57-93.63C12.56,69.61,10.76,37,7.92,7.34q88,4,183.19,4.28c66.31.06,130.14-1.48,191.28-4.28C379.57,38,377.84,71.67,378,107.92,378.17,140.31,379.83,170.59,382.39,198.44Z" transform="translate(-0.64 -0.42)" />
+      <path class="cls-4" d="M382.39,198.44q-80.38-4-166.95-4.58c-72.26-.39-141.52,1.31-207.52,4.58,2.74-28.58,4.5-59.91,4.57-93.63C12.56,69.61,10.76,37,7.92,7.34q88,4,183.19,4.28c66.31.06,130.14-1.48,191.28-4.28C379.57,38,377.84,71.67,378,107.92,378.17,140.31,379.83,170.59,382.39,198.44Z" 
+      transform="translate(-0.64 -0.42)" />
     </g>
     <g id="Verse">
       <text class="cls-5" transform="translate(227.56 181.75)">

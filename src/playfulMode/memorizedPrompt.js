@@ -6,7 +6,7 @@ export default function MemorizedPrompt(props) {
     return (
         <Modal {...props}>
         <Modal.Header closeButton>
-            <Modal.Title>Congrulations, seems like you have the verses in this module memorized!</Modal.Title>
+            <Modal.Title>Congratulations, seems like you have the verses in this module memorized!</Modal.Title>
         </Modal.Header>
         <Modal.Body>Schdule a zoom meeting with Rose and Catherine or send us a video of yourself reciting the bible verses in this module and get a MEMORY JEWEL!</Modal.Body>
         <Modal.Footer>
