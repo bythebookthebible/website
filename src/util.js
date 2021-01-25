@@ -11,78 +11,109 @@ export const books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy'
 '1 Peter', '2 Peter', '1 John', '2 John', '3 John', 'Jude', 'Revelation']
 
 export const kinds = {
-  intro:'intro',
-  watch:'watch',
-  teacherGuide:'teacherGuide',
-  speed:'speed',
-  schmoment:'schmoment',
-  joSchmo:'joSchmo',
-  music:'music',
-  karaoke:'karaoke',
-  discussion:'discussion',
-  dance:'dance',
-  echo:'echo',
-  coloring:'coloring',
-  craft:'craft',
-  book:'book',
-  princessRead:'princessRead',
-  blooper:'blooper',
-  review:'review',
-  smash:'smash',
-  speedyWeedy:'speedyWeedy',
+  dragon: 'dragon',
+  echo: 'echo',
+  schmash: 'schmash',
+  color: 'color',
+  activity: 'activity',
+
+  karaoke: 'karaoke',
+  dance: 'dance',
+  speedyZoom: 'speedyZoom',
+  blooper: 'blooper',
+
+  watch: 'watch',
+
+  discussion: 'discussion',
+  mySchmo: 'mySchmo', 
+  colorPrint: 'colorPrint',
+  bookmark: 'bookmark',
+  game: 'game',
+  notebook: 'notebook',
+
   kidRecite: 'kidRecite',
-  kidSchmo: 'kidSchmo',
+  intro:'intro',
+  joSchmo:'joSchmo',
+  roSchmo: 'roSchmo',
+
+  music:'music',
+  princess: 'princess',
+  book: 'book',
+    
+  review:'review',
+
 }
 // Also add kinds to resourcesForKinds and to media.js
 
 export const kidModeKinds = {
-  intro: 'intro',
-  watch: 'watch',
-  teacherGuide: 'teacherGuide',
-  speed: 'speed',
-  schmoment: 'schmoment',
-  joSchmo: 'joSchmo',
-  music: 'music',
-  karaoke: 'karaoke',
-  discussion: 'discussion',
-  dance: 'dance',
+  dragon: 'dragon',
   echo: 'echo',
-  coloring: 'coloring',
-  craft: 'craft',
-  book: 'book',
-  princessRead: 'princessRead',
+  schmash: 'schmash',
+  color: 'color',
+  activity: 'activity',
+
+  karaoke: 'karaoke',
+  dance: 'dance',
+  speedyZoom: 'speedyZoom',
   blooper: 'blooper',
-  review: 'review',
-  smash: 'smash',
-  speedyWeedy: 'speedyWeedy',
+
+  watch: 'watch',
+
+  discussion: 'discussion', 
+  mySchmo: 'mySchmo',
+  colorPrint: 'colorPrint',
+  bookmark: 'bookmark',
+  game: 'game',
+  notebook: 'notebook',
+
   kidRecite: 'kidRecite',
-  kidSchmo: 'kidSchmo',
+  intro: 'intro',
+  joSchmo: 'joSchmo',
+  roSchmo: 'roSchmo',
+
+  princess: 'princess',
+  book: 'book',
+
+  music: 'music',
+  review: 'review',
+  
+  
+  
+  
+  
 }
 
 export const resoucesForKinds = {
-  intro:['intro'],
-  watch:['watch'],
-  teacherGuide:['teacherGuide'],
-  // speed:['watch', 'timestamps'],
-  speed:['speed'],
-  schmoment:['schmoment'],
-  joSchmo:['joSchmo'],
-  music:['music'],
-  karaoke:['karaoke'],
-  discussion:['discussion'],
-  dance:['dance'],
-  // echo:['watch', 'karaoke', 'timestamps'],
-  echo:['echo'],
-  coloring:['coloring'],
-  craft:['craft'],
-  book:['popupBook'],
-  princessRead:['princessRead'],
-  blooper:['blooper'],
-  review:['review'],
-  smash:['smash'],
-  speedyWeedy:['speedyWeedy'],
+  dragon: ['dragon'], 
+  echo: ['echo'],
+  schmash: ['schmash'],
+  color: ['color'],
+  activity: ['activity'],
+
+  karaoke: ['karaoke'],
+  dance: ['dance'],
+  speedyZoom: ['speedyZoom'],
+  blooper: ['blooper'],
+
+  watch: ['watch'],
+
+  discussion: ['discussion'],
+  mySchmo: ['mySchmo'],
+  colorPrint: ['colorPrint'],
+  bookmark: ['bookmark'],
+  game: ['game'],
+  notebook: ['notebook'],
+
   kidRecite: ['kidRecite'],
-  kidSchmo: ['kidSchmo'],
+  intro:['intro'],
+  joSchmo: ['joSchmo'],
+  roSchmo: ['roSchmo'],
+
+  princess: ['princess'],
+  book: ['book'],
+  
+  music:['music'],
+  review: ['review'],
 }
 
 export function getKidKinds(moduleResource) {
@@ -113,26 +144,26 @@ export function getModulesForPath(resources, path) {
 
 const pathActivities = [
   kinds.intro,
-  kinds.speed,
-  kinds.joSchmo,
-  kinds.schmoment, 
-  kinds.kidSchmo,
+  kinds.dragon,
+  kinds.joSchmo, 
+  kinds.kidRecite,
   kinds.dance,
-  kinds.coloring,
+  kinds.color,
   kinds.watch,
   kinds.kidRecite,
   kinds.blooper,
-  kinds.speedyWeedy,
-  kinds.princessRead,
+  kinds.speedyZoom,
+  kinds.princess,
   kinds.review,
   kinds.echo,
   kinds.book,
   kinds.karaoke,
-  kinds.smash,
+  kinds.schmash,
+  kinds.activity,
 ]
 
-// return array of activity kinds for module given resources
 export function getPathActivities(resources, module) {
+  console.log (pathActivities)
   return pathActivities.filter(
     k=>resoucesForKinds[k].every(r=>resources[module][r])
   )

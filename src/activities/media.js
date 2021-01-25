@@ -24,6 +24,7 @@ export const media = {
   [kinds.craft]: <MemoryPowerPDF />,
   [kinds.schmoment]: <MemoryPowerPDF />,
   [kinds.discussion]: <MemoryPowerPDF />,
+  [kinds.bookmarks]: <MemoryPowerPDF />,
   
   // should be separated into different components, rather than included with simple video
   [kinds.speed]: <MemeoryPowerVideo />,

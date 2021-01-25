@@ -70,7 +70,7 @@ export default function Playful(props) {
 
 function PlayfulFrame(props) {
   let view = useSelector(state => state.playful.view)
-  let aspectratio=1.5
+  let aspectratio=1.609
 
   return <SizeMe monitorHeight>
     {({size}) => {
@@ -81,7 +81,7 @@ function PlayfulFrame(props) {
       let top = (size.height - height) / 2
 
       return <div className="playfulBackground">
-        <div className={`playfulFrame ${view}`} style={{width, height, top, left}}>
+        <div className={`playfulFrame`} style={{width, height, top, left}}>
           {props.children}
         </div>
       </div>  
