@@ -23,7 +23,7 @@
     padding-bottom: 5%;
     padding-left: 45%;
     position: center;
-  
+
     color: rgb(0, 0, 0);
     font: {
       family: Loopiejuice-Regular;
@@ -74,23 +74,17 @@
 
   // For specific viewSelected
   // book view is default for now
-  // &.games {
-  //   background-image: url(images/BookVerseBar.svg);
-  //   .bookTitle {
-  //     background-image: url(images/BookVerseBar.svg);
-  //   }
-  // }
 
   &.dragon {
-      background-image: url(images/DragonBackground.svg);
-    }
+    background-image: url(images/DragonBackground.svg);
+  }
 
   &.echo {
     background-image: url(images/EchoBackground.svg);
     .bookTitle {
-    background-color: #fff8;
-    background-image: unset;
-    padding: 2% 1%;
+      background-color: #fff8;
+      background-image: unset;
+      padding: 2% 1%;
     }
   }
 
@@ -102,7 +96,8 @@
       background-image: unset;
       padding: 2% 1%; 
       color: black;
-    } 
+    }
+  }
 
   &.color {
     background-image: url(images/ColorBackground.svg);
@@ -167,222 +162,221 @@
 
   &.dance {
     background-image: url(images/DanceBackground.svg);
+    
+    .selectorContainer {
+      padding-top: 28vh;
+      width: 720px;
+      min-width: 70%;
+      max-width: 90%;
     }
 
-      .selectorContainer {
-        padding-top: 28vh;
-        width: 720px;
-        min-width: 70%;
-        max-width: 90%;
-      }
+    .bookTitle {
+      text-align: center;
+      padding-top: 5%;
+      padding-bottom: 1%;
 
-      .bookTitle {
-        text-align: center;
-        padding-top: 5%;
-        padding-bottom: 1%;
-
-        background: {
-          image: url(images/StageVerseBar.svg);
-          position: center;
-          size: contain;
-        }
+      background: {
+        image: url(images/StageVerseBar.svg);
+        position: center;
+        size: contain;
       }
+    }
+  }
     
   &.speedyZoom {
     background-image: url(images/SpeedyZoomBackground.svg);
-      .selectorContainer {
+    .selectorContainer {
       padding-top: 32vh;
       padding-right: 10vw;
-        }
-      }
+    }
+  }
 
   &.watch {
     background: {
       image: url(images/StageBackground.svg);
       position: center;
       color: white;
-      }
-      .selectorContainer {
-        width: 720px;
-        min-width: 70%;
-        max-width: 90%;
-      }
+    }
+    .selectorContainer {
+      width: 720px;
+      min-width: 70%;
+      max-width: 90%;
+    }
 
-      .bookTitle {
-        text-align: center;
-        padding-top: 5%;
-        padding-bottom: 1%;
+    .bookTitle {
+      text-align: center;
+      padding-top: 5%;
+      padding-bottom: 1%;
 
-        background: {
-          image: url(images/StageVerseBar.svg);
-          position: center;
-          size: contain;
-        }
+      background: {
+        image: url(images/StageVerseBar.svg);
+        position: center;
+        size: contain;
       }
     }
+  }
 
   &.mySchmo {
-      background-image: url(images/MySchmoBackground.svg);
+    background-image: url(images/MySchmoBackground.svg);
 
-      .bookTitle {
-        background-color: #fff8;
-        background-image: unset;
-        padding: 2% 1%; 
-        color: black;
-      } 
+    .bookTitle {
+      background-color: #fff8;
+      background-image: unset;
+      padding: 2% 1%; 
+      color: black;
+    } 
 
-      .selectorContainer {
-        padding-top: 28vh;
-        width: 500px;
-        min-width: 50%;
-        max-width: 80%;
-      }
+    .selectorContainer {
+      padding-top: 28vh;
+      width: 500px;
+      min-width: 50%;
+      max-width: 80%;
     }
+  }
 
   &.colorPrint {
-      background-image: url(images/ColorBackground.svg);
+    background-image: url(images/ColorBackground.svg);
 
-      .bookTitle {
-        background-color: #fff8;
-        background-image: unset;
-        padding: 2% 1%; 
-        color: black;
-      } 
+    .bookTitle {
+      background-color: #fff8;
+      background-image: unset;
+      padding: 2% 1%; 
+      color: black;
+    } 
 
-      .selectorContainer {
-        padding-top: 28vh;
-        width: 500px;
-        min-width: 50%;
-        max-width: 80%;
-      }
+    .selectorContainer {
+      padding-top: 28vh;
+      width: 500px;
+      min-width: 50%;
+      max-width: 80%;
     }
+  }
 
   &.bookmark {
-      background-image: url(images/BookmarkBackground.svg);
+    background-image: url(images/BookmarkBackground.svg);
 
-        .bookTitle {
-        background-color: #fff8;
-        background-image: unset;
-        padding: 2% 1%; 
-        color: black;
-        } 
-
-      .selectorContainer {
-        padding-top: 28vh;
-        width: 500px;
-        min-width: 50%;
-        max-width: 80%;
-      }
+    .bookTitle {
+      background-color: #fff8;
+      background-image: unset;
+      padding: 2% 1%; 
+      color: black;
     }
+
+    .selectorContainer {
+      padding-top: 28vh;
+      width: 500px;
+      min-width: 50%;
+      max-width: 80%;
+    }
+  }
 
   &.kidRecite {
-        background-image: url(images/KidReciteBackground.svg);
+    background-image: url(images/KidReciteBackground.svg);
 
-        .bookTitle {
-          background-color: #fff8;
-          background-image: unset;
-          padding: 2% 1%; 
-          color: black;
-        } 
+    .bookTitle {
+      background-color: #fff8;
+      background-image: unset;
+      padding: 2% 1%; 
+      color: black;
+    } 
 
-        .selectorContainer {
-          padding-top: 28vh;
-          width: 500px;
-          min-width: 50%;
-          max-width: 80%;
-        }
-      }
-
+    .selectorContainer {
+      padding-top: 28vh;
+      width: 500px;
+      min-width: 50%;
+      max-width: 80%;
+    }
+  }
 
   &.intro {
-        background-image: url(images/IntroBackground.svg);
+    background-image: url(images/IntroBackground.svg);
 
-        .bookTitle {
-          background-color: #fff8;
-          background-image: unset;
-          padding: 2% 1%;
-        }
-      }
+    .bookTitle {
+      background-color: #fff8;
+      background-image: unset;
+      padding: 2% 1%;
+    }
+  }
 
   &.joSchmo {
-        background-image: url(images/JoSchmoBackground.svg);
+    background-image: url(images/JoSchmoBackground.svg);
 
-        .bookTitle {
-          background-color: #fff8;
-          background-image: unset;
-          padding: 2% 1%;
-        }
-      }
+    .bookTitle {
+      background-color: #fff8;
+      background-image: unset;
+      padding: 2% 1%;
+    }
+  }
       
   &.roSchmo {
-        background-image: url(images/RoSchmoBackground.svg);
+    background-image: url(images/RoSchmoBackground.svg);
 
-        .bookTitle {
-          background-color: #fff8;
-          background-image: unset;
-          padding: 2% 1%; 
-          color: black;
-        } 
+    .bookTitle {
+      background-color: #fff8;
+      background-image: unset;
+      padding: 2% 1%; 
+      color: black;
+    } 
 
-        .selectorContainer {
-          padding-top: 28vh;
-          width: 500px;
-          min-width: 50%;
-          max-width: 80%;
-        }
-      }
+    .selectorContainer {
+      padding-top: 28vh;
+      width: 500px;
+      min-width: 50%;
+      max-width: 80%;
+    }
+  }
 
   &.princess {
-        background-image: url(images/PrincessBackground.svg);
+    background-image: url(images/PrincessBackground.svg);
 
-        .bookTitle {
-          background-color: #fff8;
-          background-image: unset;
-          padding: 2% 1%; 
-          color: black;
-        } 
+    .bookTitle {
+      background-color: #fff8;
+      background-image: unset;
+      padding: 2% 1%; 
+      color: black;
+    }
 
-        .selectorContainer {
-          padding-top: 28vh;
-          width: 500px;
-          min-width: 50%;
-          max-width: 80%;
-        }
-      }
+    .selectorContainer {
+      padding-top: 28vh;
+      width: 500px;
+      min-width: 50%;
+      max-width: 80%;
+    }
+  }
 
   &.book {
-        background-image: url(images/BookBackground.svg);
+    background-image: url(images/BookBackground.svg);
 
-        .bookTitle {
-          background-color: #fff8;
-          background-image: unset;
-          padding: 2% 1%; 
-          color: black;
-        } 
+    .bookTitle {
+      background-color: #fff8;
+      background-image: unset;
+      padding: 2% 1%; 
+      color: black;
+    }
 
-        .selectorContainer {
-          padding-top: 28vh;
-          width: 500px;
-          min-width: 50%;
-          max-width: 80%;
-        }
-      }
+    .selectorContainer {
+      padding-top: 28vh;
+      width: 500px;
+      min-width: 50%;
+      max-width: 80%;
+    }
+  }
       
   &.blooper {
-        background-image: url(images/BlooperBackground.svg);
+    background-image: url(images/BlooperBackground.svg);
 
-        .bookTitle {
-          background-color: #fff8;
-          background-image: unset;
-          padding: 2% 1%; 
-          color: black;
-        } 
-
-        .selectorContainer {
-          padding-top: 28vh;
-          width: 500px;
-          min-width: 50%;
-          max-width: 80%;
-        }
-      }
+    .bookTitle {
+      background-color: #fff8;
+      background-image: unset;
+      padding: 2% 1%; 
+      color: black;
     }
+
+    .selectorContainer {
+      padding-top: 28vh;
+      width: 500px;
+      min-width: 50%;
+      max-width: 80%;
+    }
+  }
+}
