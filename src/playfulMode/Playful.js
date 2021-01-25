@@ -88,5 +88,3 @@ function PlayfulFrame(props) {
     }}
   </SizeMe>
 }
-
-

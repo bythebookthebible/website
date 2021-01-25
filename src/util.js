@@ -36,12 +36,11 @@ export const kinds = {
   joSchmo:'joSchmo',
   roSchmo: 'roSchmo',
 
-  music:'music',
   princess: 'princess',
   book: 'book',
-    
+  
+  music:'music',
   review:'review',
-
 }
 // Also add kinds to resourcesForKinds and to media.js
 
@@ -76,11 +75,6 @@ export const kidModeKinds = {
 
   music: 'music',
   review: 'review',
-  
-  
-  
-  
-  
 }
 
 export const resoucesForKinds = {

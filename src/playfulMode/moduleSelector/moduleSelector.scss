@@ -3,12 +3,13 @@
 .moduleSelector {
 
   height: 100%;
+  overflow: scroll;
 
   background: {
     image: url(images/DefaultBackground.svg);
     repeat: no-repeat;
     size: 100%;
-    attachment: fixed;  
+    attachment: fixed;
     position: center;
   }
 
