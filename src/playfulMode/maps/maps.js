@@ -23,11 +23,11 @@ let Home = props => <SVGButtons svg={mainMap} buttons={[
     {id:'MemoryWood', dispatch: newView({ view: playfulViews.map, viewSelected: 'memoryWood' })},
     {id:'FamilySchmuddle', dispatch: newView({ view: playfulViews.map, viewSelected: 'familySchmuddle' })},
     {id:'Button1', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.watch })},
-    {id:'Button2', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.watch })},
-    {id:'Button3', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.watch })},
-    {id:'Button4', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.watch })},
-    {id:'Button5', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.watch })},
-    
+    {id:'Button2', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.joSchmo })},
+    {id:'Button3', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.discussion })},
+    {id:'Button4', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.schmash })},
+    {id:'Button5', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.dragon })},
+    {id:'Help', onClick: ()=>window.location.href = 'bythebookthebible.com/get-started-1'},
 ]}><mainMap /></SVGButtons>
 
 let SuperStage = props => <SVGButtons svg={superStage} buttons={[
@@ -44,7 +44,7 @@ let FamilySchmuddle = props => <SVGButtons svg={familySchmuddle} buttons={[
     { id: 'ColoringPrintOut', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.colorPrint }) },
     { id: 'BookMarkPrintOut', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.bookmark }) },
     { id: 'MemoryGameIdea', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.game }) },
-    { id: 'CompleteCurriculumDownload', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.notebook }) },
+    { id: 'Notebook', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.notebook }) },
 ]} />
 
 let SchmoHouses = props => <SVGButtons svg={schmoMap} buttons={[
