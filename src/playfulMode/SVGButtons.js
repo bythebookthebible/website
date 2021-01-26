@@ -5,10 +5,13 @@ import $ from "jquery";
 import { useDispatch } from "react-redux";
 import {useDebounce} from '../common/hooks'
 
+const defaultAspectRatio = 1.78
+export {defaultAspectRatio}
+
 export default function SVGButtons(props) {
     let dispatch = useDispatch()
     let {glowSize, buttons, extra, svg:SVG, aspectRatio, ...otherProps} = props
-    aspectRatio = aspectRatio || 1.609
+    aspectRatio = aspectRatio || defaultAspectRatio
     glowSize = glowSize || 20
     buttons = buttons || []
 
@@ -38,6 +41,7 @@ export default function SVGButtons(props) {
                 <feDropShadow dx="0" dy="0" stdDeviation={glowSize} floodColor="white" result="shadow" />
                 <feBlend in="SourceGraphic" in2="shadow" mode="normal" />
             </filter>
+            <style>{"#Top, #Background {pointer-events:none}"}</style>
         </defs>
         <SVG x={0} y={0} width={aspectRatio} height={1} style={{overflow:'hidden'}} />
     </svg>
