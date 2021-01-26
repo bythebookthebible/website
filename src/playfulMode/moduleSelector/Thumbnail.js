@@ -83,11 +83,11 @@ const ThumbnailByKind = {
       </linearGradient>
     </defs>
     <rect class="cls-1" x="3.33" y="5.78" width="135.7" height="96.24" rx="6.89"/>
-    <image width="3726" height="1996" transform="translate(7.31 10.49) scale(0.03 0.03)" xlinkHref={src}/>
     <rect class="cls-2" x="7.5" y="56.36" width="127.62" height="41.31" rx="7.79"/>
     <text class="cls-3" transform="translate(11.42 82.25) scale(0.99 1)">
       {`${verse.book} ${verse.chapter}:${verse.verses}`}
     </text>
+    <image width="3726" height="1996" transform="translate(7.31 10.49) scale(0.03 0.03)" xlinkHref={src}/>
     <rect class="cls-4" x="48.54" y="-30.59" width="45.9" height="127.99" rx="6.73" transform="translate(38.08 104.9) rotate(-90)"/>
     <ellipse class="cls-2" cx="70.95" cy="43.88" rx="13.95" ry="14.02"/>
     <path class="cls-5" d="M69.45,48.75c-.69.4-1.25.08-1.26-.71l0-2.72,0-2.88,0-2.71c0-.79.55-1.13,1.24-.74l2.37,1.33,2.51,1.41,2.37,1.33a.76.76,0,0,1,0,1.44l-2.34,1.39-2.48,1.47Z"/>

@@ -41,19 +41,17 @@
 
   .verseRow {
     flex-wrap: wrap;
-    justify-content: space-evenly;
+    justify-content: center;
   }
 
   .verseItem {
-    text-align: center;
-    margin-left: 1rem;
-    min-width: 9rem;
-    max-width: 9rem;
+    min-width: 20%;
+    max-width: 20%;
+    padding: 2% 1%;
     cursor: pointer;
 
     > svg {
-      width: 8rem;
-      height: 4rem;
+      width: 100%;
     }
   }
 
@@ -71,15 +69,12 @@
   &.dragon {
     background-image: url(images/DragonBackground.svg);
 
-    .selectorContainer {
-      top: 29%;
-      background-color: #ffffff20;
-    }
-    .bookTitle {
-      color: white;
-      background-image: url(images/BookVerseBar.svg);
-      background-color: unset;
-    }
+    .selectorContainer { top: 29%; }
+    // .bookTitle {
+    //   color: white;
+    //   background-image: url(images/BookVerseBar.svg);
+    //   background-color: unset;
+    // }
   }
 
   &.echo { background-image: url(images/EchoBackground.svg);}
@@ -89,34 +84,34 @@
   &.activity {
     background-image: url(images/ActivityBackground.svg);
 
-    .bookTitle {
-      background-image: url(images/ColorVerseBar.svg);
-      background-color: unset;
-      padding: 3%;
-    }
+    // .bookTitle {
+    //   background-image: url(images/ColorVerseBar.svg);
+    //   background-color: unset;
+    //   padding: 3%;
+    // }
   }
 
   &.karaoke {
     background-image: url(images/KaraokeBackground.svg);
 
-    .bookTitle {
-      background-image: url(images/ColorVerseBar.svg);
-      background-color: unset;
-      padding: 3%;
-    }
+    // .bookTitle {
+    //   background-image: url(images/ColorVerseBar.svg);
+    //   background-color: unset;
+    //   padding: 3%;
+    // }
   }
 
   &.dance {
     background-image: url(images/DanceBackground.svg);
     
-    .bookTitle {
-      text-align: center;
-      padding-top: 5%;
-      padding-bottom: 1%;
+    // .bookTitle {
+    //   text-align: center;
+    //   padding-top: 5%;
+    //   padding-bottom: 1%;
 
-      background-image: url(images/StageVerseBar.svg);
-      background-color: unset;
-    }
+    //   background-image: url(images/StageVerseBar.svg);
+    //   background-color: unset;
+    // }
   }
 
   &.speedyZoom { background-image: url(images/SpeedyZoomBackground.svg);}
@@ -124,13 +119,13 @@
   &.watch {
     background-image: url(images/StageBackground.svg);
 
-    .bookTitle {
-      padding-top: 5%;
-      padding-bottom: 1%;
+    // .bookTitle {
+    //   padding-top: 5%;
+    //   padding-bottom: 1%;
 
-      background-image: url(images/StageVerseBar.svg);
-      background-color: unset;
-    }
+    //   background-image: url(images/StageVerseBar.svg);
+    //   background-color: unset;
+    // }
   }
 
   &.mySchmo { background-image: url(images/MySchmoBackground.svg);}
