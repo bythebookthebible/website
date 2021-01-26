@@ -95,7 +95,7 @@
   border: 5px solid gold;
   overflow: hidden;
   
-  &.adventurePath, &.moduleSelector {
+  &.adventurePath {
     overflow: scroll;
   }
 }

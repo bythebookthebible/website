@@ -81,7 +81,7 @@ function PlayfulFrame(props) {
       let top = (size.height - height) / 2
 
       return <div className="playfulBackground">
-        <div className={`playfulFrame`} style={{width, height, top, left}}>
+        <div className={`playfulFrame ${view}`} style={{width, height, top, left}}>
           {props.children}
         </div>
       </div>  

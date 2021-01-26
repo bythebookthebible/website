@@ -62,7 +62,7 @@ export default function ModuleSelctor(props) {
     </Container>
   }
 
-  return <div className={`moduleSelector ${viewSelected}`} >
+  return <div className={`moduleSelectorBackground ${viewSelected}`} >
     <div className='selectorContainer'>
       {content}
     </div>
