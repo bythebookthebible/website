@@ -29,18 +29,14 @@ export default function ModuleSelctor(props) {
       return cum
   }, {})
 
-  if(Object.keys(scriptures).length == 0)
-    return <div className={`moduleSelector ${viewSelected}`} >
-    <Container fluid className=''>
-      <Row className='bookTitle'>
-        <Col>Coming Soon...</Col>
-      </Row>
-    </Container>
-    <div className='corner' />
-  </div>
+  let content = <Container fluid>
+    <Row className='bookTitle'>
+      <Col>Coming Soon...</Col>
+    </Row>
+  </Container>
 
-  return <div className={`moduleSelector ${viewSelected}`} >
-    <Container fluid className='selectorContainer'>
+  if(Object.keys(scriptures).length != 0) {
+    content = <Container fluid>
       {Object.keys(scriptures).map(book =>
         Object.keys(scriptures[book]).map(chapter => <React.Fragment key={`${book} ${chapter}`}>
           <Row className='bookTitle'>
@@ -64,6 +60,12 @@ export default function ModuleSelctor(props) {
         </React.Fragment>)
       )}
     </Container>
+  }
+
+  return <div className={`moduleSelector ${viewSelected}`} >
+    <div className='selectorContainer'>
+      {content}
+    </div>
     <div className='corner' />
   </div>
 }
