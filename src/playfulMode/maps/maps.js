@@ -4,7 +4,8 @@ import { kinds } from '../../util'
 import { newView, playfulViews } from '../playfulReducer'
 
 import { ReactComponent as artHouse } from './images/ArtHouse.svg'
-import { ReactComponent as mainMap } from './images/MainMap.svg'
+// import { ReactComponent as mainMap } from './images/MainMap.svg'
+import mainMap from './images/MainMap/MainMap'
 import { ReactComponent as palaceDoors } from './images/PalaceDoors.svg'
 import { ReactComponent as schmoMap } from './images/SchmoMap.svg'
 import { ReactComponent as blueHouse } from './images/BlueHouse.svg'
@@ -14,8 +15,8 @@ import { ReactComponent as superStage } from './images/SuperStage.svg'
 import { ReactComponent as familySchmuddle } from './images/FamilySchmuddle.svg'
 
 let Home = props => <SVGButtons svg={mainMap} buttons={[
-    {id:'MyMemoryPalace', dispatch: newView({view:playfulViews.map, viewSelected:'palace'})},
-    {id:'MyMemoryMission', dispatch: newView({ view: playfulViews.adventurePath, viewSelected: 'James' })},
+    {id:'MemoryPalace', dispatch: newView({view:playfulViews.map, viewSelected:'palace'})},
+    {id:'MemoryMission', dispatch: newView({ view: playfulViews.adventurePath, viewSelected: 'James' })},
     {id:'SchmideoCenter', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.watch })},
     {id:'SchmoTown', dispatch: newView({view:playfulViews.map, viewSelected:'schmoHouses'})},
     {id:'SuperStage', dispatch: newView({ view: playfulViews.map, viewSelected: 'superStage' })},

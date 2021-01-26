@@ -12,6 +12,7 @@ import { useMemoryResources } from '../common/hooks'
 import mapIcon from './images/MapIcon.png'
 import AdventurePath from './adventurePath/adventurePath'
 import { SizeMe } from 'react-sizeme'
+import {defaultAspectRatio} from './SVGButtons'
 
 export default function Playful(props) {
   let dispatch = useDispatch()
@@ -70,7 +71,7 @@ export default function Playful(props) {
 
 function PlayfulFrame(props) {
   let view = useSelector(state => state.playful.view)
-  let aspectratio=1.609
+  let aspectratio = defaultAspectRatio
 
   return <SizeMe monitorHeight>
     {({size}) => {
