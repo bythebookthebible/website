@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1609 1000">
+  <image id="Background" x="0" y="0" width="1609" height="1000" href="./MainMap.Background.svg" />
+  <image id="FamilySchmuddle" x="1000" y="350" width="250" href="./MainMap.FamilySchmuddle.svg" />
+  <image id="MemoryMission" x="1200" y="100" width="500" href="./MainMap.MemoryMission.svg" />
+  <image id="ReadingTree" x="1300" y="300" width="300" href="./MainMap.ReadingTree.svg" />
+  <image id="SchmideoCenter" x="600" y="400" width="300" href="./MainMap.SchmideoCenter.svg" />
+  <image id="SchmoTown" x="1200" y="600" width="350" href="./MainMap.SchmoTown.svg" />
+  <image id="SuperStage" x="450" y="650" width="500" href="./MainMap.SuperStage.svg" />
+  <image id="MemoryPalace" x="270" y="-20" width="300" href="./MainMap.MemoryPalace.svg" />
+  <image id="Top" x="0" y="0" width="1609" height="1000" href="./MainMap.Top.svg" />
+</svg>

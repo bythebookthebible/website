@@ -8,7 +8,7 @@ import {useDebounce} from '../common/hooks'
 export default function SVGButtons(props) {
     let dispatch = useDispatch()
     let {glowSize, buttons, extra, svg:SVG, aspectRatio, ...otherProps} = props
-    aspectRatio = aspectRatio || 1.5
+    aspectRatio = aspectRatio || 1.609
     glowSize = glowSize || 20
     buttons = buttons || []
 
