@@ -21,7 +21,7 @@ export default function ManageVideos(props) {
   let resources = useMemoryResources()
   let firestore = useFirestore()
 
-  let attributeOptions = ['lock', 'icon', ...Object.values(resoucesForKinds).reduce((cum, arr)=>new Set([...cum, ...arr]).values(),[])]
+  let attributeOptions = ['lock', 'icon', 'thumbnail', ...Object.values(resoucesForKinds).reduce((cum, arr)=>new Set([...cum, ...arr]).values(),[])]
 
   let onAddModule = event => {
     let title = $('#title').val()
