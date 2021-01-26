@@ -1,55 +1,47 @@
 @import '../../common/common';
 
 .moduleSelector {
-
   height: 100%;
-  overflow: scroll;
+  width: 100%;
+  position: relative;
 
   background: {
     image: url(images/DefaultBackground.svg);
-    repeat: no-repeat;
     size: 100%;
+    repeat: no-repeat;
     attachment: fixed;
     position: center;
   }
 
   .selectorContainer {
-    margin: auto;
-    padding-top: 4rem;
-    min-height: 100vh;
+    position: absolute;
+    left: 18%;
+    right: 18%;
+    top: 25%;
+    bottom: 2%;
+    background-color: #eee6;
+    border-radius: 5%;
+    overflow: scroll;
   }
-  
-  .bookTitle {
-    padding-top: 5%;
-    padding-bottom: 5%;
-    padding-left: 45%;
-    position: center;
 
-    color: rgb(0, 0, 0);
-    font: {
-      family: Loopiejuice-Regular;
-      size: 1.4rem;
-      weight: bold;
-    }
+  .bookTitle {
+    padding: 2% 0;
+
+    font-family: Helvetica;
+    text-align: center;
 
     background: {
-      // default is book verse bar
+      // color: #fff8;
       image: url(images/BookVerseBar.svg);
-      origin: padding-box;
       repeat: no-repeat;
-      attachment: scroll;
-      size: 100%;
+      origin: padding-box;
       position: center;
-      padding-left: 30%;
     }
   }
 
   .verseRow {
-    overflow-x: scroll;
     flex-wrap: wrap;
     justify-content: space-evenly;
-    // flex-wrap: nowrap;
-    // justify-content: start;
   }
 
   .verseItem {
@@ -78,306 +70,77 @@
 
   &.dragon {
     background-image: url(images/DragonBackground.svg);
-  }
-
-  &.echo {
-    background-image: url(images/EchoBackground.svg);
-    .bookTitle {
-      background-color: #fff8;
-      background-image: unset;
-      padding: 2% 1%;
-    }
-  }
-
-  &.schmash {
-    background-image: url(images/SchmashBackground.svg);
-
-    .bookTitle {
-      background-color: #fff8;
-      background-image: unset;
-      padding: 2% 1%; 
-      color: black;
-    }
-  }
-
-  &.color {
-    background-image: url(images/ColorBackground.svg);
-
-    .bookTitle {
-      background-color: #fff8;
-      background-image: unset;
-      padding: 2% 1%; 
-      color: black;
-    } 
-  }
-
-  &.activity {
-    background: {
-      image: url(images/ActivityBackground.svg);
-      position: center;
-    }
-
-    min-height: 1.33vw;
 
     .selectorContainer {
-      padding-top: 20%;
-      width: 550px;
-      min-width: 40%;
-      max-width: 90%;
+      top: 29%;
+      background-color: #ffffff20;
     }
+    .bookTitle {
+      color: white;
+      background-image: url(images/BookVerseBar.svg);
+      background-color: unset;
+    }
+  }
+
+  &.echo { background-image: url(images/EchoBackground.svg);}
+  &.schmash { background-image: url(images/SchmashBackground.svg);}
+  &.color { background-image: url(images/ColorBackground.svg);}
+
+  &.activity {
+    background-image: url(images/ActivityBackground.svg);
 
     .bookTitle {
-      background: {
-        image: url(images/ColorVerseBar.svg);
-        position: center;
-        size: contain;
-      }
-      text-align: center;
-      color: black;
-      padding-top: 5%;
-      padding-bottom: 1%;
+      background-image: url(images/ColorVerseBar.svg);
+      background-color: unset;
+      padding: 3%;
     }
   }
 
   &.karaoke {
-    padding: 4rem 3rem;
-
-    background: {
-      image: url(images/KaraokeBackground.svg);
-      color: white;
-    }
+    background-image: url(images/KaraokeBackground.svg);
 
     .bookTitle {
-      background: {
-        image: url(images/ColorVerseBar.svg);
-        position: center;
-        size: contain;
-      }
-
-      text-align: center;
-      color: black;
-      padding-top: 5%;
-      padding-bottom: 1%;
+      background-image: url(images/ColorVerseBar.svg);
+      background-color: unset;
+      padding: 3%;
     }
   }
 
   &.dance {
     background-image: url(images/DanceBackground.svg);
     
-    .selectorContainer {
-      padding-top: 28vh;
-      width: 720px;
-      min-width: 70%;
-      max-width: 90%;
-    }
-
     .bookTitle {
       text-align: center;
       padding-top: 5%;
       padding-bottom: 1%;
 
-      background: {
-        image: url(images/StageVerseBar.svg);
-        position: center;
-        size: contain;
-      }
+      background-image: url(images/StageVerseBar.svg);
+      background-color: unset;
     }
   }
-    
-  &.speedyZoom {
-    background-image: url(images/SpeedyZoomBackground.svg);
-    .selectorContainer {
-      padding-top: 32vh;
-      padding-right: 10vw;
-    }
-  }
+
+  &.speedyZoom { background-image: url(images/SpeedyZoomBackground.svg);}
 
   &.watch {
-    background: {
-      image: url(images/StageBackground.svg);
-      position: center;
-      color: white;
-    }
-    .selectorContainer {
-      width: 720px;
-      min-width: 70%;
-      max-width: 90%;
-    }
+    background-image: url(images/StageBackground.svg);
 
     .bookTitle {
-      text-align: center;
       padding-top: 5%;
       padding-bottom: 1%;
 
-      background: {
-        image: url(images/StageVerseBar.svg);
-        position: center;
-        size: contain;
-      }
+      background-image: url(images/StageVerseBar.svg);
+      background-color: unset;
     }
   }
 
-  &.mySchmo {
-    background-image: url(images/MySchmoBackground.svg);
-
-    .bookTitle {
-      background-color: #fff8;
-      background-image: unset;
-      padding: 2% 1%; 
-      color: black;
-    } 
-
-    .selectorContainer {
-      padding-top: 28vh;
-      width: 500px;
-      min-width: 50%;
-      max-width: 80%;
-    }
-  }
-
-  &.colorPrint {
-    background-image: url(images/ColorBackground.svg);
-
-    .bookTitle {
-      background-color: #fff8;
-      background-image: unset;
-      padding: 2% 1%; 
-      color: black;
-    } 
-
-    .selectorContainer {
-      padding-top: 28vh;
-      width: 500px;
-      min-width: 50%;
-      max-width: 80%;
-    }
-  }
-
-  &.bookmark {
-    background-image: url(images/BookmarkBackground.svg);
-
-    .bookTitle {
-      background-color: #fff8;
-      background-image: unset;
-      padding: 2% 1%; 
-      color: black;
-    }
-
-    .selectorContainer {
-      padding-top: 28vh;
-      width: 500px;
-      min-width: 50%;
-      max-width: 80%;
-    }
-  }
-
-  &.kidRecite {
-    background-image: url(images/KidReciteBackground.svg);
-
-    .bookTitle {
-      background-color: #fff8;
-      background-image: unset;
-      padding: 2% 1%; 
-      color: black;
-    } 
-
-    .selectorContainer {
-      padding-top: 28vh;
-      width: 500px;
-      min-width: 50%;
-      max-width: 80%;
-    }
-  }
-
-  &.intro {
-    background-image: url(images/IntroBackground.svg);
-
-    .bookTitle {
-      background-color: #fff8;
-      background-image: unset;
-      padding: 2% 1%;
-    }
-  }
-
-  &.joSchmo {
-    background-image: url(images/JoSchmoBackground.svg);
-
-    .bookTitle {
-      background-color: #fff8;
-      background-image: unset;
-      padding: 2% 1%;
-    }
-  }
-      
-  &.roSchmo {
-    background-image: url(images/RoSchmoBackground.svg);
-
-    .bookTitle {
-      background-color: #fff8;
-      background-image: unset;
-      padding: 2% 1%; 
-      color: black;
-    } 
-
-    .selectorContainer {
-      padding-top: 28vh;
-      width: 500px;
-      min-width: 50%;
-      max-width: 80%;
-    }
-  }
-
-  &.princess {
-    background-image: url(images/PrincessBackground.svg);
-
-    .bookTitle {
-      background-color: #fff8;
-      background-image: unset;
-      padding: 2% 1%; 
-      color: black;
-    }
-
-    .selectorContainer {
-      padding-top: 28vh;
-      width: 500px;
-      min-width: 50%;
-      max-width: 80%;
-    }
-  }
-
-  &.book {
-    background-image: url(images/BookBackground.svg);
-
-    .bookTitle {
-      background-color: #fff8;
-      background-image: unset;
-      padding: 2% 1%; 
-      color: black;
-    }
-
-    .selectorContainer {
-      padding-top: 28vh;
-      width: 500px;
-      min-width: 50%;
-      max-width: 80%;
-    }
-  }
-      
-  &.blooper {
-    background-image: url(images/BlooperBackground.svg);
-
-    .bookTitle {
-      background-color: #fff8;
-      background-image: unset;
-      padding: 2% 1%; 
-      color: black;
-    }
-
-    .selectorContainer {
-      padding-top: 28vh;
-      width: 500px;
-      min-width: 50%;
-      max-width: 80%;
-    }
-  }
+  &.mySchmo { background-image: url(images/MySchmoBackground.svg);}
+  &.colorPrint { background-image: url(images/ColorBackground.svg);}
+  &.bookmark { background-image: url(images/BookmarkBackground.svg);}
+  &.kidRecite { background-image: url(images/KidReciteBackground.svg);}
+  &.intro { background-image: url(images/IntroBackground.svg);}
+  &.joSchmo { background-image: url(images/JoSchmoBackground.svg);}
+  &.roSchmo { background-image: url(images/RoSchmoBackground.svg);}
+  &.princess { background-image: url(images/PrincessBackground.svg);}
+  &.book { background-image: url(images/BookBackground.svg);}
+  &.blooper { background-image: url(images/BlooperBackground.svg);}
 }
