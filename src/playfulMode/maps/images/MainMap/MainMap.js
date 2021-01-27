@@ -26,7 +26,7 @@ export default () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1780 1
   <image id="Top" x="0" y="0" width="1780" href={Top} />
 
   <defs><style>{".q-1{fill:#fff;stroke:#000}.q-2{font-size:40px;fill:#231f20;stroke:#231f20;stroke-miterlimit:10;stroke-width:0.78px;font-family: Helvetica;}"}</style></defs>
-  <g id="Tutorial">
+  <g id="Help">
     <circle class="q-1" cx="1740" cy="40" r="30"/>
     <text class="q-2" x="1728" y="54">?</text>
   </g>
