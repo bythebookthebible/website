@@ -11,7 +11,8 @@ import { ReactComponent as schmoMap } from './images/SchmoMap.svg'
 import { ReactComponent as blueHouse } from './images/BlueHouse.svg'
 import { ReactComponent as readingTree } from './images/ReadingTree.svg'
 import { ReactComponent as memoryWood } from './images/MemoryWood.svg'
-import { ReactComponent as superStage } from './images/SuperStage.svg'
+// import { ReactComponent as superStage } from './images/SuperStage.svg'
+import superStage from './images/SuperStage/SuperStage'
 import { ReactComponent as familySchmuddle } from './images/FamilySchmuddle.svg'
 
 let Home = props => <SVGButtons svg={mainMap} buttons={[
@@ -28,13 +29,13 @@ let Home = props => <SVGButtons svg={mainMap} buttons={[
     {id:'Button3', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.discussion })},
     {id:'Button4', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.schmash })},
     {id:'Button5', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.dragon })},
-    {id:'Help', onClick: ()=>window.location.href = 'bythebookthebible.com/get-started-1'},
+    {id:'Help', onClick: ()=>window.location = 'http://bythebookthebible.com/get-started-1'},
 ]}><mainMap /></SVGButtons>
 
 let SuperStage = props => <SVGButtons svg={superStage} buttons={[
     {id:'Karaoke', dispatch: newView({view:playfulViews.moduleSelector, viewSelected:kinds.karaoke})},
     {id:'Dance', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.dance }) },
-    {id:'SpeedyZoom', dispatch: newView({view:playfulViews.moduleSelector, viewSelected:kinds.speedyZoom})},
+    {id:'Speed', dispatch: newView({view:playfulViews.moduleSelector, viewSelected:kinds.speedyZoom})},
     {id:'Blooper', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.blooper }) },
 ]}/>
 
