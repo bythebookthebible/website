@@ -160,6 +160,20 @@ exports.initUser = functions.https.onCall(async (data, context) => {
     await initAccess(user)
 })
 
+exports.initInvalidUsers = functions.https.onRequest(async (request, response) => {
+    let usersResult = await admin.auth().listUsers()
+    let n = 0
+    for(let u of usersResult.users) {
+        // console.log(u.id, u.customClaims)
+        if(!u.customClaims || !u.customClaims.stripeId || !u.customClaims.expirationDate) {
+            n += 1
+            initAccess(u)
+        }
+    }
+
+    response.json({count: n});
+})
+
 exports.initAccess = functions.auth.user().onCreate(initAccess);
 
 async function initAccess(user) {
