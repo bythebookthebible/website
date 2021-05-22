@@ -38,6 +38,10 @@ function LoginForm(props) {
         if (e.code === 'auth/wrong-password') {
             msg = 'Invalid Password.'
         }
+        if (e.code === 'auth/user-not-found') {
+            // Original message: "There is no user record corresponding to this identifier. The user may have been deleted."
+            msg = 'There is no user registered with that email address.'
+        }
 
         console.log(e);
         setErrorMessage(msg);
@@ -139,28 +143,30 @@ function LoginForm(props) {
             </Card.Text>
             {
                 showResetPassword &&
-                <Card.Text id="resetPassword" className="p-1 text-center">
-                    Having Trouble?
-                    <a href="" className="mx-1" onClick={
-                        function () {
-                            let email = emailRef.current.value;
+                <Card.Text as='div'>
+                    <div className="d-flex flex-centered">
+                        <button type="button" className="btn btn-round btn-secondary m-1" onClick={
+                            function() {
+                                let email = emailRef.current.value;
 
-                            if (!validEmail(email)) {
-                                setErrorToDisplay("Please enter a valid email.")
+                                if (!validEmail(email)) {
+                                    setErrorToDisplay("Please enter a valid email.")
+                                }
+                                else {
+                                    firebase.auth().sendPasswordResetEmail(emailRef.current.value)
+                                        .then(function () {
+                                            // User has been sent a password reset email with a link to do the reset.
+                                            setInfoMessage("You should receive a password reset email within the next 5 minutes. Follow the instructions inside to reset your password, then try logging in with your new password. If you don't receive an email in the next 5 minutes, try clicking Reset Password again.");
+                                            setErrorMessage("");
+                                        })
+                                        .catch((errorMsg) => {
+                                            // Error occurred trying to reset email.
+                                            setErrorToDisplay(errorMsg);
+                                        });
+                                }
                             }
-                            else {
-                                firebase.auth().sendPasswordResetEmail(emailRef.current.value)
-                                    .then(function () {
-                                        // User has been sent a password reset email with a link to do the reset.
-                                        setInfoMessage("Password reset email has been sent and should arrive in the next 5 minutes. Follow the instructions inside to reset your password, then try logging in with your new password. If you don't receive an email in the next 5 minutes, try clicking Reset Password again.");
-                                    })
-                                    .catch((errorMsg) => {
-                                        // Error occurred trying to reset email.
-                                        setErrorToDisplay(errorMsg);
-                                    });
-                            }
-                        }
-                    }>Reset Password</a>
+                        } >Reset Password</button>
+                    </div>
                 </Card.Text>
             }
             {/* Place the info message below the Password Reset button because it's an info message informing of password reset success.*/}
