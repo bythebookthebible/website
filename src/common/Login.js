@@ -119,9 +119,6 @@ function LoginForm(props) {
     }
     
     let title = 'Sign In / Create Account' // action=='signin' ? 'Sign In' : 'Create Account'
-    window.onbeforeunload = function () {
-        return "";
-    }
 
     return <Card {...props} className={'small-card '+(props.className||'')} >
         <Card.Title as='h3' className='mt-3 text-center'>
