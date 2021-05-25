@@ -24,16 +24,25 @@ function validEmail(email) {
 function LoginForm(props) {
     const [showResetPassword, setShowResetPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [infoMessage, setInfoMessage] = useState("");
     const [action, setAction] = useState('signin')
 
     const emailRef = useRef()
     const pwdRef = useRef()
     const nameRef = useRef()
 
-    function error(e) {
+    function setErrorToDisplay(e) {
         let msg = e.message || e
+
         // Change some error messages
-        if(e.code === 'auth/wrong-password') msg = 'Invalid Password.'
+        if (e.code === 'auth/wrong-password') {
+            msg = 'Invalid Password.'
+        }
+        if (e.code === 'auth/user-not-found') {
+            // Original message: "There is no user record corresponding to this identifier. The user may have been deleted."
+            msg = 'There is no user registered with that email address.'
+        }
+
         console.log(e);
         setErrorMessage(msg);
     }
@@ -60,16 +69,16 @@ function LoginForm(props) {
 
         // validate input
         if(!validEmail(email))
-            error("Please enter a valid email.")
+            setErrorToDisplay("Please enter a valid email.")
         else if (password.length === 0)
-            error("Please enter password.")
+            setErrorToDisplay("Please enter password.")
         else if (name.length === 0)
-            error("Please enter your name.")
+            setErrorToDisplay("Please enter your name.")
         else {
             // console.log('create account', email, name, password.replaceAll(/./g, '*'))
 
-            await auth.createUserWithEmailAndPassword(email, password).catch(error)
-            await firebase.auth().currentUser.updateProfile({displayName: name}).catch(error)
+            await auth.createUserWithEmailAndPassword(email, password).catch(setErrorToDisplay)
+            await firebase.auth().currentUser.updateProfile({ displayName: name }).catch(setErrorToDisplay)
             await initUser().then(setTimeout(()=>window.location.reload(), 100))
         }
     }
@@ -84,7 +93,7 @@ function LoginForm(props) {
             .then(props.onSubmit)
             .catch(e => {
                 setShowResetPassword(true)
-                error(e)
+                setErrorToDisplay(e)
             })
 
         userDataMigration()
@@ -129,12 +138,38 @@ function LoginForm(props) {
                 </div>
                 <div id="error-message" className="text-danger py-2">{errorMessage}</div>
             </Card.Text>
-            {showResetPassword && <Card.Text id="resetPassword" className="p-1 text-center">
-                Having Trouble?
-                <a href="" className="mx-1" onClick={() =>
-                    auth.sendPasswordResetPassword($("#email").val()).catch(error) // TODO set better response message
-                }>Reset Password</a>
-            </Card.Text>}
+            {
+                showResetPassword &&
+                <Card.Text as='div'>
+                    <div className="d-flex flex-centered">
+                        <button type="button" className="btn btn-round btn-secondary m-1" onClick={
+                            function() {
+                                let email = emailRef.current.value;
+
+                                if (!validEmail(email)) {
+                                    setErrorToDisplay("Please enter a valid email.")
+                                }
+                                else {
+                                    firebase.auth().sendPasswordResetEmail(emailRef.current.value)
+                                        .then(function () {
+                                            // User has been sent a password reset email with a link to do the reset.
+                                            setInfoMessage("You should receive a password reset email within the next 5 minutes. Follow the instructions inside to reset your password, then try logging in with your new password. If you don't receive an email in the next 5 minutes, try clicking Reset Password again.");
+                                            setErrorMessage("");
+                                        })
+                                        .catch((errorMsg) => {
+                                            // Error occurred trying to reset email.
+                                            setErrorToDisplay(errorMsg);
+                                        });
+                                }
+                            }
+                        } >Reset Password</button>
+                    </div>
+                </Card.Text>
+            }
+            {/* Place the info message below the Password Reset button because it's an info message informing of password reset success.*/}
+            <Card.Text as='div'>
+                <div id="info-message" className="p-1 text">{infoMessage}</div>
+            </Card.Text>
         </Card.Body>
         <Card.Footer >
             <a href={tosUrl} className="p-1">Terms of Service</a>
