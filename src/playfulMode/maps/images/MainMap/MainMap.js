@@ -34,28 +34,28 @@ export default () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1780 1
 .b{fill:#88e3ff;stroke:#00adee;stroke-miterlimit:10;stroke-width:5px;}
 `}</style></defs>
   <g id="Help">
-    <circle class="q-1" cx="1740" cy="40" r="30"/>
-    <text class="qt" x="1728" y="54">?</text>
+    <circle className="q-1" cx="1740" cy="40" r="30"/>
+    <text className="qt" x="1728" y="54">?</text>
   </g>
 
   <g id="Button1">
-    <rect class="y" x="45" y="110" width="140" height="140" rx="14.4"/>
-    <text class="bt" x="115" y="230">Watch</text>
+    <rect className="y" x="45" y="110" width="140" height="140" rx="14.4"/>
+    <text className="bt" x="115" y="230">Watch</text>
   </g>
   <g id="Button2">
-    <rect class="r" x="45" y="270" width="140" height="140" rx="14.4"/>
-    <text class="bt" x="115" y="390">Lesson</text>
+    <rect className="r" x="45" y="270" width="140" height="140" rx="14.4"/>
+    <text className="bt" x="115" y="390">Lesson</text>
   </g>
   <g id="Button3">
-    <rect class="b" x="45" y="430" width="140" height="140" rx="14.4"/>
-    <text class="bt" x="115" y="550">Discussion</text>
+    <rect className="b" x="45" y="430" width="140" height="140" rx="14.4"/>
+    <text className="bt" x="115" y="550">Discussion</text>
   </g>
   <g id="Button4">
-    <rect class="y" x="45" y="590" width="140" height="140" rx="14.4"/>
-    <text class="bt" x="115" y="710">Chapter Review</text>
+    <rect className="y" x="45" y="590" width="140" height="140" rx="14.4"/>
+    <text className="bt" x="115" y="710">Chapter Review</text>
   </g>
   <g id="Button5">
-    <rect class="r" x="45" y="750" width="140" height="140" rx="14.4"/>
-    <text class="bt" x="115" y="870">Loop</text>
+    <rect className="r" x="45" y="750" width="140" height="140" rx="14.4"/>
+    <text className="bt" x="115" y="870">Loop</text>
   </g>
 </svg>
