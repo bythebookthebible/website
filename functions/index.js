@@ -201,39 +201,49 @@ async function initAccess(user) {
     await admin.auth().setCustomUserClaims(user.uid, {stripeId: stripeId, expirationDate: freeDate.valueOf()});
 }
 
-// returns true if user info needed to change
-exports.userDataMigration = functions.https.onCall(async (data, context) => {
-    let changesRequired = false
-    if(!context.auth.uid) return changesRequired
-    
-    let user = context.auth.token
-    // check if user matches a stripe customer obj and pair them
-    let stripeId
-    stripeMatches = (await stripe.customers.list({email: user.email, limit: 3})).data
-    console.log('matches ', stripeMatches)
+exports.validateStripe = functions.https.onCall(async (data, context) => {
+    // if not connected to stripe
+        // if matching stripe account(s), link them
+        // if not, create new account
 
-    if(stripeMatches.length >= 1) {
-        if(stripeMatches.length > 1) console.warn('customer with duplicate emails in stripe')
-
-        stripeId = stripeMatches[0].id
-        if(!stripeMatches[0].metadata.firebaseId || stripeMatches[0].metadata.firebaseId != context.auth.uid) {
-            // give customer metadata firebase uid to fulfill subscription
-            await stripe.customers.update(stripeId, {metadata: {firebaseId: context.auth.uid}})
-            changesRequired = true
-        }
-    } else {
-        // After Migration, just create new stripe customer
-        customer = await stripe.customers.create({email: user.email, metadata: {firebaseId: context.auth.uid}})
-        stripeId = customer.id
-        changesRequired = true
-    }
-
-    // Set a default 30 day trial
-    let claims = (await admin.auth().getUser(context.auth.uid)).customClaims
-    if(!claims.stripeId || claims.stripeId != stripeId) {
-        await admin.auth().setCustomUserClaims(context.auth.uid, {...claims, stripeId: stripeId});
-        changesRequired = true
-    }
-
-    return changesRequired
+    // if connected to stripe
+        // return subscription state [active, canceled, payment errors, duplicated subscription, no subscription]
+        // make sure expiration claims match if active
 });
+
+// // returns true if user info needed to change
+// exports.userDataMigration = functions.https.onCall(async (data, context) => {
+//     let changesRequired = false
+//     if(!context.auth.uid) return changesRequired
+    
+//     let user = context.auth.token
+//     // check if user matches a stripe customer obj and pair them
+//     let stripeId
+//     stripeMatches = (await stripe.customers.list({email: user.email, limit: 3})).data
+//     console.log('matches ', stripeMatches)
+
+//     if(stripeMatches.length >= 1) {
+//         if(stripeMatches.length > 1) console.warn('customer with duplicate emails in stripe')
+
+//         stripeId = stripeMatches[0].id
+//         if(!stripeMatches[0].metadata.firebaseId || stripeMatches[0].metadata.firebaseId != context.auth.uid) {
+//             // give customer metadata firebase uid to fulfill subscription
+//             await stripe.customers.update(stripeId, {metadata: {firebaseId: context.auth.uid}})
+//             changesRequired = true
+//         }
+//     } else {
+//         // After Migration, just create new stripe customer
+//         customer = await stripe.customers.create({email: user.email, metadata: {firebaseId: context.auth.uid}})
+//         stripeId = customer.id
+//         changesRequired = true
+//     }
+
+//     // Set a default 30 day trial
+//     let claims = (await admin.auth().getUser(context.auth.uid)).customClaims
+//     if(!claims.stripeId || claims.stripeId != stripeId) {
+//         await admin.auth().setCustomUserClaims(context.auth.uid, {...claims, stripeId: stripeId});
+//         changesRequired = true
+//     }
+
+//     return changesRequired
+// });

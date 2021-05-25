@@ -96,11 +96,12 @@ function LoginForm(props) {
                 setErrorToDisplay(e)
             })
 
-        userDataMigration()
-            .then(changed=>{
-                console.log('migration', changed.data)
-            })
-            .catch(e=>console.log('migration', e))
+        // // NOT NEEDED ANYMORE
+        // userDataMigration()
+        //     .then(changed=>{
+        //         console.log('migration', changed.data)
+        //     })
+        //     .catch(e=>console.log('migration', e))
 
     }
 

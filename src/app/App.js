@@ -75,17 +75,26 @@ function AuthSwitch(props) {
   if(auth.isEmpty) return <Login /> // not logged in
   if(!profile.isLoaded) return <LoadingPage /> // loading profile (and claims)
   if(profile.isEmpty) {
-    console.error('empty profile / no claims') // logged in but no profile (should not happen)
+    console.error('empty profile') // logged in but no profile (should not happen)
     return <ErrorMsg />
   }
 
   const claims = profile.token.claims
+  if(!claims.expirationDate) {
+    // account is not initialized yet on the back end
+    // display "preparing account"
+    // let firebase initialize (wait or trigger)
+  }
   if(claims.admin || claims.permanentAccess || claims.expirationDate - Date.now() > 0) {
     return props.children // logged in successfully
   }
 
-  // should subscribe
+  // check stripe status:
+  // if there is no subscription (and we already checked the trial is expired)
+  // prompt: should subscribe
   return <Subscribe />
+  // if there is a subscription that has been canceled or has an error or something
+  // prompt accordingly
 }
 
 const ErrorMsg = props => <div className='text-center p-5'>
