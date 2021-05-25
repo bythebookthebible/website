@@ -1,68 +1,39 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Purpose
 
-## Available Scripts
+This is the Schmudgin website for [ByTheBookTheBible.com](ByTheBookTheBible.com). The purpose of By the Book is to enable anyone to easily memorize whole books of the bible, because God speaks most clearly through His word. The role of the Schmudgin website in particular is to make this process fun and accessible to younger kids. 
 
-In the project directory, you can run:
+This site is published at [schmudgin.bythebookthebible.com](schmudgin.bythebookthebible.com), where it runs as a Progressive Web App for desktop and mobile.
 
-### `npm start`
+# Development
+This project runs on nodejs, and uses React and Redux.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Make sure your system has nodejs and npm from [nodejs.org](nodejs.org). The package manager (npm) should come with a nodejs download.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+`npm install` to install this project's dependencies.
 
-### `npm test`
+`npm start` starts a development server at [http://localhost:3000](http://localhost:3000). The page will reload if you make edits.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+`npm run build` builds the app for production to the `build` folder.
 
-### `npm run build`
+# Deployment
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+We are currently hosting this project with firebase for its database and google cloud storage and auth. `npm install -g firebase-tools` will install the firebase cli and make the firebase command globally available. 
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+`firebase login` You will need to login to google through the cli to deploy successfully.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+`firebase deploy` deploys the project from the build directory. You can deploy specific portions of the project by adding options like `--only hosting` or `--only functions:initUser`.
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+# Useful Tools
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+I have found the chrome [React Developer Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en)
+and [Redux DevTools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en)
+to be very useful for this kind of project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+# File Structure
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+In `functions/index.js` you will find the functions which are running in google cloud. These primarilly callable functions which handle tasks that require restricted permissions like granting the appropriate access to new users, or allowing an administrator to edit user's memory jewels.
 
-## Learn More
+Under `src/playfulMode` you will find most of the schmudgin specific code, by feature. The state logic will be in the files named `*Reducer.js`, and the rendering logic will generally be in the correspondingly named React file `*.js`.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+More information will be made available in the [github wiki](https://github.com/bythebookthebible/website/wiki).

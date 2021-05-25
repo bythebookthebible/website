@@ -1,15 +1,11 @@
-import React, { useContext, useState } from "react";
-import { ReactSVG } from "react-svg";
+import React from "react";
 import $ from "jquery";
-import { Button } from "react-bootstrap";
-import MemorizedPrompt from "./memorizedPrompt"
 import { ReactComponent as memoryPalace } from './images/PalaceInside.svg'
 import { scriptureFromKey, kinds, keyFromScripture } from "../util";
 import { useDispatch, useSelector } from "react-redux";
 import { useMemoryResources } from "../common/hooks";
 import SVGBButtons from './SVGButtons'
 import { nextInPalace, activateJewel, newView, playfulViews } from "./playfulReducer";
-import { useFirebase } from "react-redux-firebase";
 
 let halfFullPower = 100.0
 // @TODO: 1) fix code after actual imagine is used in place
@@ -39,7 +35,7 @@ export default function MemoryPalaceView(props) {
 
     return <>
         {/* {<MemorizedPrompt show={showMemoryPrompt} onHide={()=>setShowMemoryPrompt(false)} />}             */}
-        <SVGBButtons svg={memoryPalace} deps={[`${book}-${chapter}`]} className='memoryPalace' extra={()=>{
+        <SVGBButtons svg={memoryPalace} deps={[`${book}-${chapter}`]} glowSize={50} className='memoryPalace' extra={()=>{
             // i < 11 bc rn we only have 11 rectangles
             for (let i = 0; i < 11; i++) {
                 if(i < modules.length) {

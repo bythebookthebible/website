@@ -1,6 +1,7 @@
 import React from 'react';
 import logoSpinning from '../images/logoSpinning.svg'
-import {ReactComponent as Background} from '../playfulMode/maps/images/MainMap.svg'
+// import {ReactComponent as Background} from '../playfulMode/maps/images/MainMap/MainMap.svg'
+import Background from '../playfulMode/maps/images/MainMap/MainMap.svg'
 // import lightBackground from '../images/lightBackground.webp'
 
 export function Spinner(props) {
@@ -51,7 +52,7 @@ export function PlayfulPlainContainer(props) {
         values={`${op} 0 0 0 ${1-op}   0 ${op} 0 0 ${1-op}   0 0 ${op} 0 ${1-op}   0 0 0 1 0`} />
       </filter>
     </defs>
-    <Background x={0} y={0} width={width} height={height} style={{overflow:'hidden'}} filter="url(#blur)" />
+    <image href={Background} x={0} y={0} height={height} style={{overflow:'hidden'}} filter="url(#blur)" />
   </svg>
 
   return <>

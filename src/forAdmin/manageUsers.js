@@ -53,9 +53,10 @@ export default function ManageUsers(props) {
 
 function UserRow(props) {
     let user = _.cloneDeep(props.user)
+    user.customClaims = user.customClaims || {expirationDate: null}
     let claims = user.customClaims
     let [changed, setChanged] = useState(false)
-    console.log(`update user row for ${user.displayName}`)
+    console.log('user', user)
 
     let defaultDateStr = new Date(claims.expirationDate).toISOString().split('T')[0]
     let datePhase = claims.expirationDate - new Date(defaultDateStr).valueOf()
@@ -68,6 +69,8 @@ function UserRow(props) {
 
     let getUpdated = ()=>{
         let newUser = _.cloneDeep(props.user)
+        newUser.customClaims = user.customClaims || {}
+        
         newUser.customClaims.stripeId = stripeRef.current.value || user.customClaims.stripeId
         newUser.customClaims.expirationDate = datePhase + new Date(expirationRef.current.value).valueOf()
 
@@ -150,7 +153,7 @@ function MemoryPowerEditor(props) {
 
         return m
     }, {})
-    console.log(`ALL power for ${props.displayName}`, allPower)
+    // console.log(`ALL power for ${props.displayName}`, allPower)
 
     // submit / cancel modal
     let cancel = ()=>{
