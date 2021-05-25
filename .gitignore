@@ -21,6 +21,7 @@
 .idea
 .firebase/*.cache
 .vscode/*
+.vs/*
 
 npm-debug.log*
 yarn-debug.log*
