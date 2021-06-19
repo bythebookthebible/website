@@ -142,8 +142,8 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
         subscription_data: {
             items: data.items
         },
-        success_url: 'https://bythebookthebible.com/memorize',
-        cancel_url: 'https://bythebookthebible.com/subscribe',
+        success_url: "https://schmudgin.bythebookthebible.com",
+        cancel_url: "https://schmudgin.bythebookthebible.com"
     }
     const session = await stripe.checkout.sessions.create(options).catch(e => {
         console.error('Error Creating Stripe Session: ', JSON.stringify(e))
