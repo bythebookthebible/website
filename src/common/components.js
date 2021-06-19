@@ -10,6 +10,8 @@ export function Spinner(props) {
 
 export function LoadingPage(props) {
   return <div style={{textAlign:'center'}} >
+    {props.title && <h2>{props.title}</h2> }
+    {props.description && <p>{props.description}</p> }
     <Spinner style={{width:'80%', maxWidth:'500px', margin:'20% auto'}} />
   </div>
 }

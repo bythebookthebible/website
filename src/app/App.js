@@ -58,7 +58,7 @@ function ModeSwitch(props) {
   }, [userButtons])
 
   return <div className={"body colorful-theme"}>
-    <Suspense fallback={<LoadingPage />}>
+    <Suspense fallback={<LoadingPage title="Loading Content..."/>}>
       {componentsByMode[mode] && componentsByMode[mode].content}
     </Suspense>
   </div>
@@ -71,9 +71,9 @@ function AuthSwitch(props) {
 
   // login / loading / error cases
   // if(!rehydrated) return <LoadingPage /> // loading last state
-  if(!auth.isLoaded) return <LoadingPage /> // loading auth
+  if(!auth.isLoaded) return <LoadingPage title="Loading Profile..."/> // loading auth
   if(auth.isEmpty) return <Login /> // not logged in
-  if(!profile.isLoaded) return <LoadingPage /> // loading profile (and claims)
+  if(!profile.isLoaded) return <LoadingPage title="Loading Profile..."/> // loading profile (and claims)
   if(profile.isEmpty) {
     console.error('empty profile') // logged in but no profile (should not happen)
     return <ErrorMsg />
@@ -84,6 +84,7 @@ function AuthSwitch(props) {
     // account is not initialized yet on the back end
     // display "preparing account"
     // let firebase initialize (wait or trigger)
+    return <LoadingPage title="Preparing Account..."/>
   }
   if(claims.admin || claims.permanentAccess || claims.expirationDate - Date.now() > 0) {
     return props.children // logged in successfully

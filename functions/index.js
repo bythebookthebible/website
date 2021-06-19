@@ -156,8 +156,12 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
 exports.initUser = functions.https.onCall(async (data, context) => {
     if(!context.auth) return '[Error] no user'
     let user = (await admin.auth().getUser(context.auth.uid))
-    
-    await initAccess(user)
+
+    if(!user.customClaims || !user.customClaims.stripeId || !user.customClaims.expirationDate) {
+        await initAccess(user)
+    }
+
+    return (await admin.auth().getUser(context.auth.uid))
 })
 
 exports.initInvalidUsers = functions.https.onRequest(async (request, response) => {
@@ -174,7 +178,7 @@ exports.initInvalidUsers = functions.https.onRequest(async (request, response) =
     response.json({count: n});
 })
 
-exports.initAccess = functions.auth.user().onCreate(initAccess);
+// exports.initAccess = functions.auth.user().onCreate(initAccess);
 
 async function initAccess(user) {
     // FOR MIGRATION, check if user matches a stripe customer obj and pair them
@@ -199,9 +203,11 @@ async function initAccess(user) {
     freeDate.setDate(freeDate.getDate() + 30); // 30 days free
 
     await admin.auth().setCustomUserClaims(user.uid, {stripeId: stripeId, expirationDate: freeDate.valueOf()});
+
+    return admin.auth().getUser(user.uid)
 }
 
-exports.validateStripe = functions.https.onCall(async (data, context) => {
+exports.stripeHealth = functions.https.onCall(async (data, context) => {
     // if not connected to stripe
         // if matching stripe account(s), link them
         // if not, create new account
