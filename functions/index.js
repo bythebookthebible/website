@@ -204,6 +204,8 @@ async function initAccess(user) {
 
     await admin.auth().setCustomUserClaims(user.uid, {stripeId: stripeId, expirationDate: freeDate.valueOf()});
 
+    await admin.firestore().doc(`users/${user.uid}`).set({'refreshToken': Date.now()});
+
     return admin.auth().getUser(user.uid)
 }
 

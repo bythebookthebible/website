@@ -79,11 +79,11 @@ function LoginForm(props) {
 
             await auth.createUserWithEmailAndPassword(email, password).catch(setErrorToDisplay)
             await firebase.auth().currentUser.updateProfile({ displayName: name }).catch(setErrorToDisplay)
-            await initUser().then((res) => {
-                console.log('response', res)
-                console.log('user', auth.currentUser)
-                // setTimeout(()=>window.location.reload(), 100)
-            })
+            await initUser()
+            // .then((res) => {
+            //     console.log('response', res)
+            //     console.log('user', auth.currentUser)
+            // })
         }
     }
 

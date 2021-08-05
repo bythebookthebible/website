@@ -75,7 +75,7 @@ function AuthSwitch(props) {
   if(auth.isEmpty) return <Login /> // not logged in
   if(!profile.isLoaded) return <LoadingPage title="Loading Profile..."/> // loading profile (and claims)
   if(profile.isEmpty) {
-    console.error('empty profile') // logged in but no profile (should not happen)
+    console.error('Invalid state empty profile: logged in but no profile (should not happen)') // logged in but no profile (should not happen)
     return <ErrorMsg />
   }
 
