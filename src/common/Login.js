@@ -79,7 +79,11 @@ function LoginForm(props) {
 
             await auth.createUserWithEmailAndPassword(email, password).catch(setErrorToDisplay)
             await firebase.auth().currentUser.updateProfile({ displayName: name }).catch(setErrorToDisplay)
-            await initUser().then(setTimeout(()=>window.location.reload(), 100))
+            await initUser()
+            // .then((res) => {
+            //     console.log('response', res)
+            //     console.log('user', auth.currentUser)
+            // })
         }
     }
 
@@ -96,11 +100,12 @@ function LoginForm(props) {
                 setErrorToDisplay(e)
             })
 
-        userDataMigration()
-            .then(changed=>{
-                console.log('migration', changed.data)
-            })
-            .catch(e=>console.log('migration', e))
+        // // NOT NEEDED ANYMORE
+        // userDataMigration()
+        //     .then(changed=>{
+        //         console.log('migration', changed.data)
+        //     })
+        //     .catch(e=>console.log('migration', e))
 
     }
 
@@ -115,9 +120,9 @@ function LoginForm(props) {
             if(action=='signin') await signIn()
             else await createAccount()
         }
-        submit()        
+        submit()
     }
-    
+
     let title = 'Sign In / Create Account' // action=='signin' ? 'Sign In' : 'Create Account'
 
     return <Card {...props} className={'small-card '+(props.className||'')} >
@@ -126,7 +131,7 @@ function LoginForm(props) {
         </Card.Title>
         <hr/>
         <Card.Body as='form' onSubmit={submitForm}>
-            <Card.Text>
+            <Card.Text> 
                 {action=='create' && <input type="text" className="form-control" name='name' ref={nameRef} placeholder="Name"/>}
                 <input type="email" className="form-control" name='email' ref={emailRef} placeholder="Email" onBlur={e => checkEmail(e.target.value)} />
                 <input type="password" className="form-control" name='password' ref={pwdRef} placeholder="Password" />
