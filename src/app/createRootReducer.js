@@ -4,7 +4,7 @@ import { auth } from '../firebase'
 import { firebaseReducer } from 'react-redux-firebase'
 import { firestoreReducer } from 'redux-firestore'
 import adminReducer from '../forAdmin/adminReducer'
-import focusedReducer from '../focusedMode/focusedReducer'
+// import focusedReducer from '../focusedMode/focusedReducer'
 import playfulReducer from '../playfulMode/playfulReducer'
 
 import {persistReducer} from 'redux-persist'
@@ -44,7 +44,7 @@ export default function createRootReducer(uid = auth.currentUser && auth.current
     // playfulMode:
     // teacherMode:
     admin: adminReducer,
-    focused: focusedReducer,
+    // focused: focusedReducer,
     playful: playfulReducer,
   })
 
