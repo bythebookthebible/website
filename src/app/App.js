@@ -16,7 +16,7 @@ import Subscribe from "./Subscribe";
 // import Playful from "../playfulMode/Playful";
 
 const Playful = React.lazy(()=>import('../playfulMode/Playful'))
-const Focused = React.lazy(()=>import('../focusedMode/Focused'))
+// const Focused = React.lazy(()=>import('../focusedMode/Focused'))
 const Admin = React.lazy(()=>import('../forAdmin/Admin'))
 
 export default function App(props) {
@@ -38,7 +38,7 @@ function ModeSwitch(props) {
   // what to render for each mode, and the name for it's tab / button
   const componentsByMode = {
     [modes.playful]: {name: 'Adventure mode', content: <Playful setNavButtons={props.setNavButtons} />},
-    [modes.focused]: {name: 'Navigator mode', content: <Focused />},
+    // [modes.focused]: {name: 'Navigator mode', content: <Focused />},
     // [modes.teacher]: {name: 'Teacher mode', content: <h1>Teacher mode coming soon!</h1>},
   }
   if (profile.isLoaded && profile.token.claims.admin)
