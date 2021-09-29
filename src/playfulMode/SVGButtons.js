@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { ReactSVG } from "react-svg";
 
+import { useHistory } from "react-router-dom";
+
 import $ from "jquery";
 import { useDispatch } from "react-redux";
 import {useDebounce} from '../common/hooks'
@@ -17,13 +19,15 @@ export default function SVGButtons(props) {
 
     // for debounding hover glow
     let debounce = useDebounce(200)
+    let history = useHistory()
 
     useEffect(() => {
         for (let button of buttons) {
             let b = $("#" + button.id)
             b.click(() => {
-                if(typeof button.dispatch === "function") dispatch(button.dispatch())
-                else if(button.dispatch) dispatch(button.dispatch)
+                // if(typeof button.dispatch === "function") dispatch(button.dispatch())
+                if(button.dispatch) dispatch(button.dispatch)
+                if(button.linkTo) history.push(button.linkTo)
                 if(button.onClick) button.onClick()
             })
             b.hover(

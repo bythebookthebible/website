@@ -1,6 +1,6 @@
 import { createReducer, createAction, createAsyncThunk } from '@reduxjs/toolkit'
 
-import { valueAfter, getKidKinds, pathFilters, scriptureFromKey, kidModeKinds, getPathActivities } from '../util'
+import { valueAfter, getKidKinds, pathFilters, scriptureFromKey, kidModeKinds, getPathActivities, getModulesForPath } from '../util'
 
 // ACTION CREATORS
 export const newView = createAction('playful/newView')
@@ -14,24 +14,65 @@ const createThunkWithResources = type => createAsyncThunk(type, (arg, thunk) => 
   let resources = thunk.getState().firestore.data.memoryResources
   return {resources, arg}
 })
-export const nextModule = createThunkWithResources('playful/nextModule')
-export const nextActivity = createThunkWithResources('playful/nextActivity')
-export const nextInPalace = createThunkWithResources('playful/nextInPalace')
+// export const nextModule = createThunkWithResources('playful/nextModule')
+// export const nextActivity = createThunkWithResources('playful/nextActivity')
+// export const nextInPalace = createThunkWithResources('playful/nextInPalace')
+
+export function getNextModule(resources, kind, module) {
+    let modules = Object.keys(resources).filter(
+      m => getKidKinds(resources[m]).includes(kind)
+    )
+    return valueAfter(modules, module)
+}
 
 export function pathFinished(activity) {
   return async (dispatch, getState, getFirebase) => {
-    let {path, module, index} = activity
+    let {path, module, kind} = activity
+    console.log(`just finished ${path} ${module} ${kind}`)
+    let resources = getState().firestore.data.memoryResources
+
+    // get old path state
     let profile = getState().firebase.profile
     let p = profile.paths && profile.paths[path]
-    console.log(p, activity)
+    // console.log(p, activity)
 
-    if(!p || module > p.module || (module == p.module && index > p.index)) {
+    let nextModule, nextKind, nextIndex
+    if(!p) {
+      // get first in this path
+      nextModule = getModulesForPath(resources, path)[0]
+      nextIndex = 0
+
+    } else {
+      // get expected next module/kind
+      let a = getPathActivities(resources, module)
+      nextIndex = (p.index + 1) % a.length
+      nextModule = nextIndex === 0
+        ? valueAfter(getModulesForPath(resources, path), p.module)
+        : p.module
+    }
+    nextKind = getPathActivities(resources, nextModule)[nextIndex]
+
+    // if uninitialized or
+    // if new module/kind matches the module/kind of the next item
+    // then set this as the new module/kind/index
+    if(!p || (module == nextModule && kind == nextKind)) {
+      console.log(`updating to firebase`, nextModule, nextKind)
       await getFirebase().updateProfile({paths:{
-        [path]:{module, index}
+        [path]:{module: nextModule, index: nextIndex}
       }})
     }
-    dispatch(newView({view:playfulViews.adventurePath, viewSelected:path}))
   }
+}
+
+export function nextInPalace(resources, curView, n) {
+    let scriptures = Object.keys(resources).reduce((cum, key) => {
+      let s = scriptureFromKey(key)
+      let view = `${s.book}-${s.chapter}`
+      cum[view] = view
+      return cum
+    }, {})
+
+    return valueAfter(Object.values(scriptures), curView, n || 1)
 }
 
 export function activateJewel(module) {
@@ -53,88 +94,36 @@ export function activateJewel(module) {
 }
 
 // Values for state.view
-export const playfulViews = {
-  default:'default',
-  map:'map',
-  moduleSelector:'moduleSelector',
-  adventurePath:'adventurePath',
-  palace:'palace',
-  activity:'activity',
-}
+// export const playfulViews = {
+//   default:'default',
+//   map:'map',
+//   moduleSelector:'moduleSelector',
+//   adventurePath:'adventurePath',
+//   palace:'palace',
+//   activity:'activity',
+// }
 
-const defaultView = playfulViews.map
-const defaultViewSelected = 'home'
+// const defaultView = playfulViews.map
+// const defaultViewSelected = 'home'
 
-const playfulReducer = createReducer(
-  {
-    view: defaultView, 
-    viewSelected: defaultViewSelected,
-    history: {past: [], present: {
-      view: defaultView, 
-      viewSelected: defaultViewSelected
-    }},
-    path: '',
-    paths: {},
-  },
-  {
-    [newView]: (state, action) => {
-      state.view = action.payload.view
-      state.viewSelected = action.payload.viewSelected
+// const playfulReducer = createReducer(
+//   {
+//     path: '',
+//     paths: {},
+//   },
+//   {
+//     // [nextInPalace.fulfilled]: (state, action) => {
+//     //   let {resources, arg:n} = action.payload
 
-      // history tracking
-      state.history.past.push(state.history.present)
-      state.history.present = action.payload
+//     //   let scriptures = Object.keys(resources).reduce((cum, key) => {
+//     //     let s = scriptureFromKey(key)
+//     //     cum[s.book + s.chapter] = cum[s.book + s.chapter] || {book:s.book, chapter:String(s.chapter)}
+//     //     return cum
+//     //   }, {})
 
-      // specialized default view
-      if(action.payload.view === playfulViews.default) {
-        state.view = defaultView
-        state.viewSelected = defaultViewSelected
-      }
+//     //   state.viewSelected = valueAfter(Object.values(scriptures), state.viewSelected, n || 1)
+//     //   return state
+//     // },
+// })
 
-      // specialized palace view payload
-      if(action.payload.view === playfulViews.palace 
-        && typeof(action.payload.viewSelected) === 'string') {
-        let ref = action.payload.viewSelected.split(' ')
-        state.viewSelected = {book: ref[0], chapter: ref[1] || 1}
-      }
-
-      return state
-    },
-    [back]: (state, action) => {
-      let prev = state.history.past.pop()
-      if(!prev) prev = newView({view:playfulViews.default}).payload
-
-      // roll back one more to let us effectively reuse newView action
-      state.history.present = state.history.past.pop()
-      state = playfulReducer(state, newView(prev))
-      return state
-    },
-    [nextModule.fulfilled]: (state, action) => {
-      let {resources} = action.payload
-      let modules = Object.keys(resources).filter(
-        module => getKidKinds(resources[module]).includes(state.viewSelected.kind)
-      )
-      state.viewSelected.module = valueAfter(modules, state.viewSelected.module)
-      return state
-    },
-    [nextActivity.fulfilled]: (state, action) => {
-      let {resources} = action.payload
-      let activities = getKidKinds(resources[state.viewSelected.module])
-      state.viewSelected.kind = valueAfter(activities, state.viewSelected.kind)      
-      return state
-    },
-    [nextInPalace.fulfilled]: (state, action) => {
-      let {resources, arg:n} = action.payload
-
-      let scriptures = Object.keys(resources).reduce((cum, key) => {
-        let s = scriptureFromKey(key)
-        cum[s.book + s.chapter] = cum[s.book + s.chapter] || {book:s.book, chapter:String(s.chapter)}
-        return cum
-      }, {})
-
-      state.viewSelected = valueAfter(Object.values(scriptures), state.viewSelected, n || 1)
-      return state
-    },
-})
-
-export default playfulReducer
+// export default playfulReducer

@@ -14,12 +14,13 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 export default function PopupBookWithMemoryPower(props) {
     let {activity, isActive, onRepeat} = props
     let dispatch = useDispatch()
-    
+
     let resources = useMemoryResources()
     let url = resources && resources[activity.module][resoucesForKinds[activity.kind][0]][0]
     let version = resources && resources[activity.module].version
     let src = useCachedStorage({url, version});
-    
+    console.log(url, src)
+
     let [numPages, setNumPages] = useState(null)
     let [pageNumber, setPageNumber] = useState(1)
     let [completed, setCompleted] = useState(false)
@@ -56,7 +57,7 @@ export default function PopupBookWithMemoryPower(props) {
             goToNextView()
         }
     }
- 
+
     return (
         <div>  
             <SizeMe
@@ -92,7 +93,7 @@ export default function PopupBookWithMemoryPower(props) {
                 keyEventName={KEYPRESS}
                 keyValue='End'
                 onKeyHandle={()=>goToNextView()}
-            />    
+            />
         </div>
     );
 

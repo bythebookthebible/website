@@ -1,53 +1,40 @@
 import React, { useEffect } from 'react'
 import Activity from './activity'
-import { Spinner, AbsoluteCentered} from '../common/components'
+import { LoadingPage, AbsoluteCentered} from '../common/components'
 import MemoryPalaceView from './memoryPalaceView'
 import './playful.scss'
 
-import Maps from './maps/maps'
+import { Map } from './maps/maps'
 import ModuleSelector from './moduleSelector/ModuleSelector'
 import { useDispatch, useSelector } from 'react-redux'
-import { playfulViews, back, newView } from './playfulReducer'
 import { useMemoryResources } from '../common/hooks'
 import mapIcon from './images/MapIcon.png'
 import AdventurePath from './adventurePath/adventurePath'
 import { SizeMe } from 'react-sizeme'
 import {defaultAspectRatio} from './SVGButtons'
+import {
+  Switch,
+  Route,
+  Link,
+  useParams,
+  useHistory,
+} from "react-router-dom";
 
 export default function Playful(props) {
-  let dispatch = useDispatch()
   let resources = useMemoryResources()
-  let view = useSelector(state => state.playful.view)
-  let viewSelected = useSelector(state => state.playful.viewSelected)
-
-  let content = <Spinner />
+  let history = useHistory()
   
-  if(view == playfulViews.map) content = Maps[viewSelected]
-  if(resources) {
-    if(view == playfulViews.moduleSelector) content = <ModuleSelector />
-    if(view == playfulViews.palace) content = <MemoryPalaceView />
-    if(view == playfulViews.adventurePath) content = <AdventurePath />
-    if(view == playfulViews.activity) content = <Activity />
-  }
-
-  if(!content) {
-    content = <h1>Oops...</h1>
-    setTimeout(() => {
-      dispatch(newView({view:playfulViews.default}))
-    }, 1000);
-  }
-  
+  // Set nav buttons (at the top)
   useEffect(() => {
     let navButtons = [
       {
         key:'mainMap', 
-        content: <img className='mx-1 mt-1' src={mapIcon} style={{height:'2rem'}} />, 
-        onClick: () => dispatch(newView({view:playfulViews.default})),
+        content: <Link to='/'><img className='mx-1 mt-1' src={mapIcon} style={{height:'2rem'}} /></Link>, 
       },
       {
         key:'back', 
         content: <i className='fas fa-reply fa-flip-vertical mx-2 mt-1'  aria-hidden="true" style={{fontSize:'2rem', color:'var(--primary)'}} />, 
-        onClick: () => dispatch(back()),
+        onClick: history.goBack,
       },
     ]
 
@@ -56,7 +43,7 @@ export default function Playful(props) {
     return () => {
       setNavButtons({owner:'PlayfulMode', navButtons:[]})
     }
-  }, [])
+  }, [props.setNavButtons, history])
 
   // emulate landscape lock
   useEffect(() => {
@@ -64,25 +51,33 @@ export default function Playful(props) {
       window.screen.orientation.lock('landscape')
   }, [])
 
+  if(!resources) return <PlayfulFrame><LoadingPage /></PlayfulFrame>
+
   return <PlayfulFrame>
-    {content}
+    <Switch>
+      <Route exact path='/'><Map default /></Route>
+      <Route path='/map/:viewSelected'><Map /></Route>
+      <Route path='/moduleSelector/:viewSelected'><ModuleSelector /></Route>
+      <Route path='/palace/:viewSelected'><MemoryPalaceView /></Route>
+      <Route path='/activity/:activityKind/:module'><Activity /></Route>
+      <Route path='/adventurePath/:path'><AdventurePath /></Route>
+      {/* <Route path='/'><h1>Oops...</h1>{ setTimeout(() => {history.replace('/')}, 2000) }</Route> */}
+    </Switch>
   </PlayfulFrame>
 }
 
 function PlayfulFrame(props) {
-  let view = useSelector(state => state.playful.view)
   let aspectratio = defaultAspectRatio
 
   return <SizeMe monitorHeight>
     {({size}) => {
-      console.log(size)
       let width = Math.min(size.width, size.height * aspectratio)
       let height = Math.min(size.height, size.width / aspectratio)
       let left = (size.width - width) / 2
       let top = (size.height - height) / 2
 
       return <div className="playfulBackground">
-        <div className={`playfulFrame ${view}`} style={{width, height, top, left}}>
+        <div className={`playfulFrame`} style={{width, height, top, left}}>
           {props.children}
         </div>
       </div>  

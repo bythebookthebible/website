@@ -64,7 +64,7 @@ export var MemeoryPowerVideo = React.forwardRef((props, extRef) => {
     let prevActive = useRef()
     let lastTime = useRef(0)
     function onStateChange(playerState) {
-        console.log(playerState)
+        // console.log(playerState)
         // update active state
         let active = repeat || !(playerState.ended && playerState.hasStarted)
         if (repeat && playerState.ended && playerState.hasStarted) {

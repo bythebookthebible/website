@@ -3,43 +3,60 @@ import { media } from "../activities/media";
 import { ReactComponent as sidebar } from './images/ActivitySideBar.svg';
 import { ReactComponent as Chalice } from './images/MemoryChalice.svg';
 import {useTransition, animated, config as reactSpringConfig} from 'react-spring'
+import { useMemoryResources } from "../common/hooks"
 
-import { kinds } from "../util";
-import { useSelector } from "react-redux";
-import { newView, playfulViews, nextModule, nextActivity, pathFinished } from "./playfulReducer";
+import { getKidKinds, kinds, valueAfter } from "../util";
+import { useDispatch, useSelector } from "react-redux";
+import { newView, playfulViews, getNextModule, pathFinished } from "./playfulReducer";
 import SVGButtons from "./SVGButtons";
+import { useParams, useHistory } from "react-router-dom";
 
 function Sidebar(props) {
-    // if current activity has index for path, then use alternate sidebar
-    let activity = useSelector(state => state.playful.viewSelected)
+  let history = useHistory()
+  let resources = useMemoryResources()
+  // if current activity has index for path, then use alternate sidebar
+  let { activityKind, module } = useParams()
+  let activity = activityKind
+  let path = history.location.state && history.location.state.adventurePath
 
-    let buttons = [
-        {id: 'MemoryPalace', dispatch: newView({view:playfulViews.map, viewSelected:'palace'})},
-        // {id: 'PlayAgain', onClick: ()=>props.onRepeat.current()},
-        {id: 'NextVerse', dispatch: nextModule},
-        {id: 'NextActivity', dispatch: nextActivity},
+  let nextModuleUrl = !resources ? history.location.pathname : `/activity/${activity}/${getNextModule(resources, activity, module)}`
+  let nextActivityUrl = !resources ? history.location.pathname : `/activity/${valueAfter(getKidKinds(resources[module]), activity)}/${module}`
+  let adventurePathUrl = `/adventurePath/${path}`
+
+  // reroute Continue button if on adventure path
+  let buttons = []
+  if(path) {
+    let curPath = {kind: activity, module, path}
+    buttons = [
+      {id: 'MemoryPalace', linkTo: '/map/palace', dispatch: pathFinished(curPath)},
+      {id: 'NextVerse', linkTo: nextModuleUrl, dispatch: pathFinished(curPath)},
+      {id: 'NextActivity', linkTo: nextActivityUrl, dispatch: pathFinished(curPath)},
+      {id: 'Continue', linkTo: adventurePathUrl, dispatch: pathFinished(curPath)}
     ]
-    // reroute Continue button if on adventure path
-    if(activity.index !== undefined) {
-      buttons.push({id: 'Continue', dispatch: ()=>pathFinished(activity)})
-    } else {
-      buttons.push({id: 'Continue', dispatch: nextModule})
-    }
 
-    return <SVGButtons svg={sidebar} buttons={buttons} aspectRatio={.45} glowSize={5} />
+  } else {
+    buttons = [
+        {id: 'MemoryPalace', linkTo: '/map/palace'},
+        {id: 'NextVerse', linkTo: nextModuleUrl},
+        {id: 'NextActivity', linkTo: nextActivityUrl},
+        {id: 'Continue', linkTo: nextModuleUrl}
+    ]
+  }
 
+  return <SVGButtons svg={sidebar} buttons={buttons} aspectRatio={.45} glowSize={5} />
 }
 
 export default function Activity(props) {
-  let activity = useSelector(state => state.playful.viewSelected)
-  let activityKey = activity.module + ' ' + activity.kind
+  // let activity = useSelector(state => state.playful.viewSelected)
+  let { activityKind, module } = useParams()
+  let activityKey = module + ' ' + activityKind
 
   let [showSidebar, setShowSidebar] = useState(false);
   // let [showMemoryPrompt, setShowMemoryPrompt] = useState(props.showMemoryPrompt)
   let onRepeat = useRef(()=>{})
 
   let halfMemoryPower = 7
-  if(activity.kind==kinds.speed) halfMemoryPower = 70
+  if(activityKind==kinds.speed) halfMemoryPower = 70
 
   // animate sidebar to slide in
   const transitions = useTransition(showSidebar, null, {
@@ -51,7 +68,7 @@ export default function Activity(props) {
   let SidebarPopUp = <>
     {transitions.map( ({ item, key, props }) =>
       item && <animated.div key={key} style={props} className="sidemenu-kids" onClick={() => setShowSidebar(true)}>
-        <Sidebar key={activityKey} {...{onRepeat, halfMemoryPower}}/>
+        <Sidebar key={activityKey} adventurePath={props.adventurePath} {...{onRepeat, halfMemoryPower}}/>
       </animated.div>
     )}
 
@@ -68,13 +85,13 @@ export default function Activity(props) {
     }}} />
     <div className='activityContent'>
       {
-        media[activity.kind] ?
-          React.cloneElement(media[activity.kind], {
+        media[activityKind] ?
+          React.cloneElement(media[activityKind], {
             isActive:active=>{
               setShowSidebar(!active)
             }, 
             onRepeat, 
-            activity
+            activity:{kind:activityKind, module:module}
           })
         : <div>Coming Soon!</div>
       }
@@ -83,10 +100,11 @@ export default function Activity(props) {
 }
 
 function MemoryChalice(props) {
+  let { module } = useParams()
   let {activityKey, halfMemoryPower, ..._props} = props
   let power = useSelector(state => {
     let p = state.firebase.profile.power &&
-      state.firebase.profile.power[state.playful.viewSelected.module]
+      state.firebase.profile.power[module]
     return p ? p.power : 0
   })
   let initialMP = useRef(power)
@@ -95,7 +113,7 @@ function MemoryChalice(props) {
   }, [activityKey])
   let MP = power - initialMP.current
 
-  console.log(MP, initialMP.current, halfMemoryPower)
+  // console.log(MP, initialMP.current, halfMemoryPower)
 
   // fill and match curve of cup
   let fractionHeight = MP*MP / (MP*MP + (halfMemoryPower))

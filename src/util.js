@@ -37,7 +37,7 @@ export const kinds = {
   roSchmo: 'roSchmo',
 
   princess: 'princess',
-  book: 'book',
+  popupBook: 'popupBook',
   
   music:'music',
   review:'review',
@@ -71,7 +71,7 @@ export const kidModeKinds = {
   roSchmo: 'roSchmo',
 
   princess: 'princess',
-  book: 'book',
+  popupBook: 'popupBook',
 
   music: 'music',
   review: 'review',
@@ -104,7 +104,7 @@ export const resoucesForKinds = {
   roSchmo: ['roSchmo'],
 
   princess: ['princess'],
-  book: ['book'],
+  popupBook: ['popupBook'],
   
   music:['music'],
   review: ['review'],
@@ -150,7 +150,7 @@ const pathActivities = [
   kinds.princess,
   kinds.review,
   kinds.echo,
-  kinds.book,
+  kinds.popupBook,
   kinds.karaoke,
   kinds.schmash,
   kinds.activity,

@@ -5,63 +5,39 @@ import { Navbar, Nav } from "react-bootstrap";
 import {LoadingPage} from '../common/components'
 import { UserNavButton } from "../common/User";
 
-import { useSelector, useDispatch } from "react-redux";
-import { modes, setMode } from "./createRootReducer";
-import { useMemoryResources } from "../common/hooks";
+import { useSelector } from "react-redux";
+import { BrowserRouter as Router } from "react-router-dom";
 
 import Login from "../common/Login";
 import Subscribe from "./Subscribe";
-// import Admin from "../forAdmin/Admin";
-// import Focused from '../focusedMode/Focused'
-// import Playful from "../playfulMode/Playful";
 
 const Playful = React.lazy(()=>import('../playfulMode/Playful'))
-// const Focused = React.lazy(()=>import('../focusedMode/Focused'))
-const Admin = React.lazy(()=>import('../forAdmin/Admin'))
 
 export default function App(props) {
   let setNavButtons = useRef(()=>null)
 
-  return <>
+  // Add admin item to menu if applicable
+  const profile = useSelector(state => state.firebase.profile)
+  useEffect(() => {
+    let setButtons = setNavButtons && setNavButtons.current
+    if (setButtons && profile.isLoaded && profile.token && profile.token.claims.admin) {
+      let userButtons = {content: 'Admin', key: 'Admin', onClick: () => window.location.assign('https://admin.bythebookthebible.com')}
+      setButtons({owner:'App', userButtons})
+    }
+    
+    return () => {
+      setButtons && setButtons({owner:'App', userButtons:[]})
+    }
+  }, [setNavButtons.current && profile.isLoaded && profile.token && profile.token.claims.admin])
+
+  return <Router>
     <LightNav {...{setNavButtons}} />
     <AuthSwitch>
-      <ModeSwitch {...{setNavButtons}} />
+      <Suspense fallback={<LoadingPage title="Loading Content..."/>}>
+        <Playful setNavButtons={setNavButtons} />
+      </Suspense>
     </AuthSwitch>
-  </>
-}
-
-function ModeSwitch(props) {
-  const mode = useSelector(state => state.mode)
-  const profile = useSelector(state => state.firebase.profile)
-  const dispatch = useDispatch()
-
-  // what to render for each mode, and the name for it's tab / button
-  const componentsByMode = {
-    [modes.playful]: {name: 'Adventure mode', content: <Playful setNavButtons={props.setNavButtons} />},
-    // [modes.focused]: {name: 'Navigator mode', content: <Focused />},
-    // [modes.teacher]: {name: 'Teacher mode', content: <h1>Teacher mode coming soon!</h1>},
-  }
-  if (profile.isLoaded && profile.token.claims.admin)
-    componentsByMode[modes.admin] = {name: 'Admin', content: <Admin />}
-
-  // add buttons to navigate between modes while mode switch is in scope
-  let userButtons = Object.entries(componentsByMode)
-    .filter(([k,v])=>k!=mode)
-    .map(([k,v])=>{return {content: v.name, key: v.name, onClick: () => dispatch(setMode(k))}})
-  
-  useEffect(() => {
-    let setNavButtons = props.setNavButtons.current
-    setNavButtons({owner:'ModeSwitch', userButtons})
-    return () => {
-      setNavButtons({owner:'ModeSwitch', userButtons:[]})
-    }
-  }, [userButtons])
-
-  return <div className={"body colorful-theme"}>
-    <Suspense fallback={<LoadingPage title="Loading Content..."/>}>
-      {componentsByMode[mode] && componentsByMode[mode].content}
-    </Suspense>
-  </div>
+  </Router>
 }
 
 function AuthSwitch(props) {
@@ -82,7 +58,6 @@ function AuthSwitch(props) {
   const claims = profile.token.claims
   if(!claims.expirationDate) {
     // account is not initialized yet on the back end
-    // display "preparing account"
     // let firebase initialize (wait or trigger)
     return <LoadingPage title="Preparing Account..."/>
   }
@@ -92,10 +67,8 @@ function AuthSwitch(props) {
 
   // check stripe status:
   // if there is no subscription (and we already checked the trial is expired)
-  // prompt: should subscribe
   return <Subscribe />
-  // if there is a subscription that has been canceled or has an error or something
-  // prompt accordingly
+  // if there is a subscription that has been canceled or has an error or something, prompt accordingly
 }
 
 const ErrorMsg = props => <div className='text-center p-5'>

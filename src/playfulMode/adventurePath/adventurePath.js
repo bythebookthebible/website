@@ -5,19 +5,21 @@ import './adventurePath.scss'
 
 import { valueAfter, getModulesForPath, getPathActivities } from '../../util'
 import { useMemoryResources } from "../../common/hooks"
-import { newView, playfulViews } from "../playfulReducer"
+// import { newView, playfulViews } from "../playfulReducer"
 
 import JamesBackground from './images/JamesPathBackground.png'
 import JamesCurrent from './images/rocketShip.svg'
 import JamesMarker from './images/sparklestone.svg'
 import popupBubble from './images/speechBubble.svg'
 import lock from '../images/Lock.svg'
-import { AbsoluteCentered } from "../../common/components"
+// import { AbsoluteCentered } from "../../common/components"
+import { useParams, useHistory } from "react-router-dom";
 
 export default function AdventurePath(props) {
-  let dispatch = useDispatch()
+  // let dispatch = useDispatch()
   let resources = useMemoryResources()
-  let path = useSelector(state => state.playful.viewSelected)
+  let history = useHistory()
+  let { path } = useParams()
   let modules = getModulesForPath(resources, path)
   let progress = useSelector(state => {
     let p = state.firebase.profile
@@ -30,12 +32,12 @@ export default function AdventurePath(props) {
         (kind, index) => {return {path, module, kind, index}}
       )]
   , [])
-  
+
   // mark index of current progress
   let nextIndex
   if(progress) {
     let lastActivity = {path, module:progress.module, index:progress.index, kind:getPathActivities(resources, progress.module)[progress.index]}
-    let validActivities = activities.filter(a => a.module < progress.module || (a.module == progress.module && a.index <= progress.index + 1))
+    let validActivities = activities.filter(a => a.module < progress.module || (a.module == progress.module && a.index <= progress.index))
     nextIndex = validActivities.length
   } else {
     nextIndex = 0
@@ -50,11 +52,11 @@ export default function AdventurePath(props) {
 
   return <div className='adventurePath' style={{backgroundImage:`url(${JamesBackground})`, width:`${activities.length*6}rem`}}>
     {activities.map((a, i) => {
-      // click dispatches activity conditioned on 
+      // click conditionally dispatches activity
       
       let locked = !!resources[a.module].lock
       let clickable = i <= nextIndex && !locked
-      let onClick = !clickable ? () => null : () => dispatch(newView({view:playfulViews.activity, viewSelected:a}))
+      let onClick = !clickable ? () => null : () => history.push(`/activity/${a.kind}/${a.module}`, {adventurePath: path})
       
       return <div className='steppingSpot' key={`${a.module}-${a.kind}`}
       style={{left:`${6*i+3}rem`}} disabled={!clickable} >

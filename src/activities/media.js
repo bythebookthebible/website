@@ -35,7 +35,7 @@ export const media = {
 
   [kinds.music]: <Video />,
   [kinds.princess]: <Video />,
-  [kinds.book]: <PopupBookGenerator />,
+  [kinds.popupBook]: <PopupBookGenerator />,
 
   [kinds.review]: <Video />,
 

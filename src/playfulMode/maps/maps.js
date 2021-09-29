@@ -1,7 +1,9 @@
 import React from 'react'
 import SVGButtons from '../SVGButtons'
-import { kinds } from '../../util'
-import { newView, playfulViews } from '../playfulReducer'
+// import { kinds } from '../../util'
+// import { newView, playfulViews } from '../playfulReducer'
+
+import { useParams } from "react-router-dom";
 
 import { ReactComponent as artHouse } from './images/ArtHouse.svg'
 // import { ReactComponent as mainMap } from './images/MainMap.svg'
@@ -16,77 +18,80 @@ import superStage from './images/SuperStage/SuperStage'
 import { ReactComponent as familySchmuddle } from './images/FamilySchmuddle.svg'
 
 let Home = props => <SVGButtons svg={mainMap} buttons={[
-    {id:'MemoryPalace', dispatch: newView({view:playfulViews.map, viewSelected:'palace'})},
-    {id:'MemoryMission', dispatch: newView({ view: playfulViews.adventurePath, viewSelected: 'James' })},
-    {id:'SchmideoCenter', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.watch })},
-    {id:'SchmoTown', dispatch: newView({view:playfulViews.map, viewSelected:'schmoHouses'})},
-    {id:'SuperStage', dispatch: newView({ view: playfulViews.map, viewSelected: 'superStage' })},
-    {id:'ReadingTree', dispatch: newView({view:playfulViews.map, viewSelected:'readingTree'})},
-    {id:'MemoryWood', dispatch: newView({ view: playfulViews.map, viewSelected: 'memoryWood' })},
-    {id:'FamilySchmuddle', dispatch: newView({ view: playfulViews.map, viewSelected: 'familySchmuddle' })},
-    {id:'Button1', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.watch })},
-    {id:'Button2', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.joSchmo })},
-    {id:'Button3', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.discussion })},
-    {id:'Button4', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.schmash })},
-    {id:'Button5', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.dragon })},
+    {id:'MemoryPalace', linkTo:'/map/palace'},
+    {id:'MemoryMission', linkTo:'/adventurePath/James'},
+    {id:'SchmideoCenter', linkTo:'/moduleSelector/watch'},
+
+    {id:'SchmoTown', linkTo:'/map/schmoHouses'},
+    {id:'SuperStage', linkTo:'/map/superStage'},
+    {id:'ReadingTree', linkTo:'/map/readingTree'},
+    {id:'MemoryWood', linkTo:'/map/memoryWood'},
+    {id:'FamilySchmuddle', linkTo:'/map/familySchmuddle'},
+
+    {id:'Button1', linkTo:'/moduleSelector/watch'},
+    {id:'Button2', linkTo:'/moduleSelector/joSchmo'},
+    {id:'Button3', linkTo:'/moduleSelector/discussion'},
+    {id:'Button4', linkTo:'/moduleSelector/schmash'},
+    {id:'Button5', linkTo:'/moduleSelector/dragon'},
+
     {id:'Help', onClick: ()=>window.location = 'http://bythebookthebible.com/get-started-1'},
 ]}><mainMap /></SVGButtons>
 
 let SuperStage = props => <SVGButtons svg={superStage} buttons={[
-    {id:'Karaoke', dispatch: newView({view:playfulViews.moduleSelector, viewSelected:kinds.karaoke})},
-    {id:'Dance', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.dance }) },
-    {id:'Speed', dispatch: newView({view:playfulViews.moduleSelector, viewSelected:kinds.speedyZoom})},
-    {id:'Blooper', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.blooper }) },
+    {id:'Karaoke', linkTo:'/moduleSelector/karaoke'},
+    {id:'Dance', linkTo:'/moduleSelector/dance'},
+    {id:'Speed', linkTo:'/moduleSelector/speedyZoom'},
+    {id:'Blooper', linkTo:'/moduleSelector/blooper'},
 ]}/>
 
 let FamilySchmuddle = props => <SVGButtons svg={familySchmuddle} buttons={[
-    { id: 'FamilyDevotional', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.discussion }) },
-    { id: 'LifeApplicationPage', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.mySchmo }) },
-    { id: 'ActivityPrintOut', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.activity }) },
-    { id: 'ColoringPrintOut', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.colorPrint }) },
-    { id: 'BookMarkPrintOut', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.bookmark }) },
-    { id: 'MemoryGameIdea', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.game }) },
-    { id: 'Notebook', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.notebook }) },
+    {id:'FamilyDevotional', linkTo:'/moduleSelector/discussion'},
+    {id:'LifeApplicationPage', linkTo:'/moduleSelector/mySchmo'},
+    {id:'ActivityPrintOut', linkTo:'/moduleSelector/activity'},
+    {id:'ColoringPrintOut', linkTo:'/moduleSelector/colorPrint'},
+    {id:'BookMarkPrintOut', linkTo:'/moduleSelector/bookmark'},
+    {id:'MemoryGameIdea', linkTo:'/moduleSelector/game'},
+    {id:'Notebook', linkTo:'/moduleSelector/notebook'},
 ]} />
 
 let SchmoHouses = props => <SVGButtons svg={schmoMap} buttons={[
-    {id:'yellowHouse', dispatch: newView({view:playfulViews.moduleSelector, viewSelected:kinds.kidRecite})},
-    {id:'pinkHouse', dispatch: newView({view:playfulViews.moduleSelector, viewSelected:kinds.intro})},
-    {id:'blueHouse', dispatch: newView({ view: playfulViews.map, viewSelected: 'blueHouse'}) },
+    {id:'yellowHouse', linkTo:'/moduleSelector/kidRecite'},
+    {id:'pinkHouse', linkTo:'/moduleSelector/intro'},
+    {id:'blueHouse', linkTo:'/map/blueHouse'},
 ]}/>
 
 let BlueHouse = props => <SVGButtons svg={blueHouse} buttons={[
-    { id: 'RoSchmo', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.roSchmo}) },
-    { id: 'MySchmo', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.mySchmo }) },
-    { id: 'JoSchmo', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.joSchmo }) },
+    {id:'RoSchmo', linkTo:'/moduleSelector/roSchmo'},
+    {id:'MySchmo', linkTo:'/moduleSelector/mySchmo'},
+    {id:'JoSchmo', linkTo:'/moduleSelector/joSchmo'},
 ]} />
 
 let MemoryWood = props => <SVGButtons svg={memoryWood} buttons={[
-    { id: 'ArtHouse', dispatch: newView({ view: playfulViews.map, viewSelected: 'artHouse'}) },
-    { id: 'SchplashPond', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.schmash }) },
-    { id: 'EchoWell', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.echo }) },
-    { id: 'LooptyLair', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.dragon }) },
+    {id:'ArtHouse', linkTo:'/map/artHouse'},
+    {id:'SchplashPond', linkTo:'/moduleSelector/schmash'},
+    {id:'EchoWell', linkTo:'/moduleSelector/echo'},
+    {id:'LooptyLair', linkTo:'/moduleSelector/dragon'},
 ]} />
 
 let ReadingTree = props => <SVGButtons svg={readingTree} buttons={[
-    { id: 'book', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.book }) },
-    { id: 'princess', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.princess }) },
-    { id: 'bookmarks', dispatch: newView({ view: playfulViews.moduleSelector, viewSelected: kinds.bookmark }) },
+    {id:'book', linkTo:'/moduleSelector/book'},
+    {id:'princess', linkTo:'/moduleSelector/princess'},
+    {id:'bookmarks', linkTo:'/moduleSelector/bookmark'},
 ]} />
 
 let ArtHouse = props => <SVGButtons svg={artHouse} buttons={[
-    {id:'coloring', dispatch: newView({view:playfulViews.moduleSelector, viewSelected:kinds.color})},
-    {id:'craft', dispatch: newView({view:playfulViews.moduleSelector, viewSelected:kinds.activity})},
+    {id:'coloring', linkTo:'/moduleSelector/color'},
+    {id:'craft', linkTo:'/moduleSelector/activity'},
 ]}/>
 
 let Palace = props => <SVGButtons svg={palaceDoors} buttons={[
-    {id:'Psalm', dispatch: newView({view:playfulViews.palace, viewSelected:'Psalm 1'})},
-    {id:'Matthew', dispatch: newView({view:playfulViews.palace, viewSelected:'Matthew 5'})},
-    {id:'James', dispatch: newView({view:playfulViews.palace, viewSelected:'James 1'})},
-    {id:'Ephesians', dispatch: newView({view:playfulViews.palace, viewSelected:'Ephesians 6'})},
+    {id:'Psalm', linkTo:'/palace/Psalm-1'},
+    {id:'Matthew', linkTo:'/palace/Matthew-5'},
+    {id:'James', linkTo:'/palace/James-1'},
+    {id:'Ephesians', linkTo:'/palace/Ephesians-6'},
 ]}/>
 
-export default {
+let maps = {
     home:<Home />,
     palace:<Palace />,
     schmoHouses:<SchmoHouses />,
@@ -96,4 +101,13 @@ export default {
     superStage: <SuperStage />,
     familySchmuddle: <FamilySchmuddle />,
     artHouse: <ArtHouse />,
+}
+
+export function Map(props) {
+    let {viewSelected } = useParams();
+    
+    if(props.default)
+        return maps['home'];
+    else 
+        return maps[viewSelected];
 }

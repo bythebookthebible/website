@@ -5,19 +5,20 @@ import { scriptureFromKey, kinds, keyFromScripture } from "../util";
 import { useDispatch, useSelector } from "react-redux";
 import { useMemoryResources } from "../common/hooks";
 import SVGBButtons from './SVGButtons'
-import { nextInPalace, activateJewel, newView, playfulViews } from "./playfulReducer";
+import { nextInPalace, activateJewel } from "./playfulReducer";
+import { useParams, useHistory } from "react-router-dom";
 
 let halfFullPower = 100.0
 // @TODO: 1) fix code after actual imagine is used in place
 export default function MemoryPalaceView(props) {
     let dispatch = useDispatch()
     let resources = useMemoryResources()
-    let viewSelected = useSelector(state => state.playful.viewSelected)
+    let history = useHistory()
+    let { viewSelected } = useParams()
     let power = useSelector(state => state.firebase.profile.power || {})
     // let [showMemoryPrompt, setShowMemoryPrompt] = useState(props.showMemoryPrompt)
 
-    let book = viewSelected.book
-    let chapter = viewSelected.chapter
+    let [book, chapter] = viewSelected.split('-')
 
     let modules = Object.keys(resources).filter(key=>{
         let s = scriptureFromKey(key)
@@ -47,7 +48,7 @@ export default function MemoryPalaceView(props) {
                         dispatch(activateJewel(modules[i].key))
                     })
                     m.find('.pedistal').click(() => {
-                        dispatch(newView({view: playfulViews.activity, viewSelected: {module:modules[i].key, kind: kinds.watch}}))
+                        history.push(`/activity/${kinds.watch}/${modules[i].key}`)
                     })
                     m.find('.power').css({
                         opacity: 0,
@@ -75,9 +76,9 @@ export default function MemoryPalaceView(props) {
 
         <i className="fas fa-4x fa-chevron-left" style={{
                 color:'white', textShadow:'0 0 5px #0008', position:'absolute', top:'70%', left:0,
-            }} onClick={() => dispatch(nextInPalace(-1))} />
+            }} onClick={() => history.push(`/palace/${nextInPalace(resources, viewSelected, -1)}`)} />
         <i className="fas fa-4x fa-chevron-right" style={{
                 color:'white', textShadow:'0 0 5px #0008', position:'absolute', top:'70%', right:0,
-            }} onClick={() => dispatch(nextInPalace())} />
+            }} onClick={() => history.push(`/palace/${nextInPalace(resources, viewSelected, 1)}`)} />
     </>
 }

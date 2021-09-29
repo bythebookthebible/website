@@ -10,14 +10,16 @@ import lock from '../images/Lock.svg'
 import { storage } from "../../firebase"
 import { useAsyncEffect, useMemoryResources } from "../../common/hooks"
 import { useDispatch, useSelector } from "react-redux"
-import { newView, playfulViews } from "../playfulReducer"
+// import { newView, playfulViews } from "../playfulReducer"
 import { AbsoluteCentered } from "../../common/components"
 import Thumbnail from "./Thumbnail"
+import { useParams, useHistory} from "react-router-dom";
 
 export default function ModuleSelctor(props) {
-  let dispatch = useDispatch()
+  // let dispatch = useDispatch()
   let resources = useMemoryResources()
-  let viewSelected = useSelector(state => state.playful.viewSelected)
+  let { viewSelected } = useParams()
+  let history = useHistory()
 
   // Make scripture grouped by Book, Chapter
   let scriptures = Object.keys(resources)
@@ -49,10 +51,7 @@ export default function ModuleSelctor(props) {
               let locked = !!resources[scriptures[book][chapter][verses].key].lock
 
               return <Col key={`${book} ${chapter} ${verses}`} className='verseItem'
-                onClick={()=>!locked && dispatch(newView({
-                  view:playfulViews.activity,
-                  viewSelected:{module:scriptures[book][chapter][verses].key, kind: viewSelected}
-                }))}>
+                onClick={()=>!locked && history.push(`/activity/${viewSelected}/${scriptures[book][chapter][verses].key}`)} >
                 <Thumbnail module={scriptures[book][chapter][verses].key} kind={viewSelected} />
                 {locked && <AbsoluteCentered><img src={lock} /></AbsoluteCentered>}
               </Col>

@@ -17,7 +17,7 @@ export default function ProcessPDFMemoryPower(props) {
 
   useEffect(() => {
     dispatch(addPower(activity.module, 1))
-  }, [activity])
+  }, [activity.module, activity.kind])
 
   return <>
     <div className="embed-responsive embed-responsive-17by22">
