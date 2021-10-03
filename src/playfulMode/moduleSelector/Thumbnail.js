@@ -95,7 +95,7 @@ const ThumbnailByKind = {
   roSchmo: thumbnails["video"],
 
   princess: thumbnails["video"],
-  book: thumbnails["pdf"],
+  popupBook: thumbnails["pdf"],
 
   music: thumbnails["video"],
   review: thumbnails["video"],

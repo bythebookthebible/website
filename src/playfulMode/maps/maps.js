@@ -74,7 +74,7 @@ let MemoryWood = props => <SVGButtons svg={memoryWood} buttons={[
 ]} />
 
 let ReadingTree = props => <SVGButtons svg={readingTree} buttons={[
-    {id:'book', linkTo:'/moduleSelector/book'},
+    {id:'book', linkTo:'/moduleSelector/popupBook'},
     {id:'princess', linkTo:'/moduleSelector/princess'},
     {id:'bookmarks', linkTo:'/moduleSelector/bookmark'},
 ]} />
