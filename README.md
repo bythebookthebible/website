@@ -1,13 +1,13 @@
 # Purpose
 
-This is the Schmudgin website for [ByTheBookTheBible.com](ByTheBookTheBible.com). The purpose of By the Book is to enable anyone to easily memorize whole books of the bible, because God speaks most clearly through His word. The role of the Schmudgin website in particular is to make this process fun and accessible to younger kids. 
+This is the Schmudgin website for [ByTheBookTheBible.com](https://ByTheBookTheBible.com). The purpose of By the Book is to enable anyone to easily memorize whole books of the bible, because God speaks most clearly through His word. The role of the Schmudgin website in particular is to make this process fun and accessible to younger kids. 
 
-This site is published at [schmudgin.bythebookthebible.com](schmudgin.bythebookthebible.com), where it runs as a Progressive Web App for desktop and mobile.
+This site is published at [schmudgin.bythebookthebible.com](https://schmudgin.bythebookthebible.com), where it runs as a Progressive Web App for desktop and mobile.
 
 # Development
 This project runs on nodejs, and uses React and Redux.
 
-Make sure your system has nodejs and npm from [nodejs.org](nodejs.org). The package manager (npm) should come with a nodejs download.
+Make sure your system has nodejs and npm from [nodejs.org](https://nodejs.org). The package manager (npm) should come with a nodejs download.
 
 `npm install` to install this project's dependencies.
 
