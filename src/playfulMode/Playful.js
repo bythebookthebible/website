@@ -71,8 +71,9 @@ function PlayfulFrame(props) {
 
   return <SizeMe monitorHeight>
     {({size}) => {
-      let width = Math.min(size.width, size.height * aspectratio)
-      let height = Math.min(size.height, size.width / aspectratio)
+      let border = 10; // in pixels, counting the sum both left+right
+      let width = Math.min(size.width, (size.height-border) * aspectratio + border)
+      let height = Math.min(size.height, (size.width-border) / aspectratio + border)
       let left = (size.width - width) / 2
       let top = (size.height - height) / 2
 

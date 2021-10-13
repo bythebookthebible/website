@@ -1,7 +1,7 @@
 import React from 'react';
 import logoSpinning from '../images/logoSpinning.svg'
-// import {ReactComponent as Background} from '../playfulMode/maps/images/MainMap/MainMap.svg'
-import Background from '../playfulMode/maps/images/MainMap/MainMap.svg'
+// import {ReactComponent as Background} from '../playfulMode/maps/images/MainMap.svg'
+import Background from '../playfulMode/maps/images/MainMap.svg'
 // import lightBackground from '../images/lightBackground.webp'
 
 export function Spinner(props) {

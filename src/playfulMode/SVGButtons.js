@@ -12,13 +12,13 @@ export {defaultAspectRatio}
 
 export default function SVGButtons(props) {
     let dispatch = useDispatch()
-    let {glowSize, buttons, extra, svg:SVG, aspectRatio, ...otherProps} = props
+    let {glowSize, buttons, extra, svg:SVG, image, aspectRatio, ...otherProps} = props
     aspectRatio = aspectRatio || defaultAspectRatio
     glowSize = glowSize || 20
     buttons = buttons || []
 
     // for debounding hover glow
-    let debounce = useDebounce(200)
+    // let debounce = useDebounce(200)
     let history = useHistory()
 
     useEffect(() => {
@@ -31,23 +31,21 @@ export default function SVGButtons(props) {
                 if(button.onClick) button.onClick()
             })
             b.hover(
-                e=>debounce(()=>$("#" + button.id).attr({ filter: 'url(#glow)'})),
-                e=>debounce(()=>$("#" + button.id).attr({ filter: ''})),
+                e=>$("#" + button.id).css({ opacity: '.5'}),
+                e=>$("#" + button.id).css({ opacity: '0'}),
             )
-            b.css("cursor", "pointer")
+            b.css({ cursor: "pointer" })
         }
         extra && extra()
     }, [buttons, extra])
+    let buttonsSelector = buttons.map(b => "#"+b.id).join(", ")
 
-    return <svg {...otherProps} style={{position:'absolute', width:'100%', height:'100%', ...props.style}} viewBox={`0 0 ${aspectRatio} 1`}>
-        <defs>
-            <filter id="glow">
-                <feDropShadow dx="0" dy="0" stdDeviation={glowSize} floodColor="white" result="shadow" />
-                <feBlend in="SourceGraphic" in2="shadow" mode="normal" />
-            </filter>
-            <style>{"#Top, #Background {pointer-events:none}"}</style>
-        </defs>
+    return <>
+    <img {...otherProps} style={{position:'absolute', width:'100%', height:'100%', ...props.style}} src={image} />
+    <svg {...otherProps} style={{position:'absolute', width:'100%', height:'100%', ...props.style}} viewBox={`0 0 ${aspectRatio} 1`}>
+        <defs><style>{`${buttonsSelector} {opacity:0}`}</style></defs>
         <SVG x={0} y={0} width={aspectRatio} height={1} style={{overflow:'hidden'}} />
     </svg>
+    </>
 }
 

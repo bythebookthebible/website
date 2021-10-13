@@ -5,19 +5,29 @@ import SVGButtons from '../SVGButtons'
 
 import { useParams } from "react-router-dom";
 
-import { ReactComponent as artHouse } from './images/ArtHouse.svg'
-// import { ReactComponent as mainMap } from './images/MainMap.svg'
-import mainMap from './images/MainMap/MainMap'
-import { ReactComponent as palaceDoors } from './images/PalaceDoors.svg'
-import { ReactComponent as schmoMap } from './images/SchmoMap.svg'
-import { ReactComponent as blueHouse } from './images/BlueHouse.svg'
-import { ReactComponent as readingTree } from './images/ReadingTree.svg'
-import { ReactComponent as memoryWood } from './images/MemoryWood.svg'
-// import { ReactComponent as superStage } from './images/SuperStage.svg'
-import superStage from './images/SuperStage/SuperStage'
-import { ReactComponent as familySchmuddle } from './images/FamilySchmuddle.svg'
+import { ReactComponent as mainMapButtons } from './images/MainMapButtons.svg'
+import { ReactComponent as superStageButtons } from './images/SuperStageButtons.svg'
+import { ReactComponent as familySchmuddleButtons } from './images/FamilySchmuddleButtons.svg'
+import { ReactComponent as memoryWoodButtons } from './images/MemoryWoodButtons.svg'
 
-let Home = props => <SVGButtons svg={mainMap} buttons={[
+import { ReactComponent as artHouseButtons } from './images/ArtHouseButtons.svg'
+import { ReactComponent as palaceDoorsButtons } from './images/PalaceDoorsButtons.svg'
+import { ReactComponent as schmoMapButtons } from './images/SchmoMapButtons.svg'
+import { ReactComponent as blueHouseButtons } from './images/BlueHouseButtons.svg'
+import { ReactComponent as readingTreeButtons } from './images/ReadingTreeButtons.svg'
+
+import mainMapImage from './images/MainMap.svg'
+import superStage from './images/SuperStage.svg'
+import familySchmuddle from './images/FamilySchmuddle.svg'
+import memoryWood from './images/MemoryWood.svg'
+
+import artHouse from './images/ArtHouse.svg'
+import palaceDoors from './images/PalaceDoors.svg'
+import schmoMap from './images/SchmoMap.svg'
+import blueHouse from './images/BlueHouse.svg'
+import readingTree from './images/ReadingTree.svg'
+
+let Home = props => <SVGButtons svg={mainMapButtons} image={mainMapImage} buttons={[
     {id:'MemoryPalace', linkTo:'/map/palace'},
     {id:'MemoryMission', linkTo:'/adventurePath/James'},
     {id:'SchmideoCenter', linkTo:'/moduleSelector/watch'},
@@ -35,16 +45,16 @@ let Home = props => <SVGButtons svg={mainMap} buttons={[
     {id:'Button5', linkTo:'/moduleSelector/dragon'},
 
     {id:'Help', onClick: ()=>window.location = 'http://bythebookthebible.com/get-started-1'},
-]}><mainMap /></SVGButtons>
+]}/>
 
-let SuperStage = props => <SVGButtons svg={superStage} buttons={[
+let SuperStage = props => <SVGButtons svg={superStageButtons} image={superStage} buttons={[
     {id:'Karaoke', linkTo:'/moduleSelector/karaoke'},
     {id:'Dance', linkTo:'/moduleSelector/dance'},
     {id:'Speed', linkTo:'/moduleSelector/speedyZoom'},
     {id:'Blooper', linkTo:'/moduleSelector/blooper'},
 ]}/>
 
-let FamilySchmuddle = props => <SVGButtons svg={familySchmuddle} buttons={[
+let FamilySchmuddle = props => <SVGButtons svg={familySchmuddleButtons} image={familySchmuddle} buttons={[
     {id:'FamilyDevotional', linkTo:'/moduleSelector/discussion'},
     {id:'LifeApplicationPage', linkTo:'/moduleSelector/mySchmo'},
     {id:'ActivityPrintOut', linkTo:'/moduleSelector/activity'},
@@ -54,37 +64,37 @@ let FamilySchmuddle = props => <SVGButtons svg={familySchmuddle} buttons={[
     {id:'Notebook', linkTo:'/moduleSelector/notebook'},
 ]} />
 
-let SchmoHouses = props => <SVGButtons svg={schmoMap} buttons={[
+let SchmoHouses = props => <SVGButtons svg={schmoMapButtons} image={schmoMap} buttons={[
     {id:'yellowHouse', linkTo:'/moduleSelector/kidRecite'},
     {id:'pinkHouse', linkTo:'/moduleSelector/intro'},
     {id:'blueHouse', linkTo:'/map/blueHouse'},
 ]}/>
 
-let BlueHouse = props => <SVGButtons svg={blueHouse} buttons={[
+let BlueHouse = props => <SVGButtons svg={blueHouseButtons} image={blueHouse} buttons={[
     {id:'RoSchmo', linkTo:'/moduleSelector/roSchmo'},
     {id:'MySchmo', linkTo:'/moduleSelector/mySchmo'},
     {id:'JoSchmo', linkTo:'/moduleSelector/joSchmo'},
 ]} />
 
-let MemoryWood = props => <SVGButtons svg={memoryWood} buttons={[
+let MemoryWood = props => <SVGButtons svg={memoryWoodButtons} image={memoryWoodButtons} image={memoryWood} buttons={[
     {id:'ArtHouse', linkTo:'/map/artHouse'},
     {id:'SchplashPond', linkTo:'/moduleSelector/schmash'},
     {id:'EchoWell', linkTo:'/moduleSelector/echo'},
     {id:'LooptyLair', linkTo:'/moduleSelector/dragon'},
 ]} />
 
-let ReadingTree = props => <SVGButtons svg={readingTree} buttons={[
+let ReadingTree = props => <SVGButtons svg={readingTreeButtons} image={readingTree} buttons={[
     {id:'book', linkTo:'/moduleSelector/popupBook'},
     {id:'princess', linkTo:'/moduleSelector/princess'},
     {id:'bookmarks', linkTo:'/moduleSelector/bookmark'},
 ]} />
 
-let ArtHouse = props => <SVGButtons svg={artHouse} buttons={[
+let ArtHouse = props => <SVGButtons svg={artHouseButtons} image={artHouse} buttons={[
     {id:'coloring', linkTo:'/moduleSelector/color'},
     {id:'craft', linkTo:'/moduleSelector/activity'},
 ]}/>
 
-let Palace = props => <SVGButtons svg={palaceDoors} buttons={[
+let Palace = props => <SVGButtons svg={palaceDoorsButtons} image={palaceDoors} buttons={[
     {id:'Psalm', linkTo:'/palace/Psalm-1'},
     {id:'Matthew', linkTo:'/palace/Matthew-5'},
     {id:'James', linkTo:'/palace/James-1'},
