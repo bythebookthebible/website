@@ -1,21 +1,24 @@
 .memoryPalace {
   .power {
     // opacity: 0;
-    transform-origin: 50% 88%;
     transform-box: fill-box;
+    transform-origin: 50% 88%;
   }
 
   .module {
-    .pedistal,.power {
+    .pedistal {
       cursor:pointer;
+    }
+    .power {
+      pointer-events: none;
     }
     .jewel {
       display: none;
       pointer-events: none; // because the glow covers a bunch
     }
     .rock {
-      transform-origin: 50% 50%;
       transform-box: fill-box;
+      transform-origin: 50% 50%;
     }
     &.hide {
       display: none;
@@ -27,9 +30,9 @@
         cursor: pointer;
         animation: glowRock 2s ease-in-out infinite;
       }
-      .pedistal, .power {
+      .pedistal {
         cursor: default;
-        pointer-events: none;;
+        pointer-events: none;
       }
     }
     &.memorized,
@@ -44,14 +47,14 @@
 
     &.memorized-pending, &.memorized,
     &.applied-pending, &.applied  {
-      filter: url(#glow)
+      filter: drop-shadow(0px 0px 20px rgba(255, 255, 255, 0.7))
     }
   }
 
-  .backgroundJewel {
+  #BackgroundJewel {
     transform-origin: 50% 50%;
     pointer-events: none; // because the glow covers a bunch
-    transform: scale3d(3, 3, 3) translate3d(-1335px, -320px, 0px);
+    transform: translate3d(0px, 0px, 0px);
     &.memorized-pending {
       animation: jewelDropdown 6s ease-out;
     }
@@ -61,8 +64,8 @@
   }
 
   @keyframes jewelDropdown {
-    0% {transform: scale3d(3, 3, 3) translate3d(-1335px, -1100px, 0px)}
-    100% {transform: scale3d(3, 3, 3) translate3d(-1335px, -320px, 0px)}
+    0% {transform: translate3d(0px, -2500px, 0px)}
+    100% {transform: translate3d(0px, 0px, 0px)}
   }
 
   @keyframes glowRock {
