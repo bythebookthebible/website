@@ -63,8 +63,8 @@ export default function MemoryPalaceView(props) {
         $(`#module_${i + 1}`).addClass('hide')
       }
     }
-    $('.backgroundJewel').removeClass('learning memorized memorized-pending applied applied-pending')
-    $('.backgroundJewel').addClass(chapterStatus)
+    $('#BackgroundJewel').removeClass('learning memorized memorized-pending applied applied-pending')
+    $('#BackgroundJewel').addClass(chapterStatus)
     // refresh styling later for transform-origin bug
     setTimeout(()=>{
       for (let i = 0; i < 11; i++) {
