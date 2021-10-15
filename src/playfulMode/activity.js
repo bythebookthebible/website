@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { media } from "../activities/media";
-import { ReactComponent as sidebar } from './images/ActivitySideBar.svg';
+import { ReactComponent as sidebarButtons } from './images/ActivitySideBarButtons.svg';
+import sidebar from './images/ActivitySideBar.svg';
 import { ReactComponent as Chalice } from './images/MemoryChalice.svg';
 import {useTransition, animated, config as reactSpringConfig} from 'react-spring'
 import { useMemoryResources } from "../common/hooks"
@@ -43,7 +44,7 @@ function Sidebar(props) {
     ]
   }
 
-  return <SVGButtons svg={sidebar} buttons={buttons} aspectRatio={.45} glowSize={5} />
+  return <SVGButtons svg={sidebarButtons} image={sidebar} buttons={buttons} aspectRatio={.45} glowSize={5} />
 }
 
 export default function Activity(props) {
