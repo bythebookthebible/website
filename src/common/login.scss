@@ -1,8 +1,10 @@
 .form-header {
-margin-bottom: 0;
-border-bottom: 3px solid #0faeff;
-padding-bottom: 0.75rem;
-cursor: pointer;
+    margin-bottom: 0;
+    padding-bottom: 0.75rem;
+    cursor: pointer;
+    &.selected {
+        border-bottom: 3px solid #0faeff;
+    }
 }
 .form-footer {
     display: flex;
