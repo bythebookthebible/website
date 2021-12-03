@@ -33,7 +33,7 @@ let loginStates = {
 }
 
 export default function LoginSignup(props) {
-    const [action, setAction] = useState('create');
+    const [action, setAction] = useState('signin');
 
     let body = ''
     switch (action) {
@@ -50,24 +50,23 @@ export default function LoginSignup(props) {
 
     return <PlayfulPlainContainer>
         <Card {...props} className={'small-card '+(props.className||'')} >
-            <div style={{color:'gray', display:'flex', justifyContent: 'space-evenly', padding: '1.5rem 0.75rem 0rem'}}>
-                <h5 className={'form-header' + (action===loginStates.create ? ' selected' : '')}
+            <div className='form-header'>
+                <h5 className={'form-header-item' + (action===loginStates.create ? ' selected' : '')}
                     onClick={() => setAction(loginStates.create)}
                 >
                     Create Account
                 </h5>
-                <h5 className={'form-header' + ((action===loginStates.signin || action===loginStates.forgot) ? ' selected' : '')}
+                <h5 className={'form-header-item' + ((action===loginStates.signin || action===loginStates.forgot) ? ' selected' : '')}
                     onClick={() => setAction(loginStates.signin)}
                 >
                     Sign In
                 </h5>
             </div>
-            <div style={{marginBottom: '1rem', borderBottom: '1px solid lightgray'}} />
 
             {body}
 
             <div className='form-footer'>
-                <Card.Text style={{background:'none'}}>
+                <Card.Text>
                     <a href={tosUrl} className="p-1">Terms of Service</a>
                     <span style={{color:'lightgrey',margin:'0 .25rem'}}>|</span>
                     <a href={privacyPolicyUrl} className="p-1">Privacy Policy</a>

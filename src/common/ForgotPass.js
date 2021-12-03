@@ -28,33 +28,30 @@ export default function ForgotPass(props) {
     }
 
     const emailRef = useRef();
+    let title = !submitted ? 'Forgot your password?' : 'Password reset email sent.'
+    let message = !submitted ?
+        'Enter your email to recieve instructions on how to reset your password.'
+        : 'You should receive a password reset email within the next five minutes. Follow the instructions inside to reset your password, then try logging in with your new password. If you don’t receive an email in the next five minutes, try clicking "Resend Email."'
+
+    let buttons = !submitted ? (
+        <button type="submit" className="btn btn-round btn-primary m-1 w-100" id="submitAuth">Submit</button>
+    ) : (<>
+        <button type="submit" className="btn btn-round btn-secondary m-1 w-100">Resend Email</button>
+        <button onClick={() => setAction('signin')} className="btn btn-round btn-primary m-1 w-100">Return to Sign in</button>
+    </>)
 
     return <Card.Body as='form' onSubmit={sendEmail} style={{paddingBottom:0}}>
-        <Card.Text style={{color:'#5b6267',fontWeight:700, fontSize:'1.25rem',marginBottom:'.5rem'}}>
-            { !submitted ? (
-                'Forgot your password.'
-                ) : (
-                'Password reset email sent.'
-            )}
-        </Card.Text>
+        <Card.Title>
+            {title}
+        </Card.Title>
         <Card.Text style={{fontSize:'.9rem'}}>
-            { !submitted ? (
-                'Enter your email to recieve instructions on how to reset your password.'
-            ) : (
-                'You should receive a password reset email within the next five minutes. Follow the instructions inside to reset your password, then try logging in with your new password. If you don’t receive an email in the next five minutes, try clicking "Resend Email."'
-            )}
+            {message}
         </Card.Text>
         <Card.Text style={submitted ? {height:0,margin:0} : {}}> 
             <input type="email" style={{visibility: !submitted ? 'visible':'hidden'}} className="form-control mb-2" name='email' ref={emailRef} placeholder="Email" onBlur={e => checkEmail(e.target.value)} />
         </Card.Text>
-        { !submitted ? (
-                <button type="submit" className="btn btn-round btn-primary m-1 w-100" id="submitAuth">Submit</button>
-            ) : (<>
-                <button type="submit" style={{background:'#5b6267', borderColor:'#5b6267'}} className="btn btn-round btn-primary m-1 w-100">Resend Email</button>
-                <button onClick={() => setAction('signin')} className="btn btn-round btn-primary m-1 w-100">Return to Sign in</button></>
-            )
-        }
-        
+
+        {buttons}
 
         {/* Place the info message below the Password Reset button because it's an info message informing of password reset success.*/}
         <Card.Text as='div'>
