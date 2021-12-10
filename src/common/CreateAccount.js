@@ -35,13 +35,17 @@ export default function CreateAccount(props) {
         let name = nameRef.current.value
 
         // validate input
-        if(!validEmail(email))
+        let emailInUse = !(await checkEmail(email))
+        console.log("emailInUse", emailInUse)
+        if(!validEmail(email)) {
             setErrorToDisplay("Please enter a valid email.")
-        else if (password.length === 0)
+        } else if(emailInUse) {
+            setErrorToDisplay("This email already has an account. Please Sign in.")
+        } else if (password.length === 0) {
             setErrorToDisplay("Please enter password.")
-        else if (name.length === 0)
+        } else if (name.length === 0) {
             setErrorToDisplay("Please enter your name.")
-        else {
+        } else {
             await auth.createUserWithEmailAndPassword(email, password).catch(setErrorToDisplay)
             await firebase.auth().currentUser.updateProfile({ displayName: name }).catch(setErrorToDisplay)
             await initUser()
@@ -50,9 +54,7 @@ export default function CreateAccount(props) {
 
     let submitForm = async (e) => {
         e.preventDefault();
-
         let email = emailRef.current.value;
-        if(!await checkEmail(email)) return;
         await createAccount();
     }
 
