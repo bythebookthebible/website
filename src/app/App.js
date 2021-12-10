@@ -8,7 +8,7 @@ import { UserNavButton } from "../common/User";
 import { useSelector } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
 
-import Login from "../common/Login";
+import LoginSignup from '../common/LoginSignup';
 import Subscribe from "./Subscribe";
 
 const Playful = React.lazy(()=>import('../playfulMode/Playful'))
@@ -48,7 +48,7 @@ function AuthSwitch(props) {
   // login / loading / error cases
   // if(!rehydrated) return <LoadingPage /> // loading last state
   if(!auth.isLoaded) return <LoadingPage title="Loading Profile..."/> // loading auth
-  if(auth.isEmpty) return <Login /> // not logged in
+  if(auth.isEmpty) return <LoginSignup /> // not logged in
   if(!profile.isLoaded) return <LoadingPage title="Loading Profile..."/> // loading profile (and claims)
   if(profile.isEmpty) {
     console.error('Invalid state empty profile: logged in but no profile (should not happen)') // logged in but no profile (should not happen)

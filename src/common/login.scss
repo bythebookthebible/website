@@ -1,0 +1,36 @@
+.form-header {
+    color: gray;
+    display:flex;
+    justify-content: space-evenly;
+    padding: 1.5rem 0.75rem 0rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid lightgray;
+}
+.form-header-item {
+    margin-bottom: 0;
+    padding-bottom: 0.75rem;
+    cursor: pointer;
+
+    &.selected {
+        border-bottom: 3px solid #0faeff;
+    }
+}
+.form-footer {
+    display: flex;
+    justify-content: center;
+    padding: 0.75rem;
+    font-size: .9rem;
+}
+.forgot-pass {
+    color: #0faeff;
+    cursor: pointer;
+}
+.forgot-pass:hover {
+    text-decoration: underline;
+}
+.card-title {
+    color: #5b6267;
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: .5rem;
+}
