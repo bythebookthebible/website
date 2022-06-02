@@ -1,0 +1,57 @@
+@import '../node_modules/bythebook-shared/assets/common';
+
+$enable-responsive-font-sizes: true;
+
+$embed-responsive-aspect-ratios: (
+    (21 9),
+    (16 9),
+    (4 3),
+    (1 1),
+    (17 22), // 8.5 by 11
+    (3 4),
+    (9 16),
+    (9 21)
+);
+
+// Animate Bounce
+.bounce:hover {
+    transition: all .4s;
+    transition-timing-function: cubic-bezier(.31, 2.02, .47, -.36);
+    transform: scale(1.16, 1.16);
+}
+
+.bounce,
+.bounce-once {
+    transition: all .2s;
+    transform: scale(1, 1);
+
+    :nth-of-type(1) { animation: 1s linear 0 1 bounce; }
+    :nth-of-type(2) { animation: 1.5s linear 0 1 bounce; }
+    :nth-of-type(3) { animation: 2s linear 0 1 bounce; }
+    :nth-of-type(4) { animation: 2.5s linear 0 1 bounce; }
+    :nth-of-type(5) { animation: 3s linear 0 1 bounce; }
+}
+
+@keyframes bounce {
+    0% {
+        transform: scale(0, 0);
+        animation-timing-function: ease;
+    }
+
+    30% {
+        transform: scale(1.2);
+        animation-timing-function: cubic-bezier(.31, 2.02, .47, -.36);
+    }
+
+    100% {
+        transform: scale(1, 1);
+    }
+}
+
+// Import parts of Bootstrap to extend theme
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+// // Required Parts
+// @import "../node_modules/bootstrap/scss/functions";
+// @import "../node_modules/bootstrap/scss/variables";
+// @import "../node_modules/bootstrap/scss/mixins";

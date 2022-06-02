@@ -10,8 +10,14 @@ service firebase.storage {
     match /memory/{allPaths=**} {
       allow read: if request.auth != null;
     }
+    match /resources/James/001/{allPaths=**} {
+      allow read;
+    }
+    match /resources/{allPaths=**} {
+      allow read: if request.auth != null;
+    }
     match /{allPaths=**} {
-    	allow read, write;
+    	allow read, write: if request.auth.token.admin == true;
     }
   }
 }

@@ -37,3 +37,8 @@ In `functions/index.js` you will find the functions which are running in google 
 Under `src/playfulMode` you will find most of the schmudgin specific code, by feature. The state logic will be in the files named `*Reducer.js`, and the rendering logic will generally be in the correspondingly named React file `*.js`.
 
 More information will be made available in the [github wiki](https://github.com/bythebookthebible/website/wiki).
+
+# Fresh project setup notes
+
+- You need to setup cloud storage with CORS, as in https://firebase.google.com/docs/storage/web/download-files#cors_configuration
+- You will need to hack in the first account with custom claims having "admin: true" in order to manage users

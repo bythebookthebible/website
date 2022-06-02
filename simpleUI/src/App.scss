@@ -1,0 +1,117 @@
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.App {
+  text-align: center;
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.thumbnail {
+  // width: 5vmin;
+  // max-width: 10rem;
+  border: .2rem solid #aaa;
+  border-radius: .5rem;
+
+  &.special {
+    border: .2rem solid deepskyblue;
+    border-radius: 1.5rem;
+  }
+}
+
+.description {
+  font-size: .8rem;
+}
+
+.topBar {
+  background-color: deepskyblue;
+  padding: .5rem;
+
+  .fa-user, .nav-link {
+    color: white;
+  }
+
+  select {
+    width: max-content;
+    max-width: 40%;
+  }
+}
+
+.titlePage {
+  color: #aaa;
+
+  .titleHack { // because safari had different horribly line heights
+    position: relative;
+    height: 4rem;
+    width: 0;
+    left:50%;
+
+    .title {
+      font-size: 2rem;
+      white-space: nowrap;
+      position: absolute;
+      top: 0;
+      left:-6.3ch;
+    }
+  
+    span {
+      font-size: 1rem;
+      white-space: nowrap;
+      position: absolute;
+      top: 2.5rem;
+      left:-8.5ch;
+    }
+  }
+
+
+  .icon {
+    height: .75em;
+    display: inline-block;
+  }
+
+  .submitArrow {
+    font-size: 2.2rem;
+    color: white;
+    background-color: deepskyblue;
+
+    height: 1.5em;
+    width: 1.5em;
+    line-height: 1.5em;
+    border-radius: 1em;
+  }
+}
+
+
+select {
+  // modified from bootstrap
+  display: block;
+  width: 100%;
+  border: 1px solid #aaa;
+  border-radius: 1.5em;
+  color: #aaa;
+
+  padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+  -moz-padding-start: calc(0.75rem - 3px);
+  background-color: white;
+
+  background-image: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%23343a40%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M2 5l6 6 6-6%27/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px 12px;
+
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  appearance: none; // hide default arrow
+  -webkit-appearance: none;
+
+  &:focus-visible {
+    outline: none;
+  }
+}

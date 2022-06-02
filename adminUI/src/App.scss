@@ -1,0 +1,120 @@
+@import '../node_modules/bythebook-shared/assets/common';
+
+// Outer Layout
+.nav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.ManageMenu {
+  .row {
+    justify-content: center;
+  }
+}
+
+.fade-right {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0; top:0; bottom:0;
+    width: 20%;
+    background-image: linear-gradient(to right, #fff0, #ffff);
+  }
+}
+
+button {
+  margin: .5rem;
+}
+
+// FORMS
+
+.edit-hover {
+  color: #fff0;
+  transition: linear .2s;
+}
+
+*:hover > .edit-hover {
+  color: #bbb;
+  
+  &:hover {
+    color: #888;
+  }
+
+}
+
+input:invalid:not(:focus),
+#warnInvalid {
+  /* color:red; */
+  background-color: rgba(255, 0, 0, 0.25);
+  border: 2px inset red;
+}
+
+.progress {
+  width: 100px;
+  height: 8px;
+}
+
+.resourcesView {
+  input, textarea, select {
+    margin: 10px;
+  }
+  
+  th, td {
+    padding-left: .5em;
+    white-space: nowrap;
+    vertical-align: center;
+  }
+
+  th {
+    vertical-align: bottom;
+    text-align: center;
+  }
+}
+
+.modal {
+  input, textarea, select {
+    margin: 5px;
+  }
+
+  td {
+    padding-left: .5em;
+    vertical-align: center;
+  }
+
+  th {
+    padding-left: .5em;
+    vertical-align: top;
+    text-align: left;
+  }
+}
+
+.modal-dialog {
+  max-width: 90%;
+  width: fit-content;
+}
+
+th {
+  &:not(.rotate) {
+    overflow: hidden;
+  }
+
+  &.rotate {
+    height: 100px;
+    white-space: nowrap;
+    text-align: left;
+
+    >div {
+      transform: translate(0, -10px) rotate(-50deg);
+      width: 1.2em;
+
+      span {
+        border-bottom: 1px solid #ccc;
+      }
+    }
+  }
+}
