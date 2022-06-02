@@ -44,3 +44,4 @@ More information will be made available in the [github wiki](https://github.com/
 - You will need to hack in the first account with custom claims having "admin: true" in order to manage users
 - If you have old users without the refreshToken in their user profile (firestore/users) they will not load until fixed
 - You need to add at least one regular video, one generated video, and the timesteps before the simpleUI will display anything
+- The default selection is (currently) hard coded to James 1:1-4 Schmideo (58-001-001-004)

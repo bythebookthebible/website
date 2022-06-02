@@ -33,28 +33,28 @@ function App() {
 
 export const CurrentDescription = (props) => {
   const {query, resources, modules, seriesList} = useResourceContext()
-  // if(!query) 
+  if(!query) 
   return ''
 
-  // const {series, module, id} = query
+  const {series, module, id} = query
 
-  // const seriesData = seriesList[series]
-  // const moduleData = modules[module]
-  // const videoData = resources[id]
+  const seriesData = seriesList[series]
+  const moduleData = modules[module]
+  const videoData = resources[id]
 
-  // let heading = '', description = ''
-  // if(seriesData?.format === "generated") {
-  //   description = moduleData?.description || seriesData?.description || ''
-  //   heading = `${friendlyScriptureRef(module)} ${series} ${videoData?.title}`
+  let heading = '', description = ''
+  if(seriesData?.format === "generated") {
+    description = moduleData?.description || seriesData?.description || ''
+    heading = `${friendlyScriptureRef(module)} ${series} ${videoData?.title}`
 
-  // } else {
-  //   description = videoData?.description || seriesData?.description || ''
-  //   heading = `${friendlyScriptureRef(module)} ${series}`
-  // }
+  } else {
+    description = videoData?.description || seriesData?.description || ''
+    heading = `${friendlyScriptureRef(module)} ${series}`
+  }
 
-  // return <Stack gutter="sm" >
-  //   <b>{heading}</b>
-  //   <p className='description'>{description}</p>
-  //   <hr /><br />
-  // </Stack>
+  return <Stack gutter="sm" >
+    <b>{heading}</b>
+    <p className='description'>{description}</p>
+    <hr style={{marginBottom: "3rem"}}/>
+  </Stack>
 }

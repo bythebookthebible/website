@@ -4,10 +4,10 @@ import './Media.scss';
 import { Video } from "./Video"
 import { Dragon } from "./DragonVideo"
 import { TimestampEditor } from "./TimestampEditor"
-import { Cover, Frame, Inline } from '@bedrock-layout/primitives';
+import { Center, Cover, Frame, Inline } from '@bedrock-layout/primitives';
 import { useForwardedRef } from '../util';
 import { useResourceContext } from './DBResouceContext';
-
+import joSchmo from '../../assets/JoSchmoWhat.png'
 export { Video, Dragon, TimestampEditor }
 
 export const CurrentMedia = (props) => {
@@ -17,18 +17,21 @@ export const CurrentMedia = (props) => {
 
   const video = allResources?.[query?.id]
   const url = useDownloadUrl(video?.location)
-  
+
   const locations = useMemo(()=>
     video?.referencedVideos && Object.values(video.referencedVideos).map(v=>v.location)
   , [video])
   const urls = useDownloadUrls(locations)
 
   const src = seriesData?.format === "generated" ? urls : url
-  
+
   const thumbnail = useDownloadUrl(video?.thumbnail)
 
   if(!query || !(query.series || query.module || query.id)) return ""
-  if(!video) return "This video does not exist yet, try emailing us and we'll post it as soon as we can :)"
+  if(!video) return <Center centerChildren centerText >
+    We havent uploaded this yet, maybe you can try another video, and come back again later.
+    <img src={joSchmo} style={{height: "30vmin", maxHeight:"20rem"}} />
+  </Center>
 
   switch(seriesData?.format) {
     case "generated":

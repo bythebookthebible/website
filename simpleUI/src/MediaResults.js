@@ -5,31 +5,14 @@ import { useDownloadUrls } from 'bythebook-shared/dist/firebase';
 import { friendlyScriptureRef, useRefListener, valuesAfter } from 'bythebook-shared/dist/util';
 import { useResourceContext } from 'bythebook-shared/dist/components';
 
-export function MediaResults({setQuery, numResults=2}) {
+export function MediaResults({setQuery, numResults=20}) {
   const {query, resources, modules, seriesList, generatedResources, allResources} 
     = useResourceContext()
 
   // memoize filtering through all the videos for a list of similar videos for below
-  const [similarVideos, locations] = useMemo(() => {
-    if(!(query && allResources)) 
-    return []
+  const [similarVideos, thumbLocations] = useMemo(()=>getSimilarVideos({query, allResources, numResults}), [query, allResources, numResults])
 
-    let sameSeriesKeys = Object.entries(allResources)
-      .filter( ([k, v]) => v.series===query.series).map(([k,v])=>k)
-    sameSeriesKeys = valuesAfter(sameSeriesKeys, query.id, numResults)
-
-    let sameModuleKeys = Object.entries(allResources)
-      .filter( ([k, v]) => v.module===query.module).map(([k,v])=>k)
-    sameModuleKeys = valuesAfter(sameModuleKeys, query.id, numResults)
-
-    const keys = [...sameModuleKeys, ...sameSeriesKeys].filter(k=>k!=query.id)
-    const similarVideos = keys.map(k=>[k, allResources[k]])
-    const locations = similarVideos.map(([k,v]) => v?.location)
-
-    return [similarVideos, locations]
-  }, [query, allResources])
-
-  const thumbnails = useDownloadUrls(locations)
+  const thumbnails = useDownloadUrls(thumbLocations)
 
   return query ? Object.keys(query).length > 0 && <Center maxWidth="50rem" >
     <Stack gutter="xl" >
@@ -38,6 +21,30 @@ export function MediaResults({setQuery, numResults=2}) {
       })}
     </Stack>
   </Center> : ''
+}
+
+function getSimilarVideos({query, allResources, numResults}) {
+  if(!(query && allResources)) 
+  return []
+
+  let sameSeriesKeys = Object.entries(allResources)
+    .filter( ([k, v]) => v.series===query.series).map(([k,v])=>k)
+  sameSeriesKeys = valuesAfter(sameSeriesKeys, query.id, numResults/3)
+
+  let sameModuleKeys = Object.entries(allResources)
+    .filter( ([k, v]) => v.module===query.module).map(([k,v])=>k)
+  sameModuleKeys = valuesAfter(sameModuleKeys, query.id, numResults/3)
+
+  let keys = [...sameModuleKeys, ...sameSeriesKeys].filter(k=>k!=query.id)
+
+  const extra = valuesAfter(Object.keys(allResources), query.id, numResults - keys.length)
+    .filter(k => !keys.includes(k))
+  keys = [...keys, ...extra]
+
+  const similarVideos = keys.map(k=>[k, allResources[k]])
+  const thumbLocations = similarVideos.map(([k,v]) => v?.location)
+
+  return [similarVideos, thumbLocations]
 }
 
 function VideoResult(props) {

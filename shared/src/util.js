@@ -69,6 +69,8 @@ export function valueAfter(arr, val, n=1, returnIndex=false) {
 }
 
 export function valuesAfter(arr, val, N, wrap=true) {
+  N = Math.min(N, arr.length)
+  if(!val) return arr.slice(0, N)
   const i = valueAfter(arr, val, 1, true)
   if(!wrap || i+N < arr.length) return arr.slice(i, i + N)
   else return [...arr.slice(i, i + N), ...arr.slice(0, i + N - arr.length)]
