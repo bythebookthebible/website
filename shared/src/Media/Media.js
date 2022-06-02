@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { useDownloadUrl, useDownloadUrls } from '../firebase';
 import './Media.scss';
 import { Video } from "./Video"
@@ -17,7 +17,11 @@ export const CurrentMedia = (props) => {
 
   const video = allResources?.[query?.id]
   const url = useDownloadUrl(video?.location)
-  const urls = useDownloadUrls(video?.referencedVideos)
+  
+  const locations = useMemo(()=>
+    video?.referencedVideos && Object.values(video.referencedVideos).map(v=>v.location)
+  , [video])
+  const urls = useDownloadUrls(locations)
 
   const src = seriesData?.format === "generated" ? urls : url
   

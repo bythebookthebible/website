@@ -32,7 +32,7 @@ export const Dragon = {
       setCurTime(0)
     }, [src])
 
-    const timestamps = metadata?.timestamps
+    const timestamps = Object.values(metadata.referencedVideos)[0]?.timestamps
 
     const nextState = Dragon.nextState({repetitionCount, segmentCount: timestamps?.length})
 

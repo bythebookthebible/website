@@ -18,7 +18,8 @@ export function useResourceContextProvider() {
   const ready = query && ArrayAll([resources, modules, seriesList, generatedResources, allResources],
     x => Object.keys(x).length > 0) // query can be empty, but others cannot
 
-  console.log({ready, query, resources, modules, seriesList, generatedResources, allResources})
+  if(process.env.NODE_ENV === 'development')
+    console.log({ready, query, resources, modules, seriesList, generatedResources, allResources})
 
   const context = // everything comes together -- saves on checking each bit alone
     ready ? {query, resources, modules, seriesList, generatedResources, allResources} : {}

@@ -9,7 +9,7 @@ import { useResourceContext } from 'bythebook-shared/dist/components';
 export function VideoSelector({setQuery,...props}) {
   const {query, modules, seriesList} = useResourceContext()
 
-  const [series, setSeries] = useState('schmideo')
+  const [series, setSeries] = useState('Schmideo')
   const [module, setModule] = useState()
 
   // sync series and module states if query parameter is set
