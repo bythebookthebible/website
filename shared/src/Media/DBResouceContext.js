@@ -81,7 +81,6 @@ function useGeneratedResources({resources, modules, seriesList}) {
       }).filter(k=>k) // generator above returns false when invalid generator data
     }).reduce((all, cur) => ([...all, ...cur]), []) // flatten the 2d array map
 
-    console.log("generatedResources", generatedResources)
     return Object.fromEntries(generatedResources)
   }, [resources, modules, seriesList])
 }
@@ -93,8 +92,6 @@ function getGeneratedVideoMetadata({series, module, resources, seriesList}) {
 
   const referencedVideos = Object.entries(resources)
     .filter(([k,v]) => v.module===module && referencedSeries.includes(v.series))
-
-  console.log("getGeneratedVideoMetadata", {series, module, format, referencedSeries, referencedVideos})
 
   // check if invalid conditions for generator
   if(!(format && referencedVideos.length === referencedSeries.length && ArrayAll(referencedVideos, ([k,v])=>!!v.timestamps)))

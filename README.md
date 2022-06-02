@@ -42,3 +42,5 @@ More information will be made available in the [github wiki](https://github.com/
 
 - You need to setup cloud storage with CORS, as in https://firebase.google.com/docs/storage/web/download-files#cors_configuration
 - You will need to hack in the first account with custom claims having "admin: true" in order to manage users
+- If you have old users without the refreshToken in their user profile (firestore/users) they will not load until fixed
+- You need to add at least one regular video, one generated video, and the timesteps before the simpleUI will display anything

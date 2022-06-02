@@ -3,7 +3,7 @@
   "description": "Cloud Functions for Firebase",
   "scripts": {
     "dev": "firebase use dev && firebase functions:config:unset env && firebase functions:config:set env=\"$(cat .env.dev.json)\"",
-    "prod": "firebase use dev && firebase functions:config:unset env && firebase functions:config:set env=\"$(cat .env.prod.json)\"",
+    "prod": "firebase use prod && firebase functions:config:unset env && firebase functions:config:set env=\"$(cat .env.prod.json)\"",
     "serve:dev": "npm run dev && firebase serve --only functions --project=dev",
     "serve:prod": "npm run prod && firebase serve --only functions --project=prod",
     "deploy:dev": "npm run dev && firebase deploy --only functions --project=dev",
