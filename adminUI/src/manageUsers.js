@@ -17,9 +17,9 @@ export default function ManageUsers(props) {
     useEffect(() => {
         getUsers()
             .then(res => {
-                // console.log(res.data)
+                console.log(res.data)
                 setUsers(res.data.sort(
-                    (a,b) => a.displayName.toLowerCase() > b.displayName.toLowerCase() ? 1 : -1
+                    (a,b) => a.displayName?.toLowerCase() > b.displayName?.toLowerCase() ? 1 : -1
                 ))
             })
             .catch(e => console.error(e))
@@ -113,7 +113,7 @@ function UserRow(props) {
 
         <td><input type='checkbox' ref={adminRef} defaultChecked={claims.admin} onChange={checkIfChanged} /></td>
 
-        <td style={{maxWidth:'50px'}} ><label>{user.uid}</label></td>
+        <td style={{maxWidth:'50px', overflow:"hidden"}} ><label>{user.uid}</label></td>
         <td><input type='text' size={5} ref={stripeRef} onBlur={checkIfChanged}
             placeholder={claims.stripeId ? claims.stripeId.substr(0,7)+'...' : ''} /></td>
 

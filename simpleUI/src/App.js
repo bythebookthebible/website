@@ -33,8 +33,7 @@ function App() {
 
 export const CurrentDescription = (props) => {
   const {query, resources, modules, seriesList} = useResourceContext()
-  if(!query) 
-  return ''
+  if(!query || !query.series || !query.module) return ''
 
   const {series, module, id} = query
 

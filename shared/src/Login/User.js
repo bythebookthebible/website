@@ -5,7 +5,7 @@ import { auth, useAuth } from '../firebase'
 
 export function UserWidget(props) {
   let {buttons, ...otherProps} = props
-  let user = useAuth()
+  const user = useAuth()
 
   buttons = buttons || []
   // add admin button
@@ -25,17 +25,25 @@ export function UserWidget(props) {
 //       href: "/settings"
 //     })
 //   }
-  
+
   // add logout button
   if(user) {
-    buttons.push({
-      key: "Logout",
-      content: "Logout", 
-      onClick: () => {
-        auth.signOut()
-        .catch(function(e) { console.log('Signout error: ', e) });
-      }
-    })
+    buttons = [
+      {
+        key: "Name",
+        content: user.displayName, 
+        disabled: true,
+      },
+      {
+        key: "Logout",
+        content: "Logout", 
+        onClick: () => {
+          auth.signOut()
+          .catch(function(e) { console.log('Signout error: ', e) });
+        }
+      },
+      ...buttons
+    ]
   }
 
   if(!user) return null
@@ -44,7 +52,7 @@ export function UserWidget(props) {
     as={"i"}>
 
     {buttons && buttons.map(b => 
-      <NavDropdown.Item {...otherProps} onClick={b.onClick} href={b.href} key={b.key} >
+      <NavDropdown.Item {...otherProps} disabled={b.disabled} onClick={b.onClick} href={b.href} key={b.key} >
         {b.content}
       </NavDropdown.Item>
     )}

@@ -3,10 +3,7 @@ import { Card } from 'react-bootstrap';
 import { accountExists, validEmail } from './LoginSignup';
 
 import { auth } from '../firebase'
-import { createUserWithEmailAndPassword } from "firebase/auth"
-import { getFunctions, httpsCallable } from "firebase/functions";
-
-// var initUser = httpsCallable(getFunctions(), 'initUser');
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
 
 export default function CreateAccount(props) {
     const [errorMessage, setErrorMessage] = useState("");
@@ -49,12 +46,11 @@ export default function CreateAccount(props) {
             setErrorToDisplay("Please enter your name.")
         } else {
             await createUserWithEmailAndPassword(auth, email, password)
-                .catch(setErrorToDisplay)
-                .then(
-                    auth.currentUser.updateProfile({ displayName: name })
-                    .catch(setErrorToDisplay)
-                )
-            // await initUser()
+                .catch(console.error)
+                .then(()=>{
+                    updateProfile(auth.currentUser, { displayName: name })
+                        .catch(setErrorToDisplay)
+                })
         }
     }
 
