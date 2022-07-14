@@ -61,12 +61,12 @@
 .progressBar {
   flex-grow: 1;
   background-color: #fff8;
-  height: .5rem; 
-  border-radius: .25rem;
+  height: .8rem; 
+  border-radius: .4rem;
   position: relative;
 
   > .bar {
-    border-radius: .25rem;
+    border-radius: .4rem;
     background-color: #8888;
     position: absolute;
     top: 0;
@@ -75,9 +75,9 @@
   }
 
   > .circleMarker {
-    height: .7rem;
-    width: .7rem;
-    margin: -.35rem;
+    height: 1.2rem;
+    width: 1.2rem;
+    margin: -.6rem;
     border-radius: 50%;
     background-color: #000;
     position: absolute;
@@ -88,7 +88,7 @@
     position: absolute;
     top: 50%;
     margin: -.8em -.65ch;
-    font-size: 1.5rem;
+    font-size: 1.7rem;
   }
 
   > .marker {

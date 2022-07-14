@@ -76,7 +76,7 @@ export function valuesAfter(arr, val, N, wrap=true) {
   else return [...arr.slice(i, i + N), ...arr.slice(0, i + N - arr.length)]
 }
 
-export function findClosest(list, value) {
+export function findClosest(list, value, returnIndex=false) {
   const len = list.length
   // short circuit simplest cases
   if(len == 0) return undefined
@@ -88,9 +88,22 @@ export function findClosest(list, value) {
   while(i < len && list[i] < value) i++
 
   // return the correct one of i, (i-1)
-  if(i == len) return list[i-1]
-  if(list[i] - value > value - list[i-1]) return list[i-1]
-  return list[i]
+  let index
+  if((i == len) || (list[i] - value > value - list[i-1]))
+    index = i-1
+  else
+    index = i
+
+  if(returnIndex) {
+    return [list[index], index]
+  } else {
+    return list[index]
+  }
+
+  // if(i == len) return list[i-1]
+  // if(list[i] - value > value - list[i-1]) return list[i-1]
+  // return list[i]
+
 }
 
 export function toTitleCase(str) {

@@ -56,7 +56,7 @@ function VideoResult(props) {
 
   // Jump past the first frame, because it is often blank right now
   useRefListener(thumbnailRef, 'loadedmetadata', ()=>{
-    thumbnailRef.current.currentTime = 2.2
+    thumbnailRef.current.currentTime = 10
   }, [videoKey])
 
   return <Split fraction="1/3" switchAt="20rem" gutter="md" {...other}>

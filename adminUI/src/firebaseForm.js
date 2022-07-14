@@ -69,7 +69,7 @@ export const DynamicFileFormElement = React.forwardRef((props, forwardedRef) => 
   //  if it is a video && timestampKey exists, show timestamp UI
   const fileType = previewUrl && fileExtensionFromUrl(previewUrl)
   let preview = <iframe src={previewUrl} style={{width:"50vw"}} />
-  if(fileType === "mp4" || fileType === "mp3") preview = <TimestampEditor.Video ref={timestampVideoRef} {...{timestampKey, firestoreDoc, src: previewUrl}} />
+  if(["mp4", "mp3", "m4a"].includes(fileType)) preview = <TimestampEditor.Video ref={timestampVideoRef} {...{timestampKey, firestoreDoc, src: previewUrl}} />
 
   return <div className="DynamicFileFormElement">
     {preview}

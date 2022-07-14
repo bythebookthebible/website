@@ -100,6 +100,13 @@ export const TimestampEditor = {
       }
     }
 
+    const drag = e => {
+      if(e.buttons == 1) {
+        seekClosestTimestamp(e)
+      }
+    }
+
+
     return <div ref={barRootRef} className="progressBar" {...props}
       onClick={seekClosestTimestamp}>
 

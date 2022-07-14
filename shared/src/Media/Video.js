@@ -114,24 +114,40 @@ Video.Progress = {
     useRefListener(videoRef, 'loadedmetadata', updateTimes) // init on newly loaded videos
     useRefListener(videoRef, 'timeupdate', updateTimes) // update state on all timeupdate events
 
-    return {curTime, duration, videoRef}
+    return {curTime, setCurTime, duration, videoRef}
   },
 
-  Text: ({curTime, duration, videoRef, src, ...props}) => <span {...props}>{toHHMMSS(curTime)} / {toHHMMSS(duration)}</span>,
+  Text: ({curTime, setCurTime, duration, videoRef, src, ...props}) => <span {...props}>{toHHMMSS(curTime)} / {toHHMMSS(duration)}</span>,
 
-  Bar: ({curTime, duration, videoRef, src, ...props}) => {
+  Bar: ({curTime, setCurTime, duration, videoRef, src, ...props}) => {
     const progressRootRef = useRef()
-    const seek = e => {
-      const video = videoRef.current, bar = progressRootRef.current
+
+    const getSeekTime = e => {
+      bar = progressRootRef.current
       const seekFraction = (e.clientX - bar.getBoundingClientRect().left) / bar.offsetWidth
       const seekTime = seekFrac => seekFrac*duration || 0
 
-      if(video.fastSeek) video.fastSeek(seekTime(seekFraction))
-      else video.currentTime = seekTime(seekFraction)
+      return seekTime(seekFraction)
     }
 
-    return <div className="progressBar" ref={progressRootRef} {...props} onClick={seek}>
-      <div className='bar' style={{backgroundColor:"#aaa", width: `${100*curTime/duration}%` }} />
+    const seek = e => {
+      const video = videoRef.current
+      const seekTime = getSeekTime(e)
+      video.currentTime = seekTime
+    }
+
+    const drag = e => {
+      if(e.buttons == 1) {
+        const seekTime = getSeekTime(e)
+        setCurTime(seekTime)
+        const video = videoRef.current
+        if(video.fastSeek) video.fastSeek(seekTime)
+        else video.currentTime = seekTime
+      }
+    }
+
+    return <div className="progressBar" ref={progressRootRef} {...props} onMouseMove={drag} onClick={seek} >
+      <div className='bar' style={{backgroundColor:"#999", width: `${100*curTime/duration}%` }} />
       <div className="circleMarker" style={{left: `${curTime/duration*100}%`}} />
     </div>
   },
