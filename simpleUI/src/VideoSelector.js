@@ -38,9 +38,19 @@ export function VideoSelector({setQuery,...props}) {
   const verseOptions = Object.keys(modules).reduce(
     (options, key) => {return {...options, [key]: friendlyScriptureRef(key) }}
   , {})
-  const seriesOptions = Object.keys(seriesList).reduce(
-    (options, key) => {return {...options, [key]: seriesList[key].name }}
-  , {})
+
+
+  const seriesOptions = !query 
+    ? Object.keys(seriesList)
+      .reduce(
+        (options, key) => {return {...options, [key]: seriesList[key].name }}
+      , {})
+    : Object.entries(allResources)
+      .filter( ([k, v]) => v.module===query.module)
+      .map(([k, v]) => v.series)
+      .reduce(
+        (options, key) => {return {...options, [key]: seriesList[key].name }}
+      , {})
 
   const getBestSeries = ({module, series}) => {
     const sameModule = Object.entries(allResources)
