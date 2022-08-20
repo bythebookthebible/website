@@ -10,7 +10,7 @@ import {
   getDocFromCache,
   getDocsFromCache,
 } from "firebase/firestore"
-import { getAuth } from "firebase/auth";
+import { getAuth, setPersistence, indexedDBLocalPersistence } from "firebase/auth";
 import { useEffect, useState, useRef } from "react";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
@@ -33,14 +33,30 @@ enableIndexedDbPersistence(db)
   }
 });
 
+// enable auth persistence
+setPersistence(auth, indexedDBLocalPersistence).catch(console.error)
 
 /**
  * @returns a fresh reference to the current user, taking user.profile from firestore
  */
 export function useAuth() {
   const [user, setUser] = useState(auth.currentUser);
+  const [online, setOnline] = useState(navigator.onLine);
   const [token, setToken] = useState(null);
   const [profile, setProfile] = useState(null);
+
+  // Listen to online state
+  useEffect(()=>{
+    let f = ()=>setOnline(navigator.onLine)
+    window.addEventListener("online", f)
+    window.addEventListener("offline", f)
+
+    return ()=>{
+      window.removeEventListener("online", f)
+      window.removeEventListener("offline", f)
+    }
+  }, [])
+
 
   // Listen to onAuthStateChanged
   useEffect(() => {
@@ -50,18 +66,19 @@ export function useAuth() {
       if (newUser) {
         // get firestore profile ()
         let profileDocRef = doc(db, 'users', newUser.uid)
+
         unsubProfile()
         unsubProfile = onSnapshot(profileDocRef, async (snap) => {
           var newProfile = snap.data()
-
+          setProfile(snap.data())
+          
           // get updated claims token ()
-          if(newProfile?.refreshToken !== profile?.refreshToken) {
-            const token = await newUser.getIdTokenResult(true)
-            setToken(token)
+          if(online && newProfile?.refreshToken !== profile?.refreshToken) {
+            newUser.getIdTokenResult(true)
+              .then(setToken).catch(console.error)
           }
 
-          setProfile(snap.data())
-        })
+        }, console.error)
 
         setUser({...newUser, ...token})
 
@@ -69,12 +86,12 @@ export function useAuth() {
         setProfile(null)
         setUser(null)
       }
-    });
+    }, console.error)
 
     return () => { unsubProfile(); unsubAuth(); }
-  }, []);
+  }, [online]);
 
-  return user && {...user, ...token, profile }
+  return user && {...user, ...token, profile, online }
 }
 
 /**

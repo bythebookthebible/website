@@ -46,10 +46,12 @@ export const ErrorMsg = props => <div className='text-center p-5'>
 export function AuthSwitch(props) {
   // const rehydrated = useSelector(state => state._persist.rehydrated)
   let user = useAuth()
+  console.log({user})
 
   // login / loading cases
   if(!user) return <LoginSignup /> // not logged in
   if(!user.profile) return <LoadingPage title="Loading Profile..."/> // loading profile (and claims)
+  if(!user.online) return props.children // offline mode assumes you have a valid account
   if(!user.claims?.expirationDate) {
     // account is not initialized yet on the back end
     // let firebase initialize (wait or trigger)

@@ -16,7 +16,7 @@ export function UserWidget(props) {
       href: "https://admin.bythebookthebible.com"
     })
   }
-  
+
 //   // add user settings button
 //   if(user?.claims?.admin === true) {
 //     buttons.push({
@@ -47,7 +47,7 @@ export function UserWidget(props) {
   }
 
   if(!user) return null
-  else return <NavDropdown title={<i className="fas fa-user" 
+  else return [<NavDropdown title={<i className="fas fa-user" 
     style={{fontSize: "1.5rem", padding: 0}} />}
     as={"i"}>
 
@@ -56,7 +56,9 @@ export function UserWidget(props) {
         {b.content}
       </NavDropdown.Item>
     )}
-  </NavDropdown>
+  </NavDropdown>,
+  user.online ? "" : "offline",
+  ]
 }
 
 export function UserSettings(props) {
