@@ -35,7 +35,8 @@ precacheAndRoute(self.__WB_MANIFEST);
 
 // font-awesome is not pre-cached automatically
 precacheAndRoute([
-  { url:"https://kit.fontawesome.com/99ea0adce1.js", revision: 1 }
+  { url:"https://kit.fontawesome.com/99ea0adce1.js", revision: 1 },
+  { url:"https://ka-f.fontawesome.com/releases/v6.2.0/webfonts/free-fa-solid-900.woff2", revision: 1 },
 ])
 
 // navigator?.storage?.persist() // requests that the browser not evict data from caches
@@ -65,30 +66,37 @@ registerRoute(
   createHandlerBoundToURL(process.env.PUBLIC_URL + '/index.html')
 );
 
-// Cache the bible memory media which is stored in google cloud storage, keeping a fixed number of most recent videos.
-const firebaseStorageOrigin = "https://firebasestorage.googleapis.com"
-const firebaseStoragePrefix = "/v0/b/bythebookthebible.appspot.com/o/memory"
-registerRoute(
-  ({url, request, event}) => url.origin === firebaseStorageOrigin && url.pathname.startsWith(firebaseStoragePrefix),
 
+//// FROM EXAMPLE at https://developer.chrome.com/docs/workbox/serving-cached-audio-and-video/
+// Will not composite partial requests into full request, May be better config in the future.
+// It's up to you to either precache, use warmRuntimeCache, or
+// explicitly call cache.add() to populate the cache with media assets.
+// <video> and <audio> generally make range requests (206) not full requests (200).
+
+registerRoute(
+  ({request}) => {
+    const {destination} = request;
+
+    return destination === 'video' || destination === 'audio'
+  },
   new CacheFirst({
     cacheName: 'media',
     plugins: [
-      // Will not composite partial requests into full request, must fetch whole file 
-      // before making a range request! May be better config in the future.
-      // <video> and <audio> generally make range requests (206) not full requests (200).
-      new RangeRequestsPlugin(),
       new CacheableResponsePlugin({ statuses: [200] }),
+      new RangeRequestsPlugin(),
       new ExpirationPlugin({ maxEntries: 40, purgeOnQuotaError: true }),
     ],
-  })
+  }),
 );
 
 
-// This allows the web app to trigger skipWaiting via
-// registration.waiting.postMessage({type: 'SKIP_WAITING'})
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
+// // This allows the web app to trigger skipWaiting via
+// // registration.waiting.postMessage({type: 'SKIP_WAITING'})
+// self.addEventListener('message', (event) => {
+//   if (event.data && event.data.type === 'SKIP_WAITING') {
+//     self.skipWaiting();
+//   }
+// });
+self.addEventListener('install', function(event) {
     self.skipWaiting();
-  }
 });

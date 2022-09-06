@@ -214,3 +214,16 @@ const isFullScreen = function() {
 export function ArrayAll(arr, fn= x=>x) {
   return arr.reduce((prev, cur) => prev && fn(cur), true)
 }
+
+export async function ensureCached(url) {
+  if(url && self.caches) {
+    let cache = await caches.open("media")
+    let request = new Request(url, {mode: "cors"})
+    let match = await cache.match(request)
+
+    if(!match) {
+      cache.add(request)
+        .catch(e=>console.error("cache add failed", e))
+    }
+  }
+}

@@ -1,11 +1,11 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useDownloadUrl, useDownloadUrls } from '../firebase';
 import './Media.scss';
 import { Video } from "./Video"
 import { Dragon } from "./DragonVideo"
 import { TimestampEditor } from "./TimestampEditor"
 import { Center, Cover, Frame, Inline } from '@bedrock-layout/primitives';
-import { useForwardedRef } from '../util';
+import { useForwardedRef, ensureCached } from '../util';
 import { useResourceContext } from './DBResouceContext';
 import joSchmo from '../../assets/JoSchmoWhat.png'
 export { Video, Dragon, TimestampEditor }
@@ -17,6 +17,11 @@ export const CurrentMedia = (props) => {
 
   const video = allResources?.[query?.id]
   const url = useDownloadUrl(video?.location)
+
+  // add to the cache because <video> range requests won't fill cache
+  useEffect(()=>{
+    ensureCached(url)
+  }, [url])
 
   const locations = useMemo(()=>
     video?.referencedVideos && Object.values(video.referencedVideos).map(v=>v.location)

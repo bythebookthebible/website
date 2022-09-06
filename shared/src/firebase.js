@@ -69,9 +69,14 @@ export function useAuth() {
 
         unsubProfile()
         unsubProfile = onSnapshot(profileDocRef, async (snap) => {
-          var newProfile = snap.data()
-          setProfile(snap.data())
-          
+          let newProfile = snap.data()
+          if(!snap.exists()) console.error(`
+            This user's profile does not exist. There may be an inconsistent local firebase state.
+            Try Clear-Refresh-Clear with clearing the website data (Firebase's IndexedDB).
+          `)
+          // console.log({snap, exists: snap.exists(), data: newProfile })
+          setProfile(newProfile)
+
           // get updated claims token ()
           if(online && newProfile?.refreshToken !== profile?.refreshToken) {
             newUser.getIdTokenResult(true)
@@ -80,7 +85,7 @@ export function useAuth() {
 
         }, console.error)
 
-        setUser({...newUser, ...token})
+        setUser(newUser)
 
       } else {
         setProfile(null)
@@ -115,7 +120,7 @@ export function useDownloadUrls(storageLocations) {
     Promise.all(storageLocations.map((location, i)=>
       location && getDownloadURL(ref(cloudStorage, location))//.then(url => urls[i]=url)
     )).then(setUrls)
-    
+
   }, [storageLocations])
 
   return urls
