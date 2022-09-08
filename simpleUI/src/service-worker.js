@@ -68,16 +68,22 @@ registerRoute(
 
 
 //// FROM EXAMPLE at https://developer.chrome.com/docs/workbox/serving-cached-audio-and-video/
-// Will not composite partial requests into full request, May be better config in the future.
-// It's up to you to either precache, use warmRuntimeCache, or
+// Will not composite partial requests into full request,
+// it's up to you to either precache, use warmRuntimeCache, or
 // explicitly call cache.add() to populate the cache with media assets.
 // <video> and <audio> generally make range requests (206) not full requests (200).
 
-registerRoute(
-  ({request}) => {
-    const {destination} = request;
+const firebaseStorageOrigin = "https://firebasestorage.googleapis.com"
+const firebaseStoragePrefix = "/v0/b/bythebookthebible.appspot.com/o/memory"
+// "https://firebasestorage.googleapis.com/v0/b/bythebook-dev.appspot.com/o/memory%2FJames%2F003%2F58-003-001-005-bythebook-Jo%20Schmo-1592952521000.mp4?alt=media&token=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
 
-    return destination === 'video' || destination === 'audio'
+registerRoute(
+  ({url, request, event}) => {
+    return url.origin === firebaseStorageOrigin 
+      && url.pathname.startsWith(firebaseStoragePrefix) 
+      && url.searchParams.get("alt") == "media"
+    // return request.destination === 'video' || request.destination === 'audio'
+
   },
   new CacheFirst({
     cacheName: 'media',
@@ -85,6 +91,14 @@ registerRoute(
       new CacheableResponsePlugin({ statuses: [200] }),
       new RangeRequestsPlugin(),
       new ExpirationPlugin({ maxEntries: 40, purgeOnQuotaError: true }),
+      {
+        cacheKeyWillBeUsed: async function ({request, mode}) {
+          const url = new URL(request.url || request);
+          url.searchParams.delete('token');
+          return url.href;
+        }
+      },
+      // Add plugin to composite partial requests into full request
     ],
   }),
 );

@@ -18,9 +18,26 @@ export const CurrentMedia = (props) => {
   const video = allResources?.[query?.id]
   const url = useDownloadUrl(video?.location)
 
-  // add to the cache because <video> range requests won't fill cache
-  useEffect(()=>{
-    ensureCached(url)
+  // @Cleanup add to the cache because <video> range requests won't fill cache
+  useEffect(async ()=>{
+    if(url && self.caches) {
+      let cache = await caches.open("media")
+      let urlKey = new URL(url);
+      urlKey.searchParams.delete('token');
+      urlKey = urlKey.href
+      let match = await cache.match(urlKey)
+      console.log("Caching", {match, url, urlKey})
+
+      if(!match) {
+        fetch(url).then((response) => {
+          if (!response.ok) {
+            throw new TypeError("bad response status");
+          }
+          return cache.put(urlKey, response);
+        })
+        .catch(e=>console.error("cache add failed", e))
+      }
+    }
   }, [url])
 
   const locations = useMemo(()=>
