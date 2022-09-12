@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { useDownloadUrl, useDownloadUrls } from '../firebase';
+import { useDownloadUrl, useDownloadUrls, useFirebaseStorageURL, useOnlineStatus } from '../firebase';
 import './Media.scss';
 import { Video } from "./Video"
 import { Dragon } from "./DragonVideo"
@@ -12,33 +12,32 @@ export { Video, Dragon, TimestampEditor }
 
 export const CurrentMedia = (props) => {
   const {query, allResources, modules, seriesList} = useResourceContext()
+  const online = useOnlineStatus()
 
   const seriesData = seriesList?.[query?.series]
 
   const video = allResources?.[query?.id]
-  const url = useDownloadUrl(video?.location)
+  const {downloadUrl, cacheKey} = useFirebaseStorageURL(video?.location)
+  const url = online ? downloadUrl : cacheKey
 
-  // @Cleanup add to the cache because <video> range requests won't fill cache
+  // Add to the cache because <video> range requests won't fill cache
+  // @Cleanup eventually want to combine range requests for the cache
   useEffect(async ()=>{
-    if(url && self.caches) {
+    if(online && url && self.caches) {
       let cache = await caches.open("media")
-      let urlKey = new URL(url);
-      urlKey.searchParams.delete('token');
-      urlKey = urlKey.href
-      let match = await cache.match(urlKey)
-      console.log("Caching", {match, url, urlKey})
+      let match = await cache.match(cacheKey)
 
       if(!match) {
         fetch(url).then((response) => {
           if (!response.ok) {
             throw new TypeError("bad response status");
           }
-          return cache.put(urlKey, response);
+          return cache.put(cacheKey, response);
         })
         .catch(e=>console.error("cache add failed", e))
       }
     }
-  }, [url])
+  }, [url, online])
 
   const locations = useMemo(()=>
     video?.referencedVideos && Object.values(video.referencedVideos).map(v=>v.location)

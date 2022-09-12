@@ -74,7 +74,8 @@ registerRoute(
 // <video> and <audio> generally make range requests (206) not full requests (200).
 
 const firebaseStorageOrigin = "https://firebasestorage.googleapis.com"
-const firebaseStoragePrefix = "/v0/b/bythebookthebible.appspot.com/o/memory"
+const firebaseBucket = JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG).storageBucket
+const firebaseStoragePrefix = `/v0/b/${firebaseBucket}/o/`
 // "https://firebasestorage.googleapis.com/v0/b/bythebook-dev.appspot.com/o/memory%2FJames%2F003%2F58-003-001-005-bythebook-Jo%20Schmo-1592952521000.mp4?alt=media&token=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
 
 registerRoute(

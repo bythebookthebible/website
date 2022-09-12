@@ -36,14 +36,8 @@ enableIndexedDbPersistence(db)
 // enable auth persistence
 setPersistence(auth, indexedDBLocalPersistence).catch(console.error)
 
-/**
- * @returns a fresh reference to the current user, taking user.profile from firestore
- */
-export function useAuth() {
-  const [user, setUser] = useState(auth.currentUser);
+export function useOnlineStatus() {
   const [online, setOnline] = useState(navigator.onLine);
-  const [token, setToken] = useState(null);
-  const [profile, setProfile] = useState(null);
 
   // Listen to online state
   useEffect(()=>{
@@ -57,6 +51,17 @@ export function useAuth() {
     }
   }, [])
 
+  return online
+}
+
+/**
+ * @returns a fresh reference to the current user, taking user.profile from firestore
+ */
+export function useAuth() {
+  const [user, setUser] = useState(auth.currentUser);
+  const [token, setToken] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const online = useOnlineStatus();
 
   // Listen to onAuthStateChanged
   useEffect(() => {
@@ -109,6 +114,15 @@ export function useDownloadUrl (storageLocation) {
     else setUrl(undefined)
   }, [storageLocation])
   return url
+}
+
+export function useFirebaseStorageURL (storageLocation) {
+  const downloadUrl = useDownloadUrl(storageLocation)
+
+  const r = ref(cloudStorage, storageLocation)
+  const cacheKey = storageLocation && `https://firebasestorage.googleapis.com/v0/b/${r.bucket}/o/${encodeURIComponent(r.fullPath)}?alt=media`
+
+  return {downloadUrl, cacheKey}
 }
 
 export function useDownloadUrls(storageLocations) {
