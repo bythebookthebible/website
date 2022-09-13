@@ -1,50 +1,54 @@
 import React, { useMemo, useRef } from 'react';
 import { Stack, Center, Frame, Split } from "@bedrock-layout/primitives"
 
-import { useDownloadUrls } from 'bythebook-shared/dist/firebase';
+import { useDownloadUrls, useOnlineStatus } from 'bythebook-shared/dist/firebase';
 import { friendlyScriptureRef, useRefListener, valuesAfter } from 'bythebook-shared/dist/util';
 import { useResourceContext } from 'bythebook-shared/dist/components';
 
-export function MediaResults({setQuery, numResults=20}) {
-  const {query, resources, modules, seriesList, generatedResources, allResources} 
-    = useResourceContext()
+export function MediaResults({setQuery, numResults=15}) {
+  const {query, seriesList} = useResourceContext()
 
   // memoize filtering through all the videos for a list of similar videos for below
-  const [similarVideos, thumbLocations] = useMemo(()=>getSimilarVideos({query, allResources, numResults}), [query, allResources, numResults])
+  const [similarVideos, thumbLocations] = useSimilarVideos(numResults)
 
   const thumbnails = useDownloadUrls(thumbLocations)
 
-  return query ? Object.keys(query).length > 0 && <Center maxWidth="50rem" >
+  return Object.keys(query).length > 0 && <Center maxWidth="50rem" >
     <Stack gutter="xl" >
       {similarVideos && thumbnails && similarVideos.map(([k, v], i) =>{
         return <VideoResult key={k} seriesList={seriesList} onClick={()=>setQuery({series:v.series, module:v.module})} videoKey={k} videoResource={v} thumbnail={thumbnails[i]} />
       })}
     </Stack>
-  </Center> : ''
+  </Center>
 }
 
-function getSimilarVideos({query, allResources, numResults}) {
-  if(!(query && allResources)) 
-  return []
+function useSimilarVideos(numResults) {
+  const {query, allResources, offlineResources} = useResourceContext()
+  const online = useOnlineStatus()
 
-  let sameSeriesKeys = Object.entries(allResources)
-    .filter( ([k, v]) => v.series===query.series).map(([k,v])=>k)
-  sameSeriesKeys = valuesAfter(sameSeriesKeys, query.id, numResults/3)
+  // memoize filtering through all the videos for a list of similar videos for below
+  return useMemo(()=> {
+    const validResources = online ? allResources : offlineResources
 
-  let sameModuleKeys = Object.entries(allResources)
-    .filter( ([k, v]) => v.module===query.module).map(([k,v])=>k)
-  sameModuleKeys = valuesAfter(sameModuleKeys, query.id, numResults/3)
+    let sameSeriesKeys = Object.entries(validResources)
+      .filter( ([k, v]) => v.series===query.series).map(([k,v])=>k)
+    sameSeriesKeys = valuesAfter(sameSeriesKeys, query.id, numResults/3)
 
-  let keys = [...sameModuleKeys, ...sameSeriesKeys].filter(k=>k!=query.id)
+    let sameModuleKeys = Object.entries(validResources)
+      .filter( ([k, v]) => v.module===query.module).map(([k,v])=>k)
+    sameModuleKeys = valuesAfter(sameModuleKeys, query.id, numResults/3)
 
-  const extra = valuesAfter(Object.keys(allResources), query.id, numResults - keys.length)
-    .filter(k => !keys.includes(k))
-  keys = [...keys, ...extra]
+    let keys = [...sameModuleKeys, ...sameSeriesKeys].filter(k=>k!=query.id)
 
-  const similarVideos = keys.map(k=>[k, allResources[k]])
-  const thumbLocations = similarVideos.map(([k,v]) => v?.location)
+    const extra = valuesAfter(Object.keys(validResources), query.id, numResults - keys.length)
+      .filter(k => !keys.includes(k))
+    keys = [...keys, ...extra]
 
-  return [similarVideos, thumbLocations]
+    const similarVideos = keys.map(k=>[k, validResources[k]])
+    const thumbLocations = similarVideos.map(([k,v]) => online ? v?.location : '')
+
+    return [similarVideos, thumbLocations]
+  }, [query, allResources, numResults, online])
 }
 
 function VideoResult(props) {
