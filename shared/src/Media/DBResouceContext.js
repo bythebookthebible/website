@@ -1,7 +1,7 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { objectFilter, ArrayAll } from 'bythebook-shared/dist/util';
-import { useMemoryDB } from 'bythebook-shared/dist/firebase';
+import { objectFilter, ArrayAll, objectMap } from '../util';
+import { useMemoryDB, firestoreCacheKey, useOnlineStatus } from '../firebase';
 
 const ResourcesContext = React.createContext({})
 
@@ -10,19 +10,41 @@ export function useResourceContext() {
 }
 
 export function useResourceContextProvider() {
-  const {resources, modules, seriesList} = useMemoryDB()
+  // fetch from firestore
+  const {resources: _resources, modules, seriesList} = useMemoryDB()
+  const online = useOnlineStatus()
+
+  // add "cached" marker to resources
+  const [resources, setResources] = useState({})
+  useEffect(async () => {
+    const cache = await self.caches?.open("media")
+
+    const resourceEntries = Object.entries(_resources)
+    const isCached = await Promise.all(resourceEntries.map(
+      ([key, resource], index) => cache.match(firestoreCacheKey(resource?.location))
+    ))
+
+    const r = Object.fromEntries(resourceEntries.map(([key, resource], index) => {
+      return [key, {...resource, isCached: !!isCached[index]}]
+    }))
+    setResources(r)
+  }, [_resources, online]) // TODO: should also update whenever cache contents is updated!
+  console.log({resources, _resources})
+
+  // generate derivative resources
   const generatedResources = useGeneratedResources({resources, modules, seriesList})
   const allResources = {...resources, ...generatedResources}
+  const offlineResources = objectFilter(allResources, (k,v)=>v.isCached)
   const [query, setQuery] = useNormalizedQuery({allResources, resources, modules, seriesList})
 
+  // share this as all-or-nothing -- saves on checking each bit alone
   const ready = query && ArrayAll([resources, modules, seriesList, generatedResources, allResources],
     x => Object.keys(x).length > 0) // query can be empty, but others cannot
 
-  if(process.env.NODE_ENV === 'development')
-    console.log({ready, query, resources, modules, seriesList, generatedResources, allResources})
+  const context =
+    ready ? {query, resources, modules, seriesList, generatedResources, allResources, offlineResources} : {}
 
-  const context = // everything comes together -- saves on checking each bit alone
-    ready ? {query, resources, modules, seriesList, generatedResources, allResources} : {}
+  console.log({query, resources, modules, seriesList, generatedResources, allResources, offlineResources})
 
   return [
     props => <ResourcesContext.Provider value={context}>
@@ -103,6 +125,7 @@ function getGeneratedVideoMetadata({series, module, resources, seriesList}) {
   // else
   return [`${module}-bythebook-${series}-generated`, {
     referencedVideos: Object.fromEntries(referencedVideos),
+    isCached: ArrayAll(referencedVideos, ([k,v])=>v.isCached),
     ...seriesData, series, module,
   }]
 

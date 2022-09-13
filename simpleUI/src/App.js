@@ -19,7 +19,7 @@ export default function Wrapper() {
 function App() {
   const [Provider, setQuery] = useResourceContextProvider()
 
-  return <Provider>
+  return <Provider><RenderWhenContextReady>
     <Stack>
       <VideoSelector setQuery={setQuery} />
       <CurrentMedia />
@@ -28,7 +28,13 @@ function App() {
         <MediaResults setQuery={setQuery} />
       </PadBox>
     </Stack>
-  </Provider>
+  </RenderWhenContextReady></Provider>
+}
+
+function RenderWhenContextReady({children}) {
+  const {query} = useResourceContext()
+  if(query) return children
+  return 'k'
 }
 
 export const CurrentDescription = (props) => {

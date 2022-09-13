@@ -5,14 +5,16 @@ import { UserWidget } from 'bythebook-shared/dist/components';
 import { friendlyScriptureRef } from 'bythebook-shared/dist/util';
 import logo from '../node_modules/bythebook-shared/assets/logo.svg';
 import { useResourceContext } from 'bythebook-shared/dist/components';
+import { useOnlineStatus } from 'bythebook-shared/dist/firebase';
 
 const defaultSeries = "Schmideo"
 const defaultModule = "58-001-001-004" // James 1:1-4
 
 export function VideoSelector({setQuery,...props}) {
-  const {query, seriesList: _seriesList, modules: _modules, allResources} = useResourceContext()
+  // ASSUME that context is already valid (because of <RenderWhenContextReady> in <App>)
+  const online = useOnlineStatus()
+  const {query, seriesList: _seriesList, modules: _modules, allResources, offlineResources} = useResourceContext()
   const [modules, seriesList] = useMemo(() => {
-    if(!allResources) return []
     const moduleKeys = Array.from(new Set(Object.values(allResources).map(x=>x.module)))
     const seriesKeys = Array.from(new Set(Object.values(allResources).map(x=>x.series)))
 
@@ -27,30 +29,38 @@ export function VideoSelector({setQuery,...props}) {
 
   // sync series and module states if query parameter is set
   useEffect(()=>{
-    if(!query) return
     if(query.series in seriesList) setSeries(query.series)
     if(query.module in modules) setModule(query.module)
   }, [query, allResources])
 
-  if(!query) return ''
-
   // options to show in the form
-  const verseOptions = Object.keys(modules).reduce(
-    (options, key) => {return {...options, [key]: friendlyScriptureRef(key) }}
-  , {})
+  let validEntries = Object.entries(online ? allResources : offlineResources)
 
+  const verseOptions = validEntries
+    .reduce(
+      (options, [k, v]) => {
+        const module = v.module
+        return {...options, [module]: friendlyScriptureRef(module) }
+      }
+      , {})
 
-  const seriesOptions = !query 
-    ? Object.keys(seriesList)
-      .reduce(
-        (options, key) => {return {...options, [key]: seriesList[key].name }}
+  let seriesEntries = validEntries
+  if(query) seriesEntries = seriesEntries.filter( ([k, v]) => v.module===query.module)
+  const seriesOptions = seriesEntries
+    .reduce(
+      (options, [k, v]) => {
+        const series = v.series
+        const cacheIcon = v.isCached ? ' ✓' : ''
+        return {...options, [series]: seriesList[series]?.name + cacheIcon }
+      }
       , {})
-    : Object.entries(allResources)
-      .filter( ([k, v]) => v.module===query.module)
-      .map(([k, v]) => v.series)
-      .reduce(
-        (options, key) => {return {...options, [key]: seriesList[key].name }}
-      , {})
+
+  // correct default values if invalid
+  useEffect(()=>{
+    if(seriesOptions && !Object.keys(seriesOptions).includes(series)) { setSeries(Object.keys(seriesOptions)[0]) }
+    if(verseOptions && !Object.keys(verseOptions).includes(module)) { setModule(Object.keys(verseOptions)[0]) }
+  }, [verseOptions, seriesOptions])
+
 
   const getBestSeries = ({module, series}) => {
     const sameModule = Object.entries(allResources)
@@ -76,6 +86,8 @@ export function VideoSelector({setQuery,...props}) {
     else if(filterFor(defaultModule)) return defaultModule
     else return sameSeries?.[0]?.[1]?.module
   }
+
+  console.log({series, module, bestModule: series && getBestModule({series, module}), bestSeries: module && getBestSeries({series, module})})
 
   // if no query yet, then show a googly simple page
   const fullPage = <Cover minHeight="70vh" className="titlePage" top={<UserWidget/>}>
@@ -104,7 +116,8 @@ export function VideoSelector({setQuery,...props}) {
     </InlineCluster>
   </Inline>
 
-  return Object.keys(query).length == 0 ? fullPage : topBar
+  if(Object.keys(query).length == 0) return fullPage
+  return topBar
 }
 
 function Select(props) {

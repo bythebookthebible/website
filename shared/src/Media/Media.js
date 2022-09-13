@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { useDownloadUrl, useDownloadUrls, useFirebaseStorageURL, useOnlineStatus } from '../firebase';
+import { useDownloadUrl, useDownloadUrls, firestoreCacheKey, useOnlineStatus } from '../firebase';
 import './Media.scss';
 import { Video } from "./Video"
 import { Dragon } from "./DragonVideo"
@@ -12,13 +12,22 @@ export { Video, Dragon, TimestampEditor }
 
 export const CurrentMedia = (props) => {
   const {query, allResources, modules, seriesList} = useResourceContext()
-  const online = useOnlineStatus()
 
   const seriesData = seriesList?.[query?.series]
-
   const video = allResources?.[query?.id]
-  const {downloadUrl, cacheKey} = useFirebaseStorageURL(video?.location)
+
+  const online = useOnlineStatus()
+
+  const downloadUrl = useDownloadUrl(video?.location)
+  const cacheKey = firestoreCacheKey(video?.location)
   const url = online ? downloadUrl : cacheKey
+
+  const locations = useMemo(()=>
+    video?.referencedVideos && Object.values(video.referencedVideos).map(v=>v.location)
+  , [video])
+  const downloadUrls = useDownloadUrls(locations)
+  const cacheKeys = locations?.map(firestoreCacheKey)
+  const urls = online ? downloadUrls : cacheKeys
 
   // Add to the cache because <video> range requests won't fill cache
   // @Cleanup eventually want to combine range requests for the cache
@@ -38,11 +47,6 @@ export const CurrentMedia = (props) => {
       }
     }
   }, [url, online])
-
-  const locations = useMemo(()=>
-    video?.referencedVideos && Object.values(video.referencedVideos).map(v=>v.location)
-  , [video])
-  const urls = useDownloadUrls(locations)
 
   const src = seriesData?.format === "generated" ? urls : url
 

@@ -116,13 +116,9 @@ export function useDownloadUrl (storageLocation) {
   return url
 }
 
-export function useFirebaseStorageURL (storageLocation) {
-  const downloadUrl = useDownloadUrl(storageLocation)
-
+export function firestoreCacheKey (storageLocation) {
   const r = ref(cloudStorage, storageLocation)
-  const cacheKey = storageLocation && `https://firebasestorage.googleapis.com/v0/b/${r.bucket}/o/${encodeURIComponent(r.fullPath)}?alt=media`
-
-  return {downloadUrl, cacheKey}
+  return storageLocation && `https://firebasestorage.googleapis.com/v0/b/${r.bucket}/o/${encodeURIComponent(r.fullPath)}?alt=media`
 }
 
 export function useDownloadUrls(storageLocations) {
