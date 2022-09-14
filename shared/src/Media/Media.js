@@ -80,7 +80,7 @@ export const CurrentMedia = (props) => {
 
 export function PdfDisplay(props) {
   return <Cover top={
-    <Inline align="center" gutter="sm"><i className="fas fa-download" onClick={()=>{window.open(src, "_blank")}} />Download</Inline>
+    <Inline align="center" gutter="sm" onClick={()=>{window.open(props.src, "_blank")}}><i className="fas fa-download" />Download</Inline>
   }>
     <Frame ratio={[8,11]} position="50% 50%" className="pdfMedia" >
       <iframe src={props.src} />
