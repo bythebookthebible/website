@@ -1,7 +1,8 @@
 import React, { useState, useRef} from 'react';
 import { Card } from 'react-bootstrap';
 
-import {firebase} from '../firebase'
+import { auth } from '../firebase'
+import { sendPasswordResetEmail } from 'firebase/auth'
 import { validEmail } from './LoginSignup';
 
 export default function ForgotPass(props) {
@@ -15,7 +16,7 @@ export default function ForgotPass(props) {
         let email = emailRef.current.value;
         if (!validEmail(email)) return setErrorMessage("Please enter a valid email.");
 
-        firebase.auth().sendPasswordResetEmail(email)
+        sendPasswordResetEmail(auth, email)
             .then(function () {
                 // User has been sent a password reset email with a link to do the reset.
                 setSubmitted(true);
