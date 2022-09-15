@@ -17,19 +17,27 @@ export function useResourceContextProvider() {
   // add "cached" marker to resources
   const [resources, setResources] = useState({})
   useEffect(async () => {
-    const cache = await self.caches?.open("media")
+    try {
+      const cache = await self.caches.open("media")
+  
+      const resourceEntries = Object.entries(_resources)
+      const isCached = await Promise.all(resourceEntries.map(
+        ([key, resource], index) => cache.match(firestoreCacheKey(resource?.location))
+      ))
+  
+      const r = Object.fromEntries(resourceEntries.map(([key, resource], index) => {
+        return [key, {...resource, isCached: !!isCached[index]}]
+      }))
+      setResources(r)
 
-    const resourceEntries = Object.entries(_resources)
-    const isCached = await Promise.all(resourceEntries.map(
-      ([key, resource], index) => cache.match(firestoreCacheKey(resource?.location))
-    ))
+    } catch {
+      // assume not cached, and it will error to try to look them up
+      // but we still need a valid resources object
+      const r = objectMap(_resources, (k,v)=>{return [k, {...v, isCached: false}]})
+      setResources(r)
+    }
 
-    const r = Object.fromEntries(resourceEntries.map(([key, resource], index) => {
-      return [key, {...resource, isCached: !!isCached[index]}]
-    }))
-    setResources(r)
   }, [_resources, online]) // TODO: should also update whenever cache contents is updated!
-  console.log({resources, _resources})
 
   // generate derivative resources
   const generatedResources = useGeneratedResources({resources, modules, seriesList})
@@ -41,10 +49,8 @@ export function useResourceContextProvider() {
   const ready = query && ArrayAll([resources, modules, seriesList, generatedResources, allResources],
     x => Object.keys(x).length > 0) // query can be empty, but others cannot
 
-  const context =
-    ready ? {query, resources, modules, seriesList, generatedResources, allResources, offlineResources} : {}
-
-  console.log({query, resources, modules, seriesList, generatedResources, allResources, offlineResources})
+  const partialContext = {query, resources, modules, seriesList, generatedResources, allResources, offlineResources}
+  const context = ready ? partialContext : {}
 
   return [
     props => <ResourcesContext.Provider value={context}>

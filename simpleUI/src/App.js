@@ -3,7 +3,7 @@ import { PadBox, Stack } from "@bedrock-layout/primitives"
 import { BrowserRouter } from "react-router-dom";
 import './App.scss';
 
-import { AuthSwitch, CurrentMedia, useResourceContextProvider, useResourceContext } from 'bythebook-shared/dist/components';
+import { AuthSwitch, CurrentMedia, useResourceContextProvider, useResourceContext, LoadingPage } from 'bythebook-shared/dist/components';
 import { VideoSelector } from './VideoSelector';
 import { MediaResults } from './MediaResults';
 import { friendlyScriptureRef } from 'bythebook-shared/dist/util';
@@ -33,8 +33,9 @@ function App() {
 
 function RenderWhenContextReady({children}) {
   const {query} = useResourceContext()
-  if(query) return children
-  return 'k'
+
+  if(!!query) return children
+  return <LoadingPage title="Loading Database." />
 }
 
 export const CurrentDescription = (props) => {

@@ -1,3 +1,5 @@
+@import '../node_modules/bythebook-shared/assets/common';
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -22,7 +24,7 @@
   border-radius: .5rem;
 
   &.special {
-    border: .2rem solid deepskyblue;
+    border: .2rem solid $blue;
     border-radius: 1.5rem;
   }
 }
@@ -32,7 +34,7 @@
 }
 
 .topBar {
-  background-color: deepskyblue;
+  background-color: $blue;
   padding: .5rem;
 
   .fa-user, .nav-link {
@@ -80,7 +82,7 @@
   .submitArrow {
     font-size: 2.2rem;
     color: white;
-    background-color: deepskyblue;
+    background-color: $blue;
 
     height: 1.5em;
     width: 1.5em;

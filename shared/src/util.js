@@ -227,3 +227,30 @@ export async function ensureCached(url) {
     }
   }
 }
+
+export function clamp(val, min, max) {
+  if(val < min) return min
+  if(val > max) return max
+  return val
+}
+
+export function useBoundingBox(ref) {
+  const [rect, setRect] = useState()
+  
+  // update on ref change
+  useEffect(()=>{
+    setRect(ref.current.getBoundingClientRect())
+  }, [ref])
+
+  // update on resize
+  useEffect(()=>{
+    function onResize(e) {
+      setRect(ref.current.getBoundingClientRect())
+    }
+    window.addEventListener("resize", onResize)
+
+    return ()=>window.removeEventListener('resize', onResize)
+  }, [])
+
+  return rect
+}

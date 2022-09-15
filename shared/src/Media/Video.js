@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { toHHMMSS, useForwardedRef, useRefListener, toggleFullscreen, fullScreenEnabled } from '../util';
+import { toHHMMSS, useForwardedRef, useRefListener, toggleFullscreen, fullScreenEnabled, clamp, useBoundingBox } from '../util';
 import { Inline } from "@bedrock-layout/primitives"
 
 export const Video = props => {
@@ -113,42 +113,57 @@ Video.Progress = {
     // useRefListener(videoRef, 'timeupdate', updateTimes) // update state on all timeupdate events
     useRefListener(videoRef, 'loadedmetadata', updateTimes) // init on newly loaded videos
     useRefListener(videoRef, 'timeupdate', updateTimes) // update state on all timeupdate events
+    useRefListener(videoRef, 'onplay', updateTimes) // update state on all timeupdate events
+    useRefListener(videoRef, 'onpause', updateTimes) // update state on all timeupdate events
+    useRefListener(videoRef, 'onseek', updateTimes) // update state on all timeupdate events
 
     return {curTime, setCurTime, duration, videoRef}
   },
 
-  Text: ({curTime, setCurTime, duration, videoRef, src, ...props}) => <span {...props}>{toHHMMSS(curTime)} / {toHHMMSS(duration)}</span>,
+  Text: ({curTime, setCurTime, duration, videoRef, src, ...props}) => <span className='progressText' {...props}>{toHHMMSS(curTime)}&thinsp;/&thinsp;{toHHMMSS(duration)}</span>,
 
   Bar: ({curTime, setCurTime, duration, videoRef, src, ...props}) => {
     const progressRootRef = useRef()
 
+    const rect = useBoundingBox(progressRootRef)
+
     const getSeekTime = e => {
-      bar = progressRootRef.current
-      const seekFraction = (e.clientX - bar.getBoundingClientRect().left) / bar.offsetWidth
+      // const rect = progressRootRef.current.getBoundingClientRect()
+      const clickX = e.touches ? e.touches[0].clientX : e.clientX
+      // subtract rect.height/2 of buffer to each side, so you can actually seek to the beginning/end
+      const seekFraction = clamp((clickX - rect.x - rect.height/2) / (rect.width - rect.height), 0, 1)
       const seekTime = seekFrac => seekFrac*duration || 0
 
       return seekTime(seekFraction)
     }
 
+    // const seek = e => {
+    //   const video = videoRef.current
+    //   const seekTime = getSeekTime(e)
+    //   setCurTime(seekTime)
+    //   // console.log('seeking', {e, seekTime, video})
+
+    //   video.currentTime = seekTime
+    // }
+
     const seek = e => {
       const video = videoRef.current
       const seekTime = getSeekTime(e)
-      video.currentTime = seekTime
+      setCurTime(seekTime)
+      // console.log('dragging', {e, seekTime, video})
+
+      if(video.fastSeek) video.fastSeek(seekTime)
+      else video.currentTime = seekTime
     }
 
-    const drag = e => {
-      if(e.buttons == 1) {
-        const seekTime = getSeekTime(e)
-        setCurTime(seekTime)
-        const video = videoRef.current
-        if(video.fastSeek) video.fastSeek(seekTime)
-        else video.currentTime = seekTime
-      }
+    const mouseMove = e => {
+      if(e.buttons == 1) drag(e)
     }
 
-    return <div className="progressBar" ref={progressRootRef} {...props} onMouseMove={drag} onClick={seek} >
-      <div className='bar' style={{backgroundColor:"#999", width: `${100*curTime/duration}%` }} />
-      <div className="circleMarker" style={{left: `${curTime/duration*100}%`}} />
+    return <div className="progressBar" ref={progressRootRef} {...props} onMouseMove={mouseMove} onTouchMove={seek} onClick={seek} >
+      <div className='bar' style={{
+        width: `${!rect ? 0 : curTime/duration*(rect.width - rect.height)}px` 
+      }} />
     </div>
   },
 }
