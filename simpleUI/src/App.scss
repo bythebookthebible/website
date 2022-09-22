@@ -17,20 +17,37 @@
   color: white;
 }
 
+.optionTitle {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  line-height: 100%;
+}
+
 .thumbnail {
-  // width: 5vmin;
-  // max-width: 10rem;
-  border: .2rem solid #aaa;
-  border-radius: .5rem;
+  border: 1px solid #dddddd;
+  border-radius: 4vmin;
 
   &.special {
     border: .2rem solid $blue;
-    border-radius: 1.5rem;
   }
+}
+
+.big-description {
+  font-size: .8rem;
+  line-height: 1rem;
 }
 
 .description {
   font-size: .8rem;
+  line-height: 1rem;  
+
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  overflow: hidden;
+  word-break: break-word;
 }
 
 .topBar {

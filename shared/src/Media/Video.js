@@ -65,6 +65,7 @@ Video.Loop = ({videoRef, src}) => {
 Video.PlayButton = (props) => {
   const { videoRef, src, autoPlay=false } = props
   const [playing, setPlaying] = useState(false)
+  console.log("Rerendering Play Button", {props})
 
   // whenever a new source is loaded, try to autoPlay
   useEffect(() => {
@@ -75,7 +76,7 @@ Video.PlayButton = (props) => {
     } else {
       setPlaying(false)
     }
-  }, [src, videoRef.current])
+  }, [src, videoRef.current]) // @Cleanup: probably not .current
 
   // also toggle play on clicking the video
   const toggle = ()=>setPlaying(p=>!p)
@@ -103,27 +104,29 @@ Video.Progress = {
   useState: ({ videoRef, src }) => {
     const [curTime, setCurTime] = useState(0)
     const [duration, setDuration] = useState(0)
+    console.log("Rerendering Video", {videoRef})
 
     function updateTimes() {
       setCurTime(videoRef.current?.currentTime || 0)
       setDuration(videoRef.current?.duration || 0)
     }
 
-    // useEffect(updateTimes, [videoRef, src]) // init on newly loaded videos
-    // useRefListener(videoRef, 'timeupdate', updateTimes) // update state on all timeupdate events
     useRefListener(videoRef, 'loadedmetadata', updateTimes) // init on newly loaded videos
     useRefListener(videoRef, 'timeupdate', updateTimes) // update state on all timeupdate events
-    useRefListener(videoRef, 'onplay', updateTimes) // update state on all timeupdate events
-    useRefListener(videoRef, 'onpause', updateTimes) // update state on all timeupdate events
-    useRefListener(videoRef, 'onseek', updateTimes) // update state on all timeupdate events
 
-    return {curTime, setCurTime, duration, videoRef}
+    // useRefListener(videoRef, 'playing', e=>console.log(e))
+    // useRefListener(videoRef, 'waiting', e=>console.log(e))
+    // useRefListener(videoRef, 'seeking', e=>console.log(e))
+    // useRefListener(videoRef, 'seeked', e=>console.log(e))
+
+    return {curTime, setCurTime, duration}
   },
 
   Text: ({curTime, setCurTime, duration, videoRef, src, ...props}) => <span className='progressText' {...props}>{toHHMMSS(curTime)}&thinsp;/&thinsp;{toHHMMSS(duration)}</span>,
 
   Bar: ({curTime, setCurTime, duration, videoRef, src, ...props}) => {
     const progressRootRef = useRef()
+    console.log("Rerendering Bar", {progressRootRef, videoRef})
 
     const rect = useBoundingBox(progressRootRef)
 
@@ -157,7 +160,7 @@ Video.Progress = {
     }
 
     const mouseMove = e => {
-      if(e.buttons == 1) drag(e)
+      if(e.buttons == 1) seek(e)
     }
 
     return <div className="progressBar" ref={progressRootRef} {...props} onMouseMove={mouseMove} onTouchMove={seek} onClick={seek} >

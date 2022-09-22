@@ -60,7 +60,7 @@ export const CurrentDescription = (props) => {
 
   return <Stack gutter="sm" >
     <b>{heading}</b>
-    <p className='description'>{description}</p>
+    <p className='big-description'>{description}</p>
     <hr style={{marginBottom: "3rem"}}/>
   </Stack>
 }

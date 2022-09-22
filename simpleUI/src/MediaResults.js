@@ -63,10 +63,10 @@ function VideoResult(props) {
     thumbnailRef.current.currentTime = 10
   }, [videoKey])
 
-  return <Split fraction="1/3" switchAt="20rem" gutter="md" {...other}>
+  return <Split fraction="1/3" switchAt="20rem" gutter="lg" {...other}>
     <Frame ratio={[16,9]} className={'thumbnail ' + special}><video ref={thumbnailRef} muted src={thumbnail} /></Frame>
     <Stack gutter="sm" >
-      <b>{friendlyScriptureRef(module)} {series} {title}</b>
+      <b className='optionTitle'>{friendlyScriptureRef(module)} {series} {title}</b>
       <p className='description'>{videoResource.description || seriesList[series]?.description || ''}</p>
     </Stack>
   </Split>
