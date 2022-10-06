@@ -1,0 +1,46 @@
+@import "./index.scss";
+
+.card {
+  background-clip: border-box;
+  background-color: white;
+  border: $border;
+  border-radius: $gentleRadius;
+  display: flex;
+  flex-direction: column;
+}
+.card-header {
+  color: $darkgray;
+  display:flex;
+  justify-content: space-evenly;
+  padding: .75rem 0.75rem 0rem;
+  border-bottom: $border;
+}
+.card-body {
+  display: flex;
+  align-content: center;
+  flex-direction: column;
+  text-align: center;
+
+  margin: 1rem;
+  > * {
+    margin: .3rem;
+  }
+}
+.card-header-item {
+  margin-bottom: 0;
+  padding-bottom: 0.75rem;
+  cursor: pointer;
+
+  &.selected {
+    border-bottom: .2rem solid $lightblue;
+  }
+}
+.card-footer {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 0.75rem;
+  font-size: .9rem;
+}
+#forgot-password-description {
+  text-align: left;
+}

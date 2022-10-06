@@ -8,7 +8,10 @@ const isProduction = process.env.NODE_ENV == "production";
 
 // adapted from https://stackoverflow.com/questions/63573199/is-there-any-way-in-webpack-html-loader-preprocessor-for-html-file-interpolation
 const processNestedHtml = (content, loaderContext, dir = null) => {
-  const INCLUDE_PATTERN = /<include src="(.+)"\s*\/?>(?:<\/include>)?/gi
+  const INCLUDE_PATTERN = /<import src="(.+)"\s*\/?>(?:<\/include>)?/gi
+  // preserve list of attributes
+  // use src attribute for content, and tag attribute to embed in new tag
+
   if(!INCLUDE_PATTERN.test(content)) return content
   else {
     return content.replace(INCLUDE_PATTERN, (m, src) => {
@@ -20,7 +23,6 @@ const processNestedHtml = (content, loaderContext, dir = null) => {
   }
 }
 
-
 const config = {
   entry: {
     main: "./src/index.js",
@@ -28,7 +30,7 @@ const config = {
   },
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: '[name].[contenthash].bundle.js',
+    filename: '[name].bundle.js',
   },
   devServer: {
     open: true,
@@ -67,19 +69,6 @@ const config = {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
       },
-      // {
-      //   test: /\.md$/i,
-      //   use: [
-      //     {loader: "html-loader"}, 
-      //     {
-      //       loader: "remark-loader", 
-      //       options: {
-      //         remarkOptions: {
-      //           plugins: [RemarkHTML],
-      //         },
-      //       },
-      //     }],
-      // },
       {
         test: /\.html$/i,
         loader: "html-loader",
