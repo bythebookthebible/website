@@ -147,7 +147,7 @@ export const useFirebasePopupForm = (form) => {
       if(form.validUpdate(formData)) {
         console.log('updating', formData)
         const oldValues = initialValues.current
-        const _db_key = oldValues._db_key || getKey(oldValues)
+        const _db_key = oldValues._db_key
         console.log(formData, oldValues)
         const values = form.getValuesForUpdate(formData, oldValues)
 
@@ -168,10 +168,10 @@ export const useFirebasePopupForm = (form) => {
   function onDelete() {
     // const formData = inputRefs.current
     const oldValues = initialValues.current
-    const _db_key = oldValues?._db_key || getKey(oldValues)
+    const _db_key = oldValues._db_key
     // const values = form.getValuesForUpdate(formData, initialValues.current)
     if(!window.confirm(`are you sure you want to delete ${form.deleteIdentifier(oldValues)}?`)) return
-    
+
     form.beforeDelete && form.beforeDelete(inputRefs.current, oldValues)
 
     deleteDoc(doc(db, firebaseCollection, _db_key)).catch(console.warn)
@@ -180,8 +180,7 @@ export const useFirebasePopupForm = (form) => {
 
 
   const oldValues = initialValues.current
-  const _db_key = oldValues && (oldValues._db_key || getKey(oldValues))
-  let firestoreDoc = oldValues && (`${firebaseCollection}/${_db_key}`)
+  let firestoreDoc = oldValues && (`${firebaseCollection}/${oldValues._db_key}`)
 
   const Popup = props => <Modal show={showPopup} onHide={closePopup} animation={false} backdrop={false} key="popup" >
     <Modal.Body>
@@ -193,7 +192,7 @@ export const useFirebasePopupForm = (form) => {
             id: key, 
             ref: r=>{inputRefs.current[key] = r}, 
             defaultValue:oldValues ? oldValues[key] : undefined,
-            disabled: editMode && keyFields.includes(key),
+            // disabled: editMode && keyFields.includes(key),
           }
           if(typeof input.type !== "string") {
             newProps.firestoreDoc = firestoreDoc

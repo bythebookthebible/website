@@ -114,9 +114,10 @@ export const getVideoForm = ({resources, modules, seriesList, uploadFile}) => {
 
 export const getSeriesForm = ({seriesList}) => ({
   firebaseCollection: memorySeriesDB,
-  getFormValues: (formData) => Object.keys(formData).reduce((f, k) => {f[k] = formData[k].value; return f}, {}),
+  getFormValues: (formData) => Object.keys(formData)
+    .reduce((f, k) => {f[k] = formData[k].value; return f}, {}),
   validAdd: (formData) => formData.name.value && !(formData.name.value in seriesList),
-  validUpdate: (formData) => formData.name.value && formData.name.value in seriesList,
+  validUpdate: (formData) => !!formData.name.value,
   getKey: (values) => values.name,
   buttonText: 'Add Series',
   keyFields: ["name"],
@@ -154,8 +155,8 @@ export const getModuleForm = ({modules}) => {
       return key && !(key in modules)
     },
     validUpdate: (formData) => {
-      const key = form.getKey(form.getFormValues(formData));
-      return key && key in modules
+      const values = form.getFormValues(formData)
+      return values.book && values.chapter && values.startVerse && values.endVerse
     },
     getKey: (values) => keyFromScripture(values.book, values.chapter, `${values.startVerse}-${values.endVerse}`),
     deleteIdentifier: (values) => `${values.book} ${values.chapter}:${values.startVerse}-${values.endVerse}?`,
