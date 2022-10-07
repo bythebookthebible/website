@@ -1,3 +1,5 @@
+@import "../../assets/common";
+
 .form-header {
     color: gray;
     display:flex;
@@ -12,7 +14,7 @@
     cursor: pointer;
 
     &.selected {
-        border-bottom: 3px solid #0faeff;
+        border-bottom: 3px solid $blue;
     }
 }
 .form-footer {
@@ -22,7 +24,7 @@
     font-size: .9rem;
 }
 .forgot-pass {
-    color: #0faeff;
+    color: $blue;
     cursor: pointer;
 }
 .forgot-pass:hover {
