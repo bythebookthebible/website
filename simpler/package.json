@@ -27,6 +27,7 @@
     "serve": "webpack serve --mode=development "
   },
   "dependencies": {
-    "bootstrap": "^5.2.2"
+    "bootstrap": "^5.2.2",
+    "node-html-parser": "^6.1.1"
   }
 }

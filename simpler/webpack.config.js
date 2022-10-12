@@ -71,10 +71,14 @@ const config = {
       },
       {
         test: /\.html$/i,
-        loader: "html-loader",
-        options: {
-          preprocessor: processNestedHtml
-        },
+        use: [
+          {loader: "html-loader"},
+          {loader: path.resolve('src/htmlRecursiveLoader.js')},
+        ],
+        // loader: "html-loader",
+        // options: {
+        //   preprocessor: processNestedHtml
+        // },
       },
       {
         test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
