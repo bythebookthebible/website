@@ -52,7 +52,7 @@ export function AuthSwitch(props) {
   if(!user) return <LoginSignup /> // not logged in
   if(!user.profile) return <LoadingPage title="Loading Profile..."/> // loading profile (and claims)
   if(!user.online) return props.children // offline mode assumes you have a valid account
-  if(!user.claims?.expirationDate) {
+  if(!user.claims?.stripeId) {
     // account is not initialized yet on the back end
     // let firebase initialize (wait or trigger)
     return <LoadingPage title="Preparing Account..."/>

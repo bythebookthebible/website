@@ -134,27 +134,82 @@ exports.renewSubscription = functions.https.onRequest(async (request, response) 
     response.json({received: true});
 })
 
-exports.createCheckoutSession = functions.https.onCall(async (data, context) => {
-    let claims = (await admin.auth().getUser(context.auth.uid)).customClaims
-    functions.logger.log(claims)
+exports.createPartnerCheckout = functions.https.onCall(async (data, context) => {
+    const unit_amount = Math.round(100 * data.price)
+    if(!Number.isInteger(unit_amount) || unit_amount < 0) return '[Error] invalid price'
+
+    let user = await initAccess(context.auth)
+    functions.logger.log({user})
+    if(!user) return '[Error] no user'
+    let success_url = data.success_url || 'https://bythebookthebible.com'
+    let cancel_url = data.cancel_url || 'https://bythebookthebible.com'
+    // if(!url.origin.match(/https:\/\/.*bythebookthebible.com/i)) return '[Error] invalid url'
+
+    const product = config.REACT_APP_STRIPE_PRODUCTS.partner
+    const lookup_key = `partner-${unit_amount}`
+
+    const existingPrices = await stripe.prices.list({
+        product,
+        lookup_keys: [lookup_key],
+    });
+
+    const price = existingPrices.data.length > 0
+        ? existingPrices.data[0]
+        : await stripe.prices.create({
+            unit_amount,
+            product,
+            lookup_key,
+            currency: 'usd',
+            recurring: {interval: 'month'},
+        });
+
+    const line_items = [{price: price.id, quantity: 1}]
 
     const options = {
         payment_method_types: ['card'],
         metadata: {firebaseId: context.auth.uid},
-        customer: claims.stripeId,
-        subscription_data: {
-            items: data.items
-        },
-        success_url: "https://schmudgin.bythebookthebible.com",
-        cancel_url: "https://schmudgin.bythebookthebible.com"
+        customer: user.customClaims.stripeId,
+        line_items,
+        mode: 'subscription',
+        success_url: url,
+        cancel_url: url,
     }
     const session = await stripe.checkout.sessions.create(options).catch(e => {
         functions.logger.error('Error Creating Stripe Session: ', JSON.stringify(e))
     })
+    functions.logger.log({session})
     // store a db entry mapping session to uid
     // await admin.firestore().doc(`checkoutSessions/${session.id}`).set({...session, uid: context.auth.uid})
-    return session
+    return session.id
 })
+
+// exports.createCheckoutSession = functions.https.onCall(createCheckoutSession)
+
+// async function createCheckoutSession(data, context) {
+//     let user = await initAccess(context.auth)
+//     functions.logger.log({user})
+//     if(!user) return '[Error] no user'
+//     let url = data.url || 'https://memorize.bythebookthebible.com'
+//     // if(!url.origin.match(/https:\/\/.*bythebookthebible.com/i)) return '[Error] invalid url'
+
+//     const options = {
+//         payment_method_types: ['card'],
+//         metadata: {firebaseId: context.auth.uid},
+//         customer: user.customClaims.stripeId,
+//         line_items: data.line_items,
+//         mode: 'subscription',
+//         success_url: url,
+//         cancel_url: url,
+//     }
+//     const session = await stripe.checkout.sessions.create(options).catch(e => {
+//         functions.logger.error('Error Creating Stripe Session: ', JSON.stringify(e))
+//     })
+//     functions.logger.log({session})
+//     // store a db entry mapping session to uid
+//     // await admin.firestore().doc(`checkoutSessions/${session.id}`).set({...session, uid: context.auth.uid})
+//     return session?.data?.id
+// }
+
 
 exports.initUser = functions.https.onCall(async (data, context) => {
     if(!context.auth) return '[Error] no user'
