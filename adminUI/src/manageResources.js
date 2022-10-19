@@ -44,7 +44,7 @@ export default function ManageResources(props) {
         <th>Title</th>
 
         {Object.keys(seriesList).map((k) =>
-          <th className='rotate' key={k}><div><span>{seriesList[k].name}</span><EditSeries values={seriesList[k]} /></div></th>
+          <th className='rotate' key={k}><div><span>{seriesList[k].name}</span><EditSeries values={{_db_key:k, ...seriesList[k]}} /></div></th>
         )}
 
         <th><AddSeries /></th>
@@ -54,7 +54,7 @@ export default function ManageResources(props) {
       {modules && Object.entries(modules).map(([moduleKey, module]) => {
         const chapterVerse = `${module.chapter}:${module.startVerse}-${module.endVerse}`
         return <tr key={moduleKey}>
-          <td><EditModule values={{...module, chapterVerse}}/>{`${module.book} ${chapterVerse}`}</td>
+          <td><EditModule values={{_db_key: moduleKey, ...module, chapterVerse}}/>{`${module.book} ${chapterVerse}`}</td>
           <td style={{maxWidth:'8rem'}} className='fade-right'>{module.title}</td>
 
           {/* Video Uploads */}

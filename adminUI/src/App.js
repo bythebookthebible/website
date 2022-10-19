@@ -40,7 +40,7 @@ function Admin(props) {
   // non-admin fallback
   if(!user) return "Loading" 
   if(!user.profile) return "Loading"
-  if(!user.claims.admin) {
+  if(!user.claims?.admin) {
     console.log("not admin", user)
     // setTimeout( () => window.location.replace("https://schmudgin.bythebookthebible.com"), 3000)
     return <div className='text-center p-5'>
