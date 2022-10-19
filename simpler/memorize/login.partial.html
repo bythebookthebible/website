@@ -1,9 +1,10 @@
-<import tag="style" src="../src/login.scss" />
-<div class="card absoluteCenter" style="width: 20rem;">
+<import tag="style" src="./login.scss" />
+<div id="root" class="card absoluteCenter" style="width: 20rem;">
   <div class="card-header">
-    <h5 class="card-header-item">Create Account</h5>
-    <h5 class="card-header-item selected">Sign In</h5>
+    <h5 id="create-link" class="card-header-item">Create Account</h5>
+    <h5 id="signin-link" class="card-header-item">Sign In</h5>
   </div>
+
   <form class="card-body" style="padding-bottom: 0px;">
     <div id="forgot-password-description">
       <h5>Forgot your password? </h5>
@@ -21,6 +22,7 @@
 
 
   </form>
+
   <div class="card-footer">
     <a href="/terms.html" >Terms of Service</a>
     <span style="color: lightgrey; margin: 0px 0.25rem; cursor: default;">|</span>
@@ -28,7 +30,7 @@
   </div>
 </div>
 
-<template id="signInBody">
+<!-- <template id="signInBody">
   <input type="email" id="email" placeholder="Email" />
   <input type="password" id="password" placeholder="Password" />
   <button data-button="primary" type="submit" id="submit">Sign In</button>
@@ -53,4 +55,4 @@
   <div id="error-message"></div>
   <button data-button="primary" type="submit" id="submit">Submit</button>
   <div id="success-message"></div>
-</template>
+</template> -->

@@ -2,20 +2,22 @@
 <html>
 
 <head>
-  <import src="./head.partial.html" />
+  <import src="../shared/head.partial.html" />
   <title>By the Book</title>
   <meta name="description" content="Easily Memorize Books of the Bible" />
-  <link rel="manifest" href="manifest.json" />
+  <link rel="manifest" href="../static/manifest.json" />
 </head>
 
 <body>
+  <loading-page message="Loading..."></loading-page>
   <login-page mode="signIn"></login-page>
 </body>
 
 <!-- TEMPLATES -->
 <template id="loading">
+  <import tag="style" src="./index.scss" />
   <div class="absoluteCenter" style="width: 20rem;">
-    <import src="./logoSpinning.svg" />
+    <import src="../static/logoSpinning.svg" />
     <h1 style="text-align: center; font-size: 1.3rem;" id="message" />
   </div>
 </template>

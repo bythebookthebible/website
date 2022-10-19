@@ -11,14 +11,14 @@ function getFileData(fileName) {
   // preprocess file data into html-compatible format
   if(fileName.match(/\.s[ac]ss$/i)) {
     const sassResult = sass.compile(filePath)
-    console.log({sassResult})
+    // console.log({sassResult})
 
     sassResult.loadedUrls.map(this.addDependency)
     return sassResult.css
   }
   if(fileName.match(/\.md$/i)) {
     const markdownResult = markdown.marked(this.fs.readFileSync(filePath, 'utf8'))
-    console.log({markdownResult})
+    // console.log({markdownResult})
 
     return markdownResult
   }

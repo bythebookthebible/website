@@ -25,8 +25,9 @@ const processNestedHtml = (content, loaderContext, dir = null) => {
 
 const config = {
   entry: {
-    main: "./src/index.js",
-    plain: "./src/plain.scss",
+    main: "./memorize/index.js",
+    account: "./account/account.js",
+    plain: "./plainPages/plain.scss",
   },
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -38,16 +39,21 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "public/index.html",
+      template: "memorize/index.html",
       chunks: ['main'],
     }),
     new HtmlWebpackPlugin({
-      template: "public/privacy.html",
+      template: "account/account.html",
+      filename: "account.html",
+      chunks: ['account'],
+    }),
+    new HtmlWebpackPlugin({
+      template: "plainPages/privacy.html",
       filename: "privacy.html",
       chunks: ['plain'],
     }),
     new HtmlWebpackPlugin({
-      template: "public/terms.html",
+      template: "plainPages/terms.html",
       filename: "terms.html",
       chunks: ['plain'],
     }),
@@ -73,7 +79,7 @@ const config = {
         test: /\.html$/i,
         use: [
           {loader: "html-loader"},
-          {loader: path.resolve('src/htmlRecursiveLoader.js')},
+          {loader: path.resolve('shared/htmlRecursiveLoader.js')},
         ],
         // loader: "html-loader",
         // options: {

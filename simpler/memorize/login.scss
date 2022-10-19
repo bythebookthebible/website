@@ -1,0 +1,88 @@
+@import "./index.scss";
+
+// somewhat generic styling
+.card {
+  background-clip: border-box;
+  background-color: white;
+  border: $border;
+  border-radius: $gentleRadius;
+  display: flex;
+  flex-direction: column;
+}
+.card-header {
+  color: $darkgray;
+  display:flex;
+  justify-content: space-evenly;
+  padding: .75rem 0.75rem 0rem;
+  border-bottom: $border;
+}
+.card-body {
+  display: flex;
+  align-content: center;
+  flex-direction: column;
+  text-align: center;
+
+  margin: 1rem;
+  > * {
+    margin: .3rem;
+  }
+}
+.card-footer {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 0.75rem;
+  font-size: .9rem;
+}
+#forgot-password-description {
+  text-align: left;
+}
+@mixin card-header-item-selected {
+  border-bottom: .2rem solid $lightblue
+}
+.card-header-item {
+  margin-bottom: 0;
+  padding-bottom: 0.75rem;
+  cursor: pointer;
+
+  &.selected {
+    @include card-header-item-selected
+  }
+}
+
+
+// State based styling
+#root {
+  &[data-mode=signIn] {
+    #name,
+    #forgot-password-description {
+      display: none;
+    }
+
+    #signin-link { 
+      @include card-header-item-selected 
+    }
+  }
+
+  &[data-mode=createAccount] {
+    #forgot-password-description,
+    #forgot-password-link {
+      display: none;
+    }
+
+    #create-link { 
+      @include card-header-item-selected 
+    }
+  }
+
+  &[data-mode=forgotPassword] {
+    #name,
+    #password,
+    #forgot-password-link {
+      display: none;
+    }
+
+    #signin-link {
+      @include card-header-item-selected
+    }
+  }
+}

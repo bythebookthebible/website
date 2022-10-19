@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <import src="../shared/head.partial.html" />
+  <title>By the Book</title>
+  <meta name="description" content="Easily Memorize Books of the Bible" />
+  <link rel="manifest" href="../static/manifest.json" />
+</head>
+
+<body>
+  <create-account></create-account>
+  <manage-account></manage-account>
+</body>
+
+<!-- TEMPLATES -->
+<import tag="template" id="create-account" src="./createAccount.partial.html" />
+<import tag="template" id="manage-account" src="./manageAccount.partial.html" />
+
+<!-- SERVICE WORKER & SCRIPTS -->
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("service-worker.js").then((registration) => {
+        console.log("Service Worker registered: ", registration);
+      }).catch((registrationError) => {
+        console.error("Service Worker registration failed: ", registrationError);
+      });
+    });
+  }
+</script>
+
+</html>
