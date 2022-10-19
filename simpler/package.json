@@ -23,10 +23,13 @@
   "description": "My webpack project",
   "name": "my-webpack-project",
   "scripts": {
-    "build": "webpack --mode=production --node-env=production",
+    "build:prod": "webpack --mode=production",
     "build:dev": "webpack --mode=development",
-    "build:prod": "webpack --mode=production --node-env=production",
     "watch": "webpack --mode=development --watch",
-    "serve": "webpack serve --mode=development "
+    "serve": "webpack serve --mode=development"
+  },
+  "dependencies": {
+    "dotenv-webpack": "^8.0.1",
+    "firebase": "^9.12.1"
   }
 }

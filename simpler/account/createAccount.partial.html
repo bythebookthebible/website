@@ -2,25 +2,23 @@
 <div id="root" class="card absoluteCenter" style="width: 20rem;">
   <div class="card-header">
     <h5 id="create-link" class="card-header-item">Create Account</h5>
-    <h5 id="signin-link" class="card-header-item">Sign In</h5>
   </div>
 
   <form class="card-body" style="padding-bottom: 0px;">
-    <div id="forgot-password-description">
-      <h5>Forgot your password? </h5>
-      <div>Enter your email to recieve instructions on how to reset your password.</div>
-    </div>
-
     <input type="text" id="name" placeholder="Name" />
     <input type="email" id="email" placeholder="Email" />
     <input type="password" id="password" placeholder="Password" />
-    <button data-button="primary" type="submit" id="submit">Submit</button>
+
+    <p>You are about to embark on an adventure to memorize the Bible.</p>
+    <p>Our purpose as By The Book is to help equip the church with it's weapons. This is our gift to you. Everything we have online is yours.</p>
+    <p>However, we would also like to ask if you would partner with us to keep this ministry growing.</p>
+
+    <p>$ <input type='number' name='amount' defaultValue="5" ref={priceRef} /></p>
+
+    <button data-button="primary" type="submit" id="submit">Next</button>
 
     <div id="error-message"></div>
-    <a href="#" id="forgot-password-link">Forgot your password?</a>
     <div id="success-message"></div>
-
-
   </form>
 
   <div class="card-footer">
@@ -29,30 +27,3 @@
     <a href="/privacy.html" >Privacy Policy</a>
   </div>
 </div>
-
-<!-- <template id="signInBody">
-  <input type="email" id="email" placeholder="Email" />
-  <input type="password" id="password" placeholder="Password" />
-  <button data-button="primary" type="submit" id="submit">Sign In</button>
-  <div id="error-message"></div>
-  <a href="#" id="forgot-password-link">Forgot your password?</a>
-  <div id="success-message"></div>
-</template>
-
-<template id="createAccountBody">
-  <input type="text" id="name" placeholder="Name" />
-  <input type="email" id="email" placeholder="Email" />
-  <input type="password" id="password" placeholder="Password" />
-  <button data-button="primary" type="submit" id="submit">Next</button>
-  <div id="error-message"></div>
-  <div id="success-message"></div>
-</template>
-
-<template id="forgotPasswordBody">
-  <input type="email" id="email" placeholder="Email" />
-  <h5>Forgot your password? </h5>
-  <div>Enter your email to recieve instructions on how to reset your password.</div>
-  <div id="error-message"></div>
-  <button data-button="primary" type="submit" id="submit">Submit</button>
-  <div id="success-message"></div>
-</template> -->

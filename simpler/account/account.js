@@ -1,12 +1,7 @@
+import "./account.scss"
+
 function assert(test, message) {
   if(!test) throw message
-}
-
-function renderLoadingPage(message) {
-  const node = loading.content.cloneNode(true)
-  node.getElementById("message").textContent = message
-  root.replaceChildren(node)
-  root.classList.value = "loading"
 }
 
 // sync object properties with html attributes -- attributes are the master
@@ -30,17 +25,12 @@ window.customElements.define('loading-page', class extends HTMLElement {
   constructor() {
     super();
     syncAttributeProperty(this, 'message')
-    this.fragmentRoot = document.getElementById("loading").content.cloneNode(true)
+    this.fragmentRoot = document.getElementById("loading-page").content.cloneNode(true)
     this.elements = {
       message: this.fragmentRoot.getElementById("message")
     }
 
-    const shadowRoot = this.attachShadow({ mode: "open" });
-    shadowRoot.appendChild(this.fragmentRoot);
-  }
-
-  connectedCallback() {
-    this.elements.message.textContent = this.message
+    this.attachShadow({ mode: "open" }).appendChild(this.fragmentRoot);
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -59,31 +49,22 @@ window.customElements.define('loading-page', class extends HTMLElement {
 
 
 
-window.customElements.define('login-page', class extends HTMLElement {
-  validModes = ["signIn", "createAccount", "forgotPassword"]
-
+window.customElements.define('create-account', class extends HTMLElement {
   static observedAttributes = ["mode"]
-
-  // // sync properties with attributes -- attributes are the master
-  // get mode() { return this.getAttribute('mode'); }
-  // set mode(val) {
-  //   if(val === false) this.removeAttribute('mode')
-  //   else this.setAttribute('mode', val)
-  // }
+  static validModes = ["signIn", "createAccount", "forgotPassword"]
 
   // life cycle rendering
   constructor() {
     super();
     syncAttributeProperty(this, 'mode')
-    this.fragmentRoot = document.getElementById("login").content.cloneNode(true)
+    this.fragmentRoot = document.getElementById("create-account").content.cloneNode(true)
     this.elements = this.getElements(this.fragmentRoot)
 
-    const shadowRoot = this.attachShadow({ mode: "open" });
-    shadowRoot.appendChild(this.fragmentRoot);
+    this.attachShadow({ mode: "open" }).appendChild(this.fragmentRoot);
   }
 
   connectedCallback() {
-    this.syncMode(this.mode)
+    // this.syncMode(this.mode)
     this.setEventHandlers()
   }
 
@@ -143,8 +124,5 @@ if(!user) renderLoginPage()
 
 const resourceDB = firebase.getResourceDB()
 const query = (new URL(window.location)).query
-
-
-
 
 */

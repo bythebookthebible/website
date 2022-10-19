@@ -26,6 +26,8 @@ $inputPadding: .3rem .6rem;
   max-width: 100%;
 }
 
+
+// tag stuff
 h1,h2,h3,h4,h5 {
   color: $darkgray;
 }
@@ -47,6 +49,7 @@ a {
   }
 }
 
+// button stuff
 [data-button] {
   &:disabled {
     background-color: $gray;
@@ -83,4 +86,61 @@ a {
   -ms-user-select: none;
   user-select: none;
   vertical-align: middle;
+}
+
+
+// Card stuff
+.card {
+  background-clip: border-box;
+  background-color: white;
+  border: $border;
+  border-radius: $gentleRadius;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header {
+  color: $darkgray;
+  display: flex;
+  justify-content: space-evenly;
+  padding: .75rem 0.75rem 0rem;
+  border-bottom: $border;
+}
+
+.card-body {
+  display: flex;
+  align-content: center;
+  flex-direction: column;
+  text-align: center;
+
+  margin: 1rem;
+
+  >* {
+    margin: .3rem;
+  }
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 0.75rem;
+  font-size: .9rem;
+}
+
+#forgot-password-description {
+  text-align: left;
+}
+
+@mixin card-header-item-selected {
+  border-bottom: .2rem solid $lightblue
+}
+
+.card-header-item {
+  margin-bottom: 0;
+  padding-bottom: 0.75rem;
+  cursor: pointer;
+
+  &.selected {
+    @include card-header-item-selected
+  }
 }

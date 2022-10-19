@@ -11,7 +11,7 @@ import {
   getDocsFromCache,
 } from "firebase/firestore"
 import { getAuth, setPersistence, indexedDBLocalPersistence } from "firebase/auth";
-import { useEffect, useState, useRef } from "react";
+// import { useEffect, useState, useRef } from "react";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 // Config data is imported from .env files, to allow for development to use a testing server

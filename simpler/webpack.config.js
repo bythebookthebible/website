@@ -3,6 +3,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const WorkboxWebpackPlugin = require("workbox-webpack-plugin");
+const DotenvPlugin = require('dotenv-webpack');
 
 const isProduction = process.env.NODE_ENV == "production";
 
@@ -58,6 +59,7 @@ const config = {
       chunks: ['plain'],
     }),
 
+    new DotenvPlugin({path: isProduction ? ".env.production" : ".env.development"}),
     // Add your plugins here
     // Learn more about plugins from https://webpack.js.org/configuration/plugins/
   ],

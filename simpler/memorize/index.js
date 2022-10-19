@@ -1,14 +1,9 @@
 import './index.scss'
+import { firebase, auth } from '../shared/firebase';
+import { signInWithEmailAndPassword, fetchSignInMethodsForEmail, sendPasswordResetEmail } from 'firebase/auth'
 
 function assert(test, message) {
   if(!test) throw message
-}
-
-function renderLoadingPage(message) {
-  const node = loading.content.cloneNode(true)
-  node.getElementById("message").textContent = message
-  root.replaceChildren(node)
-  root.classList.value = "loading"
 }
 
 // sync object properties with html attributes -- attributes are the master
@@ -24,6 +19,13 @@ function syncAttributeProperty(obj, attr) {
   });
 }
 
+function attachTemplateToShadow(obj, templateId) {
+    const fragmentRoot = document.getElementById(templateId).content.cloneNode(true)
+    const shadowRoot = obj.attachShadow({ mode: "open" });
+    shadowRoot.appendChild(fragmentRoot);
+    return shadowRoot
+}
+
 
 window.customElements.define('loading-page', class extends HTMLElement {
   static observedAttributes = ["message"]
@@ -32,33 +34,15 @@ window.customElements.define('loading-page', class extends HTMLElement {
   constructor() {
     super();
     syncAttributeProperty(this, 'message')
-    this.fragmentRoot = document.getElementById("loading").content.cloneNode(true)
-    this.elements = {
-      message: this.fragmentRoot.getElementById("message")
-    }
-
-    const shadowRoot = this.attachShadow({ mode: "open" });
-    shadowRoot.appendChild(this.fragmentRoot);
-  }
-
-  connectedCallback() {
-    this.elements.message.textContent = this.message
+    attachTemplateToShadow(this, 'loading-page')
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
     if(name == "message")
-      this.elements.message.textContent = newValue
+      this.shadowRoot.getElementById("message").textContent = newValue
 
   }
 })
-
-
-
-
-
-
-
-
 
 
 window.customElements.define('login-page', class extends HTMLElement {
@@ -66,55 +50,81 @@ window.customElements.define('login-page', class extends HTMLElement {
 
   static observedAttributes = ["mode"]
 
-  // // sync properties with attributes -- attributes are the master
-  // get mode() { return this.getAttribute('mode'); }
-  // set mode(val) {
-  //   if(val === false) this.removeAttribute('mode')
-  //   else this.setAttribute('mode', val)
-  // }
-
   // life cycle rendering
   constructor() {
     super();
     syncAttributeProperty(this, 'mode')
-    this.fragmentRoot = document.getElementById("login").content.cloneNode(true)
-    this.elements = this.getElements(this.fragmentRoot)
-
-    const shadowRoot = this.attachShadow({ mode: "open" });
-    shadowRoot.appendChild(this.fragmentRoot);
+    const shadowRoot = attachTemplateToShadow(this, 'login')
+    this.elements = this.getElements(shadowRoot)
   }
 
   connectedCallback() {
-    this.syncMode(this.mode)
-    this.setEventHandlers()
+    // set event handlers
+    const el = this.elements
+    el.signinLink.addEventListener("click", () => { this.mode = "signIn" })
+    el.createLink.addEventListener("click", () => { this.mode = "createAccount" })
+    el.forgotPasswordLink.addEventListener("click", () => { this.mode = "forgotPassword" })
+
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    el.submit.addEventListener("click", this.handleFormData)
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if(name == "mode") this.syncMode(newValue)
-  }
+    if(name == "mode" && newValue != oldValue) {
+      const mode = newValue
+      const el = this.elements
+      
+      assert(this.validModes.includes(mode), `invalid mode: ${mode}`)
+      el.root.setAttribute("data-mode", mode)
 
-  // helpers
-  syncMode(mode) {
-    assert(this.validModes.includes(mode), `invalid mode: ${mode}`)
-    const el = this.elements
-    el.root.setAttribute("data-mode", mode)
+      if(mode === "signIn")  el.submit.replaceChildren("Sign In")
+      else if(mode === "createAccount") el.submit.replaceChildren("Next")
+      else if(mode === "forgotPassword") el.submit.replaceChildren("Send Reset Email")
 
-    if(mode === "signIn") {
-      el.submit.replaceChildren("Sign In")
-    }
-    else if(mode === "createAccount") {
-      el.submit.replaceChildren("Next")
-    }
-    else if(mode === "forgotPassword") {
-      el.submit.replaceChildren("Send Reset Email")
+      this.setErrorMessage("")
     }
   }
 
-  setEventHandlers() {
-    const el = this.elements
-    el.createLink.addEventListener("click", () => { this.mode = "createAccount" })
-    el.signinLink.addEventListener("click", () => { this.mode = "signIn" })
-    el.forgotPasswordLink.addEventListener("click", () => { this.mode = "forgotPassword" })
+  handleFormData(e) {
+    e.preventDefault()
+    
+    switch(this.mode) {
+      case "signIn": {
+        const email = this.elements.email.value
+        const password = this.elements.password.value
+        if(!emailRegex.test(email)) return this.setErrorMessage("Please enter a valid email.")
+        if(password.length == 0) return this.setErrorMessage("Please enter your password.")
+
+        signInWithEmailAndPassword(auth, email, password)
+          .catch(this.setErrorMessage)
+        break;
+
+      } case "createAccount": {
+        auth.signOut()
+        break;
+
+      } case "forgotPassword": {
+        const email = this.elements.email.value
+        if(!emailRegex.test(email)) return this.setErrorMessage("Please enter a valid email.")
+
+        sendPasswordResetEmail(auth, email)
+          .then(()=>{this.setSuccessMessage(
+            "Successfully sent password reset email. You should receive a password reset email within the next five minutes. Follow the instructions inside to reset your password, then try logging in with your new password.")})
+          .catch(this.setErrorMessage)
+        break;
+      }
+    }
+    console.log({currentUser: auth.currentUser, auth})
+  }
+
+  setErrorMessage(message) {
+    this.elements.errorMessage.textContent = message
+    this.elements.successMessage.textContent = ""
+  }
+
+  setSuccessMessage(message) {
+    this.elements.errorMessage.textContent = ""
+    this.elements.successMessage.textContent = message
   }
 
   getElements(node) {
@@ -138,15 +148,11 @@ window.customElements.define('login-page', class extends HTMLElement {
 })
 
 
-
 /*
 const user = firebase.currentUser
 if(!user) renderLoginPage()
 
 const resourceDB = firebase.getResourceDB()
 const query = (new URL(window.location)).query
-
-
-
 
 */

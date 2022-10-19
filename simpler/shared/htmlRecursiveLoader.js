@@ -3,7 +3,6 @@ const HTMLParser = require('node-html-parser');
 const sass = require("sass")
 const markdown = require("marked")
 
-
 function getFileData(fileName) {
   const filePath = path.resolve(this.context, fileName)
   this.addDependency(filePath)

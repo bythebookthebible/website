@@ -9,11 +9,19 @@
 </head>
 
 <body>
+  <!-- <loading-page message="Loading..."></loading-page> -->
   <create-account></create-account>
-  <manage-account></manage-account>
+  <!-- <manage-account></manage-account> -->
 </body>
 
 <!-- TEMPLATES -->
+<template id="loading-page">
+  <import tag="style" src="./account.scss" />
+  <div class="absoluteCenter" style="width: 20rem;">
+    <import src="../static/logoSpinning.svg" />
+    <h1 style="text-align: center; font-size: 1.3rem;" id="message" />
+  </div>
+</template>
 <import tag="template" id="create-account" src="./createAccount.partial.html" />
 <import tag="template" id="manage-account" src="./manageAccount.partial.html" />
 
