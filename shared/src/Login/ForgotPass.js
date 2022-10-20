@@ -41,22 +41,17 @@ export default function ForgotPass(props) {
         <button onClick={() => setAction('signin')} className="btn btn-round btn-primary m-1 w-100">Return to Sign in</button>
     </>)
 
-    return <Card.Body as='form' onSubmit={sendEmail} style={{paddingBottom:0}}>
-        <Card.Title>
-            {title}
-        </Card.Title>
-        <Card.Text style={{fontSize:'.9rem'}}>
-            {message}
-        </Card.Text>
-        <Card.Text style={submitted ? {height:0,margin:0} : {}}> 
+    return <form onSubmit={sendEmail} style={{width:"80%", maxWidth: "20rem", margin: "1rem auto"}}>
+        <h2>{title}</h2>
+        <p style={{fontSize:'.9rem'}}>{message}</p>
+
+        <p style={submitted ? {height:0,margin:0} : {}}> 
             <input type="email" style={{visibility: !submitted ? 'visible':'hidden'}} className="form-control mb-2" name='email' ref={emailRef} placeholder="Email" />
-        </Card.Text>
+        </p>
 
         {buttons}
 
         {/* Place the info message below the Password Reset button because it's an info message informing of password reset success.*/}
-        <Card.Text as='div'>
-            <div id="info-message" style={{color:'#d10909'}} className="p-1 text">{errorMessage}</div>
-        </Card.Text>
-    </Card.Body>
+        <div id="info-message" style={{color:'#d10909'}} className="p-1 text">{errorMessage}</div>
+    </form>
 }

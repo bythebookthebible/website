@@ -54,24 +54,20 @@ export default function LoginForm(props) {
         }
     }
 
-    return <Card.Body as='form' onSubmit={signIn} style={{paddingBottom:0}}>
-        <Card.Text> 
-            <input type="email" className="form-control mb-2" name='email' ref={emailRef} placeholder="Email" />
-            <input type="password" className="form-control mb-2" name='password' ref={pwdRef} placeholder="Password" />
-        </Card.Text>
-        <Card.Text as='div'>
-            <div className="d-flex flex-centered">
-                <button type="submit" className="btn btn-round btn-primary m-1 w-100" id="submitAuth">Sign In</button>
-            </div>
-            <div id="error-message" className="text-danger py-2">{errorMessage}</div>
-        </Card.Text>
-        <Card.Text className='text-center forgot-pass' onClick={() => setAction('forgot')}>
+    return <form onSubmit={signIn} style={{width:"80%", maxWidth: "20rem", margin: "1rem auto"}}>
+        <input type="email" className="form-control mb-2" name='email' ref={emailRef} placeholder="Email" />
+
+        <input type="password" className="form-control mb-2" name='password' ref={pwdRef} placeholder="Password" />
+
+        <button type="submit" className="btn btn-round btn-primary m-1 w-100" id="submitAuth">Sign In</button>
+
+        <div id="error-message" className="text-danger py-2">{errorMessage}</div>
+
+        <p className='text-center forgot-pass' onClick={() => setAction('forgot')}>
             Forgot your password?
-        </Card.Text>
+        </p>
 
         {/* Place the info message below the Password Reset button because it's an info message informing of password reset success.*/}
-        <Card.Text as='div'>
-            <div id="info-message" className="p-1 text">{infoMessage}</div>
-        </Card.Text>
-    </Card.Body>
+        <div id="info-message" className="p-1 text">{infoMessage}</div>
+    </form>
 }

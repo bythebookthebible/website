@@ -66,6 +66,6 @@ export function AuthSwitch(props) {
 
   // check stripe status:
   // if there is no subscription (and we already checked the trial is expired)
-  return <Subscribe />
+  // return <Subscribe />
   // if there is a subscription that has been canceled or has an error or something, prompt accordingly
 }
