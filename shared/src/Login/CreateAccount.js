@@ -7,7 +7,10 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
 import { getFunctions, httpsCallable } from "firebase/functions";
 
 import {loadStripe} from '@stripe/stripe-js'
-const createPartnerCheckout = httpsCallable(getFunctions(), 'createPartnerCheckout');
+
+const firebaseFunctions = getFunctions()
+const createPartnerCheckout = httpsCallable(firebaseFunctions, 'createPartnerCheckout');
+const declinePartnership = httpsCallable(firebaseFunctions, 'declinePartnership');
 
 // Config data is imported from .env files, to allow for development to use a testing server
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY)
@@ -51,21 +54,28 @@ export default function CreateAccount(props) {
         else if (password.length === 0) setErrorToDisplay("Please enter password.")
         else if (name.length === 0) setErrorToDisplay("Please enter your name.")
         else if (price < 0) setErrorToDisplay("Positive Numbers Only ;)")
-
+        else if (price > 0 && price < 0.50) setErrorToDisplay("The minimum value is $0.50, due to processing fees. ")
         else {
             await createUserWithEmailAndPassword(auth, email, password)
                 .catch(console.error)
             await updateProfile(auth.currentUser, { displayName: name })
                 .catch(setErrorToDisplay)
 
-            const sessionId = (await createPartnerCheckout({
-                price,
-                success_url: window.location.origin,
-                cancel_url: window.location.href,
-            })).data
-            const stripe = await stripePromise;
-            const error = await stripe.redirectToCheckout({sessionId});
-            console.error(error.message)
+            if(price == 0) {
+                // dont do a checkout session, rather mark as free account
+                console.log("free version")
+                console.log({declinePartnership: await declinePartnership()})
+            } else {
+                const sessionId = (await createPartnerCheckout({
+                    price,
+                    success_url: window.location.origin,
+                    cancel_url: window.location.href,
+                })).data
+                const stripe = await stripePromise
+                console.log({stripe})
+                stripe.redirectToCheckout({sessionId})
+                    .catch(e=>{console.error(e.message)})
+            }
         }
     }
 

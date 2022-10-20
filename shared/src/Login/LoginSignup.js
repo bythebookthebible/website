@@ -33,7 +33,7 @@ let loginStates = {
 }
 
 export default function LoginSignup(props) {
-    const [action, setAction] = useState('signin');
+    const [action, setAction] = useState('create');
 
     let body = ''
     switch (action) {

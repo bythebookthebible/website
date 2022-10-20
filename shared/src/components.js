@@ -51,15 +51,18 @@ export function AuthSwitch(props) {
   // login / loading cases
   if(!user) return <LoginSignup /> // not logged in
   if(!user.profile) return <LoadingPage title="Loading Profile..."/> // loading profile (and claims)
-  if(!user.online) return props.children // offline mode assumes you have a valid account
-  if(!user.claims?.stripeId) {
-    // account is not initialized yet on the back end
-    // let firebase initialize (wait or trigger)
-    return <LoadingPage title="Preparing Account..."/>
-  }
-  if(user.claims.admin || user.claims.permanentAccess || user.claims.expirationDate - Date.now() > 0) {
-    return props.children // logged in successfully
-  }
+  // if(!user.online) return props.children // offline mode assumes you have a valid account
+  if(!(user.profile.updatedSubscription || user.profile.freePartner)) return <Subscribe />
+  return props.children 
+
+  // if(!user.claims?.stripeId) {
+  //   // account is not initialized yet on the back end
+  //   // let firebase initialize (wait or trigger)
+  //   return <LoadingPage title="Preparing Account..."/>
+  // }
+  // if(user.claims.admin || user.claims.permanentAccess || user.claims.expirationDate - Date.now() > 0) {
+  //   return props.children // logged in successfully
+  // }
 
   // check stripe status:
   // if there is no subscription (and we already checked the trial is expired)

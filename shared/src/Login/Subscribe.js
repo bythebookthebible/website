@@ -4,6 +4,8 @@ import $ from "jquery"
 import { Card } from 'react-bootstrap';
 import { AbsoluteCentered } from '../components';
 import { getFunctions, httpsCallable } from "firebase/functions";
+import { useAuth } from '../firebase';
+import { UserWidget } from './User'
 
 var createSession = httpsCallable(getFunctions(), 'createCheckoutSession');
 
@@ -12,20 +14,26 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY)
 const plans = JSON.parse(process.env.REACT_APP_STRIPE_PLANS)
 
 export default function Subscribe(props) {
-    return <AbsoluteCentered>
+    return <>
+    <UserWidget />
+    <AbsoluteCentered>
         <SubscribeForm />
     </AbsoluteCentered>
+    </>
 }
 
 function SubscribeForm(props) {
-    let user = props.user
+    let user = useAuth()
     console.log(user)
 
     return <Card {...props} className={'small-card mx-auto mt-5 text-center '+(props.className||'')} >
         <Card.Header>
-            <Card.Title as='h2' className='mt-2'>Memory Adventure</Card.Title>
+            <Card.Title as='h2' className='mt-2'>Partner With Us</Card.Title>
         </Card.Header>
         <Card.Body as='form' onSubmit={e=>{e.preventDefault()}} >
+            <Card.Text>
+                {user?.displayName || ''}
+            </Card.Text>
             <Card.Text>
                 You are about to embark on an adventure to memorize the Bible.
             </Card.Text>
