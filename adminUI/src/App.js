@@ -17,7 +17,7 @@ import './App.scss';
 // const Admin = React.lazy(()=>import('../forAdmin/Admin'))
 
 function App() {
-  return <AuthSwitch><Router>
+  return <AdminAuthSwitch><Router>
     <header className='nav'>
       <UserWidget />
       <Link to="/">
@@ -27,39 +27,64 @@ function App() {
       </Link>
     </header>
 
-    <Admin/>
+    <Routes>
+      <Route exact path="/" element={<ManageMenu />} />
+      <Route exact path="/users" element={<ManageUsers />} />
+      <Route exact path="/videos" element={<ManageVideos />} />
+      <Route element={<h2>Sorry, page not found</h2>} />
+    </Routes>
 
-  </Router></AuthSwitch>
+  </Router></AdminAuthSwitch>
 }
 
-export default App;
-
-function Admin(props) {
+function AdminAuthSwitch(props) {
   const user = useAuth()
-
+  
   // non-admin fallback
-  if(!user) return "Loading" 
-  if(!user.profile) return "Loading"
-  if(!user.claims?.admin) {
-    console.log("not admin", user)
+  let body = props.children
+  if(!user?.claims) body = "Loading"
+  else if(!user.claims?.admin) {
     // setTimeout( () => window.location.replace("https://schmudgin.bythebookthebible.com"), 3000)
-    return <div className='text-center p-5'>
+    body = <div className='text-center p-5'>
       <h3>
         You need to be an admin to access this page.<br />
         You are logged in as {user.email}<br />
         Redirecting to <a href='bythebookthebible.com'>bythebookthebible.com</a> in 3 sec.
       </h3>
-    </div> 
+    </div>
   }
 
-
-  return <Routes>
-    <Route exact path="/" element={<ManageMenu />} />
-    <Route exact path="/users" element={<ManageUsers />} />
-    <Route exact path="/videos" element={<ManageVideos />} />
-    <Route element={<h2>Sorry, page not found</h2>} />
-  </Routes>
+  return <AuthSwitch>{body}</AuthSwitch>
 }
+
+export default App;
+
+// function Admin(props) {
+//   const user = useAuth()
+
+//   // non-admin fallback
+//   if(!user) return "Loading" 
+//   if(!user.profile) return "Loading"
+//   if(!user.claims?.admin) {
+//     console.log("not admin", user)
+//     // setTimeout( () => window.location.replace("https://schmudgin.bythebookthebible.com"), 3000)
+//     return <div className='text-center p-5'>
+//       <h3>
+//         You need to be an admin to access this page.<br />
+//         You are logged in as {user.email}<br />
+//         Redirecting to <a href='bythebookthebible.com'>bythebookthebible.com</a> in 3 sec.
+//       </h3>
+//     </div> 
+//   }
+
+
+//   return <Routes>
+//     <Route exact path="/" element={<ManageMenu />} />
+//     <Route exact path="/users" element={<ManageUsers />} />
+//     <Route exact path="/videos" element={<ManageVideos />} />
+//     <Route element={<h2>Sorry, page not found</h2>} />
+//   </Routes>
+// }
 
 function ManageMenu(props) {
   return (

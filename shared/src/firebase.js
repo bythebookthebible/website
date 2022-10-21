@@ -61,6 +61,7 @@ export function useAuth() {
   const [user, setUser] = useState(auth.currentUser);
   const [token, setToken] = useState(null);
   const [profile, setProfile] = useState(null);
+  const [freshClaims, setFreshClaims] = useState(false)
   const online = useOnlineStatus();
 
   // Listen to onAuthStateChanged
@@ -83,9 +84,18 @@ export function useAuth() {
           setProfile(newProfile)
 
           // get updated claims token ()
-          if(online && newProfile?.refreshToken !== profile?.refreshToken) {
-            newUser.getIdTokenResult(true)
-              .then(setToken).catch(console.error)
+          if(!token){
+            if(online && !freshClaims) {
+              // force new claims once
+              newUser.getIdTokenResult(true)
+                .then(setToken).catch(console.error)
+              setFreshClaims(true)
+
+            } else {
+              // otherwise trust the latest token
+              newUser.getIdTokenResult(false)
+                .then(setToken).catch(console.error)
+            }
           }
 
         }, console.error)

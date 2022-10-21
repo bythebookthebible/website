@@ -21,62 +21,6 @@ const createPartnerCheckout = httpsCallable(firebaseFunctions, 'createPartnerChe
 const declinePartnership = httpsCallable(firebaseFunctions, 'declinePartnership');
 
 
-// export default function Subscribe(props) {
-//     return <>
-//     <UserWidget />
-//     <AbsoluteCentered>
-//         <SubscribeForm />
-//     </AbsoluteCentered>
-//     </>
-// }
-
-// function SubscribeForm(props) {
-//     let user = useAuth()
-//     console.log(user)
-
-//     return <Card {...props} className={'small-card mx-auto mt-5 text-center '+(props.className||'')} >
-//         <Card.Header>
-//             <Card.Title as='h2' className='mt-2'>Partner With Us</Card.Title>
-//         </Card.Header>
-//         <Card.Body as='form' onSubmit={e=>{e.preventDefault()}} >
-//             <Card.Text>
-//                 {user?.displayName || ''}
-//             </Card.Text>
-//             <Card.Text>
-//                 You are about to embark on an adventure to memorize the Bible.
-//             </Card.Text>
-//             <Card.Text>
-//                 Our purpose as By The Book is to help equip the church with it's weapons. 
-//                 This is our gift to you. Everything we have online is yours.
-//             </Card.Text>
-//             <Card.Text>
-//                 However, we would also like to ask if you would partner with us to keep this ministry growing.
-//             </Card.Text>
-//             $<input type='number' name='amount' defaultValue="5" />
-
-//             <Card.Text>
-//                 <button className='btn btn-round btn-primary' onClick={async () => {
-//                     // Create account if needed
-//                     console.log($())
-//                     console.log($('input[name="plan"]:checked').val())
-//                     console.log({
-//                         items: [{plan: plans[$('input[name="plan"]:checked').val()]}]
-//                     })
-//                     const sessionId = await createSession({
-//                         items: [{plan: plans[$('input[name="plan"]:checked').val()]}]
-//                     })
-//                     console.debug(session)
-//                     // When the customer clicks on the button, redirect them to Checkout.
-//                     const stripe = await stripePromise;
-//                     const error = await stripe.redirectToCheckout({sessionId});
-//                     console.error(error.message)
-//                 }}>Partner with us!</button>
-//             </Card.Text>
-//         </Card.Body>
-//     </Card>
-// }
-
-
 export default function Subscribe(props) {
     let user = useAuth()
     const priceRef = useRef()
