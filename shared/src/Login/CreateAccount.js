@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Stack } from 'react-bootstrap';
 import { accountExists, validEmail } from './LoginSignup';
 
 import { auth } from '../firebase'
@@ -7,7 +7,15 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
 import { getFunctions, httpsCallable } from "firebase/functions";
 
 import {loadStripe} from '@stripe/stripe-js'
-const createPartnerCheckout = httpsCallable(getFunctions(), 'createPartnerCheckout');
+import { Cover, Split } from '@bedrock-layout/primitives';
+import { UserWidget } from './User';
+
+const tosUrl = '/terms.html'
+const privacyPolicyUrl = '/privacy.html'
+
+const firebaseFunctions = getFunctions()
+const createPartnerCheckout = httpsCallable(firebaseFunctions, 'createPartnerCheckout');
+const declinePartnership = httpsCallable(firebaseFunctions, 'declinePartnership');
 
 // Config data is imported from .env files, to allow for development to use a testing server
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY)
@@ -37,7 +45,9 @@ export default function CreateAccount(props) {
         setErrorMessage(msg);
     }
 
-    async function createAccount() {
+    async function submitForm(e) {
+        e.preventDefault();
+
         let email = emailRef.current.value
         let password = pwdRef.current.value
         let name = nameRef.current.value
@@ -51,59 +61,62 @@ export default function CreateAccount(props) {
         else if (password.length === 0) setErrorToDisplay("Please enter password.")
         else if (name.length === 0) setErrorToDisplay("Please enter your name.")
         else if (price < 0) setErrorToDisplay("Positive Numbers Only ;)")
-
+        else if (price > 0 && price < 0.50) setErrorToDisplay("The minimum value is $0.50, due to processing fees. ")
         else {
             await createUserWithEmailAndPassword(auth, email, password)
                 .catch(console.error)
             await updateProfile(auth.currentUser, { displayName: name })
                 .catch(setErrorToDisplay)
 
-            const sessionId = (await createPartnerCheckout({
-                price,
-                success_url: window.location.origin,
-                cancel_url: window.location.href,
-            })).data
-            const stripe = await stripePromise;
-            const error = await stripe.redirectToCheckout({sessionId});
-            console.error(error.message)
+            if(price == 0) {
+                // dont do a checkout session, rather mark as free account
+                console.log("free version")
+                console.log({declinePartnership: await declinePartnership()})
+            } else {
+                const sessionId = (await createPartnerCheckout({
+                    price,
+                    success_url: window.location.origin,
+                    cancel_url: window.location.href,
+                })).data
+                const stripe = await stripePromise
+                console.log({stripe})
+                stripe.redirectToCheckout({sessionId})
+                    .catch(e=>{console.error(e.message)})
+            }
         }
     }
 
+    return <Split fraction="1/2" style={{minHeight: "100vh"}}>
+        <Cover className='darkBackground' top={<UserWidget />}>
+            <Stack as="form" gap={4} style={{padding: "5vw"}} onSubmit={submitForm}>
+                <h1>Start Your Memorization Journey!</h1>
+                <p>Digital access to all BtB products, memorization tools, resources, & curriculum.</p>
 
-    let submitForm = async (e) => {
-        e.preventDefault();
-        await createAccount();
-    }
+                <Stack gap={2}>
+                    <input type="text" data-button="round" className="form-control" name='name' ref={nameRef} placeholder="Name" />
 
-    return <Card.Body as='form' onSubmit={submitForm}>
-        {/*** ACCOUNT INFO ***/}
-        <Card.Text>
-            <input type="text" className="form-control mb-2" name='name' ref={nameRef} placeholder="Name" />
-            <input type="email" className="form-control mb-2" name='email' ref={emailRef} placeholder="Email" />
-            <input type="password" className="form-control mb-2" name='password' ref={pwdRef} placeholder="Password" />
-        </Card.Text>
+                    <input type="email" data-button="round"  className="form-control" name='email' ref={emailRef} placeholder="Email" />
 
-        {/*** PRICING ***/}
-        <Card.Text>
-            You are about to embark on an adventure to memorize the Bible.
-        </Card.Text>
-        <Card.Text>
-            Our purpose as By The Book is to help equip the church with it's weapons. 
-            This is our gift to you. Everything we have online is yours.
-        </Card.Text>
-        <Card.Text>
-            However, we would also like to ask if you would partner with us to keep this ministry growing.
-        </Card.Text>
-        <Card.Text>$<input type='number' name='amount' defaultValue="5" ref={priceRef} /></Card.Text>
+                    <input type="password" data-button="round"  className="form-control" name='password' ref={pwdRef} placeholder="Password" />
+                </Stack>
 
-        {/*** SUBMIT ***/}
-        <Card.Text as='div'>
-            <div className="d-flex flex-centered">
-                <button type="submit" className="btn btn-round btn-primary m-1 w-100 mb-2" id="submitAuth">Next</button>
-            </div>
-            <div id="error-message" className="text-danger">{errorMessage}</div>
-        </Card.Text>
+                <div>
+                    <p>We've invested so much in developing these high quality products to serve you guys. In order to follow Christ's lead in servitude, we are choosing to not fix a high price point, but rather to give our work in support of God's people. If you choose, please give back to us according to however God has blessed you.</p>
+                </div>
 
+                <input type='number' data-button="round" name='amount' placeholder='$ Amount/Month' ref={priceRef} className="form-control mt-3"/>
 
-    </Card.Body>
+                <label for='amount'>Suggested $5/month subscription</label>
+
+                <button type="submit" data-button="round outline negative" className="btn mt-5 mb-5" id="submitAuth">Next</button>
+                <div id="error-message" className="text-danger">{errorMessage}</div>
+            </Stack>
+        </Cover>
+        <div style={{padding: "5vw"}}>
+            <ul data-bullet="circle-check">
+                <li>Access all updated By the Book memorization tools.</li>
+                <li>Digital access to all By the Book curriculum & products</li>
+            </ul>
+        </div>
+    </Split>
 }
