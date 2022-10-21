@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Stack } from 'react-bootstrap';
 import { accountExists, validEmail } from './LoginSignup';
 
 import { auth } from '../firebase'
@@ -7,7 +7,7 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
 import { getFunctions, httpsCallable } from "firebase/functions";
 
 import {loadStripe} from '@stripe/stripe-js'
-import { Split } from '@bedrock-layout/primitives';
+import { Cover, Split } from '@bedrock-layout/primitives';
 import { UserWidget } from './User';
 
 const tosUrl = '/terms.html'
@@ -45,7 +45,9 @@ export default function CreateAccount(props) {
         setErrorMessage(msg);
     }
 
-    async function createAccount() {
+    async function submitForm(e) {
+        e.preventDefault();
+
         let email = emailRef.current.value
         let password = pwdRef.current.value
         let name = nameRef.current.value
@@ -84,42 +86,35 @@ export default function CreateAccount(props) {
         }
     }
 
-
-    let submitForm = async (e) => {
-        e.preventDefault();
-        await createAccount();
-    }
-
-    return <Split fraction="1/2" style={{height: "100vh"}}>
-        <div style={{backgroundColor: "#018", color: "white"}}>
-            <UserWidget />
-            <form style={{margin: "5vw"}}>
+    return <Split fraction="1/2" style={{minHeight: "100vh"}}>
+        <Cover className='darkBackground' top={<UserWidget />}>
+            <Stack as="form" gap={4} style={{padding: "5vw"}} onSubmit={submitForm}>
                 <h1>Start Your Memorization Journey!</h1>
                 <p>Digital access to all BtB products, memorization tools, resources, & curriculum.</p>
 
-                <input type="text" className="form-control mb-2" name='name' ref={nameRef} placeholder="Name" />
+                <Stack gap={2}>
+                    <input type="text" data-button="round" className="form-control" name='name' ref={nameRef} placeholder="Name" />
 
-                <input type="email" className="form-control mb-2" name='email' ref={emailRef} placeholder="Email" />
+                    <input type="email" data-button="round"  className="form-control" name='email' ref={emailRef} placeholder="Email" />
 
-                <input type="password" className="form-control mb-2" name='password' ref={pwdRef} placeholder="Password" />
+                    <input type="password" data-button="round"  className="form-control" name='password' ref={pwdRef} placeholder="Password" />
+                </Stack>
 
-                <p>We've invested so much in developing these high quality products to serve you guys. Although we have every reason to set price for our products and services, we'd rather us both overate our of generocity. For our part, we'll give our products & services, and on your part you can give according to what God has given you.</p>
+                <div>
+                    <p>We've invested so much in developing these high quality products to serve you guys. In order to follow Christ's lead in servitude, we are choosing to not fix a high price point, but rather to give this generously.</p>
+                    <p>We are gifting our work in support of God's people, and if you choose, please give back to us according to however God has blessed you.</p>
+                </div>
 
-                <input type='number' name='amount' placeholder='$ Amount/Month' ref={priceRef} className="form-control"/>
+                <input type='number' data-button="round" name='amount' placeholder='$ Amount/Month' ref={priceRef} className="form-control mt-3"/>
 
                 <label for='amount'>Suggested $5/month subscription</label>
 
-                <button type="submit" className="btn btn-round btn-primary m-1 w-100 mb-2" id="submitAuth">Next</button>
+                <button type="submit" data-button="round outline negative" className="btn mt-5 mb-5" id="submitAuth">Next</button>
                 <div id="error-message" className="text-danger">{errorMessage}</div>
-                <p>
-                    <a href={tosUrl} className="p-1">Terms of Service</a>
-                    <span style={{color:'lightgrey',margin:'0 .25rem'}}>|</span>
-                    <a href={privacyPolicyUrl} className="p-1">Privacy Policy</a>
-                </p>
-            </form>
-        </div>
-        <div style={{margin: "5vw"}}>
-            <ul data-bullet='<i class="fas fa-circle-check"></i>'>
+            </Stack>
+        </Cover>
+        <div style={{padding: "5vw"}}>
+            <ul data-bullet="circle-check">
                 <li>Access all updated By the Book memorization tools.</li>
                 <li>Digital access to all By the Book curriculum & products</li>
             </ul>

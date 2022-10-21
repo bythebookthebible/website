@@ -1,5 +1,54 @@
 @import "../../assets/common";
 
+.darkBackground {
+    background-color: $darkBlue;
+    color: white;
+    
+    a {
+        color: white;
+    }
+}
+
+li {
+    margin-bottom: 2rem;
+}
+
+[data-bullet="circle-check"] {
+    list-style: none;
+    
+    li::before {
+        font-family: "Font Awesome 6 Free";
+        content: "\f058";
+        font-size: 1.2rem;
+        padding-right: 1em;
+        margin-left: -2em;
+        font-weight: 900; // for filled in, regular for outline
+        color: $darkBlue;
+    }
+}
+
+// [data-button] {
+//     height: 5rem;
+// }
+
+[data-button*="round"] {
+    border-radius: 2rem;
+}
+
+[data-button*="outline"] {
+    border: .1rem solid white;
+    color: white;
+    background-color: transparent;
+    
+    &:hover {
+        background-color: #fff1;
+        color: white;
+    }
+}
+
+
+///////////////
+
 .form-header {
     color: gray;
     display:flex;
@@ -13,7 +62,7 @@
     cursor: pointer;
 
     &.selected {
-        border-bottom: 3px solid $blue;
+        border-bottom: 3px solid $darkBlue;
     }
 }
 .form-footer {

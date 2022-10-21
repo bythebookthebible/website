@@ -4,7 +4,7 @@ $pink: #FF4BBD;
 $yellow: #FFFF00;
 $darkYellow: #ffef92;
 $gold: #FFDA00;
-$darkBlue: #0064A0;
+$darkBlue: #005697;
 
 @font-face {
   font-family: "Loopiejuice-Regular";
@@ -16,6 +16,11 @@ $darkBlue: #0064A0;
   src: url("Harrington.ttf");
 }
 
+@font-face {
+  font-family: "Athelas";
+  src: url("Athelas-Regular.ttf");
+}
+
 $font-family-sans-serif: "HelveticaNeue-Light",
 "Helvetica Neue Light",
 "Helvetica Neue",
@@ -23,7 +28,12 @@ Helvetica,
 Arial,
 "Lucida Grande",
 sans-serif;
+$font-family-serif: "Athelas";
 $font-family-fun: "Loopiejuice-Regular";
 // $font-family-serif: Georgia, "Times New Roman", Times, serif !default;
 // $font-family-monospace: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
-$font-family-base: $font-family-sans-serif !default;
+$font-family-base: $font-family-serif !default;
+
+body {
+  font-weight: 200;
+}

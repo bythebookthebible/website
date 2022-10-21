@@ -6,7 +6,7 @@ import { AbsoluteCentered } from '../components';
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { useAuth } from '../firebase';
 import { UserWidget } from './User';
-import { Split } from '@bedrock-layout/primitives';
+import { Cover, Split, Stack } from '@bedrock-layout/primitives';
 
 var createSession = httpsCallable(getFunctions(), 'createCheckoutSession');
 
@@ -59,35 +59,29 @@ export default function Subscribe(props) {
     }
 
 
-    return <Split fraction="1/2" style={{height: "100vh"}}>
-        <div style={{backgroundColor: "#018", color: "white"}}>
-            <UserWidget />
-            <form style={{margin: "5vw"}} onSubmit={submitForm}>
-                <h1>Your Memorization Journey!</h1>
+    return <Split fraction="1/2" style={{minHeight: "100vh"}}>
+        <Cover className='darkBackground' top={<UserWidget />}>
+            <Stack as="form" gap={4} style={{padding: "5vw"}} onSubmit={submitForm}>
+                <div><h1>Your Memorization Journey!</h1></div>
                 {/* <p>Digital access to all BtB products, memorization tools, resources, & curriculum.</p> */}
                 {/* <p>{user?.displayName || ''},</p> */}
 
-                <p>We've invested so much in developing these high quality products to serve you guys. Although we have every reason to set price for our products and services, we'd rather us both overate our of generocity. For our part, we'll give our products & services, and on your part you can give according to what God has given you.</p>
-
-                <input type='number' name='amount' placeholder='$ Amount/Month' ref={priceRef} className="form-control"/>
-
-                <label for='amount'>Suggested $5/month subscription</label>
-
-                <div className="d-flex flex-centered">
-                    <button type="submit" className="btn btn-round btn-primary m-1 w-100 mb-2" id="submitAuth">Next</button>
+                <div>
+                    <p>We've invested so much in developing these high quality products to serve you guys. In order to follow Christ's lead in servitude, we are choosing to not fix a high price point, but rather to give this generously.</p>
+                    <p>We are gifting our work in support of God's people, and if you choose, please give back to us according to however God has blessed you.</p>
                 </div>
+
+                <div>
+                    <input type='number' data-button="round" name='amount' placeholder='$ Amount/Month' ref={priceRef} className="form-control mt-3"/>
+                    <label>Suggested $5/month subscription</label>
+                </div>
+
+                <button type="submit" data-button="round outline negative" className="btn mt-5 mb-5" id="submitAuth">Next</button>
                 <div id="error-message" className="text-danger">{errorMessage}</div>
-                <p>
-                    <a href={tosUrl} className="p-1">Terms of Service</a>
-                    <span style={{color:'lightgrey',margin:'0 .25rem'}}>|</span>
-                    <a href={privacyPolicyUrl} className="p-1">Privacy Policy</a>
-                </p>
-            </form>
-        </div>
-
-
-        <div style={{margin: "5vw"}}>
-            <ul data-bullet='<i class="fas fa-circle-check"></i>'>
+            </Stack>
+        </Cover>
+        <div style={{padding: "5vw"}}>
+            <ul data-bullet="circle-check">
                 <li>Access all updated By the Book memorization tools.</li>
                 <li>Digital access to all By the Book curriculum & products</li>
             </ul>
