@@ -101,8 +101,7 @@ export default function CreateAccount(props) {
                 </Stack>
 
                 <div>
-                    <p>We've invested so much in developing these high quality products to serve you guys. In order to follow Christ's lead in servitude, we are choosing to not fix a high price point, but rather to give this generously.</p>
-                    <p>We are gifting our work in support of God's people, and if you choose, please give back to us according to however God has blessed you.</p>
+                    <p>We've invested so much in developing these high quality products to serve you guys. In order to follow Christ's lead in servitude, we are choosing to not fix a high price point, but rather to give our work in support of God's people. If you choose, please give back to us according to however God has blessed you.</p>
                 </div>
 
                 <input type='number' data-button="round" name='amount' placeholder='$ Amount/Month' ref={priceRef} className="form-control mt-3"/>
