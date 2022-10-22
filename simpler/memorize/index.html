@@ -9,8 +9,9 @@
 </head>
 
 <body>
-  <loading-page message="Loading..."></loading-page>
-  <login-page mode="signIn"></login-page>
+  <!-- <loading-page message="Loading..."></loading-page> -->
+  <!-- <login-page mode="signIn"></login-page> -->
+  <create-account-page></create-account-page>
 </body>
 
 <!-- TEMPLATES -->
@@ -21,6 +22,11 @@
     <h1 style="text-align: center; font-size: 1.3rem;" id="message" />
   </div>
 </template>
+
+<template id="loading-icon">
+  <import style="display: inline-block;" src="../static/logoSpinning.svg" />
+</template>
+
 <import tag="template" id="login" src="./login.partial.html" />
 <!-- SERVICE WORKER & SCRIPTS -->
 <script>

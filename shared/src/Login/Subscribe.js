@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import {loadStripe} from '@stripe/stripe-js'
+import {loadStripe} from '../../../simpler/node_modules/@stripe/stripe-js/types'
 import $ from "jquery"
 import { Card } from 'react-bootstrap';
 import { AbsoluteCentered } from '../components';

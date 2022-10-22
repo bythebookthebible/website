@@ -1,5 +1,5 @@
 <import tag="style" src="./login.scss" />
-<div id="root" class="card absoluteCenter" style="width: 20rem;">
+<!-- <div id="root" class="card absoluteCenter" style="width: 20rem;">
   <div class="card-header">
     <h5 id="create-link" class="card-header-item">Create Account</h5>
     <h5 id="signin-link" class="card-header-item">Sign In</h5>
@@ -28,6 +28,44 @@
     <span style="color: lightgrey; margin: 0px 0.25rem; cursor: default;">|</span>
     <a href="/privacy.html" >Privacy Policy</a>
   </div>
+</div>
+ -->
+
+<div id="root" data-split="1/2">
+  <div class='darkBackground'>
+    <form data-stack="gap-4" id="form">
+      <h1>Start Your Memorization Journey!</h1>
+      <p>Digital access to all BtB products, memorization tools, resources, & curriculum.</p>
+
+      <Stack data-stack="gap-2" >
+        <input type="text" data-button="round" id="name" placeholder="Name" />
+
+        <input type="email" data-button="round"  id="email" placeholder="Email" />
+
+        <input type="password" data-button="round"  id="password" placeholder="Password" />
+      </Stack>
+
+      <p>We've invested so much in developing these high quality products to serve you guys. In order to follow Christ's lead in servitude, we are choosing to not fix a high price point, but rather to give our work in support of God's people. If you choose, please give back to us according to however God has blessed you.</p>
+
+      <div>
+        <input type='number' data-button="round" id="price" placeholder='$ Amount/Month'/>
+        <label>Suggested $5/month subscription</label>
+      </div>
+
+      <button type="submit" data-button="round outline light" id="submit">Next</button>
+      <div id="error-message" class="text-danger"></div>
+      <div id="success-message"></div>
+      </form>
+  </div>
+  <div>
+    <button data-button="round outline dark" data-layout="top right" id="signin-link">Sign In</button>
+
+    <ul data-bullet="circle-check">
+      <li>Access all updated By the Book memorization tools.</li>
+      <li>Digital access to all By the Book curriculum & products</li>
+    </ul>
+  </div>
+
 </div>
 
 <!-- <template id="signInBody">

@@ -6,7 +6,7 @@ import { auth } from '../firebase'
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
 import { getFunctions, httpsCallable } from "firebase/functions";
 
-import {loadStripe} from '@stripe/stripe-js'
+import {loadStripe} from '../../../simpler/node_modules/@stripe/stripe-js/types'
 import { Cover, Split } from '@bedrock-layout/primitives';
 import { UserWidget } from './User';
 

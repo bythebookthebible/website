@@ -3,7 +3,7 @@
 @import "../shared/fonts";
 
 $lightblue: #28B7FF;
-$darkBlue: #0064A0;
+$darkBlue: #005697;
 $gray: #aaa;
 $darkgray: #888;
 $lightgray: #ddd;
@@ -16,6 +16,10 @@ $border: 1px solid $lightgray;
 
 $gentleRadius: .3rem;
 $inputPadding: .3rem .6rem;
+
+.text-danger {
+  color: #ff6f00;
+}
 
 .absoluteCenter { 
   position: absolute;
@@ -54,7 +58,7 @@ a {
   }
 
   &[data-button*=round] {
-    border-radius: 1.25rem;
+    border-radius: 2rem;
   }
   
   &[data-button*=primary] {
@@ -84,3 +88,61 @@ a {
   user-select: none;
   vertical-align: middle;
 }
+
+[data-button*="outline"] {
+  background-color: transparent;
+
+  &[data-button*="light"] {
+    border: .1rem solid white;
+    color: white;
+
+    &:hover {
+      background-color: #fff1;
+      color: white;
+    }
+  }
+
+  &[data-button*="dark"] {
+    border: .1rem solid $darkBlue;
+    color: $darkBlue;
+
+    &:hover {
+      background-color: #00569720;
+      color: $darkBlue;
+    }
+  }
+}
+
+[data-stack] {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-self: stretch;
+
+  &[data-stack*=gap-1] { gap: .25rem; }
+  &[data-stack*=gap-2] { gap: .5rem; }
+  &[data-stack*=gap-3] { gap: 1rem; }
+  &[data-stack*=gap-4] { gap: 2rem; }
+  &[data-stack*=gap-5] { gap: 4rem; }
+  &[data-stack*=gap-6] { gap: 8rem; }
+}
+
+[data-split] {
+  display: grid;
+  gap: var(--gutter, 0px);
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 700px) {
+  [data-split] {
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+[data-layout] { position: absolute; }
+[data-layout*=top] { top: 0; }
+[data-layout*=bottom] { bottom: 0; }
+[data-layout*=left] { left: 0; }
+[data-layout*=right] { right: 0; }
