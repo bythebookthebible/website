@@ -9,19 +9,24 @@
     }
 }
 
-li {
-    margin-bottom: 2rem;
-}
-
 [data-bullet="circle-check"] {
     list-style: none;
+    font-style: italic;
+    line-height: 1.2em;
+    color: $darkBlue;
+
+    ul {
+        list-style-type: disc;
+        margin-bottom: 2rem;
+    }
     
-    li::before {
+    > li::before {
         font-family: "Font Awesome 6 Free";
         content: "\f058";
-        font-size: 1.2rem;
-        padding-right: 1em;
-        margin-left: -2em;
+        font-size: 2rem;
+        font-style: normal;
+        padding-right: .5em;
+        margin-left: -1.5em;
         font-weight: 900; // for filled in, regular for outline
         color: $darkBlue;
     }

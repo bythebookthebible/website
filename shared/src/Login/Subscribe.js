@@ -81,8 +81,44 @@ export default function Subscribe(props) {
         </Cover>
         <div style={{padding: "5vw"}}>
             <ul data-bullet="circle-check">
-                <li>Access all updated By the Book memorization tools.</li>
-                <li>Digital access to all By the Book curriculum & products</li>
+                <li>Complete digital Access to all updated By the Book <u>memorization tools</u>:<ul>
+                    <li>Basic Mnemonic tracks</li>
+                    <li>‘Looping’ version</li>
+                    <li>‘Audio’ version</li>
+                    <li>‘Visual’ version</li>
+                    <li>‘Dance’ version</li>
+                    <li>‘Echo’ version</li>
+                    <li>‘Slow/Speed’ version</li>
+                    <li>‘Blooper’ version</li>
+                    <li>‘Karaoke’ version</li>
+                    <li>‘Relax’ version</li>
+                </ul></li>
+
+                <li>Complete Digital access to all By the Book <u>curriculum & products</u>:<ul>
+                    <li>full pdf resource collection</li>
+                    <li>Coloring pages pdf</li>
+                    <li>Life-application story books pdf</li>
+                    <li>illustrated scripture books pdf</li>
+                    <li>Craft/Activities pdf</li>
+                    <li>Copywork pdf</li>
+                    <li>Vocabulary page pdf</li>
+                    <li>Worksheet pdf</li>
+                    <li>Sheet music pdf</li>
+                    <li>Supporting lesson videos</li>
+                    <li>Life-application story videos</li>
+                    <li>Visual illustration videos</li>
+                    <li>Princess exposition video</li>
+                    <li>‘Schmo toon’ life-application video</li>
+                </ul></li>
+
+                <li>Complete digital access to all <u>updated BtB content</u>: (currently including)<ul>
+                    <li>James (all 5 chapters)</li>
+                    <li>1 John (all 5 chapters)</li>
+                    <li>Malachi (all 4 chapters)</li>
+                    <li>Matthew (chapter 5-7)</li>
+                    <li>Psalm 1</li>
+                    <li>Various other passages</li>
+                </ul></li>
             </ul>
         </div>
     </Split>
