@@ -65,7 +65,6 @@ Video.Loop = ({videoRef, src}) => {
 Video.PlayButton = (props) => {
   const { videoRef, src, autoPlay=false } = props
   const [playing, setPlaying] = useState(false)
-  console.log("Rerendering Play Button", {props})
 
   // whenever a new source is loaded, try to autoPlay
   useEffect(() => {
@@ -104,7 +103,6 @@ Video.Progress = {
   useState: ({ videoRef, src }) => {
     const [curTime, setCurTime] = useState(0)
     const [duration, setDuration] = useState(0)
-    console.log("Rerendering Video", {videoRef})
 
     function updateTimes() {
       setCurTime(videoRef.current?.currentTime || 0)
@@ -114,11 +112,6 @@ Video.Progress = {
     useRefListener(videoRef, 'loadedmetadata', updateTimes) // init on newly loaded videos
     useRefListener(videoRef, 'timeupdate', updateTimes) // update state on all timeupdate events
 
-    // useRefListener(videoRef, 'playing', e=>console.log(e))
-    // useRefListener(videoRef, 'waiting', e=>console.log(e))
-    // useRefListener(videoRef, 'seeking', e=>console.log(e))
-    // useRefListener(videoRef, 'seeked', e=>console.log(e))
-
     return {curTime, setCurTime, duration}
   },
 
@@ -126,12 +119,10 @@ Video.Progress = {
 
   Bar: ({curTime, setCurTime, duration, videoRef, src, ...props}) => {
     const progressRootRef = useRef()
-    console.log("Rerendering Bar", {progressRootRef, videoRef})
 
     const rect = useBoundingBox(progressRootRef)
 
     const getSeekTime = e => {
-      // const rect = progressRootRef.current.getBoundingClientRect()
       const clickX = e.touches ? e.touches[0].clientX : e.clientX
       // subtract rect.height/2 of buffer to each side, so you can actually seek to the beginning/end
       const seekFraction = clamp((clickX - rect.x - rect.height/2) / (rect.width - rect.height), 0, 1)
@@ -140,20 +131,10 @@ Video.Progress = {
       return seekTime(seekFraction)
     }
 
-    // const seek = e => {
-    //   const video = videoRef.current
-    //   const seekTime = getSeekTime(e)
-    //   setCurTime(seekTime)
-    //   // console.log('seeking', {e, seekTime, video})
-
-    //   video.currentTime = seekTime
-    // }
-
     const seek = e => {
       const video = videoRef.current
       const seekTime = getSeekTime(e)
       setCurTime(seekTime)
-      // console.log('dragging', {e, seekTime, video})
 
       if(video.fastSeek) video.fastSeek(seekTime)
       else video.currentTime = seekTime
