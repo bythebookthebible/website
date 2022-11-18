@@ -106,7 +106,7 @@ export default function CreateAccount(props) {
 
                 <div>
                     <input type='number' data-button="round" name='amount' placeholder='$ Amount/Month' ref={priceRef} className="form-control"/>
-                    <em for='amount'>Suggested $5/month subscription</em>
+                    <em>Suggested $5/month subscription</em>
                 </div>
 
                 <button type="submit" data-button="round outline negative" className="btn" id="submitAuth">Next</button>

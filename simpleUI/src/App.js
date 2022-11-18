@@ -8,12 +8,17 @@ import { VideoSelector } from './VideoSelector';
 import { MediaResults } from './MediaResults';
 import { friendlyScriptureRef } from 'bythebook-shared/dist/util';
 
+const support = <p className='supportFooter'>This software is in active development, if you have trouble, improvements, or feedback, please reach out to <a href="mailto:andrew@bythebookthebible.com">andrew@bythebookthebible.com</a></p>
+
 export default function Wrapper() {
-  return <BrowserRouter>
-    <AuthSwitch>
-      <App />
-    </AuthSwitch>
-  </BrowserRouter>
+  return <div style={{position:"relative", minHeight:"100vh"}}>
+    <BrowserRouter>
+      <AuthSwitch>
+        <App />
+      </AuthSwitch>
+    </BrowserRouter>
+    {support}
+  </div>
 }
 
 function App() {
