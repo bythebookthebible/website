@@ -16,6 +16,7 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 // Config data is imported from .env files, to allow for development to use a testing server
 const firebaseConfig = JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG)
+console.log(firebaseConfig)
 
 // Initialize Firebase
 export const firebase = initializeApp(firebaseConfig);

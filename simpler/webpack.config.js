@@ -29,6 +29,7 @@ const config = {
     main: "./memorize/index.js",
     account: "./account/account.js",
     plain: "./plainPages/plain.scss",
+    directory: "./memorize/videoDirectory.js",
   },
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -58,8 +59,14 @@ const config = {
       filename: "terms.html",
       chunks: ['plain'],
     }),
+    new HtmlWebpackPlugin({
+      template: "memorize/videoDirectory.html",
+      filename: "videoDirectory.html",
+      chunks: ['directory'],
+    }),
 
-    new DotenvPlugin({path: isProduction ? ".env.production" : ".env.development"}),
+    // new DotenvPlugin({path: isProduction ? ".env.production" : ".env.development"}),
+    new DotenvPlugin({path:  ".env.production" }),
     // Add your plugins here
     // Learn more about plugins from https://webpack.js.org/configuration/plugins/
   ],
