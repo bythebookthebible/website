@@ -333,4 +333,6 @@ exports.createBillingManagementSession = functions.https.onCall(async (data, con
         customer: stripeId,
         return_url,
     });
+
+    return session
 })

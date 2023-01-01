@@ -18,7 +18,7 @@ const firebaseFunctions = getFunctions()
 const createPartnerCheckout = httpsCallable(firebaseFunctions, 'createPartnerCheckout');
 const declinePartnership = httpsCallable(firebaseFunctions, 'declinePartnership');
 const getPartnershipStatus = httpsCallable(firebaseFunctions, 'getPartnershipStatus');
-const manageBilling = httpsCallable(getFunctions(), 'createBillingManagementSession');
+const manageBilling = httpsCallable(firebaseFunctions, 'createBillingManagementSession');
 
 export function ManageAccount(props) {
     let user = useAuth()
@@ -45,9 +45,10 @@ export function ManageAccount(props) {
                 console.log({subscription})
 
                 const subItem = subscription.items.data[0]
-                console.log({subItem})
+                const partnerRate = subItem.quantity * subItem.price.unit_amount / 100
+                console.log({partnerRate})
 
-                setPartnerRate(subItem.price.unit_amount / 100)
+                setPartnerRate(partnerRate)
             })
         }
         return ()=>{nvm=true}
@@ -115,7 +116,7 @@ export function ManageAccount(props) {
     const notSubscribedMessage = <>
         <div>{user?.displayName || ''},</div>
         <div>
-            We've invested so much in developing these high quality products to serve you guys. In order to follow Christ's lead in servitude, we are choosing to not fix a high price point, but rather to give our work in support of God's people. If you choose, please give back to us according to however God has blessed you.
+            We've invested so much in developing these high quality products to serve you guys. In order to follow Christ's lead in servitude, we are choosing to not fix a high price point, but rather to give our work freely in support of God's people. If you choose, please give back to us according to however God has blessed you.
         </div>
 
         <div>
@@ -129,16 +130,18 @@ export function ManageAccount(props) {
     const subscribedMessage = <>
         <div>{user?.displayName || ''},</div>
         <div>
-            We've invested so much in developing these high quality products to serve you guys. In order to follow Christ's lead in servitude, we are choosing to not fix a high price point, but rather to give our work in support of God's people. <br/>
+            We've invested so much in developing these high quality products to serve you guys. In order to follow Christ's lead in servitude, we are choosing to not fix a high price point, but rather to give our work freely in support of God's people.
+        </div>
+        <div>
             Currently, you are partering with us at ${partnerRate}, but if you'd like to change that, you can do so below.
         </div>
 
-        <button onClick={manageSubscription} data-button="round outline negative" className="btn" id="submitAuth">Next</button>
+        <button onClick={manageSubscription} data-button="round outline negative" className="btn" id="submitAuth">Edit Partnership</button>
         {errorMessage && <div id="errorMessage" data-button="round outline negative">{errorMessage}</div>}
     </>
 
 
-    return <Split fraction="2/3" style={{minHeight: "100vh"}}>
+    return <Split fraction="2/3" style={{minHeight: "100vh", maxWidth: "60rem"}}>
         <Cover className='darkBackground' top={<UserWidget />}>
             <Stack as="form" style={{gap: "1.5rem", padding: "5vw"}}>
                 <div><h1>Keep Up Your Memorization Journey!</h1></div>
@@ -147,7 +150,7 @@ export function ManageAccount(props) {
 
                 {errorMessage && <div id="errorMessage" data-button="round outline negative">{errorMessage}</div>}
 
-                <div onClick={()=>window.location.pathname = "/"} className="link ">⟵ Back to Memorizing</div>
+                {!props.noSubscriptionYet && <div onClick={()=>window.location.pathname = "/"} className="link ">⟵ Back to Memorizing</div>}
             </Stack>
         </Cover>
         <div style={{padding: "5vw"}}>
