@@ -80,7 +80,7 @@ export function ManageAccount(props) {
         if (price < 0) setErrorToDisplay("Positive Numbers Only ;)")
         else if (price > 0 && price < 0.50) setErrorToDisplay("The minimum value is $0.50, due to processing fees. ")
         else {
-            if(price === 0) {
+            if(price == 0) {
                 await declinePartnership()
                 setErrorMessage("")
 
@@ -125,6 +125,8 @@ export function ManageAccount(props) {
         </div>
 
         <button onClick={verifyAndCheckout} data-button="round outline negative" className="btn" id="submitAuth">Next</button>
+
+        {props.noSubscriptionYet && <div style={{textAlign:"center"}} onClick={()=>{declinePartnership(); setErrorMessage("")}}>Not right now ⟶</div>}
     </>
 
     const subscribedMessage = <>
