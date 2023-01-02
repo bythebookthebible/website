@@ -1,17 +1,51 @@
-import { db, cloudStorage } from '../shared/firebase';
 import {  objectFilter, scriptureFromKey } from '../shared/util'
-import { 
+// import { db, cloudStorage } from '../shared/firebase';
+import { initializeApp } from "firebase/app"
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import {
+  getFirestore,
   collection,
   getDocFromCache,
   getDocsFromCache,
   getDoc,
   getDocs,
 } from "firebase/firestore"
-import { ref, getDownloadURL } from "firebase/storage";
+
+// Initialize Firebase
+const firebaseConfig = JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG)
+const firebase = initializeApp(firebaseConfig);
+const db = getFirestore(firebase)
+const cloudStorage = getStorage(firebase)
+
+function getFirestoreData(query, fromCache=false) {
+  let response = undefined
+  
+  // set response with the promsise according to the options
+  // and transform data accordingly
+  if(query.type === "document") {
+    if(fromCache) response = getDocFromCache(query)
+    else response = getDoc(query)
+
+    response = response.then(d => d.data())
+
+  } else { // query is a collection type
+    if(fromCache) response = getDocsFromCache(query)
+    else response = getDocs(query)
+
+    response = response.then(snap => {
+      let data = {}
+      snap.forEach(d => { data[d.id] = d.data() })
+      return data
+    })
+  }
+
+  return response
+}
 
 main();
 async function main() {
-  const {resources, modules, seriesList} = await getMemoryDB()
+  const memoryResourcesDB = 'memoryResources'
+  const resources = await getFirestoreData(collection(db, memoryResourcesDB))
 
   // these come presorted by UID which is also in the Bible's order
   const schmideos = objectFilter(resources, (k,v) => v.series === 'Schmideo' || v.series === 'Music')
@@ -39,10 +73,12 @@ async function main() {
   const items = withUrls.reduce((items, newItem) => {
     const {book, chapter, verses, url, module, series} = newItem
 
-    items[module] = items[module]
+    items[book] = items[book] || {}
+
+    items[book][module] = items[book][module]
       || {book, chapter, verses, module}
 
-    items[module][series] = url
+    items[book][module][series] = url
 
     return items
   }, {})
@@ -51,63 +87,18 @@ async function main() {
   const root = document.getElementById("root")
   let lastBook = ''
 
-  for(const i in items) {
-    const {book, chapter, verses, Music, Schmideo} = items[i]
-
+  for(const book in items) {
     // insert a title for each new book
-    if(book !== lastBook) {
-      root.insertAdjacentHTML("beforeend", `<h2>${book}</h2>`)
-      lastBook = book
+    root.insertAdjacentHTML("beforeend", `<h2>${book}</h2>`)
+
+    for(const module in items[book]) {
+      const {chapter, verses, Music, Schmideo} = items[book][module]
+
+      // insert a link for each video
+      const title = `<div>${book} ${chapter}:${verses}</div>`
+      const musicLink = Music ? `<a href="${Music}" download>Download Music</a>` : '<div></div>'
+      const schmideoLink = Schmideo ? `<a href="${Schmideo}" download>Download Schmideo</a>` : '<div></div>'
+      root.insertAdjacentHTML("beforeend", `<div class="grid-3">${title} ${schmideoLink} ${musicLink}</div>`)
     }
-
-    // insert a link for each video
-    const title = `<div>${book} ${chapter}:${verses}</div>`
-    const musicLink = Music ? `<a href="${Music}" download>Download Music</a>` : '<div></div>'
-    const schmideoLink = Schmideo ? `<a href="${Schmideo}" download>Download Schmideo</a>` : '<div></div>'
-    root.insertAdjacentHTML("beforeend", `<div class="grid-3">${title} ${schmideoLink} ${musicLink}</div>`)
   }
-
-}
-
-
-
-async function getMemoryDB() {
-  const memoryResourcesDB = 'memoryResources'
-  const memorySeriesDB = 'memorySeries'
-  const memoryModulesDB = 'memoryModules'
-  
-  const [resources, modules, seriesList] = await Promise.all([
-    getFirestoreData(collection(db, memoryResourcesDB)),
-    getFirestoreData(collection(db, memoryModulesDB)),
-    getFirestoreData(collection(db, memorySeriesDB)),
-  ])
-
-  return {resources, modules, seriesList}
-}
-
-function getFirestoreData(query, fromCache=false) {
-  let response = undefined
-
-  console.log({type: query.type, fromCache, query})
-  
-  // set response with the promsise according to the options
-  // and transform data accordingly
-  if(query.type === "document") {
-    if(fromCache) response = getDocFromCache(query)
-    else response = getDoc(query)
-
-    response = response.then(d => d.data())
-
-  } else { // query is a collection type
-    if(fromCache) response = getDocsFromCache(query)
-    else response = getDocs(query)
-
-    response = response.then(snap => {
-      let data = {}
-      snap.forEach(d => { data[d.id] = d.data() })
-      return data
-    })
-  }
-
-  return response
 }
