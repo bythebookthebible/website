@@ -96,7 +96,7 @@ async function main() {
 
       // insert a link for each video
       const title = `<div>${book} ${chapter}:${verses}</div>`
-      const musicLink = Music ? `<a href="${Music}" download>Download Music</a>` : '<div></div>'
+      const musicLink = Music ? `<a href="${Music}" download>Download Audio Only</a>` : '<div></div>'
       const schmideoLink = Schmideo ? `<a href="${Schmideo}" download>Download Schmideo</a>` : '<div></div>'
       root.insertAdjacentHTML("beforeend", `<div class="grid-3">${title} ${schmideoLink} ${musicLink}</div>`)
     }
