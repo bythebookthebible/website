@@ -1,6 +1,3 @@
-// import {stripeSecretKey, stripeEndpointSecret} from './live_api_keys.js'
-// const stripeKeys = require('./live_api_keys.js')
-
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 const functions = require('firebase-functions');
 
@@ -13,27 +10,6 @@ admin.initializeApp();
 const config = functions.config().env
 const stripe = require('stripe')(config.STRIPE_SECRET_KEY);
 
-// user custom claims are: admin, permanentAccess, expirationDate, stripeId
-
-//// AVAILABLE INFO FROM admin.auth().listUsers()
-// {
-// customClaims: {...},
-// disabled: false,
-// displayName: "Name",
-// email: "test@example.com",
-// emailVerified: false,
-// metadata: {creationTime: "Sat, 25 Jul 2020 18:48:18 GMT", lastSignInTime: "Sat, 25 Jul 2020 19:04:08 GMT", lastRefreshTime: "Sat, 25 Jul 2020 19:04:08 GMT"},
-// passwordHash: "",
-// passwordSalt: "",
-// phoneNumber: null,
-// photoURL: null,
-// providerData: [{
-//     displayName: "Name", email: "test@example.com", phoneNumber: null, photoURL: null,
-//     providerId: "password", uid: "test@example.com", tenantId: null
-// }],
-// tokensValidAfterTime: "Sat, 25 Jul 2020 18:48:18 GMT",
-// uid: "",
-// }
 
 exports.getUsers = functions.https.onCall(async (data, context) => {
     let claims = (await admin.auth().getUser(context.auth.uid)).customClaims
@@ -43,6 +19,25 @@ exports.getUsers = functions.https.onCall(async (data, context) => {
         .docs.reduce((cum, d)=>{cum[d.id]=d.data(); return cum}, {}) //.map(d=>{return {id:d.id, data:d.data()}})
     let usersResult = await admin.auth().listUsers()
     // return the filtered / merged list of data (dont send over password hash, etc)
+    //// AVAILABLE INFO FROM admin.auth().listUsers()
+    // {
+    // customClaims: {...},
+    // disabled: false,
+    // displayName: "Name",
+    // email: "test@example.com",
+    // emailVerified: false,
+    // metadata: {creationTime: "Sat, 25 Jul 2020 18:48:18 GMT", lastSignInTime: "Sat, 25 Jul 2020 19:04:08 GMT", lastRefreshTime: "Sat, 25 Jul 2020 19:04:08 GMT"},
+    // passwordHash: "",
+    // passwordSalt: "",
+    // phoneNumber: null,
+    // photoURL: null,
+    // providerData: [{
+    //     displayName: "Name", email: "test@example.com", phoneNumber: null, photoURL: null,
+    //     providerId: "password", uid: "test@example.com", tenantId: null
+    // }],
+    // tokensValidAfterTime: "Sat, 25 Jul 2020 18:48:18 GMT",
+    // uid: "",
+    // }
     let combined = usersResult.users.map(u=>{return {
         uid:u.uid,
         displayName:u.displayName,
@@ -95,132 +90,249 @@ exports.renewSubscription = functions.https.onRequest(async (request, response) 
         const subscription = event.data.object;
         let stripeCustomer = await stripe.customers.retrieve(subscription.customer)
 
-        // Fulfill the purchase...
-        // let doc = await admin.firestore().doc(`checkoutSessions/${subscription.id}`).get()
-        // let uid = doc.data().uid
         let uid = stripeCustomer.metadata.firebaseId
-        if(uid) {
-            functions.logger.log(`uid: ${uid}`)
-    
-            let claims = (await admin.auth().getUser(uid)).customClaims
-            // convert to ms and add two days of buffer
-            claims.expirationDate = Math.max(claims.expirationDate, subscription.current_period_end * 1000 + 2 * 24 * 3600 * 1000)
-            await admin.auth().setCustomUserClaims(uid, {...claims})
-        } else {
-            functions.logger.log(`no firebase uid: ${uid}, looking by email`)
-            try{
-                await admin.auth().getUserByEmail(stripeCustomer.email)
-                    .catch(functions.logger.log(`no firebase account for : ${stripeCustomer.email}`))
-                    .then(async user => {
-                        functions.logger.log(`found user uid: ${user.uid}`)
-                        // update stripe
-                        await strip.customerse.update(stripeCustomer.id, {metadata: {firebaseId: user.uid}})
+        if(!uid) {
+            // Bad stripe metadata
+            functions.logger.log(`no firebase uid, looking by email. This is self-healing.`)
+            await admin.auth().getUserByEmail(stripeCustomer.email)
+                .catch(()=>{
+                    const msg = `Webhook Error: no account to apply subscription for "${stripeCustomer.uid}"`
+                    functions.logger.log(msg)
+                    response.status(400).send(msg);
+                })
+                .then(async user => {
+                    functions.logger.log(`found user uid: ${user.uid}`)
+                    // relink stripe / firebase id
+                    await stripe.customers.update(stripeCustomer.id, 
+                        {metadata: {firebaseId: user.uid}}
+                    )
 
-                        // fulfil purchase
-                        let claims = user.customClaims
-                        // convert to ms and add two days of buffer
-                        claims.expirationDate = Math.max(claims.expirationDate, subscription.current_period_end * 1000 + 2 * 24 * 3600 * 1000)
-                        await admin.auth().setCustomUserClaims(user.uid, {...claims})
-                    })
-            } catch {
-                functions.logger.log('Error setting claims for email')
-            }
+                    await admin.auth().setCustomUserClaims(user.uid, 
+                        {...user.customClaims, stripeId: stripeCustomer.id}
+                    )
+
+                    // // fulfill purchase
+                    // await admin.firestore().doc(`users/${user.uid}`).set({
+                    //     'updatedSubscription': subscription.current_period_start,
+                    // });
+                    uid = user.uid
+                }
+            )
         }
 
-        // await admin.firestore().doc(`checkoutSessions/${session}`).delete()
+        // fulfill purchase
+        await admin.firestore().doc(`users/${uid}`).set({
+            'updatedSubscription': subscription.current_period_start,
+        });
+
+        const userData = await admin.firestore().doc(`users/${uid}`).get().data()
+        if(!userData.partnerSince) {
+            await admin.firestore().doc(`users/${uid}`).set({
+                'partnerSince': subscription.created,
+            });
+        }
     }
 
     // Return a response to acknowledge receipt of the event
     response.json({received: true});
 })
 
-exports.createCheckoutSession = functions.https.onCall(async (data, context) => {
-    let claims = (await admin.auth().getUser(context.auth.uid)).customClaims
-    functions.logger.log(claims)
+
+exports.declinePartnership = functions.https.onCall(async (data, context) => {
+    if(!context.auth) return '[Error] no user'
+
+    await admin.firestore().doc(`users/${context.auth.uid}`).set({
+        'freePartner': Date.now(),
+        'partnerSince': Date.now(),
+    });
+
+    return "success"
+})
+
+exports.createPartnerCheckout = functions.https.onCall(async (data, context) => {
+    const quantity = Math.round(data.price)
+    if(!Number.isInteger(quantity) || quantity < 0) return '[Error] invalid price'
+
+    if(!context.auth) return '[Error] no user'
+
+    functions.logger.log("context.auth", context.auth)
+
+    await cleanUserMetadata(context.auth)
+    const user = admin.auth().getUser(context.auth.uid)
+    let success_url = data.success_url || 'https://bythebookthebible.com'
+    let cancel_url = data.cancel_url || 'https://bythebookthebible.com'
+    // if(!url.origin.match(/https:\/\/.*bythebookthebible.com/i)) return '[Error] invalid url'
+
+    // const product = config.REACT_APP_STRIPE.partnerProductId
+    const priceId = config.REACT_APP_STRIPE.partnerPriceId
+
+    functions.logger.log("Price ID: " + priceId)
+
+    const price = await stripe.prices.retrieve(priceId).catch(functions.logger)
+
+    functions.logger.log("price", {price})
 
     const options = {
         payment_method_types: ['card'],
         metadata: {firebaseId: context.auth.uid},
-        customer: claims.stripeId,
-        subscription_data: {
-            items: data.items
-        },
-        success_url: "https://schmudgin.bythebookthebible.com",
-        cancel_url: "https://schmudgin.bythebookthebible.com"
+        customer: (await user).customClaims.stripeId,
+        mode: 'subscription',
+        line_items: [
+            {price: priceId, quantity}
+        ],
+        success_url,
+        cancel_url,
     }
+
+    functions.logger.log("checkout options", options)
+
     const session = await stripe.checkout.sessions.create(options).catch(e => {
         functions.logger.error('Error Creating Stripe Session: ', JSON.stringify(e))
     })
+    functions.logger.log({session})
     // store a db entry mapping session to uid
     // await admin.firestore().doc(`checkoutSessions/${session.id}`).set({...session, uid: context.auth.uid})
-    return session
+    await admin.firestore().doc(`users/${user.uid}`).set({
+        'partnerSince': Date.now(),
+    });
+
+    return session.id
 })
 
-exports.initUser = functions.https.onCall(async (data, context) => {
-    if(!context.auth) return '[Error] no user'
-    let user = (await admin.auth().getUser(context.auth.uid))
+async function cleanUserMetadata(user) {
+    user = user.token || user
+    let claims = (await admin.auth().getUser(user.uid)).customClaims
 
-    if(!user.customClaims || !user.customClaims.stripeId || !user.customClaims.expirationDate) {
-        await initAccess(user)
-    }
+    functions.logger.log("user", {user, claims})
 
-    return (await admin.auth().getUser(context.auth.uid))
-})
+    let userStatus = {uid: user.uid}
+    let promises = []
 
-exports.initInvalidUsers = functions.https.onRequest(async (request, response) => {
-    let usersResult = await admin.auth().listUsers()
-    let n = 0
-    for(let u of usersResult.users) {
-        // functions.logger.log(u.id, u.customClaims)
-        if(!u.customClaims || !u.customClaims.stripeId || !u.customClaims.expirationDate) {
-            n += 1
-            initAccess(u)
+    function verify(currentValue, correctValue, replaceFunction, logKey) {
+        if(currentValue != correctValue) {
+            userStatus[logKey] = {old: currentValue, new: correctValue}
+            functions.logger.log(`updating ${logKey} from ${currentValue} to ${correctValue}`)
+
+            const result = replaceFunction(correctValue)
+            promises.push(result)
+            return result
         }
     }
 
-    response.json({count: n});
-})
 
-exports.initAccess = functions.auth.user().onCreate(initAccess);
+    let customer
+    let stripeMatches = (await stripe.customers.list({email: user.email, limit: 3})).data
 
-async function initAccess(user) {
-    // FOR MIGRATION, check if user matches a stripe customer obj and pair them
-    let stripeId
-    stripeMatches = (await stripe.customers.list({email: user.email, limit: 3})).data
-    
-    if(stripeMatches.length >= 1) {
-        if (stripeMatches.length === 1) functions.logger.log(`one match for ${user.email} ${stripeMatches}`)
-        if (stripeMatches.length > 1) functions.logger.warn(`customer with duplicate emails in stripe ${user.email} ${stripeMatches}`)
-        
-        stripeId = stripeMatches[0].id
-        // give customer metadata firebase uid to fulfill subscription
-        await stripe.customers.update(stripeId, {metadata: {firebaseId: user.uid}})
-    } else {
-        // After Migration, just create new stripe customer
-        customer = await stripe.customers.create({email: user.email, metadata: {firebaseId: user.uid}})
-        stripeId = customer.id
+    userStatus.stripeMatches = stripeMatches.length
+    if(stripeMatches.length > 1) {
+        functions.logger.warn(`customer with duplicate emails in stripe ${user.email} ${stripeMatches.map(m=>m.id)}`)
     }
 
-    // Set a default 30 day trial
-    var freeDate = new Date();
-    freeDate.setDate(freeDate.getDate() + 30); // 30 days free
+    // handle both > and == cases with stripeMatches[0]
+    if(stripeMatches.length >= 1) {
+        customer = stripeMatches[0]
+        functions.logger.log(`matching user with existing stripe customer ${user.email} ${customer.id}`)
 
-    await admin.auth().setCustomUserClaims(user.uid, {stripeId: stripeId, expirationDate: freeDate.valueOf()})
-        .catch( reason => {functions.logger.warn(reason)} );
+        // give stripe the firebaseId metadata
+        verify(customer.metadata?.firebaseId, user.uid, firebaseId => 
+            stripe.customers.update(customer.id, {metadata: {firebaseId}})
+        , "firebaseIdInStripe")
 
-    await admin.firestore().doc(`users/${user.uid}`).set({'refreshToken': Date.now()});
+        // give firebase the stripeId custom claim 
+        verify(claims?.stripeId, customer.id, stripeId => 
+            admin.auth().setCustomUserClaims(user.uid, {...claims, stripeId})
+                .catch(functions.logger.error)
+        , "stripeIdInFirebase")
 
-    var endUser = await admin.auth().getUser(user.uid)
-    functions.logger.log("final User: ", endUser)
-    return endUser
-}   
+    } else {
+        functions.logger.log(`creating new stripe customer for ${user.email}`)
+        // create stipe customer and sync stripe/firebase id
+        customer = await stripe.customers.create({email: user.email, metadata: {firebaseId: user.uid}})
+        await admin.auth().setCustomUserClaims(user.uid, {...claims, stripeId: customer.id})
+            .catch(functions.logger.error);
+    }
 
-exports.stripeHealth = functions.https.onCall(async (data, context) => {
-    // if not connected to stripe
-        // if matching stripe account(s), link them
-        // if not, create new account
+    // get metadata from stripe into firestore
 
-    // if connected to stripe
-        // return subscription state [active, canceled, payment errors, duplicated subscription, no subscription]
-        // make sure expiration claims match if active
-});
+    const partnerSince = customer.created
+    const updatedSubscription = customer.subscriptions.total_count
+        ? customer.subscriptions.data[0].current_period_start : false
+
+    const userProfileDoc = admin.firestore().doc(`users/${user.uid}`)
+    const userProfile = (await userProfileDoc.get()).data()
+
+    verify(userProfile?.partnerSince, partnerSince, 
+        partnerSince => userProfileDoc.set({partnerSince}), "partnerSince")
+
+    verify(userProfile?.updatedSubscription, updatedSubscription, 
+        updatedSubscription => userProfileDoc.set({updatedSubscription}), "updatedSubscription")
+
+    await Promise.all(promises)
+    return userStatus
+
+    //     // if not connected to stripe
+    //         // if matching stripe account(s), link them
+    //         // if not, create new account
+
+    //     // if connected to stripe
+    //         // return subscription state [active, canceled, payment errors, duplicated subscription, no subscription]
+    //         // make sure expiration claims match if active
+}
+
+
+// Go through all users and make sure that the 
+// stripe & firebase state are well formed and consistent
+exports.cleanAllUserMetadata = functions.https.onRequest(async (request, response) => {
+    let firebaseUsers = (await admin.auth().listUsers()).users
+
+    let userResults = await Promise.all(
+        firebaseUsers.map(user => cleanUserMetadata(user))
+    )
+
+    functions.logger.log({userResults})
+    response.json({userResults});
+})
+
+exports.getPartnershipStatus = functions.https.onCall(async (data, context) => {
+    // validate auth & get (or make?) user's stripe ID
+    if(!context.auth) return '[Error] no user'
+    const user = admin.auth().getUser(context.auth.uid)
+    functions.logger.log("user", {user})
+    const stripeId = (await user).customClaims.stripeId
+
+    // potentially clean clean up if stripe id is inconsistent
+    // await cleanUserMetadata(context.auth)
+
+    // fetch subscription data from Stripe API
+    const customer = await stripe.customers.retrieve(stripeId)
+    functions.logger.log("customer", {customer})
+
+    // // do we want to add some of this data into our response?
+    // await admin.firestore().doc(`users/${user.uid}`).set({
+    //     'partnerSince': Date.now(),
+    // });
+
+    // potentially simplify data before we return
+    return customer.subscriptions.data
+})
+
+exports.createBillingManagementSession = functions.https.onCall(async (data, context) => {
+    // validate auth & get (or make?) user's stripe ID
+    if(!context.auth) return '[Error] no user'
+    const user = admin.auth().getUser(context.auth.uid)
+    functions.logger.log("user", {user})
+
+    // currently dont validate this stripeId
+    const stripeId = (await user).customClaims.stripeId
+
+    let return_url = data.return_url || 'https://bythebookthebible.com'
+    // if(!url.origin.match(/https:\/\/.*bythebookthebible.com/i)) return '[Error] invalid url'
+
+    // create billingPortal session
+    const session = await stripe.billingPortal.sessions.create({
+        customer: stripeId,
+        return_url,
+    });
+
+    return session
+})

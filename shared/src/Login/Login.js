@@ -5,10 +5,9 @@ import { auth } from '../firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { accountExists, validEmail } from './LoginSignup';
 
-export default function LoginForm(props) {
+export function Login(props) {
     const { setAction } = props;
     const [errorMessage, setErrorMessage] = useState("");
-    const [infoMessage, setInfoMessage] = useState("");
 
     const emailRef = useRef()
     const pwdRef = useRef()
@@ -54,24 +53,23 @@ export default function LoginForm(props) {
         }
     }
 
-    return <Card.Body as='form' onSubmit={signIn} style={{paddingBottom:0}}>
-        <Card.Text> 
-            <input type="email" className="form-control mb-2" name='email' ref={emailRef} placeholder="Email" />
-            <input type="password" className="form-control mb-2" name='password' ref={pwdRef} placeholder="Password" />
-        </Card.Text>
-        <Card.Text as='div'>
-            <div className="d-flex flex-centered">
-                <button type="submit" className="btn btn-round btn-primary m-1 w-100" id="submitAuth">Sign In</button>
-            </div>
-            <div id="error-message" className="text-danger py-2">{errorMessage}</div>
-        </Card.Text>
-        <Card.Text className='text-center forgot-pass' onClick={() => setAction('forgot')}>
-            Forgot your password?
-        </Card.Text>
+    return <form onSubmit={signIn} className="loginForm">
+        <h2 style={{textAlign:"center"}}>Sign In</h2>
 
-        {/* Place the info message below the Password Reset button because it's an info message informing of password reset success.*/}
-        <Card.Text as='div'>
-            <div id="info-message" className="p-1 text">{infoMessage}</div>
-        </Card.Text>
-    </Card.Body>
+        <input type="email" data-button="round outline" name='email' ref={emailRef} placeholder="Email" autoFocus />
+
+        <div>
+            <input type="password" data-button="round outline" name='password' ref={pwdRef} placeholder="Password" />
+
+            <label onClick={()=>window.location.pathname = "/forgot"}>Forgot your password?</label>
+        </div>
+
+        <div>
+            <button type="submit" data-button="round" style={{width:"100%"}}>Sign In</button>
+
+            <label onClick={()=>window.location.pathname = "/account"}>Create an account</label>
+        </div>
+
+        <div id="error-message" className="text-danger py-2">{errorMessage}</div>
+    </form>
 }

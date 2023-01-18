@@ -2,8 +2,8 @@ import React from 'react';
 import { useAuth } from "./firebase"
 import logoSpinning from '../assets/logoSpinning.svg'
 import LoginSignup from './Login/LoginSignup';
-import Subscribe from './Login/Subscribe';
 
+export * from './Login/ManageAccount';
 export * from "./Login/User";
 export * from "./Media/Media";
 export * from "./Media/DBResouceContext"
@@ -51,18 +51,21 @@ export function AuthSwitch(props) {
   // login / loading cases
   if(!user) return <LoginSignup /> // not logged in
   if(!user.profile) return <LoadingPage title="Loading Profile..."/> // loading profile (and claims)
-  if(!user.online) return props.children // offline mode assumes you have a valid account
-  if(!user.claims?.expirationDate) {
-    // account is not initialized yet on the back end
-    // let firebase initialize (wait or trigger)
-    return <LoadingPage title="Preparing Account..."/>
-  }
-  if(user.claims.admin || user.claims.permanentAccess || user.claims.expirationDate - Date.now() > 0) {
-    return props.children // logged in successfully
-  }
+  // if(!user.online) return props.children // offline mode assumes you have a valid account
+  if(!(user.profile.updatedSubscription || user.profile.freePartner)) return <Subscribe />
+  return props.children 
+
+  // if(!user.claims?.stripeId) {
+  //   // account is not initialized yet on the back end
+  //   // let firebase initialize (wait or trigger)
+  //   return <LoadingPage title="Preparing Account..."/>
+  // }
+  // if(user.claims.admin || user.claims.permanentAccess || user.claims.expirationDate - Date.now() > 0) {
+  //   return props.children // logged in successfully
+  // }
 
   // check stripe status:
   // if there is no subscription (and we already checked the trial is expired)
-  return <Subscribe />
+  // return <Subscribe />
   // if there is a subscription that has been canceled or has an error or something, prompt accordingly
 }

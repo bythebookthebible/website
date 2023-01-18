@@ -58,7 +58,7 @@ function UserRow(props) {
     let [changed, setChanged] = useState(false)
     // console.log('user', user)
 
-    let defaultDateStr = new Date(claims.expirationDate).toISOString().split('T')[0]
+    let defaultDateStr = !claims.expirationDate ? '' :  new Date(claims.expirationDate).toISOString().split('T')[0]
     let datePhase = claims.expirationDate - new Date(defaultDateStr).valueOf()
 
     let powerRef = useRef()
@@ -107,7 +107,7 @@ function UserRow(props) {
             onChange={checkIfChanged} displayName={user.displayName} /></td>
 
         <td><input type='date' ref={expirationRef} onBlur={checkIfChanged} 
-            defaultValue={new Date(claims.expirationDate).toISOString().split('T')[0]} /></td>
+            defaultValue={defaultDateStr} /></td>
 
         <td><input type='checkbox' ref={permanentAccessRef} defaultChecked={claims.permanentAccess} onChange={checkIfChanged} /></td>
 
