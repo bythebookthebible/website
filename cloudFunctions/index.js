@@ -125,7 +125,7 @@ exports.renewSubscription = functions.https.onRequest(async (request, response) 
             'updatedSubscription': subscription.current_period_start,
         });
 
-        const userData = await admin.firestore().doc(`users/${uid}`).get().data()
+        const userData = (await admin.firestore().doc(`users/${uid}`).get()).data()
         if(!userData.partnerSince) {
             await admin.firestore().doc(`users/${uid}`).set({
                 'partnerSince': subscription.created,
