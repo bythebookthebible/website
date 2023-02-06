@@ -44,7 +44,12 @@ export default function ManageResources(props) {
         <th>Title</th>
 
         {Object.keys(seriesList).map((k) =>
-          <th className='rotate' key={k}><div><span>{seriesList[k].name}</span><EditSeries values={{_db_key:k, ...seriesList[k]}} /></div></th>
+          <th className='rotate' key={k}>
+            <div>
+              <EditSeries values={{_db_key:k, ...seriesList[k]}} />
+              <span>{seriesList[k].name}</span>
+            </div>
+          </th>
         )}
 
         <th><AddSeries /></th>
