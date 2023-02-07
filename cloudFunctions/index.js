@@ -5,6 +5,7 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 require('firebase-admin/auth');
 require('firebase-admin/firestore');
+require('firebase-admin/storage');
 admin.initializeApp();
 
 const config = functions.config().env
@@ -291,3 +292,206 @@ exports.cleanAllUserMetadata = functions.https.onRequest(async (request, respons
     functions.logger.log({userResults})
     response.json({userResults});
 })
+
+
+exports.serveVideoDirectory = functions.https.onRequest((request, response) => {
+    const videoDirectoryPage = admin.firestore().doc("webCache/videoDirectory").get()
+    response.status(200).send(videoDirectoryPage)
+})
+
+
+exports.updateVideoDirectoryCache = functions.firestore.document("memoryResources/{docId}")
+.onWrite(async (change, context) => {
+    // id is stored at context.params.docId
+    if(change.before.data().location === change.after.data().location) {
+        return // noop
+    }
+
+    // if there is a change, generate a fresh thing from scratch
+    const memoryResourcesDB = 'memoryResources'
+    const snap = await admin.firestore().collection(memoryResourcesDB).get()
+    let resources = {}
+    snap.forEach(d => { data[d.id] = d.data() })
+
+
+    // these come presorted by UID which is also in the Bible's order
+    const schmideos = objectFilter(resources, (k,v) => v.series === 'Schmideo' || v.series === 'Music')
+    functions.logger.log({schmideos})
+
+    // whatever api call is with getDownloadURL, I want to do it in parallel (maybe network?)
+    const bucket = admin.storage().app.options.storageBucket;
+
+    const withUrls = await Promise.all(Object.entries(schmideos).map(async ([k,v],i) => {
+        const {book, chapter, verses} = scriptureFromKey(v.module)
+
+        const exists = await admin.storage().bucket().file(V.location).exists();
+        const url = !exists ? '' : `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodeURIComponent(v.location)}?alt=media`
+
+        return {...v, book, chapter, verses, url}
+    }))
+    withUrls.filter(s=>s.url != '')
+    functions.logger.log({withUrls})
+
+    // convert the data structure into what I will display
+    const items = withUrls.reduce((items, newItem) => {
+        const {book, chapter, verses, url, module, series} = newItem
+
+        items[book] = items[book] || {}
+
+        items[book][module] = items[book][module]
+        || {book, chapter, verses, module}
+
+        items[book][module][series] = url
+
+        return items
+    }, {})
+
+    // add elements to root for each schmideo
+    let table = []
+
+    for(const book in items) {
+        // insert a title for each new book
+        table.push(`\n\n  <h2>${book}</h2>`)
+
+        for(const module in items[book]) {
+            const {chapter, verses, Music, Schmideo} = items[book][module]
+
+            // insert a link for each video
+            const title = `<div>${book} ${chapter}:${verses}</div>`
+            const musicLink = Music ? `<a href="${Music}" download>Download Audio Only</a>` : '<div></div>'
+            const schmideoLink = Schmideo ? `<a href="${Schmideo}" download>Download Schmideo</a>` : '<div></div>'
+            table.push(`\n  <div class="grid-3">${title} ${schmideoLink} ${musicLink}</div>`)
+        }
+    }
+
+    const videoDirectoryPage = `<!DOCTYPE html>
+    <html>
+    
+    <head>
+      <title>By the Book Video Directory</title>
+      <meta name="description" content="Easily Memorize Books of the Bible" />
+    
+      <meta charset="utf-8" />
+      <link rel="icon" href="../static/logo.png" type="image/png"/>
+      <link rel="apple-touch-icon" href="../static/logo.png" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta name="theme-color" content="#28B7FF" />
+    
+      <style>
+        .grid-3 {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          padding: 1px 2rem;
+        }
+        .grid-3:nth-of-type(odd) {
+          background-color: #eeeeff;
+        }
+        .grid-3:nth-of-type(even) {
+          background-color: #f8f8f8;
+        }
+        h1,h2,h3,h4,h5 {
+          margin: 2rem 0 0;
+        }
+        h2 {
+          border-bottom: 2px solid #005697;
+        }
+        .container {
+          padding: 2rem;
+          margin: auto;
+          max-width: 40rem;
+        }
+    
+        @import url('https://fonts.cdnfonts.com/css/athelas');
+    
+        body {
+          color: #005697;
+          font-family: "Athelas", 'Times New Roman', Times, serif;
+        }
+        
+        a,a:visited {
+          color: #005697;
+        }
+        a:hover {
+          color: #7dbbea;
+        }
+      </style>
+    </head>
+    
+    <body>
+      <div id="root" class="container">
+        <h1>By the Book Memory Directory</h1>
+        <p>This is a Directory of all the memory tracks which we have uploaded. 
+        </p><p>If you want to try our other Memorization tools, you can check out all of our other <a href="https://vimeo.com/user192089924/albums">memory platforms</a>.
+        </p>
+        ${"".concat(table)}
+      </div>
+    </body>
+    
+    </html>` 
+
+    admin.firestore().doc("webCache/videoDirectory").set(videoDirectoryPage)
+})
+
+
+
+////////////// Utility Functions ////////////////
+
+const books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy',
+'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles',
+'Ezra', 'Nehemiah', 'Esther', 'Job', 'Psalm', 'Proverbs', 'Ecclesiastes', 'Song of Solomon',
+'Isaiah', 'Jeremiah', 'Lamentations', 'Ezekiel', 'Daniel', 'Hosea',
+'Joel', 'Amos', 'Obadiah', 'Jonah', 'Micah', 'Nahum', 'Habakkuk', 'Zephaniah', 'Haggai', 'Zechariah', 'Malachi',
+'Matthew', 'Mark', 'Luke', 'John', 'Acts', 'Romans', '1 Corinthians', '2 Corinthians',
+'Galatians', 'Ephesians', 'Philippians', 'Colossians', '1 Thessalonians', '2 Thessalonians',
+'1 Timothy', '2 Timothy', 'Titus', 'Philemon', 'Hebrews', 'James',
+'1 Peter', '2 Peter', '1 John', '2 John', '3 John', 'Jude', 'Revelation']
+
+const keyFromScripture = (book, chapter, verses) => {
+  if(chapter) {
+    if(verses) {
+      // all exist
+      let [startVerse, endVerse] = verses.split('-')
+      return `${String(books.indexOf(book)).padStart(2,'0')}-${String(chapter).padStart(3,'0')}-${String(startVerse).padStart(3,'0')}-${String(endVerse).padStart(3,'0')}`
+    }
+    // book, chap, no verses
+    return `${String(books.indexOf(book)).padStart(2,'0')}-${String(chapter).padStart(3,'0')}`
+  }
+  // only book
+  return `${String(books.indexOf(book)).padStart(2,'0')}`
+}
+
+const scriptureFromKey = key => {
+  let r = key.split('-')
+  if(r.length == 4) {
+    return {book: books[Number(r[0])], chapter: Number(r[1]), verses: `${Number(r[2])}-${Number(r[3])}`}
+  }
+  if(r.length == 2) {
+    return {book: books[Number(r[0])], chapter: Number(r[1])}
+  }
+  if(r.length == 1) {
+    return {book: books[Number(r[0])]}
+  }
+}
+
+function friendlyScriptureRef(key) {
+  let s = scriptureFromKey(key)
+  let ref = s.book
+  if(s.chapter) ref += ' ' + s.chapter
+  if(s.verses) ref += ':' + s.verses
+  return ref
+}
+
+const objectMap = (obj, fn) =>
+  Object.fromEntries(
+    Object.entries(obj).map(
+      ([k, v], i) => fn(k, v, i)
+    )
+  )
+
+const objectFilter = (obj, fn) =>
+  Object.fromEntries(
+    Object.entries(obj).filter(
+      ([k, v]) => fn(k, v)
+    )
+  )
+
