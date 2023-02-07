@@ -9,40 +9,72 @@
     }
 }
 
-li {
-    margin-bottom: 2rem;
-}
-
 [data-bullet="circle-check"] {
     list-style: none;
+    font-style: italic;
+    line-height: 1.2em;
+    color: $darkBlue;
+
+    ul {
+        list-style-type: disc;
+        margin-bottom: 2rem;
+    }
     
-    li::before {
+    > li::before {
         font-family: "Font Awesome 6 Free";
         content: "\f058";
-        font-size: 1.2rem;
-        padding-right: 1em;
-        margin-left: -2em;
+        font-size: 2rem;
+        font-style: normal;
+        padding-right: .5em;
+        margin-left: -1.5em;
         font-weight: 900; // for filled in, regular for outline
         color: $darkBlue;
     }
 }
 
-// [data-button] {
-//     height: 5rem;
-// }
+[data-button] {
+    background-color: $darkBlue;
+    border: .1rem solid white;
+    color: white;
+    border-radius: 0.2rem;
+    padding: 0.375rem 0.75rem;
+
+    &:hover, &:focus {
+        background-color: change-color($color: $darkBlue, $alpha: 0.9);
+        color: white;
+    }
+
+    &::placeholder {
+        color: change-color($color: $darkBlue, $alpha: 0.4);
+    }
+}
 
 [data-button*="round"] {
     border-radius: 2rem;
 }
 
 [data-button*="outline"] {
-    border: .1rem solid white;
-    color: white;
     background-color: transparent;
-    
-    &:hover {
-        background-color: #fff1;
+    border: .1rem solid $darkBlue;
+    color: $darkBlue;
+
+    &[data-button*="negative"] {
+        border-color: white;
         color: white;
+
+        &::placeholder {
+            color: #fff6;
+        }
+    }
+
+    &:hover, &:focus {
+        background-color: change-color($color: $darkBlue, $alpha: 0.08);
+        color: $darkBlue;
+
+        &[data-button*="negative"] {
+            background-color: #fff1;
+            color: white;
+        }
     }
 }
 
@@ -71,16 +103,51 @@ li {
     padding: 0.75rem;
     font-size: .9rem;
 }
-.forgot-pass {
-    color: $blue;
-    cursor: pointer;
-}
-.forgot-pass:hover {
-    text-decoration: underline;
-}
 .card-title {
     color: #5b6267;
     font-weight: 700;
     font-size: 1.25rem;
     margin-bottom: .5rem;
+}
+
+.loginForm {
+    width: 80%;
+    max-width: 20rem;
+    margin: 12vh auto;
+    text-align: center;
+    color: $darkBlue;
+
+    > * {
+      margin: 1rem 0;
+    }
+
+    input {
+        width: 100%;
+        color: change-color($color: $darkBlue, $alpha: 0.8);
+    }
+
+    input, button, label {
+        display: block;
+    }
+
+    label {
+        color: $darkBlue;
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+.dropdown-menu .dropdown-item:not(.disabled) {
+    color:black;
+}
+
+#errorMessage {
+    border-color: red;
+    background-color: #f006;
 }

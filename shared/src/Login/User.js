@@ -1,7 +1,11 @@
 import React from 'react';
-import { NavDropdown, NavLink } from 'react-bootstrap'
+import { NavDropdown } from 'react-bootstrap'
 
 import { auth, useAuth } from '../firebase'
+
+export * from './Login';
+export * from './CreateAccount';
+export * from './ForgotPass';
 
 export function UserWidget(props) {
   let {buttons, ...otherProps} = props
@@ -33,6 +37,11 @@ export function UserWidget(props) {
         key: "Name",
         content: user.displayName, 
         disabled: true,
+      },
+      {
+        key: "Manage",
+        content: "Manage Account", 
+        href: "/account",
       },
       {
         key: "Logout",

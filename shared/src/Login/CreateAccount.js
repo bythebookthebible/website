@@ -21,7 +21,7 @@ const declinePartnership = httpsCallable(firebaseFunctions, 'declinePartnership'
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY)
 const plans = JSON.parse(process.env.REACT_APP_STRIPE_PLANS)
 
-export default function CreateAccount(props) {
+export function CreateAccount(props) {
     const [errorMessage, setErrorMessage] = useState("");
 
     const emailRef = useRef()
@@ -64,8 +64,7 @@ export default function CreateAccount(props) {
         else if (price > 0 && price < 0.50) setErrorToDisplay("The minimum value is $0.50, due to processing fees. ")
         else {
             await createUserWithEmailAndPassword(auth, email, password)
-                .catch(console.error)
-            await updateProfile(auth.currentUser, { displayName: name })
+                .then(updateProfile(auth.currentUser, { displayName: name }))
                 .catch(setErrorToDisplay)
 
             if(price == 0) {
@@ -87,36 +86,80 @@ export default function CreateAccount(props) {
     }
 
     return <Split fraction="1/2" style={{minHeight: "100vh"}}>
-        <Cover className='darkBackground' top={<UserWidget />}>
-            <Stack as="form" gap={4} style={{padding: "5vw"}} onSubmit={submitForm}>
-                <h1>Start Your Memorization Journey!</h1>
-                <p>Digital access to all BtB products, memorization tools, resources, & curriculum.</p>
+        <div className='darkBackground'>
+            <Stack as="form" gap={5} style={{padding: "5vw"}} onSubmit={submitForm}>
+                <div>
+                    <h1 style={{fontSize: "3rem", lineHeight: "3rem"}}>Start Your Memorization Journey!</h1>
+                    <em>Digital access to all BtB products, memorization tools, resources, & curriculum.</em>
+                </div>
 
-                <Stack gap={2}>
-                    <input type="text" data-button="round" className="form-control" name='name' ref={nameRef} placeholder="Name" />
+                <Stack gap={3}>
+                    <input type="text" data-button="round outline negative" name='name' ref={nameRef} placeholder="Name" autoFocus />
 
-                    <input type="email" data-button="round"  className="form-control" name='email' ref={emailRef} placeholder="Email" />
+                    <input type="email" data-button="round outline negative" name='email' ref={emailRef} placeholder="Email" />
 
-                    <input type="password" data-button="round"  className="form-control" name='password' ref={pwdRef} placeholder="Password" />
+                    <input type="password" data-button="round outline negative" name='password' ref={pwdRef} placeholder="Password" />
+                    <em>
+                        <p>We've invested so much in developing these high quality products to serve you guys. In order to follow Christ's lead in servitude, we are choosing to not fix a high price point, but rather to give our work in support of God's people. If you choose, please give back to us according to however God has blessed you.</p>
+                    </em>
                 </Stack>
 
                 <div>
-                    <p>We've invested so much in developing these high quality products to serve you guys. In order to follow Christ's lead in servitude, we are choosing to not fix a high price point, but rather to give our work in support of God's people. If you choose, please give back to us according to however God has blessed you.</p>
+                    <input type='number' data-button="round outline negative" name='amount' placeholder='$ Amount/Month' ref={priceRef} className="form-control"/>
+                    <em>Suggested $5/month subscription</em>
                 </div>
 
-                <input type='number' data-button="round" name='amount' placeholder='$ Amount/Month' ref={priceRef} className="form-control mt-3"/>
-
-                <label for='amount'>Suggested $5/month subscription</label>
-
-                <button type="submit" data-button="round outline negative" className="btn mt-5 mb-5" id="submitAuth">Next</button>
-                <div id="error-message" className="text-danger">{errorMessage}</div>
+                <button type="submit" data-button="round outline negative" className="btn" id="submitAuth">Next</button>
+                <div id="errorMessage">{errorMessage}</div>
             </Stack>
-        </Cover>
-        <div style={{padding: "5vw"}}>
-            <ul data-bullet="circle-check">
-                <li>Access all updated By the Book memorization tools.</li>
-                <li>Digital access to all By the Book curriculum & products</li>
-            </ul>
+        </div>
+        <div>
+            <div style={{display:"flex", justifyContent:"end", margin:"1rem"}}>
+                <button data-button="round outline" className="btn" onClick={()=>window.location.pathname = "/"}>Login</button>
+            </div>
+
+            <div style={{padding: "0 5vw 5vw"}}>
+                <ul data-bullet="circle-check">
+                    <li>Complete digital Access to all updated By the Book <u>memorization tools</u>:<ul>
+                        <li>Basic Mnemonic tracks</li>
+                        <li>‘Looping’ version</li>
+                        <li>‘Audio’ version</li>
+                        <li>‘Visual’ version</li>
+                        <li>‘Dance’ version</li>
+                        <li>‘Echo’ version</li>
+                        <li>‘Slow/Speed’ version</li>
+                        <li>‘Blooper’ version</li>
+                        <li>‘Karaoke’ version</li>
+                        <li>‘Relax’ version</li>
+                    </ul></li>
+
+                    <li>Complete Digital access to all By the Book <u>curriculum & products</u>:<ul>
+                        <li>full pdf resource collection</li>
+                        <li>Coloring pages pdf</li>
+                        <li>Life-application story books pdf</li>
+                        <li>illustrated scripture books pdf</li>
+                        <li>Craft/Activities pdf</li>
+                        <li>Copywork pdf</li>
+                        <li>Vocabulary page pdf</li>
+                        <li>Worksheet pdf</li>
+                        <li>Sheet music pdf</li>
+                        <li>Supporting lesson videos</li>
+                        <li>Life-application story videos</li>
+                        <li>Visual illustration videos</li>
+                        <li>Princess exposition video</li>
+                        <li>‘Schmo toon’ life-application video</li>
+                    </ul></li>
+
+                    <li>Complete digital access to all <u>updated BtB content</u>: (currently including)<ul>
+                        <li>James (all 5 chapters)</li>
+                        <li>1 John (all 5 chapters)</li>
+                        <li>Malachi (all 4 chapters)</li>
+                        <li>Matthew (chapter 5-7)</li>
+                        <li>Psalm 1</li>
+                        <li>Various other passages</li>
+                    </ul></li>
+                </ul>
+            </div>
         </div>
     </Split>
 }

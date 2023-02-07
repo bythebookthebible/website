@@ -120,11 +120,18 @@ exports.renewSubscription = functions.https.onRequest(async (request, response) 
                 }
             )
         }
+
         // fulfill purchase
         await admin.firestore().doc(`users/${uid}`).set({
             'updatedSubscription': subscription.current_period_start,
         });
 
+        const userData = (await admin.firestore().doc(`users/${uid}`).get()).data()
+        if(!userData.partnerSince) {
+            await admin.firestore().doc(`users/${uid}`).set({
+                'partnerSince': subscription.created,
+            });
+        }
     }
 
     // Return a response to acknowledge receipt of the event
@@ -144,8 +151,8 @@ exports.declinePartnership = functions.https.onCall(async (data, context) => {
 })
 
 exports.createPartnerCheckout = functions.https.onCall(async (data, context) => {
-    const unit_amount = Math.round(100 * data.price)
-    if(!Number.isInteger(unit_amount) || unit_amount < 0) return '[Error] invalid price'
+    const quantity = Math.round(data.price)
+    if(!Number.isInteger(quantity) || quantity < 0) return '[Error] invalid price'
 
     if(!context.auth) return '[Error] no user'
 
@@ -157,35 +164,29 @@ exports.createPartnerCheckout = functions.https.onCall(async (data, context) => 
     let cancel_url = data.cancel_url || 'https://bythebookthebible.com'
     // if(!url.origin.match(/https:\/\/.*bythebookthebible.com/i)) return '[Error] invalid url'
 
-    const product = config.REACT_APP_STRIPE_PRODUCTS.partner
-    const lookup_key = `partner-${unit_amount}`
+    // const product = config.REACT_APP_STRIPE.partnerProductId
+    const priceId = config.REACT_APP_STRIPE.partnerPriceId
 
-    const existingPrices = await stripe.prices.list({
-        product,
-        lookup_keys: [lookup_key],
-    });
+    functions.logger.log("Price ID: " + priceId)
 
-    const price = existingPrices.data.length > 0
-        ? existingPrices.data[0]
-        : await stripe.prices.create({
-            unit_amount,
-            product,
-            lookup_key,
-            currency: 'usd',
-            recurring: {interval: 'month'},
-        });
+    const price = await stripe.prices.retrieve(priceId).catch(functions.logger)
 
-    const line_items = [{price: price.id, quantity: 1}]
+    functions.logger.log("price", {price})
 
     const options = {
         payment_method_types: ['card'],
         metadata: {firebaseId: context.auth.uid},
         customer: (await user).customClaims.stripeId,
         mode: 'subscription',
-        line_items,
+        line_items: [
+            {price: priceId, quantity}
+        ],
         success_url,
         cancel_url,
     }
+
+    functions.logger.log("checkout options", options)
+
     const session = await stripe.checkout.sessions.create(options).catch(e => {
         functions.logger.error('Error Creating Stripe Session: ', JSON.stringify(e))
     })
@@ -278,6 +279,51 @@ async function cleanUserMetadata(user) {
     //         // return subscription state [active, canceled, payment errors, duplicated subscription, no subscription]
     //         // make sure expiration claims match if active
 }
+
+
+exports.getPartnershipStatus = functions.https.onCall(async (data, context) => {
+    // validate auth & get (or make?) user's stripe ID
+    if(!context.auth) return '[Error] no user'
+    const user = admin.auth().getUser(context.auth.uid)
+    functions.logger.log("user", {user})
+    const stripeId = (await user).customClaims.stripeId
+
+    // potentially clean clean up if stripe id is inconsistent
+    // await cleanUserMetadata(context.auth)
+
+    // fetch subscription data from Stripe API
+    const customer = await stripe.customers.retrieve(stripeId)
+    functions.logger.log("customer", {customer})
+
+    // // do we want to add some of this data into our response?
+    // await admin.firestore().doc(`users/${user.uid}`).set({
+    //     'partnerSince': Date.now(),
+    // });
+
+    // potentially simplify data before we return
+    return customer.subscriptions.data
+})
+
+exports.createBillingManagementSession = functions.https.onCall(async (data, context) => {
+    // validate auth & get (or make?) user's stripe ID
+    if(!context.auth) return '[Error] no user'
+    const user = admin.auth().getUser(context.auth.uid)
+    functions.logger.log("user", {user})
+
+    // currently dont validate this stripeId
+    const stripeId = (await user).customClaims.stripeId
+
+    let return_url = data.return_url || 'https://bythebookthebible.com'
+    // if(!url.origin.match(/https:\/\/.*bythebookthebible.com/i)) return '[Error] invalid url'
+
+    // create billingPortal session
+    const session = await stripe.billingPortal.sessions.create({
+        customer: stripeId,
+        return_url,
+    });
+
+    return session
+})
 
 
 // Go through all users and make sure that the 

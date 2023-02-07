@@ -5,10 +5,9 @@ import { auth } from '../firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { accountExists, validEmail } from './LoginSignup';
 
-export default function LoginForm(props) {
+export function Login(props) {
     const { setAction } = props;
     const [errorMessage, setErrorMessage] = useState("");
-    const [infoMessage, setInfoMessage] = useState("");
 
     const emailRef = useRef()
     const pwdRef = useRef()
@@ -54,20 +53,23 @@ export default function LoginForm(props) {
         }
     }
 
-    return <form onSubmit={signIn} style={{width:"80%", maxWidth: "20rem", margin: "1rem auto"}}>
-        <input type="email" className="form-control mb-2" name='email' ref={emailRef} placeholder="Email" />
+    return <form onSubmit={signIn} className="loginForm">
+        <h2 style={{textAlign:"center"}}>Sign In</h2>
 
-        <input type="password" className="form-control mb-2" name='password' ref={pwdRef} placeholder="Password" />
+        <input type="email" data-button="round outline" name='email' ref={emailRef} placeholder="Email" autoFocus />
 
-        <button type="submit" className="btn btn-round btn-primary m-1 w-100" id="submitAuth">Sign In</button>
+        <div>
+            <input type="password" data-button="round outline" name='password' ref={pwdRef} placeholder="Password" />
+
+            <label onClick={()=>window.location.pathname = "/forgot"}>Forgot your password?</label>
+        </div>
+
+        <div>
+            <button type="submit" data-button="round" style={{width:"100%"}}>Sign In</button>
+
+            <label onClick={()=>window.location.pathname = "/account"}>Create an account</label>
+        </div>
 
         <div id="error-message" className="text-danger py-2">{errorMessage}</div>
-
-        <p className='text-center forgot-pass' onClick={() => setAction('forgot')}>
-            Forgot your password?
-        </p>
-
-        {/* Place the info message below the Password Reset button because it's an info message informing of password reset success.*/}
-        <div id="info-message" className="p-1 text">{infoMessage}</div>
     </form>
 }

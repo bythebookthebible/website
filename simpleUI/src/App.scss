@@ -134,3 +134,13 @@ select {
     outline: none;
   }
 }
+
+.supportFooter {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  margin: 0;
+  padding: .8rem;
+  font-size: .8rem;
+  background-color: white;
+}

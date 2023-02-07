@@ -2,8 +2,8 @@ import React from 'react';
 import { useAuth } from "./firebase"
 import logoSpinning from '../assets/logoSpinning.svg'
 import LoginSignup from './Login/LoginSignup';
-import Subscribe from './Login/Subscribe';
 
+export * from './Login/ManageAccount';
 export * from "./Login/User";
 export * from "./Media/Media";
 export * from "./Media/DBResouceContext"
