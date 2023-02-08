@@ -32,6 +32,9 @@
       "**/node_modules/**"
     ],
     "rewrites": [{
+      "source": "/videoDirectory.html",
+      "function": "serveVideoDirectory"
+    }, {
       "source": "**",
       "destination": "/index.html"
     }]
