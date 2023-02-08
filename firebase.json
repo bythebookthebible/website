@@ -32,7 +32,7 @@
       "**/node_modules/**"
     ],
     "rewrites": [{
-      "source": "/videoDirectory",
+      "source": "/videoDirectory.html",
       "function": "serveVideoDirectory"
     }, {
       "source": "**",
