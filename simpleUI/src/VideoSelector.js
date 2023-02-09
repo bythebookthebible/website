@@ -40,6 +40,7 @@ export function VideoSelector({setQuery,...props}) {
     .reduce(
       (options, [k, v]) => {
         const module = v.module
+        if(!module) {console.error("Bad module in DB:", k, v); return options} // don't fail if bad data in DB
         return {...options, [module]: friendlyScriptureRef(module) }
       }
       , {})
