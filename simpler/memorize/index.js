@@ -1,8 +1,9 @@
 import './index.scss'
-import { firebase, auth } from '../shared/firebase';
+import { firebase, auth, db } from '../shared/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, fetchSignInMethodsForEmail, sendPasswordResetEmail, updateProfile } from 'firebase/auth'
 import { getFunctions, httpsCallable } from "firebase/functions";
 import {loadStripe} from '@stripe/stripe-js'
+import { collection } from 'firebase/firestore';
 
 // Config data is imported from .env files, to allow for development to use a testing server
 // stripe config
@@ -11,6 +12,178 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY)
 const firebaseFunctions = getFunctions()
 const createPartnerCheckout = httpsCallable(firebaseFunctions, 'createPartnerCheckout');
 const declinePartnership = httpsCallable(firebaseFunctions, 'declinePartnership');
+
+
+function loadFirebase(onUpdate=()=>null) {
+  // special state object to track what has been loaded
+  // and call onUpdate whenever something changes
+  let firebaseState = new class {
+    #current = undefined
+    #loaded = new Set()
+    get current() { return this.#current }
+    get loaded() { return Array.from(this.#loaded) }
+    update(objectDiff) {
+      let oldState = {...this.#current}
+      let newState = {...this.#current, ...objectDiff}
+      Object.keys(objectDiff).map(Set.prototype.add, this.#loaded)
+      this.#current = newState
+      onUpdate(newState, oldState)
+    }
+  }
+
+  // load everything asynchronously
+  async function load() {
+    // online
+    firebaseState.update({online: navigator.onLine});
+    window.addEventListener("online", () => { firebaseState.update({online: navigator.onLine}) })
+    window.addEventListener("offline", () => { firebaseState.update({online: navigator.onLine}) })
+
+
+    // firestore
+    function registerFirestoreSnapshots(name) {
+      let query = collection(db, name)
+      let unsub = onSnapshot(query, (snap) => {
+        let data = {}
+        snap.forEach(d => { data[d.id] = d.data() })
+        firebaseState.update({[name]: data})
+      })
+    }
+
+    registerFirestoreSnapshots('memoryResources')
+    registerFirestoreSnapshots('memoryModules')
+    registerFirestoreSnapshots('memorySeries')
+
+
+    // user
+    // btw make sure there is one immediate callback
+    firebaseState.update({user: auth.currentUser});
+
+    let unsubProfile = ()=>null
+    let unsubAuth = auth.onAuthStateChanged(async (newUser) => {
+      if (newUser) {
+        // get firestore profile ()
+        let profileDocRef = doc(db, 'users', newUser.uid)
+
+        // only reregister if this is a new user
+        // or else you get an infinite callback loop with the forced getIdToken
+        if(firebaseState.current.user?.uid == newUser.uid) {
+          unsubProfile()
+          unsubProfile = onSnapshot(profileDocRef, async (snap) => {
+            let newProfile = snap.data()
+            if(!snap.exists()) console.error(`
+              This user's profile does not exist. There may be an inconsistent local firebase state.
+              Try Clear-Refresh-Clear with clearing the website data (Firebase's IndexedDB).
+            `)
+            firebaseState.update({profile: newProfile})
+
+            // get updated claims token ()
+            // hopefully we can DELETE THIS CONDITION and replace it with the conditional re-registration above
+            // if(firebaseState.current.online && newProfile?.refreshToken !== profile?.refreshToken) {
+              newUser.getIdTokenResult(true)
+                .then( t => { firebaseState.update({token: t}) } )
+                .catch(console.error)
+            // }
+
+          }, console.error)
+        }
+
+        firebaseState.update({user: newUser})
+
+      } else {
+        unsubProfile()
+        firebaseState.update({profile: null})
+        firebaseState.update({user: null})
+      }
+    }, console.error)
+  };
+
+
+  // firebaseState = {
+  //   online,
+  //   user,
+  //   profile,
+  //   token,
+  //   memoryResources,
+  //   memoryModules,
+  //   memorySeries,
+  // }
+
+  load() // start loading, but return before it is finished
+  return firebaseState
+}
+
+
+window.customElements.define('btb-app', class extends HTMLElement {
+  page = "loading" // "loading" | "login" | "searching" | "playing"
+  query = {} // {module: "", series: ""}
+
+  firebaseUpdate() {
+    let oldPage = this.page
+    let newPage = this.page
+
+    // TODO handle offline case
+
+    // change app page as things are loaded into firebase
+    let mustLoad = ['user', 'profile', 'memoryResources', 'memoryModules', 'memorySeries',] // 'online', 'token',
+    if(!mustLoad.every(i => i in this.firebaseState.loaded)) {
+      newPage = "loading"
+
+    } else if(!this.firebaseState.current.user) {
+      newPage = "login"
+
+    } else if(this.query?.module) {
+      newPage = "video"
+
+    } else {
+      newPage = "searching"
+    }
+
+    // swap pages
+    if(newPage !== oldPage) {
+      const pages = {
+        loading: 'loading-page',
+        login: 'login-page',
+        video: 'video-page',
+        searching: 'search-page',
+      }
+
+      element = document.createElement(pages[newPage])
+      this.replaceChildren(element)
+
+      if(newPage == "video") { queryUpdate() }
+    }
+  }
+
+  queryUpdate() {
+
+  }
+
+  constructor() {
+    super();
+    this.firebaseState = loadFirebase(firebaseUpdate)
+
+    // const shadowRoot = this.attachShadow({ mode: "open" });
+    this.replaceChildren(document.createElement("loading-page"))
+  }
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 window.customElements.define('loading-page', class extends HTMLElement {
@@ -274,8 +447,8 @@ function syncAttributeProperty(obj, attr) {
 
 function attachTemplateToShadow(obj, templateId) {
     const fragmentRoot = document.getElementById(templateId).content.cloneNode(true)
-    const shadowRoot = obj.attachShadow({ mode: "open" });
-    shadowRoot.appendChild(fragmentRoot);
+    const shadowRoot = obj.shadowRoot || obj.attachShadow({ mode: "open" });
+    shadowRoot.replaceChildren(fragmentRoot);
     return shadowRoot
 }
 
@@ -288,3 +461,8 @@ async function accountExists(email) {
     return false
 }
 
+async function PromiseAllObject(obj) {
+  const keys = Object.keys(obj)
+  const values = await Promise.all(Object.values(obj))
+  return keys.reduce((output, k, i) => { output[k] = values[i] }, {})
+}
