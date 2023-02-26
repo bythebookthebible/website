@@ -27,7 +27,8 @@ const processNestedHtml = (content, loaderContext, dir = null) => {
 const config = {
   entry: {
     main: "./memorize/index.js",
-    account: "./account/account.js",
+    account: "./memorize/account.js",
+    forgot: "./memorize/forgot.js",
     plain: "./plainPages/plain.scss",
   },
   output: {
@@ -44,9 +45,14 @@ const config = {
       chunks: ['main'],
     }),
     new HtmlWebpackPlugin({
-      template: "account/account.html",
+      template: "memorize/account.html",
       filename: "account.html",
       chunks: ['account'],
+    }),
+    new HtmlWebpackPlugin({
+      template: "memorize/forgot.html",
+      filename: "forgot.html",
+      chunks: ['forgot'],
     }),
     new HtmlWebpackPlugin({
       template: "plainPages/privacy.html",

@@ -12,7 +12,7 @@
 [data-bullet="circle-check"] {
   list-style: none;
 
-  li::before {
+  > li::before {
     font-family: "Font Awesome 6 Free";
     content: "\f058";
     font-size: 1.2rem;

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <import src="../shared/head.partial.html" />
+  <title>By the Book</title>
+  <meta name="description" content="Easily Memorize Books of the Bible" />
+  <link rel="manifest" href="../static/manifest.json" />
+  <import tag="style" src="./account.scss" />
+</head>
+
+<body>
+  <div style="position: relative; min-height: 100vh;">
+
+    <noscript><div style="text-align: center; margin: auto; padding: 5rem;">
+      You need to enable JavaScript to run this app, but you can still download the plain videos from our
+      <a href="/videoDirectory.html">video directory</a>.
+    </div></noscript>
+
+    <!-- BODY -->
+    <div id="root"></div>
+
+    <p class="supportFooter">
+      This software is in active development, if you have trouble, improvements, or feedback, please reach out to <a href="mailto:andrew@bythebookthebible.com">andrew@bythebookthebible.com</a>
+    </p>
+  </div>
+</body>
+
+<template id="loading-icon">
+  <import style="display: inline-block;" src="../static/logoSpinning.svg" />
+</template>
+
+<template id="create-account">
+  <import tag="style" src="./account.scss" />
+  <div style="min-height: 100vh;" data-split="1/2">
+    <div class="darkBackground">
+      <form style="padding: 5vw; max-width: 40rem;" data-stack="gap-3">
+        <div>
+          <h1 style="font-size: 3rem; line-height: 3rem;">Start Your Memorization Journey!</h1>
+          <em>Digital access to all BtB products, memorization tools, resources, &amp; curriculum.</em>
+        </div>
+        <div data-stack="gap-1">
+          <input type="text" data-button="round outline negative" id="name" placeholder="Name">
+          <input type="email" data-button="round outline negative" id="email" placeholder="Email">
+          <input type="password" data-button="round outline negative" id="password" placeholder="Password">
+          <div>
+            <em>We've invested so much in developing these high quality products to serve you guys. In order to follow Christ's lead in servitude, we are choosing to not fix a high price point, but rather to give our work in support of God's people. If you choose, please give back to us according to however God has blessed you.</em>
+          </div>
+        </div>
+        <div>
+          <input type="number" data-button="round outline negative" id="price" placeholder="$ Amount/Month" class="form-control">
+          <em>Suggested $5/month subscription</em>
+        </div>
+        <button type="submit" data-button="round outline negative" class="btn" id="submit">Next</button>
+        <div id="errorMessage"></div>
+      </form>
+    </div>
+    <div>
+      <div style="display: flex; justify-content: end; margin: 1rem;">
+        <button data-button="round outline dark" data-layout="top right" id="login">Login</button>
+      </div>
+      <div style="padding: 0px 5vw 5vw;">
+        <ul data-bullet="circle-check">
+          <li>Complete digital Access to all updated By the Book <u>memorization tools</u>:<ul>
+            <li>Basic Mnemonic tracks</li>
+            <li>‘Looping’ version</li>
+            <li>‘Audio’ version</li>
+            <li>‘Visual’ version</li>
+            <li>‘Dance’ version</li>
+            <li>‘Echo’ version</li>
+            <li>‘Slow/Speed’ version</li>
+            <li>‘Blooper’ version</li>
+            <li>‘Karaoke’ version</li>
+            <li>‘Relax’ version</li>
+          </ul></li>
+          <li>Complete Digital access to all By the Book <u>curriculum &amp; products</u>:<ul>
+            <li>full pdf resource collection</li>
+            <li>Coloring pages pdf</li>
+            <li>Life-application story books pdf</li>
+            <li>illustrated scripture books pdf</li>
+            <li>Craft/Activities pdf</li>
+            <li>Copywork pdf</li>
+            <li>Vocabulary page pdf</li>
+            <li>Worksheet pdf</li>
+            <li>Sheet music pdf</li>
+            <li>Supporting lesson videos</li>
+            <li>Life-application story videos</li>
+            <li>Visual illustration videos</li>
+            <li>Princess exposition video</li>
+            <li>‘Schmo toon’ life-application video</li>
+          </ul></li>
+          <li>Complete digital access to all <u>updated BtB content</u>: (currently including)<ul>
+            <li>James (all 5 chapters)</li>
+            <li>1 John (all 5 chapters)</li>
+            <li>Malachi (all 4 chapters)</li>
+            <li>Matthew (chapter 5-7)</li>
+            <li>Psalm 1</li>
+            <li>Various other passages</li>
+          </ul></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</template>
+
+
+<template id="notSubscribedMessage">
+  <div>
+      We've invested so much in developing these high quality products to serve you guys. In order to follow Christ's lead in servitude, we are choosing to not fix a high price point, but rather to give our work freely in support of God's people. If you choose, please give back to us according to however God has blessed you.
+  </div>
+
+  <div>
+      <input type='number' data-button="round outline negative" name='amount' placeholder='$ Amount/Month' ref={priceRef} className="form-control"/>
+      <em>Suggested $5/month subscription</em>
+  </div>
+
+  <button onClick={verifyAndCheckout} data-button="round outline negative" className="btn" id="submitAuth">Next</button>
+
+  {props.noSubscriptionYet && <div style={{textAlign:"center"}} onClick={()=>{declinePartnership(); setErrorMessage("")}}>Not right now ⟶</div>}
+</template>
+
+
+<template id="subscribedMessage">
+  <div>
+      We've invested so much in developing these high quality products to serve you guys. In order to follow Christ's lead in servitude, we are choosing to not fix a high price point, but rather to give our work freely in support of God's people.
+  </div>
+  <div>
+      Currently, you are partering with us at  , but if you'd like to change that, you can do so below.
+  </div>
+
+  <button onClick={manageSubscription} data-button="round outline negative" className="btn" id="submitAuth">Edit Partnership</button>
+  {errorMessage && <div id="errorMessage" data-button="round outline negative">{errorMessage}</div>}
+</template>
+
+
+<template>
+  <div data-split="2/3" style="minHeight:100vh, maxWidth:60rem">
+    <div className='darkBackground' top=UserWidget>
+        <div data-stack as="form" style="gap: 3rem; padding: 5vw">
+            <div><h1>Keep Up Your Memorization Journey!</h1></div>
+    
+            <div id="name"></div>
+
+            {partnerRate ? subscribedMessage : notSubscribedMessage}
+    
+            {errorMessage && <div id="errorMessage" data-button="round outline negative">{errorMessage}</div>}
+    
+            {!props.noSubscriptionYet && <div onClick={()=>window.location.pathname = "/"} className="link ">⟵ Back to Memorizing</div>}
+        </div>
+    </div>
+    <div></div>
+  </div>
+</template>
+
+<template id="loading-page">
+  <import tag="style" src="./index.scss" />
+  <div class="absoluteCenter" style="width: 20rem;">
+    <import src="../static/logoSpinning.svg" />
+    <h1 style="text-align: center; font-size: 1.3rem;" id="message" />
+  </div>
+</template>
+
+<template id="loading-icon">
+  <import style="display: inline-block;" src="../static/logoSpinning.svg" />
+</template>
+
+
+<!-- SERVICE WORKER & SCRIPTS -->
+<!-- <script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("service-wor ker.js").then((registration) => {
+        console.log("Service Worker registered: ", registration);
+      }).catch((registrationError) => {
+        console.error("Service Worker registration failed: ", registrationError);
+      });
+    });
+  }
+</script> -->
+</html>

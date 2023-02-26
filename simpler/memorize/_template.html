@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <import src="../shared/head.partial.html" />
+  <title>By the Book</title>
+  <meta name="description" content="Easily Memorize Books of the Bible" />
+  <link rel="manifest" href="../static/manifest.json" />
+  <style>
+    .supportFooter {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      margin: 0;
+      padding: .8rem;
+      font-size: .8rem;
+      background-color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <div style="position: relative; min-height: 100vh; padding-bottom: 2.4rem;">
+    <div id="root"></div>
+
+    <p class="supportFooter">
+      This software is in active development, if you have trouble, improvements, or feedback, please reach out to <a href="mailto:andrew@bythebookthebible.com">andrew@bythebookthebible.com</a>
+    </p>
+
+    <noscript><div style="text-align: center; margin: auto; padding: 5rem;">
+      You need to enable JavaScript to run this app, but you can still download the plain videos from our
+      <a href="/videoDirectory.html">video directory</a>.
+    </div></noscript>
+  </div>
+</body>
+
+<!-- SERVICE WORKER & SCRIPTS -->
+<!-- <script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("service-worker.js").then((registration) => {
+        console.log("Service Worker registered: ", registration);
+      }).catch((registrationError) => {
+        console.error("Service Worker registration failed: ", registrationError);
+      });
+    });
+  }
+</script> -->
+
+</html>
+
+
+
+
