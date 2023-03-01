@@ -104,17 +104,17 @@
 </template>
 
 
-<template id="notSubscribedMessage">
+<!-- <template id="notSubscribedMessage">
   <div>
       We've invested so much in developing these high quality products to serve you guys. In order to follow Christ's lead in servitude, we are choosing to not fix a high price point, but rather to give our work freely in support of God's people. If you choose, please give back to us according to however God has blessed you.
   </div>
 
   <div>
-      <input type='number' data-button="round outline negative" name='amount' placeholder='$ Amount/Month' ref={priceRef} className="form-control"/>
+      <input type='number' data-button="round outline negative" name='amount' placeholder='$ Amount/Month' ref={priceRef} class="form-control"/>
       <em>Suggested $5/month subscription</em>
   </div>
 
-  <button onClick={verifyAndCheckout} data-button="round outline negative" className="btn" id="submitAuth">Next</button>
+  <button onClick={verifyAndCheckout} data-button="round outline negative" class="btn" id="submitAuth">Next</button>
 
   {props.noSubscriptionYet && <div style={{textAlign:"center"}} onClick={()=>{declinePartnership(); setErrorMessage("")}}>Not right now ⟶</div>}
 </template>
@@ -128,14 +128,14 @@
       Currently, you are partering with us at  , but if you'd like to change that, you can do so below.
   </div>
 
-  <button onClick={manageSubscription} data-button="round outline negative" className="btn" id="submitAuth">Edit Partnership</button>
+  <button onClick={manageSubscription} data-button="round outline negative" class="btn" id="submitAuth">Edit Partnership</button>
   {errorMessage && <div id="errorMessage" data-button="round outline negative">{errorMessage}</div>}
 </template>
 
 
 <template>
   <div data-split="2/3" style="minHeight:100vh, maxWidth:60rem">
-    <div className='darkBackground' top=UserWidget>
+    <div class='darkBackground' top=UserWidget>
         <div data-stack as="form" style="gap: 3rem; padding: 5vw">
             <div><h1>Keep Up Your Memorization Journey!</h1></div>
     
@@ -145,18 +145,90 @@
     
             {errorMessage && <div id="errorMessage" data-button="round outline negative">{errorMessage}</div>}
     
-            {!props.noSubscriptionYet && <div onClick={()=>window.location.pathname = "/"} className="link ">⟵ Back to Memorizing</div>}
+            {!props.noSubscriptionYet && <div onClick={()=>window.location.pathname = "/"} class="link ">⟵ Back to Memorizing</div>}
         </div>
+    </div>
+    <div></div>
+  </div>
+</template> -->
+
+<template id="notSubscribedMessage">
+  <div>
+      We've invested so much in developing these high quality products to serve you guys. In order to follow Christ's lead in servitude, we are choosing to not fix a high price point, but rather to give our work freely in support of God's people. If you choose, please give back to us according to however God has blessed you.
+  </div>
+  <div data-stack="gap-0">
+      <input type='number' data-button="round outline negative" id='partnerRateInput' placeholder='$ Amount/Month'/>
+      <em>Suggested $5/month subscription</em>
+  </div>
+</template>
+
+
+<template id="subscribedMessage">
+  <div>
+      We've invested so much in developing these high quality products to serve you guys. In order to follow Christ's lead in servitude, we are choosing to not fix a high price point, but rather to give our work freely in support of God's people.
+  </div>
+  <div>
+      Currently, you are partering with us at <span id="partnerRate"/>, but if you'd like to change that, you can do so below.
+  </div>
+</template>
+
+
+<template id="manageAccount">
+  <import tag="style" src="./account.scss" />
+  <style>
+    form {
+      padding: 5vw;
+    }
+
+    #back, button {
+        cursor: pointer;
+    }
+    #back:hover {
+        text-decoration: underline;
+    }
+
+    #errorMessage {
+        border-color: red;
+        background-color: #f006;
+    }
+
+    #root {
+      min-height: 100vh;
+      max-width: 60rem;
+    }
+
+    [data-cover] > [data-cover="center"] {
+      margin-block: auto;
+    }
+  </style>
+  <div id="root" data-split="2/3">
+    <div data-cover class='darkBackground'>
+      <user-widget data-cover="top"></user-widget>
+      <form data-cover="center" data-stack="gap-2">
+          <div><h1 style="margin: 0;">Keep Up Your Memorization Journey!</h1></div>
+
+          <div id="message" data-stack="gap-2"></div>
+
+          <button id="submit" data-button="round outline negative">Edit Partnership</button>
+
+          <div id="errorMessage" data-button="round outline negative" hidden></div>
+
+          <div id="back">⟵ Back to Memorizing</div>
+      </form>
     </div>
     <div></div>
   </div>
 </template>
 
+
+
+
+
 <template id="loading-page">
   <import tag="style" src="./index.scss" />
-  <div class="absoluteCenter" style="width: 20rem;">
-    <import src="../static/logoSpinning.svg" />
-    <h1 style="text-align: center; font-size: 1.3rem;" id="message" />
+  <div class="absoluteCenter" style="width: 20rem">
+    <loading-icon color="#005697"></loading-icon>
+    <h1 style="text-align: center; font-size: 1.3rem; color: #005697;" id="message" />
   </div>
 </template>
 

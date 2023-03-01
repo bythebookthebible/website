@@ -21,11 +21,13 @@
 </body>
 
 <!-- TEMPLATES -->
-<template id="loading-page">
+<template id="loading-page" data-custom-element="shadow">
   <import tag="style" src="./index.scss" />
   <div class="absoluteCenter" style="width: 20rem;">
     <import src="../static/logoSpinning.svg" />
-    <h1 style="text-align: center; font-size: 1.3rem;" id="message" />
+    <h1 style="text-align: center; font-size: 1.3rem;">
+      <slot id="message" />
+    </h1>
   </div>
 </template>
 
@@ -89,6 +91,10 @@
   </div>
   </form>
 </template>
+
+
+
+
 
 <!-- <import tag="template" id="login" src="./login.partial.html" /> -->
 
