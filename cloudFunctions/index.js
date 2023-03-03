@@ -283,10 +283,13 @@ async function cleanUserMetadata(user) {
 
 exports.getPartnershipStatus = functions.https.onCall(async (data, context) => {
   // validate auth & get (or make?) user's stripe ID
-  if(!context.auth) return '[Error] no user'
+  if(!context.auth) return 'Error: no user'
   const user = admin.auth().getUser(context.auth.uid)
   functions.logger.log("user", {user})
-  const stripeId = (await user).customClaims.stripeId
+
+  const claims = (await user).customClaims
+  if(!claims?.stripeId) return [] // no stripeId means no matches
+  const stripeId = claims.stripeId
 
   // potentially clean clean up if stripe id is inconsistent
   // await cleanUserMetadata(context.auth)

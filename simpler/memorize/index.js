@@ -157,8 +157,8 @@ document.body.onload = function(e) {
       const pages = {
         loading: 'loading-page',
         login: 'login-page',
-        video: 'video-page',
-        searching: 'search-page',
+        video: 'sign-out-button', // 'video-page',
+        searching: 'sign-out-button', // 'search-page',
       }
 
       let element = document.createElement(pages[newPage])
@@ -175,18 +175,6 @@ document.body.onload = function(e) {
   root.replaceChildren(document.createElement("loading-page"))
   let firebaseState = loadFirebase((newState, oldState)=>firebaseUpdate(newState, oldState))
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -276,6 +264,15 @@ window.customElements.define('login-page', class extends HTMLElement {
 
 
 
+window.customElements.define('sign-out-button', class extends HTMLElement {
+  connectedCallback() {
+    this.innerHTML = '<button data-button="solid round" id="logout">Logout</button>'
+    this.children.logout.onclick = e => {
+      e.preventDefault()
+      auth.signOut()
+    }
+  }
+})
 
 
 /*
@@ -347,3 +344,17 @@ async function PromiseAllObject(obj) {
   const values = await Promise.all(Object.values(obj))
   return keys.reduce((output, k, i) => { output[k] = values[i] }, {})
 }
+
+function defineAllDefaultTemplates() {
+  document.querySelectorAll('template[data-custom-element="shadow"').forEach(element => {
+    const name = element.id
+
+    window.customElements.define(name, class extends HTMLElement {    
+      connectedCallback() {
+        this.attachShadow({mode:'open'})
+        this.shadowRoot.replaceChildren(element.content.cloneNode(true))
+      }
+    })
+  })
+}
+defineAllDefaultTemplates()

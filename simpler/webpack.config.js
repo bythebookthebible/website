@@ -65,8 +65,8 @@ const config = {
       chunks: ['plain'],
     }),
 
-    // new DotenvPlugin({path: isProduction ? ".env.production" : ".env.development"}),
-    new DotenvPlugin({path:  ".env.production" }),
+    new DotenvPlugin({path: isProduction ? ".env.production" : ".env.development"}),
+    // new DotenvPlugin({path:  ".env.production" }),
     // Add your plugins here
     // Learn more about plugins from https://webpack.js.org/configuration/plugins/
   ],

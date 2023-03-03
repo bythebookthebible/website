@@ -15,7 +15,7 @@ const declinePartnership = httpsCallable(firebaseFunctions, 'declinePartnership'
 const getPartnershipStatus = httpsCallable(firebaseFunctions, 'getPartnershipStatus');
 const manageBilling = httpsCallable(firebaseFunctions, 'createBillingManagementSession');
 
- 
+
 // COPYPASTE FROM index.js
 function loadFirebase(handlers) {
   handlers.onUpdate = handlers.onUpdate || (()=>null)
@@ -161,11 +161,15 @@ document.body.onload = function(e) {
       newPage = "manageAccount"
     }
 
-    console.log({newPage, loaded})
+    // dont swap pages, if the child is actively processing stuff
+    // (specifically, when we get a new user partially created)
+    const skip = root.children[0].hasAttribute('processing')
+
+    console.log({newPage, loaded, skip})
     // innerText = newPage
 
     // swap pages if needed
-    if(newPage !== oldPage) {
+    if(!skip && newPage !== oldPage) {
       const pages = {
         loading: 'loading-page',
         createAccount: 'create-account',
@@ -193,8 +197,9 @@ document.body.onload = function(e) {
   }
 
 
-  function onAuthStateChanged(user, state) {
-    if(!state.loaded.includes('partnerRate') || state.current.user?.uid == user.uid) {
+  function onAuthStateChanged(newUser, state) {
+    console.log("updating partnerRate maybe:", {newUser, state})
+    if(newUser && (!state.loaded.includes('partnerRate') || state.current.user?.uid == newUser.uid)) {
       getPartnershipStatus().then(({data}) => {
         console.log({data, length: data.length})
 
@@ -225,19 +230,46 @@ document.body.onload = function(e) {
 
 
 
-
-
-
-
-
 window.customElements.define('create-account', class extends HTMLElement {
-  // life cycle rendering
 
-  // constructor() {}
-  // attributeChangedCallback(name, oldValue, newValue) {}
+  attributeChangedCallback(name, oldValue, newValue) {
+    const el = this.elements
+
+    // PROCESSING
+    if(name === 'processing') {
+      if(newValue) {
+        // disable buttons
+        if(el.submit.loadingButton === undefined) {
+          el.submit.loadingButton = {
+            innerHTML: el.submit.innerHTML,
+            onclick: el.submit.onclick
+          }
+          el.submit.onclick = null
+          el.submit.innerHTML = '<loading-icon color="white" width="2rem"></loading-icon>'
+        }
+      }
+      if(this.processing) {
+        // postpone syncing other attributes  
+      }
+      if(!newValue) {
+        // enable buttons
+        if(el.submit.loadingButton) {
+          el.submit.onclick = el.submit.loadingButton.onclick
+          el.submit.innerHTML = el.submit.loadingButton.innerHTML
+          el.submit.loadingButton = undefined
+        }
+        // resync remaining attributes (so they are eventually consistent)
+      }
+
+    }
+  
+  }
+
+  observedAttributes = ["processing"]
   
   connectedCallback() {
     const root = attachTemplateToShadow(this, 'create-account')
+    syncAttributeProperty(this, 'processing')
 
     const elements = {
       name: root.getElementById("name"),
@@ -270,6 +302,12 @@ window.customElements.define('create-account', class extends HTMLElement {
 
     console.warn(msg, e);
     this.elements.errorMessage.innerText = msg
+
+    if(msg == "") {
+      this.elements.errorMessage.setAttribute('hidden', '')
+    } else {
+      this.elements.errorMessage.removeAttribute('hidden')
+    }
   }
 
 
@@ -282,32 +320,35 @@ window.customElements.define('create-account', class extends HTMLElement {
     let price    = this.elements.price.value
 
     // give a loading spinner
-    this.elements.submit.onclick = null
-    let buttonText = this.elements.submit.innerHtml
-    this.elements.submit.innerHtml = '<loading-icon color="#ccc" width="2rem"></loading-icon>'
+    this.processing = true
+
+    const errorAndCleanup = e => {
+      this.setErrorMessage(e)
+      this.processing = false
+    }
 
     // validate input
-    if(!this.validateEmailAvailable(email)) {
-      return
+    if (name.length === 0) {
+      errorAndCleanup("Please enter your name.")
+
+    } else if(!(await this.validateEmailAvailable(email))) {
+      this.processing = false
 
     } else if (password.length === 0) {
-      this.setErrorMessage("Please enter password."); return
-
-    } else if (name.length === 0) {
-      this.setErrorMessage("Please enter your name."); return
+      errorAndCleanup("Please enter a password.")
 
     } else if (price < 0) {
-      this.setErrorMessage("Positive Numbers Only ;)"); return
+      errorAndCleanup("Positive Numbers Only ;)")
 
     } else if (price > 0 && price < 0.50) {
-      this.setErrorMessage("The minimum value is $0.50, due to processing fees. "); return
+      errorAndCleanup("The minimum value is $0.50, due to processing fees. ")
 
-    }
+    }    
 
     // execute transaction
     await createUserWithEmailAndPassword(auth, email, password)
-        .then(updateProfile(auth.currentUser, { displayName: name }))
-        .catch(this.setErrorMessage)
+    .catch(errorAndCleanup)
+    await updateProfile(auth.currentUser, { displayName: name })
 
     if(price == 0) {
       // dont do a checkout session, rather mark as free account
@@ -321,15 +362,17 @@ window.customElements.define('create-account', class extends HTMLElement {
         cancel_url: window.location.href,
       })).data
 
-      stripePromise.catch(console.error)
+      stripePromise.catch(errorAndCleanup)
 
-      (await stripePromise).redirectToCheckout({sessionId})
-        .catch(this.setErrorMessage)
+      const stripe = (await stripePromise)
+      console.log(stripe)
+
+      stripe.redirectToCheckout({sessionId})
+        .catch(errorAndCleanup)
     }
 
     // revert loading spinner
-    this.elements.submit.innerHtml = buttonText
-    this.elements.submit.onclick = e => this.submitForm(e)
+    return errorAndCleanup('')
   }
 
 
@@ -359,19 +402,49 @@ window.customElements.define('create-account', class extends HTMLElement {
 
 
 
-
-
-
-
-
-
-
 window.customElements.define('manage-account', class extends HTMLElement {
   // constructor() {}
 
-  renderDiff({subscribed, partnerRate}) {
+  renderDiff(diff) {
+    let {subscribed, partnerRate, processing} = diff
     const el = this.elements
 
+    console.log("rendering diff", diff)
+
+
+    // PROCESSING
+    if(processing) {
+      // disable buttons
+      if(el.submit.loadingButton === undefined) {
+        el.submit.loadingButton = {
+          innerHTML: el.submit.innerHTML,
+          onclick: el.submit.onclick
+        }
+        el.submit.onclick = null
+        el.submit.innerHTML = '<loading-icon color="#ccc" width="2rem"></loading-icon>'
+      }
+    }
+    if(this.processing) {
+      // postpone syncing other attributes
+      subscribed = undefined
+      partnerRate = undefined
+
+    }
+    if(diff.hasOwnProperty('processing') && !processing) {
+      // enable buttons
+      if(el.submit.loadingButton) {
+        el.submit.onclick = el.submit.loadingButton.onclick
+        el.submit.innerHTML = el.submit.loadingButton.innerHTML
+        el.submit.loadingButton = undefined
+      }
+
+      // resync remaining attributes (so they are eventually consistent)
+      if(!diff.hasOwnProperty('subscribed')) subscribed = this.subscribed
+      if(!diff.hasOwnProperty('partnerRate')) partnerRate = this.partnerRate
+    }
+
+
+    // PARTNER RATE
     if(partnerRate !== undefined) {
       if(partnerRate) {
         // switch message
@@ -393,6 +466,8 @@ window.customElements.define('manage-account', class extends HTMLElement {
       }
     }
 
+
+    // SUBSCRIBED
     if(subscribed !== undefined) {
       if(subscribed) {
         // switch back button text & handler
@@ -419,12 +494,8 @@ window.customElements.define('manage-account', class extends HTMLElement {
 
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if(name === 'partnerRate') {
-      this.renderDiff({partnerRate: newValue})
+    this.renderDiff({[name]: newValue})
 
-    } else if(name === 'subscribed') {
-      this.renderDiff({subscribed: newValue})
-    }
   }
 
   setErrorMessage(msg) {
@@ -437,10 +508,12 @@ window.customElements.define('manage-account', class extends HTMLElement {
     }
   }
 
+  static observedAttributes = ["subscribed", "partnerRate", "processing"]
   connectedCallback() {
     const root = attachTemplateToShadow(this, 'manageAccount')
     syncAttributeProperty(this, 'subscribed')
     syncAttributeProperty(this, 'partnerRate')
+    syncAttributeProperty(this, 'processing')
 
     const elements = this.elements = {
       message: root.getElementById("message"),
@@ -456,9 +529,6 @@ window.customElements.define('manage-account', class extends HTMLElement {
     elements.partnerRate = elements.subscribedMessage.getElementById("partnerRate")
 
     this.renderDiff(this)
-    // elements.login.onclick = ()=>window.location.pathname = "/"
-    // elements.submit.onclick = e => this.submitForm(e)
-
   }
 
   /**
@@ -481,6 +551,8 @@ window.customElements.define('manage-account', class extends HTMLElement {
 
   async verifyAndCheckout(e) {
     e.preventDefault()
+
+    this.processing = true
 
     const price = this.elements.partnerRateInput.value
     // validate input
@@ -506,6 +578,8 @@ window.customElements.define('manage-account', class extends HTMLElement {
         this.setErrorMessage("")
       }
     }
+
+    this.processing = false
   }
 
   async manageSubscription(e) {
@@ -525,150 +599,69 @@ window.customElements.define('manage-account', class extends HTMLElement {
 
 
 
+window.customElements.define('user-widget', class extends HTMLElement {
+  static observedAttributes = ["expanded", "name", "email"]
+  connectedCallback() {
+    const shadowRoot = attachTemplateToShadow(this, 'user-widget')
+    syncAttributeProperty(this, 'expanded')
+    syncAttributeProperty(this, 'name')
+    syncAttributeProperty(this, 'email')
+
+    const el = this.elements = {
+      root: shadowRoot.getElementById('root'),
+      icon: shadowRoot.getElementById('icon'),
+      name: shadowRoot.getElementById('name'),
+      email: shadowRoot.getElementById('email'),
+      manage: shadowRoot.getElementById('manage'),
+      signout: shadowRoot.getElementById('signout'),
+    }
+
+    el.icon.onclick = () => this.expanded = !this.expanded
+    el.manage.onclick = () => window.location.pathname = '/account.html'
+    el.signout.onclick = () => auth.signOut()
+
+    this.expanded = false
+
+    auth.onAuthStateChanged(async (newUser) => {
+      this.name = newUser.displayName
+      this.email = newUser.email
+    })
+  }
+
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    console.log("user-widget changed", {name, oldValue, newValue})
+    
+    const el = this.elements
+
+    if(name == 'expanded') {
+      // show / hide stuff
+      el.name.hidden = !newValue
+      el.email.hidden = !newValue
+      el.manage.hidden = !newValue
+      el.signout.hidden = !newValue
+
+      if(newValue) {
+        el.root.setAttribute('expanded', newValue)
+      } else {
+        el.root.removeAttribute('expanded')
+      }
+    }
+    if(name == 'name') { el.name.innerText = this.name }
+    if(name == 'email') { el.email.innerText = this.email }
+
+  }
+})
 
 
 
 
-
-////////////////////////////////
-////// FORGOT PASSWORD PAGE ////
-////////////////////////////////
-
-// import { firebase, auth, db } from '../shared/firebase';
-// import { createUserWithEmailAndPassword, signInWithEmailAndPassword, fetchSignInMethodsForEmail, sendPasswordResetEmail, updateProfile } from 'firebase/auth'
 
 function validEmail(email) {
   return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
 }
 
-
-// document.body.onload = async function() {
-//   const elements = {
-//     form: document.getElementsByTagName("form")[0],
-//     title: document.getElementById("title"),
-//     message: document.getElementById("message"),
-//     email: document.getElementById("email"),
-//     sendEmail: document.getElementById("sendEmail"),
-//     returnSignIn: document.getElementById("returnSignIn"),
-//     responseMessage: document.getElementById("responseMessage"),
-//   }
-
-//   let curState = {}
-
-//   function renderUpdate(state) {
-//     curState = {...curState, ...state}
-//     console.log("renderUpdate", {state, curState})
-
-//     // renders based on a state diff (first time is provided a full state)
-//     if(state.waiting === true) {
-//       elements.sendEmail.innerHTML = '<loading-icon color="#ccc" width="2rem"></loading-icon>'
-//       elements.form.onsubmit = null
-//       elements.sendEmail.onclick = null
-//     }
-
-//     if(state.waiting === false) {
-//       if(curState.submitted) {
-//         elements.sendEmail.innerText = "Resend Email"
-//         elements.form.onsubmit = returnSignIn
-//         elements.sendEmail.onclick = submitEmail
-
-//       } else {
-//         elements.sendEmail.innerText = "Submit"
-//         elements.form.onsubmit = submitEmail
-//         elements.sendEmail.onclick = submitEmail
-//       }      
-//     }
-
-//     if(state.hasOwnProperty('submitted')) {
-//       if(curState.submitted) {
-//         elements.email.style.visibility = "hidden"
-//         elements.form.onsubmit = returnSignIn
-
-//         elements.sendEmail.setAttribute('data-button', 'round outline')
-//         elements.returnSignIn.setAttribute('data-button', 'round')
-
-//         elements.sendEmail.innerText = "Resend Email"
-//         elements.title.innerText = "Password reset email sent."
-//         elements.message.innerText = 'You should receive a password reset email within the next five minutes. Follow the instructions inside to reset your password, then try logging in with your new password. If you don’t see the email, make sure to check your junk mail box.'
-
-//       } else {
-//         elements.email.style.visibility = "visible"
-//         elements.form.onsubmit = submitEmail
-
-//         elements.sendEmail.setAttribute('data-button', 'round')
-//         elements.returnSignIn.removeAttribute('data-button')
-
-//         elements.sendEmail.innerText = "Submit"
-//         elements.title.innerText = "Forgot your password?"
-//         elements.message.innerText = 'Enter your email to recieve instructions on how to reset your password.'
-//       }
-//     }
-
-//     if(state.hasOwnProperty('responseMessage')) {
-//       elements.responseMessage.innerHTML = state.responseMessage
-//     }
-//   }
-
-//   // define handlers
-
-//   function returnSignIn(e) {
-//     e.preventDefault()
-//     window.location.pathname = "/"
-//   }
-
-//   async function submitEmail(e) {
-//     e.preventDefault()
-//     renderUpdate({waiting:true})
-
-//     let email = elements.email.value
-//     if(await validateEmail(email)) {
-//       sendPasswordResetEmail(auth, email)
-//         .then(() => renderUpdate({submitted:true, waiting:false}))
-//         .catch(e => renderUpdate({responseMessage:e, waiting:false}))
-//     } else {
-//         renderUpdate({waiting:false})
-//     }
-//   }
-
-//   async function validateEmail() {
-//     let email = elements.email.value
-
-//     if(!validEmail(email)) {
-//       renderUpdate({responseMessage:'Please enter a valid email.'})
-//       return false
-//     }
-
-//     let methods = await fetchSignInMethodsForEmail(auth, email)
-//     if (methods.length > 0) {
-//         renderUpdate({responseMessage:''})
-//         return true
-//     }
-
-//     else {
-//       renderUpdate({responseMessage:'This account does not exist, please <a href="/account">create an account</a>'})
-//       return false
-//     }
-//   }
-
-//   // setup handlers
-
-//   elements.email.onblur = validateEmail
-//   elements.sendEmail.onclick = submitEmail
-//   elements.returnSignIn.onclick = returnSignIn
-
-//   renderUpdate({submitted:false, responseMessage:''})
-// }
-
-
 // common custom elements
-
-""
-
-
-
-
-
-
 
 window.customElements.define('loading-page', class extends HTMLElement {
   static observedAttributes = ["message"]
@@ -704,11 +697,11 @@ window.customElements.define('loading-icon', class extends HTMLElement {
 function syncAttributeProperty(obj, attr) {
   Object.defineProperty(obj, attr, {
     get() {
-      return this.getAttribute(attr);
+      return obj.getAttribute(attr);
     },
     set(val) {
-      if(val === false || val === undefined) this.removeAttribute(attr)
-      else this.setAttribute(attr, val)
+      if(val === false || val === undefined) obj.removeAttribute(attr)
+      else obj.setAttribute(attr, val)
     },
   });
 }
