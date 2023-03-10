@@ -27,10 +27,10 @@ export const keyFromScripture = (book, chapter, verses) => {
 export const scriptureFromKey = key => {
   let r = key.split('-')
   if(r.length == 4) {
-    return {book: books[Number(r[0])], chapter: Number(r[1]), verses: `${Number(r[2])}-${Number(r[3])}`}
+    return {book: books[Number(r[0])], chapter: String(Number(r[1])), verses: `${Number(r[2])}-${Number(r[3])}`}
   }
   if(r.length == 2) {
-    return {book: books[Number(r[0])], chapter: Number(r[1])}
+    return {book: books[Number(r[0])], chapter: String(Number(r[1]))}
   }
   if(r.length == 1) {
     return {book: books[Number(r[0])]}

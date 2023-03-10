@@ -2,13 +2,15 @@ import './index.scss'
 import { firebase, auth, db } from '../shared/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, fetchSignInMethodsForEmail, sendPasswordResetEmail, updateProfile } from 'firebase/auth'
 import { getFunctions, httpsCallable } from "firebase/functions";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import {loadStripe} from '@stripe/stripe-js'
 import { collection, doc, onSnapshot } from 'firebase/firestore';
-import { scriptureFromKey } from '../shared/util'
+import { scriptureFromKey, keyFromScripture } from '../shared/util'
 
 // Config data is imported from .env files, to allow for development to use a testing server
 // stripe config
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY)
+const cloudStorage = getStorage()
 // firebase functions config
 const firebaseFunctions = getFunctions()
 const createPartnerCheckout = httpsCallable(firebaseFunctions, 'createPartnerCheckout');
@@ -124,7 +126,7 @@ document.body.onload = function(e) {
   const root = document.getElementById("root")
 
   let page = "loading" // "loading" | "login" | "searching" | "playing"
-  let query = {} // {module: "", series: ""}
+  let query = Object.fromEntries(new URL(window.location).searchParams) // {module: "", series: ""}
 
   function firebaseUpdate(newState, oldState) {
     let oldPage = page
@@ -178,8 +180,6 @@ document.body.onload = function(e) {
 
 
 
-
-
 window.customElements.define('search-page', class extends HTMLElement {
   connectedCallback() {
     attachTemplateToShadow(this, 'search-page')
@@ -198,17 +198,46 @@ window.customElements.define('search-page', class extends HTMLElement {
 
 
 
-
-
-
-
-
 window.customElements.define('scripture-search', class extends HTMLElement {
-  static observedAttributes = ["value"]
+  // static observedAttributes = ["value"]
+
+  // get & set this.value with the DOM elements as the master
+  #value = ''
+  get value() { return this.#value }
+
+  set value(newValue) {
+    const oldRef = scriptureFromKey(this.#value)
+    const newRef = scriptureFromKey(newValue)
+
+    // update book selector
+    this.elements.book.value = newRef.book
+
+
+    // update chapter selector
+    if(!oldRef || oldRef.book !== newRef.book) {
+      // refresh chapter options
+      this.elements.chapter.innerHTML = Object.keys(this.activeModules[newRef.book]).reduce((html, chapter, index) => {
+        return html + `<option value="${chapter}">${chapter}</option>`
+      }, "")
+    }
+    this.elements.chapter.value = newRef.chapter
+
+
+    // update verses selector
+    if(!oldRef || oldRef.chapter !== newRef.chapter || oldRef.book !== newRef.book) {
+      // refresh chapter options
+      this.elements.verses.innerHTML = Object.keys(this.activeModules[newRef.book][newRef.chapter]).reduce((html, verses, index) => {
+        return html + `<option value="${verses}">${verses}</option>`
+      }, "")
+    }
+    this.elements.verses.value = newRef.verses
+
+    this.#value = newValue
+  }
+
 
   connectedCallback() {
     attachTemplateToShadow(this, 'scripture-search')
-    syncAttributeProperty(this, 'value')
 
     let { memoryModules, memoryResources } = firebaseState.current
 
@@ -267,39 +296,6 @@ window.customElements.define('scripture-search', class extends HTMLElement {
     }
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
-    console.log({name, oldValue, newValue})
-
-    if(name == 'value') {
-      const oldRef = oldValue ? scriptureFromKey(oldValue) : null
-      const newRef = scriptureFromKey(newValue)
-
-      // update book selector
-      this.elements.book.value = newRef.book
-
-
-      // update chapter selector
-      if(!oldRef || oldRef.book !== newRef.book) {
-        // refresh chapter options
-        this.elements.chapter.innerHTML = Object.keys(this.activeModules[newRef.book]).reduce((html, chapter, index) => {
-          return html + `<option value="${chapter}">${chapter}</option>`
-        }, "")
-      }
-      this.elements.chapter.value = newRef.chapter
-
-
-      // update verses selector
-      if(!oldRef || oldRef.chapter !== newRef.chapter || oldRef.book !== newRef.book) {
-        // refresh chapter options
-        this.elements.verses.innerHTML = Object.keys(this.activeModules[newRef.book][newRef.chapter]).reduce((html, verses, index) => {
-          return html + `<option value="${verses}">${verses}</option>`
-        }, "")
-      }
-      this.elements.verses.value = newRef.verses
-
-
-    }
-  }
 })
 
 
@@ -315,6 +311,41 @@ window.customElements.define('video-page', class extends HTMLElement {
   connectedCallback() {
     syncAttributeProperty(this, 'message')
     attachTemplateToShadow(this, 'video-page')
+
+    const el = this.elements = {
+      search: this.shadowRoot.querySelector('scripture-search'),
+      video: this.shadowRoot.querySelector('video'),
+    }
+
+    // search bar handler
+    const query = Object.fromEntries(new URL(window.location).searchParams) // {module: "", series: ""}
+    el.search.value = query.module
+    el.search.onblur = e => {
+      const value = this.elements.search.value
+      let url = new URL(window.location)
+      url.searchParams.set('module', value)
+      window.location = url.href
+    }
+
+    // get things for the video
+    let { memoryModules, memorySeries, memoryResources } = firebaseState.current
+
+    // reorder memorySeries
+    let { Schmideo, Music, ...other } = memorySeries
+    memorySeries = { Schmideo, Music, ...other }
+
+    let relevantResources = Object.values(memoryResources).filter(val => val.module == query.module)
+
+    // sort relevantResources in order of memorySeries
+    relevantResources = Object.keys(memorySeries)
+      .map(series => relevantResources.find(x => x.series == series))
+      .filter(x => x != undefined)
+    console.log({relevantResources, memoryModules, memorySeries})
+
+
+    let resource = relevantResources[0]
+    getDownloadURL(ref(cloudStorage, resource.location))
+      .then(url => el.video.src = url)
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -410,11 +441,6 @@ window.customElements.define('loading-icon', class extends HTMLElement {
     style.width = this.width
   }
 })
-
-
-
-
-
 
 
 

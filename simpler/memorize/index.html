@@ -227,19 +227,35 @@
   </div>
 </template>
 
-<template id="scripture-search"><div>
+<template id="scripture-search">
   <select id="book"></select>
   <select id="chapter"></select>
   <select id="verses"></select>
-</div></template>
+</template>
 
 
 <template id="video-page">
-  <div>
-    <user-widget></user-widget>
+  <style>
+    .header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+    scripture-search {
+      flex-grow: 1;
+      text-align: center;
+    }
+    video {
+      width: 100%;
+      border: 0.5rem solid #005697;
+      box-sizing: border-box;
+    }
+  </style>
+  <div class="header">
+    <user-widget />
     <scripture-search></scripture-search>
   </div>
-  <video />
+  <video controls/>
 </template>
 
 
