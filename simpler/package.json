@@ -27,7 +27,7 @@
     "build:prod": "webpack --mode=production",
     "build:dev": "webpack --mode=development",
     "watch": "webpack --mode=development --watch",
-    "serve": "webpack serve --mode=development"
+    "serve": "webpack serve --mode=development --allowed-hosts all"
   },
   "dependencies": {
     "dotenv-webpack": "^8.0.1",

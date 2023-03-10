@@ -4,6 +4,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, fetchSignIn
 import { getFunctions, httpsCallable } from "firebase/functions";
 import {loadStripe} from '@stripe/stripe-js'
 import { collection, doc, onSnapshot } from 'firebase/firestore';
+import { scriptureFromKey } from '../shared/util'
 
 // Config data is imported from .env files, to allow for development to use a testing server
 // stripe config
@@ -13,6 +14,7 @@ const firebaseFunctions = getFunctions()
 const createPartnerCheckout = httpsCallable(firebaseFunctions, 'createPartnerCheckout');
 const declinePartnership = httpsCallable(firebaseFunctions, 'declinePartnership');
 
+var firebaseState // keep this as a global state
 
 function loadFirebase(onUpdate) {
   // special state object to track what has been loaded
@@ -63,7 +65,7 @@ function loadFirebase(onUpdate) {
 
     let unsubProfile = ()=>null
     let unsubAuth = auth.onAuthStateChanged(async (newUser) => {
-      console.log({newUser})
+      // console.log({newUser})
       if (newUser !== null) {
         // get firestore profile ()
         let profileDocRef = doc(db, 'users', newUser.uid)
@@ -74,7 +76,7 @@ function loadFirebase(onUpdate) {
           unsubProfile()
           unsubProfile = onSnapshot(profileDocRef, async (snap) => {
             let newProfile = snap.data()
-            console.log({newProfile})
+            // console.log({newProfile})
             if(!snap.exists()) console.error(`
               This user's profile does not exist. There may be an inconsistent local firebase state.
               Try Clear-Refresh-Clear with clearing the website data (Firebase's IndexedDB).
@@ -120,13 +122,11 @@ function loadFirebase(onUpdate) {
 
 document.body.onload = function(e) {
   const root = document.getElementById("root")
-  console.log(root)
 
   let page = "loading" // "loading" | "login" | "searching" | "playing"
   let query = {} // {module: "", series: ""}
 
   function firebaseUpdate(newState, oldState) {
-    console.log({newState, oldState, user: auth.currentUser})
     let oldPage = page
     let newPage = page
 
@@ -149,7 +149,6 @@ document.body.onload = function(e) {
       newPage = "searching"
     }
 
-    console.log({newPage, loaded})
     // innerText = newPage
 
     // swap pages
@@ -157,8 +156,8 @@ document.body.onload = function(e) {
       const pages = {
         loading: 'loading-page',
         login: 'login-page',
-        video: 'sign-out-button', // 'video-page',
-        searching: 'sign-out-button', // 'search-page',
+        video: 'video-page',
+        searching: 'search-page',
       }
 
       let element = document.createElement(pages[newPage])
@@ -173,7 +172,7 @@ document.body.onload = function(e) {
   }
 
   root.replaceChildren(document.createElement("loading-page"))
-  let firebaseState = loadFirebase((newState, oldState)=>firebaseUpdate(newState, oldState))
+  firebaseState = loadFirebase((newState, oldState)=>firebaseUpdate(newState, oldState))
 }
 
 
@@ -181,6 +180,205 @@ document.body.onload = function(e) {
 
 
 
+window.customElements.define('search-page', class extends HTMLElement {
+  connectedCallback() {
+    attachTemplateToShadow(this, 'search-page')
+
+    const el = this.elements = {
+      submit: this.shadowRoot.getElementById("submitArrow"),
+      search: this.shadowRoot.querySelector('scripture-search'),
+    }
+
+    el.submit.onclick = e => {
+      const value = this.elements.search.value
+      window.location.search = "?module=" + value
+    }
+  }
+})
+
+
+
+
+
+
+
+
+window.customElements.define('scripture-search', class extends HTMLElement {
+  static observedAttributes = ["value"]
+
+  connectedCallback() {
+    attachTemplateToShadow(this, 'scripture-search')
+    syncAttributeProperty(this, 'value')
+
+    let { memoryModules, memoryResources } = firebaseState.current
+
+    const activeModules = this.activeModules = Object.values(memoryResources).reduce((books, {module}, index) => {
+      if(!memoryModules.hasOwnProperty(module)) {
+        console.error(`Resources for missing module "${module}" - this is an inconsistency in the database`)
+        return books
+      }
+
+      const moduleInfo = memoryModules[module]
+
+      let {book, chapter} = moduleInfo
+      let verses = `${moduleInfo.startVerse}-${moduleInfo.endVerse}`
+
+      books[book] ??= {}
+      books[book][chapter] ??= {}
+      books[book][chapter][verses] ??= module
+
+      return books
+    }, {})
+
+    const el = this.elements = {
+      book: this.shadowRoot.getElementById('book'),
+      chapter: this.shadowRoot.getElementById('chapter'),
+      verses: this.shadowRoot.getElementById('verses'),
+    }
+
+
+    // initialize
+    el.book.innerHTML = Object.keys(activeModules).reduce((html, book, index) => {
+      return html + `<option value="${book}">${book}</option>`
+    }, "")
+
+    const defaultValue = this.getAttribute('defaultValue') 
+      ?? Object.values(Object.values(activeModules['James'])[0])[0]
+
+    this.value = defaultValue
+
+    // handlers
+    el.book.onchange = e => {
+      if(el.book.value !== scriptureFromKey(this.value).book) {
+        this.value = Object.values(Object.values(activeModules[el.book.value])[0])[0]
+      }
+    }
+
+    el.chapter.onchange = e => {
+      if(el.chapter.value !== scriptureFromKey(this.value).chapter) {
+        this.value = Object.values(activeModules[el.book.value][el.chapter.value])[0]
+      }
+    }
+
+    el.verses.onchange = e => {
+      if(el.verses.value !== scriptureFromKey(this.value).verses) {
+        this.value = activeModules[el.book.value][el.chapter.value][el.verses.value]
+      }
+    }
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    console.log({name, oldValue, newValue})
+
+    if(name == 'value') {
+      const oldRef = oldValue ? scriptureFromKey(oldValue) : null
+      const newRef = scriptureFromKey(newValue)
+
+      // update book selector
+      this.elements.book.value = newRef.book
+
+
+      // update chapter selector
+      if(!oldRef || oldRef.book !== newRef.book) {
+        // refresh chapter options
+        this.elements.chapter.innerHTML = Object.keys(this.activeModules[newRef.book]).reduce((html, chapter, index) => {
+          return html + `<option value="${chapter}">${chapter}</option>`
+        }, "")
+      }
+      this.elements.chapter.value = newRef.chapter
+
+
+      // update verses selector
+      if(!oldRef || oldRef.chapter !== newRef.chapter || oldRef.book !== newRef.book) {
+        // refresh chapter options
+        this.elements.verses.innerHTML = Object.keys(this.activeModules[newRef.book][newRef.chapter]).reduce((html, verses, index) => {
+          return html + `<option value="${verses}">${verses}</option>`
+        }, "")
+      }
+      this.elements.verses.value = newRef.verses
+
+
+    }
+  }
+})
+
+
+
+
+
+
+
+
+window.customElements.define('video-page', class extends HTMLElement {
+  static observedAttributes = [ ]
+
+  connectedCallback() {
+    syncAttributeProperty(this, 'message')
+    attachTemplateToShadow(this, 'video-page')
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+  }
+})
+
+
+
+
+
+
+
+// COPYPASTE from account
+window.customElements.define('user-widget', class extends HTMLElement {
+  static observedAttributes = ["expanded", "name", "email"]
+  connectedCallback() {
+    const shadowRoot = attachTemplateToShadow(this, 'user-widget')
+    syncAttributeProperty(this, 'expanded')
+    syncAttributeProperty(this, 'name')
+    syncAttributeProperty(this, 'email')
+
+    const el = this.elements = {
+      root: shadowRoot.getElementById('root'),
+      icon: shadowRoot.getElementById('icon'),
+      name: shadowRoot.getElementById('name'),
+      email: shadowRoot.getElementById('email'),
+      manage: shadowRoot.getElementById('manage'),
+      signout: shadowRoot.getElementById('signout'),
+    }
+
+    el.icon.onclick = () => this.expanded = !this.expanded
+    el.manage.onclick = () => window.location.pathname = '/account.html'
+    el.signout.onclick = () => auth.signOut()
+
+    this.expanded = false
+
+    auth.onAuthStateChanged(async (newUser) => {
+      this.name = newUser.displayName
+      this.email = newUser.email
+    })
+  }
+
+
+  attributeChangedCallback(name, oldValue, newValue) {    
+    const el = this.elements
+
+    if(name == 'expanded') {
+      // show / hide stuff
+      el.name.hidden = !newValue
+      el.email.hidden = !newValue
+      el.manage.hidden = !newValue
+      el.signout.hidden = !newValue
+
+      if(newValue) {
+        el.root.setAttribute('expanded', newValue)
+      } else {
+        el.root.removeAttribute('expanded')
+      }
+    }
+    if(name == 'name') { el.name.innerText = this.name }
+    if(name == 'email') { el.email.innerText = this.email }
+
+  }
+})
 
 
 window.customElements.define('loading-page', class extends HTMLElement {
