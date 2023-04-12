@@ -26,10 +26,10 @@ const processNestedHtml = (content, loaderContext, dir = null) => {
 
 const config = {
   entry: {
-    main: "./memorize/index.js",
-    account: "./memorize/account.js",
-    forgot: "./memorize/forgot.js",
-    plain: "./plainPages/plain.scss",
+    main: "./pages/index.js",
+    account: "./pages/account.js",
+    forgot: "./pages/forgot.js",
+    plain: "./pages/plain.scss",
   },
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -41,26 +41,26 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "memorize/index.html",
+      template: "pages/index.html",
       chunks: ['main'],
     }),
     new HtmlWebpackPlugin({
-      template: "memorize/account.html",
+      template: "pages/account.html",
       filename: "account.html",
       chunks: ['account'],
     }),
     new HtmlWebpackPlugin({
-      template: "memorize/forgot.html",
+      template: "pages/forgot.html",
       filename: "forgot.html",
       chunks: ['forgot'],
     }),
     new HtmlWebpackPlugin({
-      template: "plainPages/privacy.html",
+      template: "pages/privacy.html",
       filename: "privacy.html",
       chunks: ['plain'],
     }),
     new HtmlWebpackPlugin({
-      template: "plainPages/terms.html",
+      template: "pages/terms.html",
       filename: "terms.html",
       chunks: ['plain'],
     }),
@@ -88,7 +88,7 @@ const config = {
         test: /\.html$/i,
         use: [
           {loader: "html-loader"},
-          {loader: path.resolve('shared/htmlRecursiveLoader.js')},
+          {loader: path.resolve('./htmlRecursiveLoader.js')},
         ],
         // loader: "html-loader",
         // options: {

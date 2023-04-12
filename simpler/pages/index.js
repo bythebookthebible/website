@@ -1,11 +1,11 @@
 import './index.scss'
-import { firebase, auth, db } from '../shared/firebase';
+import { firebase, auth, db } from '../sharedUI/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, fetchSignInMethodsForEmail, sendPasswordResetEmail, updateProfile } from 'firebase/auth'
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import {loadStripe} from '@stripe/stripe-js'
 import { collection, doc, onSnapshot } from 'firebase/firestore';
-import { scriptureFromKey, keyFromScripture } from '../shared/util'
+import { scriptureFromKey, keyFromScripture } from '../sharedUtil/util'
 
 // Config data is imported from .env files, to allow for development to use a testing server
 // stripe config

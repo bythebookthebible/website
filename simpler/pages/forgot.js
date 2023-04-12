@@ -1,4 +1,4 @@
-import { firebase, auth, db } from '../shared/firebase';
+import { firebase, auth, db } from '../sharedUI/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, fetchSignInMethodsForEmail, sendPasswordResetEmail, updateProfile } from 'firebase/auth'
 
 function validEmail(email) {

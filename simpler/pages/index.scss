@@ -1,7 +1,7 @@
 @use "sass:color";
 @import "../node_modules/bootstrap/scss/bootstrap-reboot";
-@import "../shared/fonts";
-@import "../shared/colors.scss";
+@import "../sharedUI/fonts";
+@import "../sharedUI/colors.scss";
 
 body {
   color: $darkBlue;

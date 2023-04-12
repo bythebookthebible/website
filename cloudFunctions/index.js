@@ -422,8 +422,8 @@ exports.updateVideoDirectoryCache = functions.firestore.document("memoryResource
   <meta name="description" content="Easily Memorize Books of the Bible" />
 
   <meta charset="utf-8" />
-  <link rel="icon" href="../static/logo.png" type="image/png"/>
-  <link rel="apple-touch-icon" href="../static/logo.png" />
+  <link rel="icon" href="../public/logo.png" type="image/png"/>
+  <link rel="apple-touch-icon" href="../public/logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#28B7FF" />
 

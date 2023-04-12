@@ -1,5 +1,5 @@
 import './index.scss'
-import { firebase, auth, db } from '../shared/firebase';
+import { firebase, auth, db } from '../sharedUI/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, fetchSignInMethodsForEmail, sendPasswordResetEmail, updateProfile, onAuthStateChanged } from 'firebase/auth'
 import { getFunctions, httpsCallable } from "firebase/functions";
 import {loadStripe} from '@stripe/stripe-js'

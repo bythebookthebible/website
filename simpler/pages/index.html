@@ -2,10 +2,10 @@
 <html>
 
 <head>
-  <import src="../shared/head.partial.html" />
+  <import src="../sharedUI/head.partial.html" />
   <title>By the Book</title>
   <meta name="description" content="Easily Memorize Books of the Bible" />
-  <link rel="manifest" href="../static/manifest.json" />
+  <link rel="manifest" href="../public/manifest.json" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
@@ -25,7 +25,7 @@
 <template id="loading-page" data-custom-element="shadow">
   <import tag="style" src="./index.scss" />
   <div class="absoluteCenter" style="width: 20rem;">
-    <import src="../static/logoSpinning.svg" />
+    <import src="../public/logoSpinning.svg" />
     <h1 style="text-align: center; font-size: 1.3rem;">
       <slot id="message" />
     </h1>
@@ -33,7 +33,7 @@
 </template>
 
 <template id="loading-icon">
-  <import style="display: inline-block;" src="../static/logoSpinning.svg" />
+  <import style="display: inline-block;" src="../public/logoSpinning.svg" />
 </template>
 
 <template id="login">
@@ -212,7 +212,7 @@
       <div data-stack="gap-3" class="search-stack">
         <div>
           <div class="title">
-            <import tag="span" src="../static/logo.svg" />By the Book
+            <import tag="span" src="../public/logo.svg" />By the Book
           </div>
           <span>memorize the context</span>
         </div>
