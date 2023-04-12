@@ -37,17 +37,137 @@ enableIndexedDbPersistence(db)
 // enable auth persistence
 setPersistence(auth, indexedDBLocalPersistence).catch(console.error)
 
+export function firestoreCacheKey (storageLocation) {
+  const r = ref(cloudStorage, storageLocation)
+  return storageLocation && `https://firebasestorage.googleapis.com/v0/b/${r.bucket}/o/${encodeURIComponent(r.fullPath)}?alt=media`
+}
+
+export const memoryResourcesDB = 'memoryResources'
+export const memorySeriesDB = 'memorySeries'
+export const memoryModulesDB = 'memoryModules'
+
+// load firebase into global scope
+export function loadFirebase(handlers) {
+  handlers.onUpdate = handlers.onUpdate || (()=>null)
+  handlers.onAuthStateChanged = handlers.onAuthStateChanged || (()=>null)
+  handlers.onProfileSnapshot = handlers.onProfileSnapshot || (()=>null)
+  
+  // special state object to track what has been loaded
+  // and call onUpdate whenever something changes
+  let firebaseState = new class {
+    #current = undefined
+    #loaded = new Set()
+    get current() { return this.#current }
+    get loaded() { return Array.from(this.#loaded) }
+    update(objectDiff) {
+      let oldState = {current: {...this.#current}, loaded: [...this.loaded]}
+
+      Object.keys(objectDiff).map(Set.prototype.add, this.#loaded)
+      this.#current = {...this.#current, ...objectDiff}
+
+      // let newState = {current: {...this.#current}, loaded: [...this.loaded]}
+
+      handlers.onUpdate(this, oldState)
+    }
+  }
+
+  // load everything asynchronously
+  async function load() {
+    // online
+    firebaseState.update({online: navigator.onLine});
+    window.addEventListener("online", () => { firebaseState.update({online: navigator.onLine}) })
+    window.addEventListener("offline", () => { firebaseState.update({online: navigator.onLine}) })
+
+
+    // firestore
+    function registerFirestoreSnapshots(name) {
+      let query = collection(db, name)
+      let unsub = onSnapshot(query, (snap) => {
+        let data = {}
+        snap.forEach(d => { data[d.id] = d.data() })
+        firebaseState.update({[name]: data})
+      })
+    }
+
+    registerFirestoreSnapshots('memoryResources')
+    registerFirestoreSnapshots('memoryModules')
+    registerFirestoreSnapshots('memorySeries')
+
+
+    // user
+    // make sure there is one immediate update callback
+    firebaseState.update({user: auth.currentUser});
+
+    let unsubProfile = ()=>null
+    let unsubAuth = auth.onAuthStateChanged(async (newUser) => {
+      console.log({newUser})
+      handlers.onAuthStateChanged(newUser, firebaseState)
+      if (newUser !== null) {
+        // get firestore profile ()
+        let profileDocRef = doc(db, 'users', newUser.uid)
+
+        // only reregister if this is a new user
+        // or else you get an infinite callback loop with the forced getIdToken
+        if(!firebaseState.loaded.includes('profile') || firebaseState.current.user?.uid == newUser.uid) {
+          unsubProfile()
+          unsubProfile = onSnapshot(profileDocRef, async (snap) => {
+            handlers.onProfileSnapshot(snap, firebaseState)
+            let newProfile = snap.data()
+            console.log({newProfile})
+            if(!snap.exists()) console.error(`
+              This user's profile does not exist. There may be an inconsistent local firebase state.
+              Try Clear-Refresh-Clear with clearing the website data (Firebase's IndexedDB).
+            `)
+            firebaseState.update({profile: newProfile})
+
+            // get updated claims token ()
+            // hopefully we can DELETE THIS CONDITION and replace it with the conditional re-registration above
+            // if(firebaseState.current.online && newProfile?.refreshToken !== profile?.refreshToken) {
+              newUser.getIdTokenResult(true)
+                .then( t => { firebaseState.update({token: t}) } )
+                .catch(console.error)
+            // }
+
+          }, console.error)
+        }
+
+        firebaseState.update({user: newUser})
+
+      } else {
+        unsubProfile()
+        firebaseState.update({profile: null})
+        firebaseState.update({user: null})
+      }
+    }, console.error)
+  };
+
+
+  // firebaseState = {
+  //   online,
+  //   user,
+  //   profile,
+  //   token,
+  //   memoryResources,
+  //   memoryModules,
+  //   memorySeries,
+  // }
+
+  load() // start loading, but return before it is finished
+  return firebaseState
+}
+
+
 // export function useOnlineStatus() {
-//   const [online, setOnline] = useState(navigator.onLine);
+//   const [online, setOnline] = useState(navigator.onLine);  
 
 //   // Listen to online state
 //   useEffect(()=>{
-//     let f = ()=>setOnline(navigator.onLine)
+//     let f = ()=>setOnline(navigator.onLine)  
 //     window.addEventListener("online", f)
 //     window.addEventListener("offline", f)
 
 //     return ()=>{
-//       window.removeEventListener("online", f)
+//       window.removeEventListener("online", f)  
 //       window.removeEventListener("offline", f)
 //     }
 //   }, [])
@@ -59,23 +179,23 @@ setPersistence(auth, indexedDBLocalPersistence).catch(console.error)
 //  * @returns a fresh reference to the current user, taking user.profile from firestore
 //  */
 // export function useAuth() {
-//   const [user, setUser] = useState(auth.currentUser);
+//   const [user, setUser] = useState(auth.currentUser);  
 //   const [token, setToken] = useState(null);
 //   const [profile, setProfile] = useState(null);
 //   const online = useOnlineStatus();
 
 //   // Listen to onAuthStateChanged
 //   useEffect(() => {
-//     let unsubProfile = ()=>null
+//     let unsubProfile = ()=>null  
 
 //     let unsubAuth = auth.onAuthStateChanged(async (newUser) => {
 //       if (newUser) {
-//         // get firestore profile ()
+//         // get firestore profile ()  
 //         let profileDocRef = doc(db, 'users', newUser.uid)
 
 //         unsubProfile()
 //         unsubProfile = onSnapshot(profileDocRef, async (snap) => {
-//           let newProfile = snap.data()
+//           let newProfile = snap.data()  
 //           if(!snap.exists()) console.error(`
 //             This user's profile does not exist. There may be an inconsistent local firebase state.
 //             Try Clear-Refresh-Clear with clearing the website data (Firebase's IndexedDB).
@@ -85,7 +205,7 @@ setPersistence(auth, indexedDBLocalPersistence).catch(console.error)
 
 //           // get updated claims token ()
 //           if(online && newProfile?.refreshToken !== profile?.refreshToken) {
-//             newUser.getIdTokenResult(true)
+//             newUser.getIdTokenResult(true)  
 //               .then(setToken).catch(console.error)
 //           }
 
@@ -94,7 +214,7 @@ setPersistence(auth, indexedDBLocalPersistence).catch(console.error)
 //         setUser(newUser)
 
 //       } else {
-//         setProfile(null)
+//         setProfile(null)  
 //         setUser(null)
 //       }
 //     }, console.error)
@@ -109,18 +229,13 @@ setPersistence(auth, indexedDBLocalPersistence).catch(console.error)
 //  * @returns the url to download an cloud storage file at @param storageLocation
 //  */
 // export function useDownloadUrl (storageLocation) {
-//   const [url, setUrl] = useState()
+//   const [url, setUrl] = useState()  
 //   useEffect(() => {
-//     if(storageLocation) getDownloadURL(ref(cloudStorage, storageLocation)).then(url => setUrl(url))
+//     if(storageLocation) getDownloadURL(ref(cloudStorage, storageLocation)).then(url => setUrl(url))  
 //     else setUrl(undefined)
 //   }, [storageLocation])
 //   return url
 // }
-
-export function firestoreCacheKey (storageLocation) {
-  const r = ref(cloudStorage, storageLocation)
-  return storageLocation && `https://firebasestorage.googleapis.com/v0/b/${r.bucket}/o/${encodeURIComponent(r.fullPath)}?alt=media`
-}
 
 // export function useDownloadUrls(storageLocations) {
 //   const [urls, setUrls] = useState([])
@@ -146,10 +261,6 @@ export function firestoreCacheKey (storageLocation) {
 //   let user = useAuth()
 //   return user.profile.power
 // }
-
-export const memoryResourcesDB = 'memoryResources'
-export const memorySeriesDB = 'memorySeries'
-export const memoryModulesDB = 'memoryModules'
 
 // /**
 //  * @returns the database of memory videos which are available

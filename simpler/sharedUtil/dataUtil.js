@@ -1,4 +1,10 @@
-// import deepEqual from 'fast-deep-equal/es6/react'
+export const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+
+export async function PromiseAllObject(obj) {
+  const keys = Object.keys(obj)
+  const values = await Promise.all(Object.values(obj))
+  return keys.reduce((output, k, i) => { output[k] = values[i] }, {})
+}
 
 export const books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy',
 'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles',
@@ -140,38 +146,6 @@ export const objectFilter = (obj, fn) =>
   )
 
 export const interpolate = (x,y,t) => x - x*t + y*t
-
-export const fullScreenEnabled = () => (!!(
-  document.fullscreenEnabled ||
-  document.mozFullScreenEnabled || 
-  document.msFullscreenEnabled || 
-  document.webkitSupportsFullscreen || 
-  document.webkitFullscreenEnabled || 
-  document.webkitSupportsPresentationMode
-))
-
-export const toggleFullscreen = function(node) {
-   if (isFullScreen()) {
-      if (document.exitFullscreen) document.exitFullscreen();
-      else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
-      else if (document.webkitCancelFullScreen) document.webkitCancelFullScreen();
-      else if (document.msExitFullscreen) document.msExitFullscreen();
-      else if (document.webkitSetPresentationMode) document.webkitSetPresentationMode("inline");
-      return false;
-   }
-   else {
-      if (node.requestFullscreen) node.requestFullscreen();
-      else if (node.mozRequestFullScreen) node.mozRequestFullScreen();
-      else if (node.webkitRequestFullScreen) node.webkitRequestFullScreen();
-      else if (node.msRequestFullscreen) node.msRequestFullscreen();
-      else if (node.webkitSetPresentationMode) node.webkitSetPresentationMode("fullscreen");
-      return true
-   }
-}
-
-const isFullScreen = function() {
-   return !!(document.fullscreen || document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement || document.fullscreenElement);
-}
 
 export function ArrayAll(arr, fn= x=>x) {
   return arr.reduce((prev, cur) => prev && fn(cur), true)

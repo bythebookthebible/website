@@ -1,9 +1,8 @@
 import { firebase, auth, db } from '../sharedUI/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, fetchSignInMethodsForEmail, sendPasswordResetEmail, updateProfile } from 'firebase/auth'
-
-function validEmail(email) {
-  return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
-}
+import { emailRegex } from '../sharedUtil/dataUtil';
+import '../sharedUI/sharedWidgets'
+import '../sharedUI/loginWidgets'
 
 
 document.body.onload = async function() {
@@ -97,7 +96,7 @@ document.body.onload = async function() {
   async function validateEmail() {
     let email = elements.email.value
 
-    if(!validEmail(email)) {
+    if(!emailRegex.test(email)) {
       renderUpdate({responseMessage:'Please enter a valid email.'})
       return false
     }
@@ -121,40 +120,4 @@ document.body.onload = async function() {
   elements.returnSignIn.onclick = returnSignIn
 
   renderUpdate({submitted:false, responseMessage:''})
-}
-
-
-// common custom elements
-window.customElements.define('loading-icon', class extends HTMLElement {
-    static observedAttributes = ["color", "width"]
-  
-    constructor() {
-      super();
-      syncAttributeProperty(this, 'color')
-      syncAttributeProperty(this, 'width')
-      attachTemplateToShadow(this, 'loading-icon')
-      let style = this.shadowRoot.getElementById("root").style
-      style.fill = this.color
-      style.width = this.width
-    }
-  })
-
-// sync object properties with html attributes -- attributes are the master
-function syncAttributeProperty(obj, attr) {
-  Object.defineProperty(obj, attr, {
-    get() {
-      return this.getAttribute(attr);
-    },
-    set(val) {
-      if(val === false || val === undefined) this.removeAttribute(attr)
-      else this.setAttribute(attr, val)
-    },
-  });
-}
-
-function attachTemplateToShadow(obj, templateId) {
-  const fragmentRoot = document.getElementById(templateId).content.cloneNode(true)
-  const shadowRoot = obj.shadowRoot || obj.attachShadow({ mode: "open" });
-  shadowRoot.replaceChildren(fragmentRoot);
-  return shadowRoot
 }
