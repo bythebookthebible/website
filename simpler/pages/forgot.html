@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <import src="../sharedUI/head.partial.html" />
+  <import src="../sharedUI/head.html" />
   <title>By the Book</title>
   <meta name="description" content="Easily Memorize Books of the Bible" />
   <link rel="manifest" href="../public/manifest.json" />
@@ -34,20 +34,6 @@
   </div>
 </body>
 
-<template id="loading-icon">
-  <import style="display: inline-block;" src="../public/logoSpinning.svg" />
-</template>
+<import src="../sharedUI/sharedWidgets.html" />
 
-<!-- SERVICE WORKER & SCRIPTS -->
-<!-- <script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("service-worker.js").then((registration) => {
-        console.log("Service Worker registered: ", registration);
-      }).catch((registrationError) => {
-        console.error("Service Worker registration failed: ", registrationError);
-      });
-    });
-  }
-</script> -->
 </html>

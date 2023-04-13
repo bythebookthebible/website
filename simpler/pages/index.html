@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <import src="../sharedUI/head.partial.html" />
+  <import src="../sharedUI/head.html" />
   <title>By the Book</title>
   <meta name="description" content="Easily Memorize Books of the Bible" />
   <link rel="manifest" href="../public/manifest.json" />
@@ -10,8 +10,6 @@
 </head>
 
 <body>
-  <!-- <loading-page message="Loading..."></loading-page> -->
-  <!-- <login-page mode="signIn"></login-page> -->
   <btb-app id="root"></btb-app>
 
   <noscript><div style="text-align: center; margin: auto; padding: 5rem;">
@@ -20,137 +18,6 @@
   </div></noscript>
 
 </body>
-
-<!-- TEMPLATES -->
-<template id="loading-page" data-custom-element="shadow">
-  <import tag="style" src="./index.scss" />
-  <div class="absoluteCenter" style="width: 20rem;">
-    <import src="../public/logoSpinning.svg" />
-    <h1 style="text-align: center; font-size: 1.3rem;">
-      <slot id="message" />
-    </h1>
-  </div>
-</template>
-
-<template id="loading-icon">
-  <import style="display: inline-block;" src="../public/logoSpinning.svg" />
-</template>
-
-<template id="login">
-  <import tag="style" src="./index.scss" />
-  <style>
-    .loginForm {
-        width: 80%;
-        max-width: 20rem;
-        margin: 12vh auto;
-        text-align: center;
-        color: var(--darkBlue);
-    }
-
-    .loginForm > * {
-      margin: 1rem 0;
-    }
-
-    input {
-        width: 100%;
-        color: var(--darkBlue);
-    }
-
-    input, button, label {
-        display: block;
-    }
-
-    label {
-        color: var(--darkBlue);
-        cursor: pointer;
-    }
-    label:hover {
-        text-decoration: underline;
-    }
-
-    #errorMessage {
-        border-color: red;
-        background-color: #f006;
-    }
-  </style>
-  <form class="loginForm">
-    <h2 style="text-align: center;">Sign In</h2>
-    <input id="email" data-button="round outline" type="email" placeholder="Email" autofocus />
-
-    <div>
-      <input id="password" data-button="round outline" type="password" placeholder="Password" />
-      <label id="forgot">Forgot your password?</label>
-    </div>
-
-    <div>
-      <button id="submit" data-button="round" style="width: 100%;">Sign In</button>
-      <label id="createAccount">Create an account</label>
-    </div>
-
-    <div id="error-message" class="text-danger py-2">
-    
-  </div>
-  </form>
-</template>
-
-<template id="user-widget">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" />
-  <import tag="style" src="./index.scss" />
-  <style>
-    #icon {
-      font-size: 1.5rem;
-      height: 1.5rem;
-      width: 1.5rem;
-      text-align: center;
-    }
-    #root:not([expanded]) #header {
-      height: 1.5rem;
-      width: 1.5rem;
-    }
-    #root:not([expanded]) [data-stack] {
-      align-items: center;
-      height: 1.5rem;
-      width: 1.5rem;
-    }
-    #name {
-      font-size: 1.5rem;
-    }
-    #email {
-      font-size: 0.75rem;
-    }
-    #root {
-      color: #005697;
-      border: #005697 solid 1px;
-      background-color: white;
-      text-align: left;
-      margin: 1rem;
-      padding: 1rem;
-      display: inline-block;
-      border-radius: 2rem;
-      max-width: 3.5rem;
-      max-height: 3.5rem;
-      transition: max-width ease-out 1s, max-height ease-out 0.3s, border-radius ease-in 0.3s;
-    }
-    #root[expanded] {
-      border-radius: .5rem;
-      max-width: 40rem;
-      max-height: 20rem;
-    }
-    #manage, #signout {
-      cursor: pointer;
-    }
-  </style>
-  <div id="root"><div data-stack="gap-1">
-    <div id="header">
-      <span id="icon" class="fas fa-user" /></span>
-      <span id="name" hidden>NAME</span>
-      <div id="email" hidden>EMAIL</div>
-    </div>
-    
-    <div id="manage" hidden>Manage Account</div>
-    <div id="signout" hidden>Sign out</div>
-  </div></div>
-</template>
 
 <template id="search-page">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"/>
@@ -258,22 +125,7 @@
   <video controls/>
 </template>
 
-
-
-
-<!-- <import tag="template" id="login" src="./login.partial.html" /> -->
-
-<!-- SERVICE WORKER & SCRIPTS -->
-<!-- <script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("service-worker.js").then((registration) => {
-        console.log("Service Worker registered: ", registration);
-      }).catch((registrationError) => {
-        console.error("Service Worker registration failed: ", registrationError);
-      });
-    });
-  }
-</script> -->
+<import src="../sharedUI/sharedWidgets.html" />
+<import src="../sharedUI/loginWidgets.html" />
 
 </html>

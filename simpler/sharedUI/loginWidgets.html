@@ -1,0 +1,57 @@
+<template id="login">
+  <import tag="style" src="./index.scss" />
+  <style>
+    .loginForm {
+        width: 80%;
+        max-width: 20rem;
+        margin: 12vh auto;
+        text-align: center;
+        color: var(--darkBlue);
+    }
+
+    .loginForm > * {
+      margin: 1rem 0;
+    }
+
+    input {
+        width: 100%;
+        color: var(--darkBlue);
+    }
+
+    input, button, label {
+        display: block;
+    }
+
+    label {
+        color: var(--darkBlue);
+        cursor: pointer;
+    }
+    label:hover {
+        text-decoration: underline;
+    }
+
+    #errorMessage {
+        border-color: red;
+        background-color: #f006;
+    }
+  </style>
+  <form class="loginForm">
+    <h2 style="text-align: center;">Sign In</h2>
+    <input id="email" data-button="round outline" type="email" placeholder="Email" autofocus />
+
+    <div>
+      <input id="password" data-button="round outline" type="password" placeholder="Password" />
+      <label id="forgot">Forgot your password?</label>
+    </div>
+
+    <div>
+      <button id="submit" data-button="round" style="width: 100%;">Sign In</button>
+      <label id="createAccount">Create an account</label>
+    </div>
+
+    <div id="error-message" class="text-danger py-2">
+    
+  </div>
+  </form>
+</template>
+
