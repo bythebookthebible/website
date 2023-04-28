@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import KeyboardEventHandler from 'react-keyboard-event-handler';
-import KeyHandler, { KEYPRESS } from 'react-key-handler';
+// import KeyboardEventHandler from 'react-keyboard-event-handler';
+// import KeyHandler, { KEYPRESS } from 'react-key-handler';
 import { Document, Page, pdfjs } from "react-pdf";
 import { Row, Col, Container } from 'react-bootstrap';
 import { SizeMe } from 'react-sizeme';
@@ -30,6 +30,11 @@ export default function PopupBookWithMemoryPower(props) {
         isActive(true)
     }
 
+    let keyHandler = e => {
+        if(e.key === 'ArrowLeft') goToPrevView();
+        if(e.key === 'ArrowRight') goToNextView();
+    }
+
     let goToPrevView = () => {
         if (pageNumber - 2 > 0) {
             setPageNumber(pageNumber - 2)
@@ -50,16 +55,8 @@ export default function PopupBookWithMemoryPower(props) {
         }
     }
 
-    let keyHandler = (key) => {
-        if (key == 'left' ) {
-            goToPrevView()
-        } else if (key == 'right') {
-            goToNextView()
-        }
-    }
-
     return (
-        <div>  
+        <div onKeyDown={keyHandler}>  
             <SizeMe
                 monitorHeight
                 refreshRate={32}
@@ -83,7 +80,7 @@ export default function PopupBookWithMemoryPower(props) {
                 Page {pageNumber} of {numPages}
                 <button className='pdf-btn' onClick={()=>goToNextView()}><i class="fas fa-caret-right" style={{fontSize: '2rem'}}/></button>
             </div>    
-            <KeyboardEventHandler handleKeys={['all']} onKeyEvent={(key) => keyHandler(key)} />
+            {/* <KeyboardEventHandler handleKeys={['all']} onKeyEvent={(key) => keyHandler(key)} />
             <KeyHandler
                 keyEventName={KEYPRESS}
                 keyValue={'ArrowLeft'}
@@ -93,7 +90,7 @@ export default function PopupBookWithMemoryPower(props) {
                 keyEventName={KEYPRESS}
                 keyValue='End'
                 onKeyHandle={()=>goToNextView()}
-            />
+            /> */}
         </div>
     );
 
