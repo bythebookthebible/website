@@ -122,8 +122,129 @@
     <user-widget />
     <scripture-search></scripture-search>
   </div>
-  <video controls/>
+  <custom-video controls/>
 </template>
+
+
+<template id="custom-video">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"/>
+  <style>
+    video {
+      width: 100%;
+      border: 0.5rem solid #005697;
+      box-sizing: border-box;
+      display: flex;
+    }
+
+    #root {
+      position: relative;
+      font-size: 2vw;
+    }
+    #overlay {
+      position: absolute;
+      top: 0; bottom: 0; left: 0; right: 0;
+      transition: opacity linear 0.3s;
+    }
+    #play {
+      font-size: 10vw;
+      position: absolute;
+      top: 5vw;
+      width: 100vw;
+      height: calc(100% - 10vw);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #settings {
+      position: absolute;
+      top: 2vw;
+      right: 2vw;
+    }
+    #fullscreen {
+      position: absolute;
+      bottom: 2vw;
+      right: 2vw;
+    }
+
+
+    #progressRoot {
+      position: absolute;
+      height: 2vw;
+      bottom: 2vw;
+      right: 8vw;
+      left: 8vw;
+    }
+    #progressRoot .timestamp {
+      margin-top: -0.7em;
+      margin-bottom: 0.7em;
+      font-size: .5rem;
+    }
+    #progressRoot .background {
+      position: absolute;
+      background-color: #ddd;
+      margin-top: -0.05em;
+      height: 0.1em;
+      width: calc(100% - 1em);
+      top: 50%; left: 0.5em;
+    }
+    #progressRoot .progress {
+      background-color: #005697cc;
+      border-radius: 0.1em;
+      position: absolute;
+      margin-top: -0.15em;
+      height: 0.3em;
+      width: 0%;
+      top: 50%; left: 0;
+    }
+    #progressRoot .preloaded {
+      background-color: #bbb;
+      border-radius: 0.1em;
+      position: absolute;
+      margin-top: -0.15em;
+      height: 0.3em;
+      width: 0%;
+      top: 50%; left: 0;
+    }
+    #progressRoot .knob {
+      background-color: #005697;
+      width: 0.8em; height: 0.8em;
+      border-radius: 1em;
+      margin-top: -0.4em;
+      margin-right: -0.4em;
+      position: absolute;
+      top: 50%; right: 0;
+    }
+
+  </style>
+  <div id="root">
+    <video />
+    <div id="overlay">
+      <div id="play" class="fas fa-play" />
+
+      <div id="progressRoot" >
+        <div class="timestamp">X:XX / X:XX</div>
+        <div class="background">
+          <div class="preloaded" />
+          <div class="progress">
+            <div class="knob" />
+          </div>
+        </div>
+      </div>
+
+      <div id="settings" class="fas fa-gear" >
+        <div id="repeat-auto" class="fas fa-shuffle" />
+        <div id="repeat-loop" class="fas fa-repeat" />
+        <div id="repeat-continue" class="fas fa-arrows-turn-to-dots" />
+        <div id="download" class="fas fa-download" />
+        <div id="speed" class="fas fa-gauge-high" />
+      </div>
+
+      <div id="fullscreen" class="fas fa-maximize" />
+    </div>
+  </div>
+</template>
+
 
 <import src="../sharedUI/sharedWidgets.html" />
 <import src="../sharedUI/loginWidgets.html" />
