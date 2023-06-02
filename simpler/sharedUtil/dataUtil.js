@@ -51,35 +51,44 @@ export function friendlyScriptureRef(key) {
   return ref
 }
 
-// this is a mathematically correct mod accounting for negative numbers
-// mod(n, m) returns i where 0 <= i < m, where n - i is divisible by m
+/**
+ * <rant>
+ * this is a mathematically correct mod which fixes js default behavior
+ * so its values always cycle rather than giving negative values
+ * this is good when you want to repeat an array with any offset and have
+ * array[mod(i, array.length)] always be valid for any offset i
+ * </rant>
+ * 
+ * @returns mod(n, m) returns i where 0 <= i < m, where n - i is divisible by m
+ */
 export function mod(n, m) {
   let tmp = n % m
   return tmp >= 0 ? tmp : tmp + m
 }
 
-// export function valueAfter(arr, val, n=1, returnIndex=false) {
-//   let isVal = a=>deepEqual(a, val)
-//   if(!val instanceof Function) isVal = val
+export function valueAfter(arr, val, n=1, returnIndex=false) {
+  // let isVal = a=>deepEqual(a, val)
+  let isVal = a => a === val
+  if(!val instanceof Function) isVal = val
 
-//   for(let i in arr) {
-//     i=Number(i) // apparently i is a string
-//     if(isVal(arr[i])) {
-//       i = mod((i+n), arr.length)
-//       if(returnIndex) return i
-//       return arr[i]
-//     }
-//   }
-//   return arr[0]
-// }
+  for(let i in arr) {
+    i=Number(i) // apparently i is a string
+    if(isVal(arr[i])) {
+      i = mod((i+n), arr.length)
+      if(returnIndex) return i
+      return arr[i]
+    }
+  }
+  return arr[0]
+}
 
-// export function valuesAfter(arr, val, N, wrap=true) {
-//   N = Math.min(N, arr.length)
-//   if(!val) return arr.slice(0, N)
-//   const i = valueAfter(arr, val, 1, true)
-//   if(!wrap || i+N < arr.length) return arr.slice(i, i + N)
-//   else return [...arr.slice(i, i + N), ...arr.slice(0, i + N - arr.length)]
-// }
+export function valuesAfter(arr, val, N, wrap=true) {
+  N = Math.min(N, arr.length)
+  if(!val) return arr.slice(0, N)
+  const i = valueAfter(arr, val, 1, true)
+  if(!wrap || i+N < arr.length) return arr.slice(i, i + N)
+  else return [...arr.slice(i, i + N), ...arr.slice(0, i + N - arr.length)]
+}
 
 export function findClosest(list, value, returnIndex=false) {
   const len = list.length

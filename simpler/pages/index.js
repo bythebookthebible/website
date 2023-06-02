@@ -1,7 +1,7 @@
 import './index.scss'
 import { loadFirebase } from '../sharedUI/firebase';
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
-import { scriptureFromKey, keyFromScripture, clamp } from '../sharedUtil/dataUtil'
+import { scriptureFromKey, keyFromScripture, clamp, toHHMMSS, valueAfter } from '../sharedUtil/dataUtil'
 import { defineAllDefaultTemplates, syncAttributeProperty, attachTemplateToShadow, toggleFullscreen, isFullScreen, fullScreenEnabled } from '../sharedUtil/uiUtil'
 
 const cloudStorage = getStorage()
@@ -199,7 +199,7 @@ window.customElements.define('video-page', class extends HTMLElement {
 
     const el = this.elements = {
       search: this.shadowRoot.querySelector('scripture-search'),
-      video: this.shadowRoot.querySelector('video'),
+      video: this.shadowRoot.querySelector('custom-video'),
     }
 
     // search bar handler
@@ -242,14 +242,42 @@ window.customElements.define('video-page', class extends HTMLElement {
  * Natural controlls (Play, pause, seeek, progress bar, download for offline, download base file, download derrivatives?, )
  * Special controlls (Simple loops, Dragon loops, auto, chapter-long loops)
  * Actual looping etc happens in web worker through MediaSource API https://developer.mozilla.org/en-US/docs/Web/API/MediaSource
- * 
  */
+const newRepetitions = 10
+const reviewRepetitions = 2
+
 
 window.customElements.define('custom-video', class extends HTMLElement {
-  static observedAttributes = [ ]
+
+  static observedAttributes = ['src', 'timestamps', 'loopmode']
+  attributeChangedCallback(name, oldValue, newValue) {
+    console.log({el: "custom-video", name, oldValue, newValue})
+
+    if(name === 'src' && oldValue != newValue) {
+      this.elements.video.src = newValue
+    }
+
+    if(name === 'loopmode' && oldValue != newValue) {
+      // initialize loop state
+      if(this.loopmode === 'auto') {
+        this.loopState = {offset:0, length:1, repeats: newRepetitions}
+
+      // } else if(this.loopmode === 'loop') {
+      //   this.loopState = {}
+
+      // } else if(this.loopmode === 'continue') {
+      //   this.loopState = {}
+
+      } else {
+        this.loopState = {}
+      }
+    }
+  }
 
   connectedCallback() {
     syncAttributeProperty(this, 'src')  
+    syncAttributeProperty(this, 'timestamps')  
+    syncAttributeProperty(this, 'loopmode')  
     attachTemplateToShadow(this, 'custom-video')
 
     const el = this.elements = {
@@ -269,18 +297,15 @@ window.customElements.define('custom-video', class extends HTMLElement {
       settings: this.shadowRoot.querySelector('#settings'),
       download: this.shadowRoot.querySelector('#download'),
       speed: this.shadowRoot.querySelector('#speed'),
-      repeatAuto: this.shadowRoot.querySelector('#repeat-auto'),
-      repeatLoop: this.shadowRoot.querySelector('#repeat-loop'),
-      repeatContinue: this.shadowRoot.querySelector('#repeat-continue'),
-
+      repeat: this.shadowRoot.querySelector('#repeat'),
       fullscreen: this.shadowRoot.querySelector('#fullscreen'),
     }
 
-    // event handlers
+    // EVENT HANDLERS
 
     // hide / show overlay
     let overlayTimeout = undefined
-    
+
     el.overlay.onmousemove = e => {
       if(el.overlay.style.opacity == '0') {
         // if opacity hidden, make visible
@@ -288,7 +313,6 @@ window.customElements.define('custom-video', class extends HTMLElement {
         el.overlay.style.opacity = '1'
       } else if (!el.video.paused) {
         // if opacity visible & playing, set timeout to hide after 1 sec
-        console.log({overlayTimeout})
         clearTimeout(overlayTimeout)
         overlayTimeout = setTimeout(() => {
           el.overlay.style.opacity = '0'
@@ -313,17 +337,6 @@ window.customElements.define('custom-video', class extends HTMLElement {
       }
     }
 
-    // fullscreen
-    if(fullScreenEnabled()) {
-      el.fullscreen.onclick =  () => {
-        const fullscreen = toggleFullscreen(this)
-        el.fullscreen.classList.remove(`fa-${!fullscreen ? "minimize" : "maximize"}`)
-        el.fullscreen.classList.add(`fa-${fullscreen ? "minimize" : "maximize"}`)
-      }
-
-    } else {
-      el.fullscreen.style.display = "none"
-    }
 
     // seek
     function handleMouseSeek(e) {
@@ -334,8 +347,10 @@ window.customElements.define('custom-video', class extends HTMLElement {
         let time = el.video.duration * fraction
 
         el.progress.style.width = `${fraction * 100}%`
+        el.progressTimestamp.textContent = `${toHHMMSS(time)} / ${toHHMMSS(el.video.duration)}`
         el.video.currentTime = time
       }
+      return false // disables accidentally selection timestamp text
     }
 
     el.progressRoot.onmouseup = handleMouseSeek
@@ -346,52 +361,79 @@ window.customElements.define('custom-video', class extends HTMLElement {
       if(e.buttons === 1) handleMouseSeek(e)
     }
 
-    el.video.ontimeupdate = e => console.log(e)
+    el.video.on('loadedmetadata', e => el.progressTimestamp.textContent = `${toHHMMSS(el.video.currentTime)} / ${toHHMMSS(el.video.duration)}`)
+    el.video.on('timeupdate', e => el.progressTimestamp.textContent = `${toHHMMSS(el.video.currentTime)} / ${toHHMMSS(el.video.duration)}`)
+
+    // fullscreen
+    if(fullScreenEnabled()) {
+      el.fullscreen.onclick =  () => { toggleFullscreen(this) }
+
+      document.onfullscreenchange = e => {
+        let fullscreen = isFullScreen()
+        el.fullscreen.classList.remove(`fa-${!fullscreen ? "minimize" : "maximize"}`)
+        el.fullscreen.classList.add(`fa-${fullscreen ? "minimize" : "maximize"}`)
+      }
+
+    } else {
+      el.fullscreen.style.display = "none"
+    }
 
     // settings
-
-    // loop
 
     // speed
 
     // download
 
-    // get things for the video
-    let { memoryModules, memorySeries, memoryResources } = firebaseState.current
-    
-    // reorder memorySeries
-    const query = Object.fromEntries(new URL(window.location).searchParams) // {module: "", series: ""}
-
-    let { Schmideo, Music, ...other } = memorySeries
-    memorySeries = { Schmideo, Music, ...other }
-    
-    let relevantResources = Object.values(memoryResources).filter(val => val.module == query.module)
-    
-    // sort relevantResources in order of memorySeries
-    relevantResources = Object.keys(memorySeries)
-      .map(series => relevantResources.find(x => x.series == series))
-      .filter(x => x != undefined)
-
-
-    console.log({relevantResources, memoryModules, memorySeries})
-
-    let resource = relevantResources[0]
-
-    console.log({resource})
-
-    getDownloadURL(ref(cloudStorage, resource.location))
-      .then(url => {
-        console.log({url})
-        el.video.src = url
-      })
-      .catch(console.error)
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    if(name === 'src' && oldValue != newValue) {
-      console.log(this.elements)
-      this.elements.video.src = newValue
+    // repeat
+    let loopOptions = {
+      auto: 'fa-shuffle',
+      loop: 'fa-repeat',
+      continue: 'fa-arrows-turn-to-dots',
     }
+
+    el.repeat.onclick = e => {
+      let oldMode = this.loopmode
+      let newMode = valueAfter(Object.keys(loopOptions), this.loopmode) || 'auto'
+
+      el.repeat.classList.replace(loopOptions[oldMode], loopOptions[newMode])
+      this.loopmode = newMode
+    }
+
+    function nextState({offset, length, repeats}) {
+      // first innermost repeats
+      repeats--
+      if(repeats > 0)
+        return {offset, length, repeats}
+
+      // Done with the full cycle? start at the beginning again.
+      if(length >= segmentCount) {
+        // TODO: send ending event?
+        // loop back to beginning
+        return {offset:0, length:1, repeats: newRepetitions}
+      }
+
+      // if this interval is not aligned in the next size block, and the next block exists
+      // then start new material (smallest interval immediately after current one)
+      if( (offset + length) % (2 * length) != 0  &&  offset+length < segmentCount) {
+        return {offset: offset+length, length: 1, repeats: newRepetitions}
+      }
+
+      // if we are aligned, and we still have room in this module
+      // then review (double interval size, end time fixed)
+      if(2*length < segmentCount) {
+        return {offset: offset-length, length:2*length, repeats: reviewRepetitions}
+      }
+
+      // we are ready to review the whole module (interval expands to cover everything)
+      return {offset: 0, length: segmentCount, repeats: reviewRepetitions}
+    }
+
+    el.video.on('timeupdate', e => {
+      
+    })
+
+    if(!this.loopmode) this.loopmode = 'auto'
+
   }
 })
 

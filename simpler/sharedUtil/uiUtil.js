@@ -94,6 +94,6 @@ export const toggleFullscreen = function(node) {
    }
 }
 
-const isFullScreen = function() {
+export const isFullScreen = function() {
    return !!(document.fullscreen || document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement || document.fullscreenElement);
 }
