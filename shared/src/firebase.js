@@ -9,6 +9,7 @@ import {
   where,
   getDocFromCache,
   getDocsFromCache,
+  runTransaction,
 } from "firebase/firestore"
 import { getAuth, setPersistence, indexedDBLocalPersistence } from "firebase/auth";
 import { useEffect, useState, useRef } from "react";
@@ -74,31 +75,52 @@ export function useAuth() {
         let profileDocRef = doc(db, 'users', newUser.uid)
 
         unsubProfile()
-        unsubProfile = onSnapshot(profileDocRef, async (snap) => {
-          let newProfile = snap.data()
-          if(!snap.exists()) console.error(`
-            This user's profile does not exist. There may be an inconsistent local firebase state.
-            Try Clear-Refresh-Clear with clearing the website data (Firebase's IndexedDB).
-          `)
-          // console.log({snap, exists: snap.exists(), data: newProfile })
-          setProfile(newProfile)
+        unsubProfile = onSnapshot(
+          profileDocRef, 
+          { includeMetadataChanges: true }, 
+          async (snap) => {
+            let newProfile = snap.data()
+            if(!snap.exists()) {
+              console.log(`This user's profile does not exist. There may be an inconsistent local firebase state. Refreshing cache.`, {uid: newUser.uid, metadata: snap.metadata, exists: snap.exists(), data: newProfile, get: snap.get()}
+              )
 
-          // get updated claims token ()
-          if(!token){
-            if(online && !freshClaims) {
-              // force new claims once
-              newUser.getIdTokenResult(true)
-                .then(setToken).catch(console.error)
-              setFreshClaims(true)
+              // TODO: iff offline, fail with empty profile
+              // force a fresh copy -- cache might be out of date
+              const serverProfile = await runTransaction(db, async transaction => {
+                // Transaction is the mechanism that actually forces sync with server getDocFromServer doesnt cut it
+                // https://github.com/firebase/firebase-js-sdk/issues/6739
+                // https://stackoverflow.com/questions/69665600/what-is-the-equivalent-of-getdocfromserver-for-setdoc-in-firestore-to-confirm-t
+                const profileDoc = await transaction.get(profileDocRef);
+                if (!profileDoc.exists()) { return Promise.reject("Document does not exist!") }
 
-            } else {
-              // otherwise trust the latest token
-              newUser.getIdTokenResult(false)
-                .then(setToken).catch(console.error)
+                console.log({data: profileDoc.data(), exists: profileDoc.exists()})
+                return profileDoc.data();
+              });
+              console.log({newProfile, serverProfile})
+              newProfile = serverProfile
+              // TODO: if nothing, ask server to reconstruct the default profile -- probably failed original creation
+
             }
-          }
+            // console.log({snap, exists: snap.exists(), data: newProfile })
+            setProfile(newProfile)
 
-        }, console.error)
+            // get updated claims token ()
+            if(!token){
+              if(online && !freshClaims) {
+                // force new claims once
+                newUser.getIdTokenResult(true)
+                  .then(setToken).catch(console.error)
+                setFreshClaims(true)
+
+              } else {
+                // otherwise trust the latest token
+                newUser.getIdTokenResult(false)
+                  .then(setToken).catch(console.error)
+              }
+            }
+
+          }, console.error
+        )
 
         setUser(newUser)
 

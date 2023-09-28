@@ -83,7 +83,7 @@ function AuthSwitch(props) {
   if(!user && location.pathname === '/forgot') return <ForgotPass />
   if(!user) return <Login />
 
-  if(!user.profile) return <LoadingPage title="Loading Profile..."/> // loading profile (and claims)
+  if(!user.profile) console.log("loading Profile") // return <LoadingPage title="Loading Profile..."/> // loading profile (and claims)
   // if(!user.online) return props.children // offline mode assumes you have a valid account
   // if(!(user.profile.updatedSubscription || user.profile.freePartner)) return <ManageAccount noSubscriptionYet={true} />
   if(location.pathname == '/account') return <ManageAccount /> // default is create account

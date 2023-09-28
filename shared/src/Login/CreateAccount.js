@@ -63,6 +63,7 @@ export function CreateAccount(props) {
         else if (price < 0) setErrorToDisplay("Positive Numbers Only ;)")
         else if (price > 0 && price < 0.50) setErrorToDisplay("The minimum value is $0.50, due to processing fees. ")
         else {
+            // TODO: Convert to transaction
             await createUserWithEmailAndPassword(auth, email, password)
                 .then(updateProfile(auth.currentUser, { displayName: name }))
                 .catch(setErrorToDisplay)
@@ -71,6 +72,7 @@ export function CreateAccount(props) {
                 // dont do a checkout session, rather mark as free account
                 console.log("free version")
                 console.log({declinePartnership: await declinePartnership()})
+                window.location.pathname = "/" // redirect from "/account" to "/"
             } else {
                 const sessionId = (await createPartnerCheckout({
                     price,
